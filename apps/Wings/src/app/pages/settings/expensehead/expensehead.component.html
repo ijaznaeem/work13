@@ -1,0 +1,41 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Expense Heads</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          <form #frmFilter="ngForm">
+            <div class="row no-pad">
+              <div class="col-md-3 pull-right">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-warning form-control"
+                    (click)="Add()"
+                    accesskey="a"
+                  >
+                    <i class="fa fa-plus"></i>
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+          <ft-dynamic-table
+          #dataList
+          [Data]="Data"
+
+          [Settings]="list"
+          (ClickAction)="Clicked($event)"
+        ></ft-dynamic-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

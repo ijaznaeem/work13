@@ -1,0 +1,33 @@
+label, button, input, select{
+  font-weight: 600;
+  color:black;
+}
+
+
+.ngx-datatable {
+  height: 250px; /* Set your desired fixed height */
+  overflow-y: auto; /* Add vertical scrollbar if content exceeds the height */
+
+  border: 1px solid #ccc; /* You can adjust the color and size of the border as needed */
+}
+
+:host ::ng-deep .datatable-body-cell {
+  // padding: 2px;
+  border: 1px solid #ccc;
+}
+
+:host ::ng-deep .datatable-header-cell {
+  border: 1px solid #ccc;
+}
+
+
+.custom-table-height {
+  height: 270px; /* Adjust this value as needed */
+  overflow-y: auto; /* Adds a scrollbar if the content exceeds the height */
+
+}
+ td{
+  font-weight: 600;
+  color:black;
+}
+

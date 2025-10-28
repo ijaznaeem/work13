@@ -1,0 +1,78 @@
+<div class="container">
+  <div class="row">
+    <table class="table table-light">
+      <tbody>
+        <tr>
+          <td><img [src]="LogoSrc" alt="" /></td>
+          <td>
+            <h1>{{ company.Name }}</h1>
+            <h3>{{ company.Address }}</h3>
+            <h3>{{ "Mob: " + company.Tel }}</h3>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" class="text-center">
+            <strong> QUOATATION </strong>
+          </td>
+        </tr>
+        <tr>
+          <td>Customer Name: {{ Invoice.CustomerName }}</td>
+          <td>Invoice No: {{ Invoice.InvoiceID }}</td>
+        </tr>
+        <tr>
+          <td>Address: {{ Invoice.Address }}</td>
+          <td>Date: {{ Invoice.Date }}</td>
+        </tr>
+        <tr>
+          <td>City: {{ Invoice.City }}, Lic No {{ Invoice.LicNo }}</td>
+          <td>Customer No: {{ Invoice.CustomerID }}</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="min-height: 400px;">
+            <table class="table table-striped table-bordered">
+              <thead class="thead-light">
+                <tr>
+                  <th>Qty</th>
+                  <th>Medicine Name</th>
+                  <th>Strength</th>
+
+                  <th>Retail Price</th>
+                  <th>Amount</th>
+                  <th>Discount</th>
+                  <th>Net Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of Invoice.Detail; let i = index">
+                  <td>{{ item.Qty }}</td>
+                  <td>{{ item.MedicineName }}</td>
+                  <td>{{ item.Strength }}</td>
+
+                  <td>{{ item.SPrice }}</td>
+                  <td>{{ item.Amount }}</td>
+                  <td>{{ item.Discount }}</td>
+                  <td>{{ item.NetAmount }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th></th>
+                  <th>Grand Total:</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th>{{ FindTotal("Amount") }}</th>
+                  <th>{{ FindTotal("Discount") }}</th>
+                  <th>{{ FindTotal("NetAmount") }}</th>
+                </tr>
+              </tfoot>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">Notes: {{Invoice.Notes}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

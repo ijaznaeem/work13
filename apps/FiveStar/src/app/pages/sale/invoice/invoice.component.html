@@ -1,0 +1,197 @@
+<form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+  <div class="row no-gutter">
+    <div class="col-md-4">
+      <label for="dp1">Date:</label>
+      <div class="input-group">
+        <input
+          class="form-control"
+          placeholder="yyyy-mm-dd"
+          name="dp1"
+          [(ngModel)]="pdetails.Date"
+          ngbDatepicker
+          #d1="ngbDatepicker"
+          disabled
+        />
+
+        <div class="input-group-addon">
+          <button type="button" class="btn btn-warning" (click)="d1.toggle()">
+            <i class="fa fa-calendar"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group col-md-8">
+      <label for="supplier">Select Product:</label>
+
+      <select
+        name="prods"
+        id="prods"
+        class="form-control"
+        required="required"
+        [(ngModel)]="pdetails.ProductID"
+        (change)="ProductSelected($event)"
+      >
+        <option [value]="p.ProductID" *ngFor="let p of Prods">
+          {{ p.ProductName }}
+        </option>
+      </select>
+    </div>
+
+    <div class="col-md-10">
+      <div class="form-group">
+        <label for="customer">Select Account {{isNumber(pdetails.CustomerID)}}</label>
+        <ejs-combobox
+          id="customer"
+          name="customer"
+          #cmbCustomer
+          [dataSource]="Accounts"
+          [fields]="{ text: 'CustomerName', value: 'CustomerID' }"
+          [(ngModel)]="pdetails.CustomerID"
+          [placeholder]="'Select Account'"
+          [allowFiltering]="true"
+          [filterBarPlaceholder]="'Search Account...'"
+          required
+          (change)="CustomerClicked($event)"
+        >
+          <ng-template #itemTemplate let-data>
+            <div class="row">
+              <div class="col-6">
+                <strong>{{ data.CustomerName }}</strong>
+              </div>
+              <div class="col-4">{{ data.Address }}</div>
+              <div class="col-2 text-end">{{ data.MBalance }}</div>
+            </div>
+          </ng-template>
+          <ng-template #headerTemplate>
+            <div class="row fw-bold border-bottom pb-1">
+              <div class="col-6">Name</div>
+              <div class="col-4">Address</div>
+              <div class="col-2 text-end">Balance</div>
+            </div>
+          </ng-template>
+        </ejs-combobox>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label for="balance">Month Balance</label>
+        <label for="">
+          {{ curCustomer.MBalance }}
+        </label>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="qty">Qty:</label>
+        <input
+          #txtQty
+          type="number"
+          class="form-control dation-field"
+          required="required"
+          id="qty"
+          name="qty"
+          [(ngModel)]="pdetails.Qty"
+          placeholder="0"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="supplier">Sale Price:</label>
+        <input
+        #txtRate
+          type="number"
+          class="form-control"
+          id="pprice"
+          name="pprice"
+          [(ngModel)]="pdetails.SPrice"
+          placeholder="0"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="bonus">Amount:</label>
+        <input
+          type="number"
+          class="form-control"
+          id="pamount"
+          name="pamount"
+          readonly
+          [value]="Round(pdetails.Qty * pdetails.SPrice - pdetails.Discount)"
+          tabindex="-1"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="bonus">Amount Received:</label>
+        <input
+          type="number"
+          class="form-control"
+          id="paidamnt"
+          name="paidamnt"
+          [(ngModel)]="pdetails.Received"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="bonus">Discount:</label>
+        <input
+          type="number"
+          class="form-control"
+          id="Discount"
+          name="Discount"
+          [(ngModel)]="pdetails.Discount"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label for="bonus">Balance:</label>
+        <input
+          type="number"
+          class="form-control"
+          id="balance"
+          name="balance"
+          readonly
+          [value]="
+            Round(
+              pdetails.Qty * pdetails.SPrice -
+                pdetails.Discount -
+                pdetails.Received
+            )
+          "
+          tabindex="-1"
+        />
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="form-group">
+        <label for="bonus">Remarks/Description:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="Remarks"
+          name="Remarks"
+          [(ngModel)]="pdetails.Remarks"
+        />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>&nbsp;</label>
+        <button
+          type="submit"
+          class="btn btn-primary form-control"
+          [disabled]="!fromPurchase.form.valid || txtQty.value <= 0 || txtRate.value <= 0 || !isNumber(pdetails.CustomerID)"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,17 @@
+<table style="width: 100%">
+  <tr>
+    <td style="width: 160px;">
+      <div class="p-2">
+        <img class="company-logo" [src]="IMAGE_URL + Business.logo" alt="">
+      </div>
+    </td>
+    <td class="text-left header">
+      <div style="font-size: 2.5rem; font-weight: 600;">
+        {{ Business.BusinessName }}
+      </div>
+      <div>{{ Business.Address }}, {{ Business.City }}</div>
+      <div>{{ Business.Lic_No }}</div>
+      <p>Tel: {{ Business.Phone }}</p>
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,58 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+      <h5 class="mb-0">password Change</h5>
+
+  </div>
+
+
+  <form #formProfile="ngForm">
+    <div class="row">
+      <div class="col-sm-4"></div>
+
+      <div class="form-group col-sm-4">
+        <label for="name">Old Pasword</label>
+        <input type="password" class="form-control validation-field" required  = "required" [(ngModel)] = "profile.oldpasw" name = "oldpasw" placeholder="Old Pasword">
+      </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-4"></div>
+
+        <div class="form-group col-sm-4">
+          <label for="name">New password</label>
+          <input type="password" class="form-control validation-field" required  = "required" [(ngModel)] = "profile.newpasw" name = "newpasw" placeholder="New Pasword">
+        </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-4"></div>
+
+          <div class="form-group col-sm-4">
+            <label for="name">Confirm Pasword</label>
+            <input type="password" class="form-control validation-field" required  = "required" [(ngModel)] = "profile.password" name = "password" placeholder="Confirm Pasword">
+          </div>
+          </div>
+
+
+
+    <div class="row">
+      <div class="col-sm-4">
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label for="dp2">&nbsp;</label>
+          <button type="submit" (click) = 'SaveData()' class="btn btn-primary btn-block" [disabled]="!formProfile.form.valid">Save</button>
+        </div>
+      </div>
+
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label for="dp2">&nbsp;</label>
+          <button type="button" class="btn btn-danger btn-block" (click) = 'cancel()'>Cancel</button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+

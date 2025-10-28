@@ -1,0 +1,93 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Register Patient</h4>
+  <button
+    type="button"
+    class="close pull-right"
+    aria-label="Close"
+    (click)="bsModalRef.hide()"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="row no-gutter">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <form #frmFilter="ngForm">
+        <div class="row no-gutter">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="">Reg No:</label>
+              <input
+                class="form-control"
+                type="text"
+                name="regNo"
+                id="regNo"
+                [(ngModel)]="PatientData.regno"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="">Patient Name:</label>
+              <input
+                class="form-control"
+                type="text"
+                name="patName"
+                id="patName"
+                [(ngModel)]="PatientData.fullname"
+              />
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="">Select Head:</label>
+              <!-- help: https://ej2.syncfusion.com/angular/documentation/drop-down-list/filtering/ -->
+              <ejs-combobox
+                id="cmbheads"
+                name="cmbheads"
+                #cmbheads
+                [(ngModel)]="bill.head_id"
+                [dataSource]="heads"
+                [fields]="{ text: 'head', value: 'head_id' }"
+                [allowFiltering]="true"
+                placeholder="select heads"
+                popupHeight="220px"
+                (change)="HeadSelected($event)"
+              >
+              </ejs-combobox>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Amount:</label>
+              <input
+                class="form-control"
+                type="number"
+                name="amount"
+                id="amount"
+                [(ngModel)]="bill.amount"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="">&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-danger form-control"
+              (click)="AddBill()"
+              accesskey="a"
+            >
+              <i class="fa fa-save"></i>
+              Add Bill
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

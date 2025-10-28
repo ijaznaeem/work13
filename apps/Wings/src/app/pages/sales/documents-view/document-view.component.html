@@ -1,0 +1,35 @@
+<!--table starts-->
+
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Docments</h4>
+<div class="pl-5"></div>
+  <button
+
+  type="button"
+  class="btn btn-warning"
+  (click) = "FileDownload()"
+  >
+  <i class="fa fa-download"></i>
+</button>
+
+
+  <button
+    type="button"
+    class="btn-close close pull-right"
+    aria-label="Close"
+    (click)="bsModalRef.hide()"
+  >
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div class="container">
+          <img src="{{ uploadPath + Document }}" alt="" style="width: 100%" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

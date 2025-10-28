@@ -1,0 +1,17 @@
+<section class="sheet">
+  <h1 class="text-center">{{printdata.Title}} </h1>
+  <h5 class="text-center">{{printdata.SubTitle}} </h5>
+
+  <table class="table table-sm table-bordered">
+    <thead>
+      <tr>
+      <th *ngFor="let column of printdata.Columns"> {{ column.title }} </th>
+    </tr>
+
+    </thead>
+    <tr *ngFor="let row of printdata.Data">
+        <td *ngFor= "let col of printdata.Columns"> {{ row[col.column]}}</td>
+      </tr>
+  </table>
+</section>
+

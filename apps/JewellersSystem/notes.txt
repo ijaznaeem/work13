@@ -1,0 +1,16 @@
+	
+	[  ] Gold rate on front 24k to 14k
+	[  ] Weight calculation 000.000
+	[  ] Product add with pic
+	New purchase 
+	[  ] Add product pictures
+	[  ] Add mail category 16 ,18
+	[  ] Add stone without stone
+	[  ] With stone goes to incomplete product category 
+	[  ] Next stone weight , lacer, moti porwai, big stone weight
+	New customers
+	[  ] Add pictures 
+	New bill retailer 
+	[  ] Gold to cash print genrate
+	[  ] Customers balance print
+	[  ] Customers history report

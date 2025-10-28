@@ -1,0 +1,87 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">GRN Report</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="row no-gutter">
+      <div class="col-md-12">
+        <app-crud-form
+          [Form]="flterForm"
+          [formdata]="Filter"
+          [FormOnly]="true"
+
+          [CrudButtons]="false"
+        >
+        </app-crud-form>
+      </div>
+    </div>
+
+    <div class="row no-gutter">
+      <div class="col-md-8">
+        <h5>GRN Data</h5>
+
+        <ft-data-grid
+          #grdData
+          [Data]="data"
+          [columns]="grnCols"
+          [ShowSearch]="false"
+          (RowClicked)="RowClickedEv($event)"
+          (OnLinkClick)="Proceed($event)"
+        >
+        </ft-data-grid>
+        <div class="row sticky-footer">
+          <div class="col p-2">
+            <div
+              class="btn-toolbar"
+              role="toolbar"
+              aria-label="Toolbar with button groups"
+            >
+              <div class="btn-group mr-2" role="group" aria-label="First group">
+                <button
+                  type="button"
+                  class="btn btn-primary m-1"
+                  (click)="GRNAdd()"
+                >
+                  <i class="fa fa-plus"></i>
+                  Add GRN
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-warning m-1"
+                  (click)="CancelGrn()"
+                >
+                  <i class="fa fa-cancel"></i>
+                  Cancel
+                </button>
+              </div>
+              <div
+                class="btn-group mr-2"
+                role="group"
+                aria-label="Second group"
+              >
+                <button type="button" class="btn btn-success m-1">
+                  <i class="fa fa-print"></i>
+                  Print Report
+                </button>
+                <button type="button" class="btn btn-success m-1">
+                  <i class="fa fa-print"></i>
+                  Print GRN
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <h5>Comment History</h5>
+        <ft-data-grid
+          #grdHistory
+          [Data]="grnComments"
+          [ShowSearch]="false"
+          [columns]="comentCols"
+        >
+        </ft-data-grid>
+      </div>
+    </div>
+  </div>
+</div>

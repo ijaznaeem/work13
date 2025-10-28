@@ -1,0 +1,136 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">Stock Report R</h5>
+  </div>
+  <div class="card-block widget-body">
+    <form #frmFilter="ngForm">
+      <div class="row no-pad">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Category</label>
+            <select
+              name="Category"
+              id="Category"
+              [(ngModel)]="Filter.CategoryID"
+              class="form-control"
+            >
+              <option value="" selected>--Select Category--</option>
+              <option
+                *ngFor="let c of Categories$ | async"
+                [value]="c.CategoryID"
+              >
+                {{ c.CategoryName }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Search</label>
+            <input
+              id="txtsearch"
+              #searchtxt
+              class="form-control"
+              type="text"
+              name="txtsearch"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              (click)="FilterData()"
+              accesskey="a"
+            >
+              <i class="fa fa-search"></i>
+              Filter
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-primary form-control"
+              accesskey="p"
+              ngxPrint
+              [printSectionId]="'print-section'"
+              [useExistingCss]="true"
+              [printTitle]="'Stock Report'"
+            >
+              <i class="fa fa-print"></i>
+              Print
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="row no-pad" id="print-section">
+      <div class="col-md-12">
+        <!-- <ejs-grid
+          [dataSource]="data"
+          [searchSettings]="searchOptions"
+          [toolbar]="toolbarOptions"
+          height="450"
+          [allowPaging]="true"
+          [pageSettings]="{ pageCount: 5 }"
+          (load)="GridLoad()"
+          #grid
+        >
+          <e-columns>
+            <e-column headerText="Action" width="40">
+              <ng-template #template let-data>
+                <div>
+                  <button
+                    ejs-button
+                    class="btn btn-danger"
+                    (click)="OnEdit(data)"
+                  >
+                    <i class="fa fa-pencil"></i>
+                  </button>
+                </div>
+              </ng-template>
+            </e-column>
+            <e-column
+              [field]="Column.fldName"
+              [width]="Column.width ? Column.width : ''"
+              [visible]="Column.visible"
+              [headerText]="Column.label"
+              *ngFor="let Column of setting.Columns"
+            ></e-column>
+          </e-columns>
+          <e-aggregates>
+            <e-aggregate>
+              <e-columns>
+                <ng-container *ngFor="let Column of setting.Columns">
+                  <e-column
+                    type="Sum"
+                    [field]="Column.fldName"
+                    *ngIf="Column.sum"
+                  >
+                    <ng-template #footerTemplate let-data>{{
+                      data.Sum
+                    }}</ng-template>
+                  </e-column>
+                </ng-container>
+              </e-columns>
+            </e-aggregate>
+          </e-aggregates>
+        </ejs-grid> -->
+
+        <ft-dynamic-table
+          [Settings]="setting"
+          [Data]="data"
+          [Search]="searchtxt.value"
+        >
+        </ft-dynamic-table>
+        <!-- </div> -->
+      </div>
+    </div>
+  </div>
+</div>

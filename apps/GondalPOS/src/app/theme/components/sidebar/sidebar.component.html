@@ -1,0 +1,12 @@
+<div class="sidebar-outer">
+  <a
+    class="logo d-flex align-items-center"
+    routerLink="/"
+    (click)="closeSubMenus()"
+    *ngIf="settings.theme.sidebarIsFixed"
+  >
+   <!-- <span class="ng">e-Shop</span> -->
+   <span class="ng"><img height="50px" [src]="IMAGE_URL + 'logo-epos.png'" alt="Logo" /></span>
+  </a>
+  <app-vertical-menu [menuItems]="menuItems"></app-vertical-menu>
+</div>

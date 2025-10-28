@@ -1,0 +1,94 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Orders List</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          <form #frmFilter="ngForm">
+            <div class="row no-pad">
+
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Agents</label>
+                  <select
+                    name="cmbAgents"
+                    id="cmbAgents"
+                    [(ngModel)]="Filter.agent_id"
+                    class="form-control"
+                    [disabled]  = "bIsAgent"
+                  >
+                    <option value="" selected>--Select Agent--</option>
+                    <option
+                      *ngFor="let agent of Agents"
+                      [value]="agent.userid"
+                    >
+                      {{ agent.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Status</label>
+                  <select
+                    [(ngModel)]="Filter.status_id"
+                    name="cmbStatus"
+                    id="cmbStatus"
+                    class="form-control"
+                  >
+                    <option value="">--All Orders--</option>
+                    <option *ngFor="let s of Status" value="{{ s.status_id }}">
+                      {{ s.status }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-primary form-control"
+                    (click)="FilterData()"
+                    accesskey="a"
+                  >
+                    <i class="fa fa-search"></i>
+                    Filter
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button #add
+                    type="submit"
+                    class="btn btn-warning form-control"
+                    (click)="AddOrder()"
+                    accesskey="a"
+                    [disabled]="!bAllowAdd"
+                  >
+                    <i class="fa fa-plus"></i>
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+          <ft-datatable
+            #dataList
+            [CRUD]="false"
+            [Settings]="stngsOrdersList"
+            [Filter]="filterList"
+            [ScrollX]="true"
+            (ClickAction)="Clicked($event)"
+          ></ft-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

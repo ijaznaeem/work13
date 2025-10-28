@@ -1,0 +1,164 @@
+<div class="container">
+  <div id="print-section">
+    <table style="width: 90%">
+      <thead>
+        <tr>
+          <td colspan="4" class="text-center" style="padding-top: 2.75in"></td>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- <tr>
+          <td style="text-align: right">
+            <img [src]="LogoSrc" alt="" style="width: 100px" />
+          </td>
+          <td colspan="3">
+            <h1 style="text-align: left">{{ settings.title }}</h1>
+            <h5 style="text-align: left">
+              {{ settings.address }}, Phone No: {{ settings.phoneno }}
+            </h5>
+            <h3></h3>
+          </td>
+        </tr> -->
+
+        <tr>
+          <td>Reg No:</td>
+          <td style="font-size: x-large">
+            <strong> {{ Invoice.regno }}</strong>
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Patient Name:</td>
+          <td style="font-size: x-large">
+            <strong> {{ Invoice.fullname }}</strong>
+          </td>
+          <td>Date:</td>
+          <td>
+            <strong> {{ Invoice.date }}</strong>
+          </td>
+        </tr>
+        <tr>
+          <td>Address:</td>
+          <td>
+            <strong>{{ Invoice.address }}</strong>
+          </td>
+          <td>Time:</td>
+          <td>
+            <strong> {{ Invoice.time }}</strong>
+          </td>
+        </tr>
+        <tr>
+          <td>Gender</td>
+          <td>
+            <strong>{{ Invoice.gender }}</strong>
+          </td>
+          <td>Invoice #:</td>
+          <td>
+            <strong>{{ Invoice.invoice_id }}</strong>
+          </td>
+        </tr>
+        <tr>
+          <td>Age:</td>
+          <td>
+            <strong>{{ Invoice.dob | DateAsAgo }}</strong>
+          </td>
+          <td>Lab No:</td>
+          <td>
+            <strong>{{ Invoice.lab_no }} </strong>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="4">
+            <ng-container>
+              <table
+                class="invoice"
+                style="width: 100%"
+                *ngFor="let r of Invoice.details"
+              >
+                <thead></thead>
+                <tbody>
+                  <tr>
+                    <td colspan="5" style="border-width: 0">
+                      <div
+                        style="
+                          padding-top: 10px;
+                          text-align: center;
+                          font-family: 'Times New Roman', Times, serif;
+                        "
+                      >
+                        <h4>
+                          {{ r.description }}
+                        </h4>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th style="width: 30%">Test Name</th>
+                    <th style="width: 20%; text-align: center">Reading</th>
+                    <th style="width: 10%; text-align: center">Unit</th>
+                    <th style="width: 25%; text-align: center">Normal Range</th>
+                    <th style="width: 15%">Remarks</th>
+                  </tr>
+                  <ng-container *ngFor="let v of r.values">
+                    <tr *ngIf="v.reading != ''">
+                      <td>{{ v.obs_name }}</td>
+                      <td style="text-align: center">
+                        {{ v.reading }}
+                      </td>
+                      <td style="text-align: center">{{ v.unit }}</td>
+                      <td style="font-size: 8pt; text-align: center">
+                        {{ v.normal_range }}
+                      </td>
+                      <td style="font-size: 8pt">{{ v.remarks }}</td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+      <tr>
+        <td colspan="2">
+          <div
+            style="
+              font-size: 16px;
+              padding-bottom: 25px;
+              padding-top: 0.5in;
+              text-align: left;
+            "
+          >
+            Issued By: _____________
+          </div>
+        </td>
+        <td colspan="2">
+          <div
+            style="padding-bottom: 25px; padding-top: 0.5in; text-align: right"
+          >
+            <h4>
+              <strong> Dr. Ejaz Ahmad Malik </strong>
+            </h4>
+            Medical Specialist & Medical Director <br />
+            Ejaz Medical Complex
+          </div>
+        </td>
+      </tr>
+      <tfoot>
+        <tr>
+          <td colspan="4">
+            <!--place holder for the fixed-position footer-->
+            <div class="page-footer-space"></div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="no-print">
+    <button class="btn btn-primary" (click)="print()">
+      <i class="fa fa-print"> </i>
+      Print
+    </button>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Balance Sheet</h5>
+
+  </div>
+  
+
+  <ejs-grid #grid [dataSource]='data' [allowPaging]='true'>
+
+    <e-columns>
+      <!-- Define your columns here -->
+      <!-- Example column -->
+      <e-column field='ID' headerText='ID' width='100'></e-column>
+      <e-column field='Name' headerText='Name' width='150'></e-column>
+    </e-columns>
+
+  </ejs-grid>
+</div>

@@ -1,0 +1,158 @@
+{
+  "name": "GondalPOS",
+  "projectType": "application",
+  "generators": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    },
+    "@schematics/angular:application": {
+      "strict": true
+    }
+  },
+  "sourceRoot": "apps/GondalPOS/src",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "allowedCommonJsDependencies": [
+          "dragula",
+          "firebase/app",
+          "@mattlewis92/dom-autoscroller",
+          "angular-calendar/date-adapters/date-fns",
+          "prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard",
+          "nouislider",
+          "ngx-quill",
+          "lodash",
+          "css-element-queries",
+          "chart.js"
+        ],
+        "outputPath": "dist/apps/GondalPOS",
+        "index": "apps/GondalPOS/src/index.html",
+        "main": "apps/GondalPOS/src/main.ts",
+        "tsConfig": "apps/GondalPOS/tsconfig.app.json",
+        "polyfills": "apps/GondalPOS/src/polyfills.ts",
+        "assets": [
+          "apps/GondalPOS/src/assets",
+          "apps/GondalPOS/src/favicon.ico"
+        ],
+        "styles": [
+          "node_modules/sweetalert2/dist/sweetalert2.min.css",
+          "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
+          "node_modules/prismjs/plugins/toolbar/prism-toolbar.css",
+          "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+          "node_modules/@syncfusion/ej2-base/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-buttons/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-dropdowns/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-inputs/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-popups/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-lists/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-angular-dropdowns/styles/bootstrap.css",
+          "node_modules/nouislider/distribute/nouislider.min.css",
+          "node_modules/angular-calendar/scss/angular-calendar.scss",
+          "node_modules/dragula/dist/dragula.css",
+          "node_modules/ngx-toastr/toastr.css",
+          "node_modules/@swimlane/ngx-datatable/index.css",
+          "node_modules/@swimlane/ngx-datatable/assets/icons.css",
+          "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css",
+          "node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css",
+          "node_modules/datatables.net-select-dt/css/select.dataTables.css",
+		  "apps/GondalPOS/src/styles.scss"
+        ],
+        "scripts": [
+          "node_modules/apexcharts/dist/apexcharts.min.js",
+          "node_modules/jquery/dist/jquery.min.js",
+          "node_modules/datatables.net/js/jquery.dataTables.min.js",
+          "node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js",
+          "node_modules/jszip/dist/jszip.js",
+          "node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+          "node_modules/datatables.net-buttons/js/buttons.colVis.js",
+          "node_modules/datatables.net-buttons/js/buttons.flash.js",
+          "node_modules/datatables.net-buttons/js/buttons.html5.js",
+          "node_modules/datatables.net-buttons/js/buttons.print.js",
+          "node_modules/datatables.net-select/js/dataTables.select.js"
+        ],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "200mb",
+              "maximumError": "8mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "8kb",
+              "maximumError": "16kb"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/GondalPOS/src/environments/environment.ts",
+              "with": "apps/GondalPOS/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "GondalPOS:build:production"
+        },
+        "development": {
+          "browserTarget": "GondalPOS:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "GondalPOS:build"
+      }
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "apps/GondalPOS/src/test.ts",
+        "polyfills": "apps/GondalPOS/src/polyfills.ts",
+        "tsConfig": "apps/GondalPOS/tsconfig.spec.json",
+        "karmaConfig": "apps/GondalPOS/karma.conf.js",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "apps/GondalPOS/src/favicon.ico",
+          "apps/GondalPOS/src/assets"
+        ],
+        "styles": [
+          "apps/GondalPOS/src/styles.scss"
+        ],
+        "scripts": []
+      }
+    }
+  }
+}

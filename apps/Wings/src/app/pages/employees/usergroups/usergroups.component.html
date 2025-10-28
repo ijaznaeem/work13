@@ -1,0 +1,242 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Group Rights</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div>
+      <tabset>
+        <tab heading="Groups" id="tab1">
+          <app-crud [Form]="form" [List]="list"> </app-crud>
+        </tab>
+        <tab heading="Group Rights" id="tab2">
+          <form #formRights="ngForm">
+            <div class="row no-gutter">
+              <div class="col-md-1"></div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="group">Select Group:</label>
+
+                  <ejs-dropdownlist
+                    id="group"
+                    #group
+                    class="validation-field"
+                    required="required"
+                    name="group"
+                    [dataSource]="GroupData"
+                    [fields]="Groupfields"
+                    placeholder="Select Group..."
+                    [(ngModel)]="rightgroupid"
+                    (change)="GroupSelect($event)"
+                  >
+                  </ejs-dropdownlist>
+                </div>
+              </div>
+              <div class="col-md-2"></div>
+              <div class="col-lg-2">
+                <div class="form-group">
+                  <label for="dp2">&nbsp;</label>
+                  <button
+                    type="button"
+                    class="btn btn-success form-control"
+                    (click)="CheckAll()"
+                  >
+                    Check All
+                  </button>
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <div class="form-group">
+                  <label for="dp2">&nbsp;</label>
+                  <button
+                    type="button"
+                    class="btn btn-warning form-control"
+                    (click)="UnCheckAll()"
+                  >
+                    UnCheck All
+                  </button>
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <div class="form-group">
+                  <label for="dp2">&nbsp;</label>
+                  <button
+                    type="button"
+                    class="btn btn-danger form-control"
+                    id="expand"
+                    (click)="expandandColaps()"
+                  >
+                    Expand Rights
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-me-6">
+              <div class="form-group">
+                <div id="treeparent">
+                  <ejs-treeview
+                    #treeview
+                    id="treeelement"
+                    [fields]="field"
+                    [showCheckBox]="true"
+                    (nodeChecked)="nodeChecked($event)"
+                  ></ejs-treeview>
+                </div>
+              </div>
+            </div>
+
+            <div class="row no-gutter">
+              <div class="col-lg-3"></div>
+              <div class="col-lg-3">
+                <div class="form-group">
+                  <label for="dp2">&nbsp;</label>
+                  <button
+                    type="button"
+                    *ngIf="btnsave"
+                    class="btn btn-success form-control"
+                    [disabled]="!formRights.form.valid"
+                    (click)="SaveData1()"
+                  >
+                    Save Rights
+                  </button>
+                </div>
+              </div>
+
+              <div class="col-lg-3">
+                <div class="form-group">
+                  <label for="dp2">&nbsp;</label>
+                  <button
+                    type="button"
+                    class="btn btn-danger form-control"
+                    (click)="cancel()"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </tab>
+        <tab heading="Action Rights" id="tab3">
+          <div class="row no-pad">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="cmbacctType">Select Group</label>
+                <select
+                  #cmbGrp
+                  id="cmbacctType"
+                  class="form-control"
+                  name="cmbacctType"
+                  [(ngModel)]="group_id"
+                  (click)="LoadActionsData($event.target.value)"
+                >
+                  <option value="">---Select Group---</option>
+                  <option [value]="grp.group_id" *ngFor="let grp of groups">
+                    {{ grp.group_name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="cmbacctType">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-success form-control"
+                  (click)="SaveActions()"
+                >
+                  <i class="fa fa-save"></i>
+                  Save
+                </button>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="cmbacctType">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-warning form-control"
+                  (click)="LoadActionsData(group_id)"
+                >
+                  <i class="fa fa-refresh"></i>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row no-pad">
+            <div class="col-md-12">
+              <table class="table table-border table-hover">
+                <thead class="">
+                  <tr>
+                    <th>Menu Item</th>
+                    <th>Create</th>
+                    <th>View</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>Full Access</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of menuItems">
+                    <td>{{ item.page }}</td>
+                    <td>
+                      <div class="checkbox checkbox-success">
+                        <input
+                          type="checkbox"
+                          id="create{{ item.page_id }}"
+                          [(ngModel)]="item.create"
+                        />
+                        <label for="create{{ item.page_id }}"></label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="checkbox checkbox-primary">
+                        <input
+                          type="checkbox"
+                          id="view{{ item.page_id }}"
+                          [(ngModel)]="item.view"
+                        />
+                        <label for="view{{ item.page_id }}"></label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="checkbox checkbox-warning">
+                        <input
+                          type="checkbox"
+                          id="edit{{ item.page_id }}"
+                          [(ngModel)]="item.edit"
+                        />
+                        <label for="edit{{ item.page_id }}"></label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="checkbox checkbox-danger">
+                        <input
+                          type="checkbox"
+                          id="delete{{ item.page_id }}"
+                          [(ngModel)]="item.delete"
+                        />
+                        <label for="delete{{ item.page_id }}"></label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="checkbox">
+                        <input
+                          type="checkbox"
+                          id="full{{ item.page_id }}"
+                          [(ngModel)]="item.full_access"
+                        />
+                        <label for="full{{ item.page_id }}"></label>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot></tfoot>
+              </table>
+            </div>
+          </div>
+        </tab>
+      </tabset>
+    </div>
+  </div>
+</div>

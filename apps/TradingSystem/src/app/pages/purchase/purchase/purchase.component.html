@@ -1,0 +1,36 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <form #frmFilter="ngForm">
+      <div class="row no-pad">
+        <div class="col-md-4">
+          <h5 class="mb-3">Purchase Invoice</h5>
+        </div>
+        <div class="col-md-2">
+          <p class="text-warning">Invoice No to Find</p>
+        </div>
+        <div class="col-md-1">
+          <input class="form-control" name="ino" [(ngModel)]="Ino" />
+        </div>
+
+        <div class="col-md-2">
+          <button
+            type="submit"
+            class="btn btn-primary form-control"
+            (click)="FindINo()"
+            accesskey="F"
+          >
+            <i class="fa fa-search"></i>
+            Find Invoice
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+  <div class="card-block widget-body">
+    <app-purchase-invoice
+      [Type]="'CR'"
+      [EditID]="EditID"
+    ></app-purchase-invoice>
+  </div>
+</div>

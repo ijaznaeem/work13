@@ -1,0 +1,94 @@
+<div class="container">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left"><h5 class="mb-3">GRN Add</h5></h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="bsModalRef.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div widget class="card border-0 box-shadow"></div>
+    <div class="card-header transparent border-0 text-muted"></div>
+    <div class="card-block widget-body">
+      <div class="row no-gutter">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="">Select Product</label>
+            <ejs-dropdownlist
+              name="cmbProducts"
+              [(ngModel)]="formData.ProductID"
+              [disabled]="isDisabled"
+              [dataSource]="rawProducts | async"
+              [fields]="{ text: 'ProductName', value: 'ProductID' }"
+              placeholder=""
+              [required]="true"
+              [allowFiltering]="true"
+              [sortOrder]="'Ascending'"
+            >
+            </ejs-dropdownlist>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <tabset [justified]="true" #Tabs>
+            <tab
+              heading="Commercial"
+              id="commercial"
+              [disabled]="!(isStore || isDirectors)"
+            >
+              <app-crud-form
+                [Form]="formCommercial"
+                [formdata]="formData"
+                (BeforeSave)="BeforeSaveStore($event)"
+                (DataSaved)="AfterSaveStore($event)"
+                (Cancelled)="CancelForm($event)"
+              >
+              </app-crud-form>
+            </tab>
+            <tab
+              heading="Quality Control"
+              id="qc"
+              [disabled]="!(isQc || isDirectors)"
+            >
+              <app-crud-form
+                [Form]="formQC"
+                [formdata]="formData"
+                (BeforeSave)="BeforeSaveStore($event)"
+                (DataSaved)="AfterSaveStore($event)"
+                (Cancelled)="CancelForm($event)"
+                (ItemChanged)="DataChanged($event)"
+              >
+              </app-crud-form>
+            </tab>
+            <tab
+              heading="Procurement"
+              id="procurement"
+              [disabled]="!(isProcurement || isDirectors)"
+            >
+              <app-crud-form
+                [Form]="formProcurement"
+                [formdata]="formData"
+                (BeforeSave)="BeforeSaveStore($event)"
+                (DataSaved)="AfterSaveStore($event)"
+                (Cancelled)="CancelForm($event)"
+              >
+              </app-crud-form>
+              <app-crud-form
+                [Form]="formProcurement"
+                [formdata]="formData"
+                (BeforeSave)="BeforeSaveStore($event)"
+                (DataSaved)="AfterSaveStore($event)"
+                (Cancelled)="CancelForm($event)"
+              >
+              </app-crud-form>
+            </tab>
+            <tab> </tab>
+          </tabset>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

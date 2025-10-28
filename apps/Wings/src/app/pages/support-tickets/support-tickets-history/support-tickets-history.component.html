@@ -1,0 +1,67 @@
+<!--table starts-->
+<div class="container">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Support Ticket</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="bsModalRef.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <section id="ng-tables">
+      <div class="row">
+        <div class="col-9">
+          <h4 class="card-title text-primary">
+            {{ data[0] ? data[0].subject : '' }}
+          </h4>
+        </div>
+        <div class="col-3">
+          <a
+            class="card-link danger"
+            href="javascript:;"
+            (click)="ReplyTicket(data[0])"
+          >
+            Reply
+          </a>
+        </div>
+      </div>
+      <div class="row pt-1" *ngFor="let item of data">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+          <div class="card">
+            <div class="card-header pb-3">
+              <h6 class="card-subtitle text-muted mb-0">
+                replied: <strong>{{ item.replied }}</strong>
+                {{ getFromNow(item.date + ' ' + item.time) }}
+              </h6>
+            </div>
+            <div class="card-content">
+              <div class="card-body">
+                <p class="card-text">{{ item.reply }}.</p>
+                <img
+                  *ngIf="!(item.picture == null || item.picture == '')"
+                  class="img-fluid"
+                  [src]="uploadPath + item.picture"
+                  alt="Card image cap"
+                />
+              </div>
+              <div class="card-footer pt-0"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="footer">
+    <div class="container">
+       <button class="btn btn-primary pull-right"
+       (click)="bsModalRef.hide()">
+      Close
+    </button>
+    </div>
+
+  </div>
+</div>

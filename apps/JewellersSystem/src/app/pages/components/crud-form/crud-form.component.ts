@@ -1,0 +1,157 @@
+import { AfterContentInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+import { HttpBase } from '../../../services/httpbase.service';
+import { MyToastService } from '../../../services/toaster.server';
+
+@Component({
+  selector: 'app-crud-form',
+  templateUrl: './crud-form.component.html',
+  styleUrls: ['./crud-form.component.scss'],
+})
+export class CrudFormComponent implements OnInit, AfterContentInit {
+  @ViewChild('userForm') userForm: NgForm;
+
+  @Input() form: any = {};
+  @Input() formdata: any = {};
+  @Input() submitbutton = 'Save';
+  @Input() iscancel = true;
+  @Input() CrudButtons = true;
+
+  @Output() ItemChanged: EventEmitter<any> = new EventEmitter<any>();
+  @Output() DataSaved: EventEmitter<any> = new EventEmitter<any>();
+  @Output() Cancelled: EventEmitter<any> = new EventEmitter<any>();
+  @Output() BeforeSave: EventEmitter<any> = new EventEmitter<any>();
+  public event: EventEmitter<any> = new EventEmitter();
+  //public formdata: any = {};
+  files: File | null;
+  public FormData: any = {};
+
+  constructor(
+    private http: HttpBase,
+    private myToast: MyToastService,
+    public bsModalRef: BsModalRef
+  ) {}
+
+  ngOnInit() {
+    //this.formdata = Object.assign({}, this.formdata);
+    console.log(this.formdata, this.form);
+    this.FormData = this.formdata;
+
+    this.form.columns.forEach((col) => {
+      if (
+        col.hasOwnProperty('listTable') &&
+        col.listTable != ''
+      ) {
+        console.log(col.listTable);
+        this.http
+          .getData(
+            col.listTable +
+              (col.listTable.indexOf('?') >= 0 ? '&' : '?') +
+              'flds=' +
+              col.valueFld +
+             ( col.valueFld != col.displayFld?  ',' +
+              col.displayFld: '') +
+              '&orderby=' +
+              col.displayFld
+          )
+          .then((res: any) => {
+            col.listData = res;
+            // setTimeout(() => {
+            //   this.FormData = this.formdata;
+            // }, 200);
+          });
+      }
+    });
+  }
+
+ngAfterContentInit() {
+
+}
+
+
+  onSelect(event) {
+    this.files = event.addedFiles[0];
+  }
+  public SaveData(): void {
+    let event = { data: this.formdata, cancel: false };
+    this.BeforeSave.emit(event);
+
+    if (!event.cancel) {
+      if (this.files) {
+        let filedata = new FormData();
+        filedata.append('file', this.files);
+        this.http
+          .postData('uploadfile', filedata)
+          .then((r: any) => {
+            let filecolumn = this.form.columns.find((x) => {
+              return x.control === 'file';
+            });
+            if (filecolumn) {
+              this.formdata[filecolumn.fldName] = r.msg.file_name;
+            }
+            console.log(filecolumn);
+            this.SendData();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        this.SendData();
+      }
+    }
+  }
+  SendData() {
+    let pk = '';
+    if (this.formdata[this.form.pk]) {
+      pk = '/' + this.formdata[this.form.pk];
+    }
+
+    if (this.formdata[this.form.pk]) delete this.formdata[this.form.pk]
+    console.log(this.formdata);
+
+    this.http
+      .postData(this.form.tableName + pk, this.formdata)
+      .then((r) => {
+        this.DataSaved.emit({ data: r });
+      })
+      .catch((err) => {
+        this.myToast.Error(err.message, "Error");
+      });
+  }
+  onRemove(event) {
+    this.files = null;
+  }
+
+  getformdata(object) {
+    const formdata = new FormData();
+    Object.keys(object).forEach((key) => formdata.append(key, object[key]));
+    return formdata;
+  }
+
+  Changed(fld, val) {
+    //console.log(fld, val, this.CrudButtons);
+    this.ItemChanged.emit({
+      fldName: fld,
+      value: val,
+      form: this.form,
+      model: this.formdata,
+    });
+    return false;
+  }
+
+  closeModal() {
+    this.Cancelled.emit({ data: this.formdata });
+  }
+
+  public setDataSource(idx, data) {
+    this.form[idx].listData = [...data];
+  }
+  public IsFormValid() {
+    return this.userForm.valid;
+  }
+
+  LogIt(a: any) {
+    console.log(a);
+  }
+}

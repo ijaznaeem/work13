@@ -1,0 +1,15 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Search</h5>
+  </div>
+  <div class="card-block widget-body">
+    <ft-search-grid
+      [Table]="Table"
+      [Flds]="Fields"
+      [Search]="Term"
+      (CommandClicked)="ItemSelected($event)"
+      [Orderby]="OrderBy"
+    >
+    </ft-search-grid>
+  </div>
+</div>

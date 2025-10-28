@@ -1,0 +1,163 @@
+<!-- Invoice template starts -->
+<div class="row buttonarea">
+  <div class="col-6">
+    <div class="content-header">Sale Invoice</div>
+  </div>
+  <div class="col-6 text-center text-sm-right">
+    <button
+      type="button"
+      class="btn btn-primary btn-print m-1 mt-md-1"
+      (click)="Print()"
+    >
+      <i class="ft-printer mr-1"></i>Print
+    </button>
+    <!-- <button
+      type="button"
+      class="btn btn-primary btn-export m-1 mt-md-1"
+      (click)="ExporToPDF()"
+    >
+      <i class="fa fa-file-pdf-o mr-1"></i>Export PDF
+    </button> -->
+    <button type="button" class="btn btn-primary btn-export m-1 mt-md-1">
+      <i class="fa fa-whatsapp mr-1"></i>Send
+    </button>
+  </div>
+</div>
+<div id="printable" class="sheet">
+  <section
+    #Invoice
+    class="invoice-template"
+    id="invoice-template"
+    *ngFor="let PrintData of SalaryData"
+  >
+    <div class="row" >
+      <div class="col-12">
+        <div class="card">
+          <div class="card-content p-3">
+            <div id="invoice-template" class="card-body pb-0">
+              <!-- Invoice Company Details starts -->
+
+              <div id="invoice-customer-details" class="row">
+                <div class="col-md-5 col-sm-5">
+                  <div class="media">
+                    <img
+                      [src]="uploadUrl + branch.logo"
+                      alt="company logo"
+                      width="80"
+                      height="80"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-2 col-sm-2"></div>
+                <div class="col-md-5 col-sm-5">
+                  <div class="row">
+                    <div class="col-12">
+                      <h4 class="primary text-uppercase mb-1">Salary Slip</h4>
+                    </div>
+                    <div class="col-12">
+                      <p class="m-0">
+                        Month:
+                        <strong>{{ GetMonthName(PrintData.month) }}</strong>
+                      </p>
+                    </div>
+                    <div class="col-12">
+                      <p class="m-0">
+                        Year: <strong>{{ PrintData.year }}</strong>
+                      </p>
+                    </div>
+                    <div class="col-12">
+                      <p class="m-0">
+                        Date: <strong>{{ PrintDate }}</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="invoice-customer-details" class="row">
+                <div class="col-md-5 col-sm-5">
+                  <ul class="m-0 list-unstyled">
+                    <li>
+                      <h2>{{ branch.branch_name }}</h2>
+                    </li>
+                    <li>Tax No {{ branch.vat_id }}</li>
+                    <li class="text-bold-800">{{ branch.address }}</li>
+                    <li>{{ branch.address2 }},</li>
+                    <li>{{ branch.city }}, {{ branch.country }}</li>
+                  </ul>
+                </div>
+                <div class="col-md-2 col-sm-2"></div>
+                <div class="col-md-5 col-sm-5">
+                  <h2>Employee:</h2>
+                  <ul class="m-0 list-unstyled">
+                    <li class="text-bold-800">
+                      <b>{{ PrintData.employee_name }}</b>
+                    </li>
+                    <li>{{ PrintData.designation }}</li>
+                    <!-- <li>{{ PrintData.dept_name }},</li> -->
+                    <li>
+                      Ref No:
+                      <span class="text-bold-800">{{
+                        PrintData.sheet_id
+                      }}</span>
+                    </li>
+                    <li>
+                      <h5>
+                        Net Salary
+                        <span>
+                          <b
+                            >{{ branch.currency }} {{ PrintData.net_salary }}</b
+                          ></span
+                        >
+                        :
+                      </h5>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <table class="table table-bordered table-sm text-center">
+                <thead>
+                  <tr>
+                    <th class="text-center">Gross Salary</th>
+                    <th class="text-center">Incentives</th>
+                    <th class="text-center">Deduction</th>
+                    <th class="text-center">Net Salary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-center">{{ PrintData.salary }}</td>
+                    <td class="text-center">{{ PrintData.incentive }}
+                      <p>{{ PrintData.desc_incentive }}</p>
+                    </td>
+                    <td class="text-center">{{ PrintData.deduction }}
+                      <p>{{ PrintData.desc_deduction  }}</p>
+                    </td>
+                    <td class="text-center">{{ PrintData.net_salary }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- Invoice Customer Details ends -->
+              <!-- Invoice Items Details starts -->
+              <div id="invoice-items-details">
+                <div class="row">
+                  <div class="col-8">
+                    <p class="text-uppercase"><strong>Note</strong>  </p>
+                    <p class="m-0">
+                        {{ notes }}
+                    </p>
+                  </div>
+                  <div class="col-4 mt-3">
+                    <span> Signature: ______________________ </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- Invoice template ends -->

@@ -1,0 +1,157 @@
+<div id="print-section">
+  <div class="container">
+    <div>
+      <section id="savepdf" class="sheet A4">
+        <table style="width: 100%;">
+          <tbody>
+            <tr>
+              <td colspan="4" class="text-center"><img [src]="IMAGE_URL + 'logo.png'" alt="" style="width:100%;" /></td>
+            </tr>
+          <tr>
+            <td colspan="6" class="text-center" style="font-size:30px;">
+              <strong>{{ Invoice.DtCr == "CR" ? "DELIVERY ORDER " : "INVOICE RETURN" }}
+              </strong>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="text-left" style="width: 50%;">
+              <table class="table-bordered">
+                <tr>
+                  <td>
+                    <strong>Customer's Detail
+                    </strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Customer Name: {{ Invoice.CustomerName }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Address: {{ Invoice.Address }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Contact Person:{{ Invoice.ContactPerson }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Contact#:{{ Invoice.PhoneNo1 }}
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td></td>
+            <td colspan="2" class="text-left" style="width: 50%;">
+              <table class="table-bordered">
+                <tr>
+                  <td> Invoice No:
+                    <strong>{{ Invoice.InvoiceID }}
+                    </strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Invoice Date:{{ Invoice.Date }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>PO Reff #.{{ Invoice.refrence }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Customer STN #{{ Invoice.STN }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Supplier NTN #21-13-1286475-7
+                  </td>
+                </tr>
+                <tr>
+                  <td>Supplier STN #32-77-8762-231-59
+                  </td>
+                </tr>
+              </table>
+            </td>
+          
+          </tr>
+            <tr>
+              <td colspan="4" class="text-right">
+                <table class="table-border" border-collapse=" collapse">
+                  <thead class="">
+                    <tr>
+                      <th style="width:5% ;" class="text-center">S. #</th>
+                      <th style="width:80% ;"class="text-center">ProductName</th>
+                      <th style="width:15% ;">Qty</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of Invoice.Detail; let i = index">
+                      <td class="text-center">{{ i + 1 }}</td>
+                      <td class="text-center">{{ item.ProductName }}</td>
+                      <td>{{ RoundIt(item.Qty, 0) }}</td>
+                    </tr>
+                      <tr *ngFor="let e of extra">
+                        <td>&nbsp;</td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                  </tbody>
+
+                  <tr>
+
+                    <th></th>
+                    <th class="text-center">Total Delivered Items</th>
+                    <th><strong>{{ FindTotal('Qty') }}</strong></th>
+                    
+                 
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+            
+
+
+
+          </tbody>
+
+
+        </table>
+
+        <div id="footer">
+          <div class="text-center"><img [src]="IMAGE_URL + 'footer1.png'" alt="" style="width:100%;" /> </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<section class="buttonarea">
+  <div class="row no-gutter">
+    <div class="col-md-4">
+      <div class="form-group">
+        <button
+          class="btn btn-primary"
+          printSectionId="print-section"
+          type="button"
+          (click)="Print()"
+        >
+          <i class="fa fa-print"></i>
+        </button>
+
+        <button
+          style="margin: 5px"
+          class="btn btn-primary"
+          printSectionId="print-section"
+          type="button"
+          (click)="SaveAsPdf()"
+        >
+          Save as PDF
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

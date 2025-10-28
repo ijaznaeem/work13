@@ -1,0 +1,247 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Oil Sale</h4>
+  <button
+    type="button"
+    class="btn-close close pull-right"
+    aria-label="Close"
+    (click)="bsModalRef?.hide()"
+  >
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div widget class="card border-0 box-shadow">
+    <div class="card-block widget-body">
+      <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+        <div class="row no-gutter">
+          <div class="col-md-2">
+            <label for="dp1">Date:</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dp1"
+                [(ngModel)]="sale.Date"
+                ngbDatepicker
+                #d1="ngbDatepicker"
+                required
+                disabled
+              />
+              <div class="input-group-addon">
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  (click)="d1.toggle()"
+                >
+                  <i class="fa fa-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="emplName">Employee Name</label>
+              <input
+                type="text"
+                class="form-control"
+                required="required"
+                id="emplName"
+                name="emplName"
+                [(ngModel)]="sale.CustomerName"
+                 
+              />
+            </div>
+          </div>
+        </div>
+        <form #formqty="ngForm">
+          <div class="row no-pad">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="cmbMachines"
+                  >Select Machine
+                  <span class="text-warning">{{
+                    selectedProduct.ProductName
+                  }}</span></label
+                >
+                <select
+                  id="cmbMachines"
+                  class="form-control"
+                  name="cmbMachines"
+                  [(ngModel)]="sdetails.MachineID"
+                  (click)="MachineSelected($event)"
+                >
+                  <option value="">Select Machine</option>
+                  <option *ngFor="let m of Machines" [value]="m.MachineID">
+                    {{ m.MachineName }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="PrevReading">Prev/Reading</label>
+                <input
+                  type="number"
+                  class="form-control dation-field"
+                  required="required"
+                  id="PrevReading"
+                  name="PrevReading"
+                  [(ngModel)]="sdetails.PrevReading"
+                  #PrevReading
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="PrevReading">Cur/Reading</label>
+                <input
+                  type="number"
+                  class="form-control dation-field"
+                  required="required"
+                  id="CurrentReading"
+                  name="CurrentReading"
+                  [(ngModel)]="sdetails.CurrentReading"
+                  #CurrentReading
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="qty">Qty</label>
+                <input
+                  type="number"
+                  class="form-control dation-field"
+                  required="required"
+                  id="Qty"
+                  name="Qty"
+                  [value]="sdetails.CurrentReading - sdetails.PrevReading"
+                  [(ngModel)]="sdetails.Qty"
+                  readonly
+                  tabindex="-1"
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="RPrice">Rate:</label>
+                <input
+                  #txtRate
+                  type="number"
+                  class="form-control"
+                  id="SPrice"
+                  name="SPrice"
+                  [(ngModel)]="sdetails.SPrice"
+                  min="1"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="bonus">Amount:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="pamount"
+                  name="pamount"
+                  readonly
+                  [value]="
+                    (sdetails.CurrentReading - sdetails.PrevReading) *
+                    sdetails.SPrice
+                  "
+                  tabindex="-1"
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  #btnAdd
+                  type="button"
+                  class="btn btn-primary form-control"
+                  [disabled]="!formqty.form.valid || isPosted"
+                  (click)="AddOrder()"
+                  accesskey="a"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="alert alert-danger" role="alert" *ngIf="isPosted">
+                <div class="text-center">POSTED INVOICE</div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div>
+          <h5 class="mb-3">Sale Details</h5>
+          <div class="table-responsive table-bordered table-condensed">
+            <ng2-smart-table
+              class="table table-hover"
+              [settings]="settings"
+              [source]="data"
+              (deleteConfirm)="onDeleteConfirm($event)"
+              (editConfirm)="onEdit($event)"
+            >
+            </ng2-smart-table>
+          </div>
+
+          <div class="row no-gutter">
+            <div class="col-md-10"></div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="gtotal">Total Amount</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="gtotal"
+                  name="gtotal"
+                  [(ngModel)]="sale.Amount"
+                  tabindex="-1"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row no-gutter">
+            <div class="col-md-8">
+              <div class="form-group"></div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="dp2">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-primary form-control"
+                  [disabled]="
+                    !fromPurchase.form.valid || data.count() == 0 || isPosted
+                  "
+                  (click)="SaveData()"
+                  accesskey="s"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="dp2">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-danger form-control"
+                  (click)="bsModalRef?.hide()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

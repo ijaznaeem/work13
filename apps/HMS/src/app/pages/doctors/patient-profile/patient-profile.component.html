@@ -1,0 +1,57 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Profile</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="pull-right">
+        <button class="btn btn-primary" (click)="AddProdile()">
+          <i class="fa fa-plus"></i>
+          Addd
+        </button>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <table class="table table-sm-table-stripped">
+        <thead>
+          <th>Date</th>
+          <th>Reading</th>
+          <th>Date</th>
+          <th>Reading</th>
+
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let r of Data">
+            <tr>
+              <td colspan="4">
+                <strong>
+                  {{ r.obs_name }}
+                </strong>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <div class="row">
+                  <ng-container *ngFor="let d of r.values; let i = index">
+                    <div class="col-md-3">
+                      {{ d.date }}
+                    </div>
+                    <div class="col-md-3">
+                      <strong>
+                        {{ d.reading }}
+                      </strong>
+
+                    </div>
+                  </ng-container>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

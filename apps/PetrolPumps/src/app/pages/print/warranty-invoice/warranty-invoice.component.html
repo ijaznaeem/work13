@@ -1,0 +1,239 @@
+<div id="print-section">
+  <div class="container">
+    <div>
+      <section id="savepdf" class="sheet A4">
+        <table style="width: 100%; height: 100%">
+          <tbody style="vertical-align: top">
+            <tr>
+              <td colspan="4" *ngIf="Invoice.Type != 3">
+                <app-print-title [Business]="Business"></app-print-title>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="4" class="text-center" style="font-size: 16px">
+                <strong
+                  >{{
+                    Invoice.DtCr == 'CR' ? 'SALE INVOICE ' : 'INVOICE RETURN'
+                  }}
+                </strong>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" class="text-left" style="width: 70%">
+                <table class="table-bordered">
+                  <tr>
+                    <td style="width: 20%">Customer Name:</td>
+                    <td>
+                      <strong>{{ Invoice.CustomerName }}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Address:</td>
+                    <td>
+                      {{ Invoice.Address }}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Contact#:</td>
+                    <td>{{ Invoice.PhoneNo1 }}</td>
+                  </tr>
+                  <tr>
+                    <td>CNIC #:</td>
+                    <td>{{ Invoice.CNICNo }}</td>
+                  </tr>
+                </table>
+              </td>
+              <td></td>
+              <td colspan="2" class="text-left" style="width: 30%">
+                <table class="table-bordered">
+                  <tr>
+                    <td>Invoice No:</td>
+                    <td>
+                      <strong>{{ Invoice.InvoiceID }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Invoice Date:</td>
+                    <td>
+                      {{ Invoice.Date }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Customer No:</td>
+                    <td>{{ Invoice.CustomerID }}</td>
+                  </tr>
+                  <tr>
+                    <td>Salesman:</td>
+                    <td>{{ Invoice.SalesmanName }}</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4" class="text-right">
+                <table class="table-border border-collapse=">
+                  <thead class="">
+                    <tr>
+                      <th class="text-center">Product Name</th>
+                      <th style="width: 5%">Qty</th>
+                      <th style="width: 5%">Pcs</th>
+                      <th style="width: 5%">Bonus</th>
+                      <th style="width: 8%">Rate</th>
+                      <th style="width: 8%">Schm</th>
+                      <th style="width: 8%">Amount</th>
+                      <th style="width: 5%">%Age</th>
+                      <th style="width: 6%">Discount</th>
+                      <th style="width: 8%">Net Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody style="height: 100%">
+                    <ng-container
+                      *ngFor="let item of Invoice.Detail; let i = index"
+                    >
+                      <tr *ngFor="let det of item.values; let j = index">
+                        <td class="text-left">{{ det.ProductName }}</td>
+
+                        <td>{{ RoundIt(det.Qty, 0) }}</td>
+                        <td>{{ RoundIt(det.Pcs, 0) }}</td>
+                        <td>{{ RoundIt(det.Bonus, 0) }}</td>
+                        <td>{{ det.SPrice }}</td>
+                        <td>{{ det.Scheme }}</td>
+                        <td>{{ RoundIt(det.Amount, 2) }}</td>
+                        <td>{{ det.DiscRatio }}</td>
+                        <td>{{ det.Discount }}</td>
+                        <td>
+                          <strong>{{ det.NetAmount }}</strong>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+
+                  <tr>
+                    <th>Grand Total:</th>
+
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>{{ FindTotal('Amount') | number: '1.0-0' }}</th>
+                    <th></th>
+
+                    <th>{{ FindTotal('Discount') | number: '1.0-0' }}</th>
+                    <th>
+                      <strong>{{
+                        FindTotal('NetAmount') | number: '1.0-0'
+                      }}</strong>
+                    </th>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <table style="padding: 0px">
+                  <tr>
+                    <td style="width: 40%; vertical-align: top">
+                      <table style="padding: 0px">
+                        <tr>
+                          <td>Prev Balance:</td>
+                          <td class="text-left">
+                            <strong>{{
+                              Invoice.PrevBalance | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>This Bill:</td>
+                          <td class="text-left">
+                            <strong>{{
+                              (Invoice.NetAmount < 0
+                                ? Invoice.NetAmount * -1
+                                : Invoice.NetAmount
+                              ) | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Amount Received:</td>
+                          <td>
+                            <strong>{{
+                              Invoice.AmountRecvd | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>Total Balance:</td>
+                          <td>
+                            <strong>{{
+                              Invoice.PrevBalance * 1 + Invoice.Balance * 1
+                                | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td style="width: 20%"></td>
+                    <td style="width: 40%">
+                      <table style="width: 100%">
+                        <tr>
+                          <td>Extra Discount:</td>
+                          <td class="text-left">
+                            <strong>{{
+                              Invoice.ExtraDisc | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Net Amount:</td>
+                          <td class="text-left">
+                            <strong>{{
+                              (Invoice.NetAmount < 0
+                                ? Invoice.NetAmount * -1
+                                : Invoice.NetAmount
+                              ) | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="2">Amount In Words:</td>
+                        </tr>
+                        <tr>
+                          <td colspan="2">
+                            <strong>{{ Invoice.BalanceInWords }} Only</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="height: 50px"></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>Authorized Signature:</td>
+                          <td>
+                            <img
+                              style="width: 150px"
+                              [src]="IMAGE_URL + Business.signature"
+                              alt=""
+                            />
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div id="footer"></div>
+      </section>
+    </div>
+  </div>
+</div>

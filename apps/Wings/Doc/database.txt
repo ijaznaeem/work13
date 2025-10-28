@@ -1,0 +1,13 @@
+table structure
+    depts
+        leads
+        sale agents
+        sale
+        operation
+    qinuiry
+        date
+        customer name
+        contact no
+        address
+        description
+        

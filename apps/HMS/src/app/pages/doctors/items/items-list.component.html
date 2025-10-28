@@ -1,0 +1,57 @@
+<div widget class="card border-0 box-shadow">
+    <div class="card-header transparent border-0 text-muted">
+      <h5 class="mb-0">Item List</h5>
+      <div class="widget-controls">
+        <a data-widgster="expand" href="#" class="transition">
+          <i class="fa fa-chevron-down"></i>
+        </a>
+        <a data-widgster="collapse" href="#" class="transition">
+          <i class="fa fa-chevron-up"></i>
+        </a>
+        <a data-widgster="fullscreen" href="#" class="transition">
+          <i class="fa fa-expand"></i>
+        </a>
+        <a data-widgster="restore" href="#" class="transition">
+          <i class="fa fa-compress"></i>
+        </a>
+      </div>
+    </div>
+    <div class="card-block widget-body">
+      <form #frmFilter="ngForm">
+        <div class="row">
+        
+            
+          <div class="form-group col-md-3">
+            <label for="customer">Item</label>
+            <input  [(ngModel)] = "model.item" type="text" name="item" id="item" class="form-control" required/>
+          </div>
+          
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button
+                type="submit"
+                class="btn btn-primary form-control"
+                (click)="AddItem()"
+                accesskey="a"
+              >
+                <i class="fa fa-plus"></i>
+                Add Item
+              </button>
+            </div>
+          </div>
+          
+        </div>
+      </form>
+      <div class="row" id="print-section">
+        <div class="col-md-12">
+          <ft-dynamic-table
+            [Settings]="setting"
+            [Data]="data"
+            (ClickAction)="ActionClicked($event)"
+          ></ft-dynamic-table>
+        </div>
+      </div>
+    </div>
+  </div>
+  

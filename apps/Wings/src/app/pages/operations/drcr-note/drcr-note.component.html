@@ -1,0 +1,85 @@
+<form #frmFilter="ngForm">
+  <div class="row no-pad">
+    <div class="col-md-2">
+      <label for="dtFrom">From Date:</label>
+      <div class="input-group">
+        <input
+          class="form-control"
+          placeholder="yyyy-mm-dd"
+          name="dtFrom"
+          [(ngModel)]="Filter.FromDate"
+          ngbDatepicker
+          #dtFrom="ngbDatepicker"
+        />
+        <div class="input-group-append">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="dtFrom.toggle()"
+          >
+            <i class="fa fa-calendar"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <label for="dtTo">To Date:</label>
+      <div class="input-group">
+        <input
+          class="form-control"
+          placeholder="yyyy-mm-dd"
+          name="dtTo"
+          [(ngModel)]="Filter.ToDate"
+          ngbDatepicker
+          #dtTo="ngbDatepicker"
+        />
+        <div class="input-group-append">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="dtTo.toggle()"
+          >
+            <i class="fa fa-calendar"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="form-group">
+        <label>Status</label>
+        <select
+          name="cmbStatus"
+          id="cmbStatus"
+          class="form-control"
+          [(ngModel)]="Filter.Status"
+        >
+          <option value="">--- All ---</option>
+          <option value="Un-Paid">Un-Paid</option>
+          <option value="Paid">Paid </option>
+
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-1">
+      <div class="form-group">
+        <label>&nbsp;</label>
+        <button
+          type="submit"
+          class="btn btn-primary form-control"
+          (click)="FilterData()"
+          accesskey="f"
+        >
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="row">
+  <div class="col-md-12">
+    <ft-dynamic-table #dataList [Data]="data"
+    [Settings]="Settings"
+      (ClickAction)="Clicked($event)"></ft-dynamic-table>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+div.dataTables_wrapper {
+  width: 800px;
+  margin: 0 auto;
+}
+.link {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}

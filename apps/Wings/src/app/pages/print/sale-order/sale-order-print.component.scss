@@ -1,0 +1,57 @@
+#invoice {
+  width: 100%;
+  height: auto;
+}
+
+.onethird{
+  width: 33%;
+}
+.onefourth{
+  width: 25%;
+}
+
+.halfwidth{
+  width: 50%;
+}
+.fullwidth{
+  width: 100%;
+}
+
+.sheet {
+
+  padding: 4mm;
+  background-color: #FFFFFF;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .printable {
+    visibility: visible;
+  }
+  .printable * {
+    visibility: visible;
+  }
+  .printable {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .nonprintable {
+    display: none;
+  }
+
+  table, tr, td {
+    padding: 4px;
+  }
+  .printable {
+    page-break-inside: avoid;
+  }
+
+  /* Handle any other elements that need to ensure no page break occurs within them */
+  .printable h1, .printable h2, .printable h3, .printable p {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+}

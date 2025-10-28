@@ -1,0 +1,108 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Discount Setup</h5>
+  </div>
+  <div class="card-block widget-body">
+    <form #frmFilter="ngForm">
+      <div class="row no-pad">
+        <div class="form-group col-md-3">
+          <label for="customer">Select Company</label>
+          <select
+            name="cmbAgents"
+            id="cmbAgents"
+            [(ngModel)]="Filter.CompanyID"
+            class="form-control"
+          >
+            <option value="" selected>--Select Company--</option>
+            <option *ngFor="let c of Companies$ | async" [value]="c.CompanyID">
+              {{ c.CompanyName }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Category</label>
+            <select
+              name="Category"
+              id="Category"
+              [(ngModel)]="Filter.CategoryID"
+              class="form-control"
+            >
+              <option value="" selected>--Select Category--</option>
+              <option
+                *ngFor="let c of Categories$ | async"
+                [value]="c.CategoryID"
+              >
+                {{ c.CategoryName }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="customer">Discount %age:</label>
+          <input
+            class="form-control"
+            name="discratio"
+            [(ngModel)]="Filter.DiscRatio"
+            type="number"
+          />
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-primary form-control"
+              (click)="ApplyDiscount()"
+              accesskey="a"
+            >
+              <i class="fa fa-check"></i>
+              Apply
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-2">
+          <label for="customer">Search</label>
+          <input
+            class="form-control"
+            #searchtxt
+            type="text"
+            name="searchproduct"
+          />
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-primary form-control"
+              (click)="FilterData()"
+              accesskey="a"
+            >
+              <i class="fa fa-search"></i>
+              Filter
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="row" id="print-section">
+      <div class="col-md-12">
+        <ft-dynamic-table
+          [Settings]="setting"
+          [Data]="data"
+          (ClickAction)="Clicked($event)"
+          [Search]="searchtxt.value"
+        ></ft-dynamic-table>
+      </div>
+    </div>
+  </div>
+</div>

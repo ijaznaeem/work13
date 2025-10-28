@@ -1,0 +1,229 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">Cash Receipts</h5>
+    <div class="widget-controls">
+      <a data-widgster="expand" href="#" class="transition">
+        <i class="fa fa-chevron-down"></i>
+      </a>
+      <a data-widgster="collapse" href="#" class="transition">
+        <i class="fa fa-chevron-up"></i>
+      </a>
+      <a data-widgster="fullscreen" href="#" class="transition">
+        <i class="fa fa-expand"></i>
+      </a>
+      <a data-widgster="restore" href="#" class="transition">
+        <i class="fa fa-compress"></i>
+      </a>
+    </div>
+  </div>
+  <div class="card-block widget-body">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <form #frmFilter="ngForm" (submit)="SaveData()">
+            <div class="form-group row">
+              <label for="dtFrom" class="col-sm-4 col-form-label">Date: </label>
+              <div class="col-md-8">
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    placeholder="yyyy-mm-dd"
+                    name="dtFrom"
+                    [(ngModel)]="Voucher.Date"
+                    ngbDatepicker disabled
+                    #dtFrom="ngbDatepicker"
+                    required
+
+                  />
+                  <div class="input-group-addon">
+                    <button
+                      type="button"
+                      class="btn btn-warning"
+                      (click)="dtFrom.toggle()"
+                    >
+                      <i class="fa fa-calendar"> </i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6"></div>
+            </div>
+            <div class="form-group row">
+              <label for="cmbCustomer" class="form-label col-md-4">
+                Salesman
+              </label>
+              <div class="col-md-8">
+                <ejs-combobox
+                  name="cmbSalesman"
+                  id="cmbSalesman"
+                  [dataSource]="Salesmen"
+                  [fields]="{ text: 'SalesmanName', value: 'SalesmanID' }"
+                  [(ngModel)]="Voucher.SalesmanID"
+                  (change)="SalesmanChange($event)"
+                  required
+                  #cmbSalesman
+                >
+                </ejs-combobox>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dtFrom" class="col-sm-4 col-form-label"
+                >Invoice No:
+              </label>
+              <div class="col-md-8">
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    placeholder=""
+                    name="invNo"
+                    [(ngModel)]="Voucher.RefID"
+                    required
+                  />
+                  <div class="input-group-addon">
+                    <button
+                      type="button"
+                      class="btn btn-warning"
+                      (click)="FindInvoice()"
+                    >
+                      <i class="fa fa-search"> </i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6"></div>
+            </div>
+            <div class="row form-group">
+              <label for="description" class="col-md-4 form-label"
+                >Description
+              </label>
+              <div class="col-md-8">
+                <input
+                  name="description"
+                  class="form-control"
+                  type="text"
+                  name="description"
+                  [(ngModel)]="Voucher.Description"
+                  id="description"
+                />
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="amount" class="col-md-4 form-label"
+                >Prev Balance
+              </label>
+              <div class="col-md-8">
+                <input
+                  class="form-control"
+                  type="number"
+                  name="PrevBalance"
+                  [(ngModel)]="Voucher.PrevBalance"
+                  id="PrevBalance"
+
+                />
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="amount" class="col-md-4 form-label"
+                >Amount Received
+              </label>
+              <div class="col-md-8">
+                <input
+                  class="form-control"
+                  type="number"
+                  name="amount"
+                  [(ngModel)]="Voucher.Amount"
+                  id="amount"
+                  required
+                />
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="amount" class="col-md-4 form-label"
+                >Prev Balance
+              </label>
+              <div class="col-md-8">
+                <input
+                  class="form-control"
+                  type="number"
+                  name="balance"
+                  [value]="Voucher.PrevBalance - Voucher.Amount"
+                  id="balance"
+
+                />
+              </div>
+            </div>
+            <div class="row">
+              <label for="amount" class="col-md-4 form-label"
+              >Type
+            </label>
+              <div class="form-group col-md-8">
+                <label>&nbsp;</label>
+
+                  <label  class="radio-inline">
+                    <input name="radioBasic" [(ngModel)]="Voucher.Type" type="radio" [value]="1"> Amount Received
+                  </label>
+                  <label   class="radio-inline">
+                    <input name="radioBasic" [(ngModel)]="Voucher.Type" type="radio" value="2"> Add to Account
+                  </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-md-12">
+                <label>&nbsp;</label>
+                <button
+                  type="submit"
+                  class="btn btn-primary form-control"
+                  accesskey="s"
+                  [disabled]="!(frmFilter.valid && Voucher.Amount > 0)"
+                >
+                  <i class="fa fa-save"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="row"></div>
+          </form>
+        </div>
+        <div class="col-md-6">
+          <div class="row form-group">
+            <label for="amount" class="col-md-4 form-label"
+              >Customer Name:
+            </label>
+            <div class="col-md-8">
+              <strong>
+                {{ curCustomer.CustomerName }}
+              </strong>
+            </div>
+          </div>
+          <div class="row form-group">
+            <label for="amount" class="col-md-4 form-label">Address: </label>
+            <div class="col-md-8">
+              <strong>
+                {{ curCustomer.Address }}
+              </strong>
+            </div>
+          </div>
+          <div class="row form-group">
+            <label for="amount" class="col-md-4 form-label">City: </label>
+            <div class="col-md-8">
+              <strong>
+                {{ curCustomer.City }}
+              </strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h5 class="text-success">Up-Posted Vouchers of Currents</h5>
+      <div class="row">
+        <div class="col-md-12">
+          <app-dynamic-table
+            [Settings]="setting"
+            [Data]="VouchersList"
+            (ClickAction)="Clicked($event)"
+          ></app-dynamic-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

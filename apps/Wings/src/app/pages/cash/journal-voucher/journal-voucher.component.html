@@ -1,0 +1,98 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Journal Voucher</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div class="mb-2">
+          <form #frmFilter="ngForm">
+            <div class="row no-pad">
+              <div class="col-md-2">
+                <label for="dtFrom">From Date:</label>
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    placeholder="yyyy-mm-dd"
+                    name="dtFrom"
+                    [(ngModel)]="Filter.FromDate"
+                    ngbDatepicker
+                    #dtFrom="ngbDatepicker"
+                  />
+                  <div class="input-group-append">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      (click)="dtFrom.toggle()"
+                    >
+                      <i class="fa fa-calendar"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <label for="dtTo">To Date:</label>
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    placeholder="yyyy-mm-dd"
+                    name="dtTo"
+                    [(ngModel)]="Filter.ToDate"
+                    ngbDatepicker
+                    #dtTo="ngbDatepicker"
+                  />
+                  <div class="input-group-append">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      (click)="dtTo.toggle()"
+                    >
+                      <i class="fa fa-calendar"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-1">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-primary form-control"
+                    (click)="FilterData()"
+                    accesskey="f"
+                  >
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-warning form-control"
+                    (click)="AddPayment()"
+                    accesskey="a"
+                  >
+                    <i class="fa fa-plus"></i>
+                    Create
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <ft-datatable
+          #dataList
+          [Settings]="stngsList"
+          [Filter]="filterList"
+          (ClickAction)="Clicked($event)"
+        ></ft-datatable>
+      </div>
+    </div>
+  </div>
+</section>

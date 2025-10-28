@@ -1,0 +1,40 @@
+
+export const acctTypeForm = {
+  title: 'Account Types',
+  tableName: 'AcctTypes',
+  pk: 'AcctTypeID',
+  columns: [
+    {
+      fldName: 'AcctType',
+      control: 'input',
+      type: 'text',
+      label: 'Account Type',
+      required: true,
+      size: 12,
+    },
+    {
+      fldName: 'CatID',
+      control: 'select',
+      type: 'lookup',
+      label: 'Account Category',
+      listTable: 'AccountCat',
+      listData: [],
+      displayFld: 'CATEGORY',
+      valueFld: 'CATID',
+      size: 6,
+      required: true,
+    },
+    {
+      fldName: 'ChartID',
+      control: 'select',
+      type: 'dropdown',
+      label: 'Char of Account',
+      listTable:    'AccountChart',
+      listData: [],
+      displayFld: 'DESCRIPTION',
+      valueFld: 'CODE',
+      size: 6,
+      required: true,
+    },
+  ],
+};

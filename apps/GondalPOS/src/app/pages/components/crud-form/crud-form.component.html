@@ -1,0 +1,24 @@
+<div class="row">
+  <div [class]="'col-md-' + col.size" *ngFor="let col of form.columns">
+    <div class="form-group">
+      <label for="col.fldName"> {{ col.label }}</label>
+      <input
+        *ngIf="col.control === 'input'"
+        [type]="col.type"
+        class="form-control validation-field"
+        [required]="col.required"
+        [(ngModel)]="formData[col.fldName]"
+        [name]="col.fldName"
+        placeholder=""
+      />
+      <ejs-combobox
+        [name]="col.fldName"
+        [(ngModel)]="formData[col.fldName]"
+        *ngIf="col.control === 'select' && col.type === 'list'"
+        [dataSource]="col.listData"
+        [fields]="{ text: col.displayFld, value: col.valueFld }"
+        [placeholder]=""
+      ></ejs-combobox>
+    </div>
+  </div>
+</div>

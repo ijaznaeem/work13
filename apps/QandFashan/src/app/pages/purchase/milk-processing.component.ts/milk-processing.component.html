@@ -1,0 +1,192 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Milk Processing</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="row no-pad">
+      <form #fromPurchase="ngForm">
+        <div class="row no-gutter">
+          <div class="col-md-2">
+            <label for="dp1">Date:</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dp1"
+                [(ngModel)]="pdetails.Date"
+                ngbDatepicker
+                disabled
+                #d1="ngbDatepicker"
+              />
+
+              <div class="input-group-append">
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  (click)="d1.toggle()"
+                >
+                  <i class="fa fa-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label for="dp2">Select Item:</label>
+            <div class="form-group">
+              <ejs-combobox
+                #cmbProducts
+                name="cmbProducts"
+                id="cmbProducts"
+                [dataSource]="Prods"
+                [fields]="{ text: 'ProductName', value: 'ProductID' }"
+                [allowFiltering]="true"
+                [(ngModel)]="pdetails.ProductID"
+                required
+                (change)="ItemSelected($event)"
+              ></ejs-combobox>
+            </div>
+          </div>
+
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="qty">Qty:</label>
+              <input
+                type="number"
+                #qty
+                class="form-control dation-field"
+                required="required"
+                id="qty"
+                name="qty"
+                [(ngModel)]="pdetails.Qty"
+                placeholder="0"
+              />
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="Processed">Processed:</label>
+              <input
+                type="number"
+                #qty
+                class="form-control dation-field"
+                required="required"
+                id="Processed"
+                name="Processed"
+                [(ngModel)]="pdetails.Processed"
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="Output">Output:</label>
+              <input
+                type="number"
+                class="form-control"
+                id="Output"
+                name="Output"
+                [(ngModel)]="pdetails.Output"
+                placeholder="0"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="supplier">Rate:</label>
+              <input
+                type="number"
+                class="form-control"
+                id="pprice"
+                name="pprice"
+                [(ngModel)]="pdetails.Rate"
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="bonus">Amount:</label>
+              <input
+                type="number"
+                class="form-control"
+                id="pamount"
+                name="pamount"
+                readonly
+                [value]="pdetails.Output * 1 * pdetails.Rate"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button
+                type="submitt"
+                class="btn btn-primary form-control"
+                [disabled]="!fromPurchase.form.valid"
+                (click)="AddOrder()"
+                accesskey="a"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div style="margin: 5px">
+      <h5 class="mb-0">Purchase Details</h5>
+      <div class="table-responsive table-bordered table-condensed">
+        <ng2-smart-table
+          class="table table-hover"
+          [settings]="settings"
+          [source]="data"
+          (deleteConfirm)="onDeleteConfirm($event)"
+          (editConfirm)="onEdit($event)"
+        >
+        </ng2-smart-table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8"></div>
+      <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-6">
+            <label for="gtotal" style="padding-top: 5px">Total Amount:</label>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                id="gtotal"
+                name="gtotal"
+                [(ngModel)]="TotalAmount"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8"></div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="dp2">&nbsp;</label>
+          <button
+            type="button"
+            class="btn btn-primary form-control"
+            [disabled]="data.count() == 0"
+            (click)="SaveData()"
+            accesskey="s"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

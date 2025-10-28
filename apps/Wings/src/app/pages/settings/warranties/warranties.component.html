@@ -1,0 +1,34 @@
+<!--table starts-->
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Branches</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="row no-pad">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button
+            type="button"
+            class="btn btn-primary form-control"
+            (click)="Add(form)"
+            accesskey="P"
+          >
+            <i class="fa fa-plus"></i>
+            Add New Branch
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row" id="print-section">
+      <div class="col-md-12">
+        <ft-dynamic-table
+          #dataList
+          [Data]="data"
+          [Settings]="list"
+          (ClickAction)="Clicked($event)"
+        ></ft-dynamic-table>
+      </div>
+    </div>
+  </div>
+</div>

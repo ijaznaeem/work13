@@ -1,0 +1,188 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">Appointments</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="row no-gutter">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+        <div class="row no-gutter">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Reg No or Mobile No:</label>
+              <input
+                class="form-control"
+                type="text"
+                name="regNo"
+                id="regNo"
+                #txtRegNo
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-success form-control"
+                (click)="FinRegNo(txtRegNo.value)"
+                accesskey="a"
+              >
+                <i class="fa fa-search"></i>
+                Find
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="">Patient Name:</label>
+              <input
+                class="form-control"
+                type="text"
+                name="patName"
+                id="patName"
+                [value]="PatientData.fullname"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="">Gender:</label>
+              <input
+                class="form-control"
+                type="text"
+                name="gender"
+                id="gender"
+                [value]="PatientData.gender"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="">Addess:</label>
+              <input
+                class="form-control"
+                type="text"
+                name="address"
+                id="address"
+                [value]="PatientData.address"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+        <form #frmFilter="ngForm">
+          <div class="row no-gutter">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="">Select Head:</label>
+                <!-- help: https://ej2.syncfusion.com/angular/documentation/drop-down-list/filtering/ -->
+                <ejs-combobox
+                  id="cmbheads"
+                  name="cmbheads"
+                  #cmbheads
+                  [(ngModel)]="bill.test_id"
+                  [dataSource]="heads"
+                  [fields]="{ text: 'test_name', value: 'test_id' }"
+                  [allowFiltering]="true"
+                  placeholder="select heads"
+                  popupHeight="220px"
+                  (change)="HeadSelected($event)"
+                >
+                </ejs-combobox>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="">Amount:</label>
+                <input
+                  class="form-control"
+                  type="number"
+                  name="amount"
+                  id="amount"
+                  [(ngModel)]="bill.amount"
+                />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="">&nbsp;</label>
+                <button
+                  type="submit"
+                  class="btn btn-danger form-control"
+                  (click)="AddToBill()"
+                  accesskey="a"
+                >
+                  <i class="fa fa-plus"></i>
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row no-gutter">
+          <div class="col-md-12">
+            <table class="table table-stripped">
+              <tr>
+                <th>S No</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th></th>
+              </tr>
+              <tr *ngFor="let detail of billdetails; let i = index">
+                <td>
+                  {{ i + 1 }}
+                </td>
+                <td>
+                  {{ detail.description }}
+                </td>
+                <td>
+                  {{ detail.price }}
+                </td>
+                <td>
+                  <button class="btn btn-danger" (click)="Delete(i)">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <th></th>
+                <th>Total Amount</th>
+                <th>
+                  {{ FindTotal() }}
+                </th>
+                <th></th>
+              </tr>
+            </table>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">
+              <label for="notes">Remarks</label>
+              <textarea
+                name="notes"
+                class="form-control"
+                [(ngModel)]="txtNotes"
+                id="notes"
+                cols="50"
+                rows="3"
+              >
+              </textarea>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">&nbsp;</label>
+              <button class="form-control btn btn-success" (click)="SaveBill()">
+                <i class="fa fa-save"></i>
+                Save Bill
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

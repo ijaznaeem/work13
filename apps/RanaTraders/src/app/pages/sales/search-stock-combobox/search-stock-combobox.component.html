@@ -1,0 +1,46 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Search</h4>
+  <button
+    type="button"
+    class="btn-close close pull-right"
+    aria-label="Close"
+    (click)="OnClose()"
+  >
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div style="min-height: 250px">
+    <ejs-combobox
+      #cmbMulti
+      [allowFiltering]="true"
+      [dataSource]="[]"
+      [fields]="{ text: 'ProductName', value: 'StockID' }"
+      placeholder="Start typing to search..."
+      required="required"
+      (change)="Selected($event)"
+      (filtering)="onFiltering($event)"
+      [itemTemplate]="itemTemplate"
+      [headerTemplate]="headerTemplate"
+    >
+      <ng-template #headerTemplate let-data="">
+        <div class="container" *ngIf="Fields.length > 0">
+          <div class="row no-gutter">
+            <div class="col" *ngFor="let col of Fields">
+              {{ col.label }}
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template #itemTemplate let-data="">
+        <div class="row no-gutter">
+          <div class="col" *ngFor="let col of Fields">
+            {{ data[col.fldName] }}
+          </div>
+        </div>
+      </ng-template>
+    </ejs-combobox>
+  </div>
+</div>
+
+

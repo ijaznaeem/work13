@@ -1,0 +1,18 @@
+parts.
+1.  Master
+2.  Factory
+3.  Outlets
+
+
+
+
+
+1.  purchase
+2.  raw material store
+3.  produtc=ion stock issue
+4.  production output
+5.  Stock POS points
+
+setup:
+Raw material defination
+Finish Good defination

@@ -1,0 +1,118 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Accounts List</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          <form #frmFilter="ngForm">
+            <div class="row no-pad">
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>City</label>
+                  <select
+                    name="company"
+                    id="company"
+                    [(ngModel)]="Filter.City"
+                    class="form-control"
+                  >
+                    <option value="" selected>--Select City--</option>
+                    <option *ngFor="let comp of Cities" [value]="comp.City">
+                      {{ comp.City }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>Account Types</label>
+                  <select
+                    name="AcctType"
+                    id="AcctType"
+                    [(ngModel)]="Filter.AcctTypeID"
+                    class="form-control"
+                  >
+                    <option value="" selected>--Select Acct Type--</option>
+                    <option *ngFor="let comp of AcctTypes| async" [value]="comp.AcctTypeID">
+                      {{ comp.AcctType }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-1">
+                <div class="form-group">
+                  <label>Status</label>
+                  <select
+                    name="Status"
+                    id="Status"
+                    [(ngModel)]="Filter.StatusID"
+                    class="form-control"
+                  >
+                    <option value="1" selected>Active</option>
+                    <option value="0" selected>In-Active</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-1">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-primary form-control"
+                    (click)="FilterData()"
+                    accesskey="a"
+                  >
+                    <i class="fa fa-search"></i>
+                    Filter
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-1">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-warning form-control"
+                    (click)="PrintReport()"
+                    accesskey="p"
+                  >
+                    <i class="fa fa-print"></i>
+                    Print
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-1">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-warning form-control"
+                    (click)="Add()"
+                    accesskey="a"
+                  >
+                    <i class="fa fa-plus"></i>
+                    Add Account
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="row no-gutter" id="print-section">
+            <div class="col-md-12">
+              <ft-datatable
+            #dataList
+            [Settings]="Settings"
+            (ClickAction)="Clicked($event)"
+          ></ft-datatable>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

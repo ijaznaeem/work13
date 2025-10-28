@@ -1,0 +1,111 @@
+import { Component, OnInit } from '@angular/core';
+import { HttpBase } from '../../../services/httpbase.service';
+import { Router } from '@angular/router';
+import { JSON2Date, GetDateJSON } from '../../../factories/utilities';
+import { PrintDataService } from '../../../services/print.data.services';
+import { formatNumber } from '../../../factories/utilities';
+
+@Component({
+  selector: "app-stock-accts",
+  templateUrl: "./stock-accts.component.html",
+  styleUrls: ["./stock-accts.component.scss"],
+})
+export class StockAcctsComponent implements OnInit {
+  public data: object[];
+  public Salesman: object[];
+  public Users: object[];
+
+  public Filter = {
+    FromDate: GetDateJSON(),
+    ToDate: GetDateJSON(),
+    ProductID: "",
+  };
+  setting = {
+    Columns: [
+      {
+        label: "Date",
+        fldName: "Date",
+      },
+      {
+        label: "Invoice No",
+        fldName: "RefID",
+      },
+      {
+        label: "Customer Name",
+        fldName: "CustomerName",
+      },
+      {
+        label: "Stock In",
+        fldName: "QtyIn",
+      },
+      {
+        label: "Stock Out",
+        fldName: "QtyOut",
+      },
+      {
+        label: "Balance",
+        fldName: "Balance",
+        valueFormatter: (d) => {
+          return formatNumber(d["Balance"]);
+          
+        },
+      },
+    ],
+    Actions: [],
+    Data: [],
+  };
+
+  public toolbarOptions: object[];
+  Products: any;
+
+  constructor(
+    private http: HttpBase,
+    private ps: PrintDataService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    this.Filter.FromDate.day = 1;
+    this.http.getData("products").then((r: any) => {
+      this.Products = r;
+    });
+
+    this.FilterData();
+  }
+
+  FilterData() {
+    // tslint:disable-next-line:quotemark
+    let filter =
+      "Date between '" +
+      JSON2Date(this.Filter.FromDate) +
+      "' and '" +
+      JSON2Date(this.Filter.ToDate) +
+      "'";
+
+    if (!(this.Filter.ProductID === "" || this.Filter.ProductID === null)) {
+      filter += " and ProductID=" + this.Filter.ProductID;
+    } else {
+      filter += " and ProductID=-1";
+    }
+    this.http
+      .getData(
+        "qrystockaccts?flds=Date, RefID , CustomerName, QtyIn, QtyOut, Balance" +
+          " &filter=" +
+          filter +
+          "&orderby=AcctID"
+      )
+      .then((r: any) => {
+        this.data = r;
+      });
+  }
+
+  Clicked(e) {}
+  PrintReport() {
+    this.ps.PrintData.HTMLData = document.getElementById("print-section");
+    this.router.navigateByUrl("/print/print-html");
+  }
+  CustomerSelected(e) {}
+  formatDate(d) {
+    return JSON2Date(d);
+  }
+}

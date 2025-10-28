@@ -1,0 +1,221 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Title Here</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div class="row no-gutter">
+          <div class="col-md-2"></div>
+          <div class="col-md-8">
+            <form #frmFilter="ngForm">
+              <input
+                type="hidden"
+                name="patient_id"
+                [(ngModel)]="patient.patient_id"
+              />
+              <div class="row no-gutter">
+                <div class="col-md-4"></div>
+              </div>
+              <div class="row no-gutter">
+                <div class="col-md-4">
+                  <label for="dtFrom">Appointment Date:</label>
+                  <div class="input-group">
+                    <input
+                      class="form-control"
+                      placeholder="yyyy-mm-dd"
+                      name="dtFrom"
+                      [(ngModel)]="patient.date"
+                      ngbDatepicker
+                      #dtFrom="ngbDatepicker"
+                      required
+                      (change)="FindToken()"
+                    />
+                    <div class="input-group-addon">
+                      <button
+                        type="button"
+                        class="btn btn-warning"
+                        (click)="dtFrom.toggle()"
+                      >
+                        <i class="fa fa-calendar"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="dtFrom">Clinic:</label>
+                  <select
+                    name="cmbClinic"
+                    id="cmbClinic"
+                    required
+                    class="form-control"
+                    [(ngModel)]="patient.clinic"
+                    required
+                  >
+                    <option value="Morning">Morning</option>
+                    <option value="Evening">Evening</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="">Time:</label>
+                    <select
+                      class="form-control"
+                      type="text"
+                      name="time"
+                      id="time"
+                      [(ngModel)]="patient.time"
+                      required
+                    >
+                      <option *ngFor="let item of timeList" [value]="item">
+                        {{ item }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="">Token No:</label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      name="token"
+                      id="token"
+                      [(ngModel)]="patient.token"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="">Reg No:</label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      name="regNo"
+                      id="regNo"
+                      [(ngModel)]="patient.regno"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="">Mobile No:</label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      name="mobile"
+                      id="mobile"
+                      [(ngModel)]="patient.mobile"
+                      readonly
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="">Patient Name:</label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      name="patName"
+                      id="patName"
+                      [(ngModel)]="patient.fullname"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="">Address:</label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      name="address"
+                      id="address"
+                      [(ngModel)]="patient.address"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="">Gender:</label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      name="gender"
+                      id="gender"
+                      [(ngModel)]="patient.gender"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="">Age:</label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      name="age"
+                      id="age"
+                      value="{{ patient.dob | DateAsAgo }}"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="">Complaint:</label>
+                    <textarea
+                      class="form-control"
+                      type="text"
+                      name="present_complain"
+                      id="present_complain"
+                      [(ngModel)]="patient.present_complain"
+                    >
+                    </textarea>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="">&nbsp;</label>
+                    <button
+                      type="submit"
+                      class="btn btn-danger form-control"
+                      (click)="AddAppointment()"
+                      accesskey="a"
+                      [disabled]="!frmFilter.valid"
+                    >
+                      <i class="fa fa-save"></i>
+                      Get Appointment
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="">&nbsp;</label>
+                    <button
+                      type="submit"
+                      class="btn btn-danger form-control"
+                      (click)="Close()"
+                      accesskey="a"
+                    >
+                      <i class="fa fa-save"></i>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,53 @@
+<div class="container buttonarea">
+  <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+    <div class="btn-group btn-group-lg mr-2" role="group" aria-label="First group">
+      <button type="button" class="btn btn-primary" (click)="Print()">
+        <i class="fa fa-print"></i>
+      </button>
+      <button type="button" class="btn btn-warning" (click)="Export()">
+        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+
+      </button>
+
+    </div>
+  </div>
+</div>
+<section id="print-section" class="sheet">
+  <table  class="table table-light">
+    <thead>
+      <tr>
+        <th>
+          <div class="Header">
+              <table>
+                <tr>
+                  <td class="text-left" style="width: 160px">
+                    <img
+                      [src]="IMAGE_URL + Business.logo"
+                      alt=""
+                      style="width: 100%"
+                    />
+                  </td>
+                  <td class="text-left">
+                    <div style="font-size: 1.50rem">
+                      {{ Business.BusinessName }}
+                    </div>
+                    <div>{{ Business.Address }}, {{ Business.City }}</div>
+                    <p>Tel: {{ Business.Phone }}</p>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <h3 class="text-center" style="font-weight: 600; font-size: 1.25rem">{{ printdata.Title }}</h3>
+            <h5 class="text-center" style="font-weight: 600; font-size: 1.0rem">{{ printdata.SubTitle }}</h5>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div id="main"></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>

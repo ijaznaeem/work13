@@ -1,0 +1,30 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Employees List</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          <div>
+            <app-crud-form
+              [Form]="filterForm"
+              [formdata]="Filter"
+              [FormOnly]="true"
+              [CrudButtons]="false"
+            >
+            </app-crud-form>
+          </div>
+          <ft-datatable
+            #dataList
+            [Settings]="Settings"
+            (ClickAction)="Clicked($event)"
+          ></ft-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

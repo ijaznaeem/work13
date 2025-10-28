@@ -1,0 +1,144 @@
+<div id="print-section">
+  <div class="container">
+    <div>
+      <section class="sheet">
+        <table style="width: 100%">
+          <tbody>
+            <tr>
+              <td colspan="4">
+                <table>
+                  <tr>
+                    <td class="text-center">
+                      <div style="font-size: 30px">
+                        {{ Business.BusinessName }}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4" class="text-center" style="font-size: 20px">
+                <strong>{{ 'STOCK TRANSFER VOUCHER' }} </strong>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" class="text-left" style="width: 50%">
+                <table class="table-bordered">
+                  <tr>
+                    <td>
+                      <strong>Detail </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      To Store:<strong> {{ Invoice.ToStore }}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      From Store :<strong> {{ Invoice.FromStore }}</strong>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td></td>
+              <td colspan="2" class="text-left">
+                <table class="table-bordered">
+                  <tr>
+                    <td>
+                      Voucher No:
+                      <strong>{{ Invoice.TransferID }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Gatepass No:
+                      <strong>{{ Invoice.GPNo }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Voucher Date:<strong>{{ Invoice.Date }} {{ Invoice.Time }}</strong>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr></tr>
+            <tr>
+              <td colspan="4" class="text-right">
+                <table class="table-border" style="border-collapse: collapse">
+                  <thead class="">
+                    <tr>
+                      <th style="width: 10%">S No</th>
+                      <th style="width: 15%">Code</th>
+                      <th style="width: 30%" class="text-left">ProductName</th>
+                      <th style="width: 15%">Packing</th>
+                      <th style="width: 15%">Qty</th>
+                      <!-- <th style="width: 15%">Amount</th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of Invoice.Detail; let i = index">
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ item.PCode }}</td>
+                      <td class="text-left">{{ item.ProductName }}</td>
+                      <td>{{ item.Packing | number: '1.2-2' }}</td>
+                      <td>{{ item.Qty | number: '1.2-2' }}</td>
+                      <!-- <td>{{ item.Amount | number: '1.2-2' }}</td> -->
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th colspan="4">Grand Total</th>
+                      <th>
+                        {{ FindTotal(Invoice.Detail, 'Qty') | number: '1.2-2' }}
+                      </th>
+                      <!-- <th>
+                        {{
+                          FindTotal(Invoice.Detail, 'Amount') | number: '1.2-2'
+                        }}
+                      </th> -->
+                    </tr>
+                  </tfoot>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div id="footer">
+          <div class="text-center"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<section class="buttonarea">
+  <div class="row no-pad">
+    <div class="col-md-4">
+      <div class="form-group">
+        <button
+          class="btn btn-primary"
+          printSectionId="print-section"
+          type="button"
+          (click)="Print()"
+        >
+          <i class="fa fa-print"></i>
+          Print Voucher
+        </button>
+
+        <!-- <button
+          style="margin: 5px"
+          class="btn btn-primary"
+          printSectionId="print-section"
+          type="button"
+          (click)="SaveAsPdf()"
+        >
+          Save as PDF
+        </button> -->
+      </div>
+    </div>
+  </div>
+</section>

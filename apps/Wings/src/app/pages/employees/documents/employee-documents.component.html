@@ -1,0 +1,53 @@
+<!--table starts-->
+
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Docments</h4>
+  <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="bsModalRef.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+  <section id="ng-tables">
+    <div class="row text-left">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="row no-pad">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button
+                      type="button"
+                      class="btn btn-primary form-control"
+                      (click)="AddDocument()"
+                      accesskey="P"
+                    >
+                      <i class="fa fa-plus"></i>
+                      Add Document
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="row" id="print-section">
+                <div class="col-md-12">
+                  <ft-dynamic-table
+                    #dataList
+                    [Data]="data"
+                    [Settings]="Settings"
+                    (ClickAction)="Clicked($event)"
+                  ></ft-dynamic-table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

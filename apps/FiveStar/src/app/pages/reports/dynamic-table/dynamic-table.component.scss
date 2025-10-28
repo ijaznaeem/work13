@@ -1,0 +1,9 @@
+table > tr > td {
+  border: solid black 1;
+}
+
+@media print {
+  .screenOnly {
+    visibility: hidden;
+  }
+}

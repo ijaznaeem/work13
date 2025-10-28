@@ -1,0 +1,75 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">Credit Report</h5>
+    <div class="widget-controls">
+      <a data-widgster="expand" href="#" class="transition"
+        ><i class="fa fa-chevron-down"></i
+      ></a>
+      <a data-widgster="collapse" href="#" class="transition"
+        ><i class="fa fa-chevron-up"></i
+      ></a>
+      <a data-widgster="fullscreen" href="#" class="transition"
+        ><i class="fa fa-expand"></i
+      ></a>
+      <a data-widgster="restore" href="#" class="transition"
+        ><i class="fa fa-compress"></i
+      ></a>
+    </div>
+  </div>
+  <div widget class="card border-0 box-shadow">
+    <div class="card-header transparent border-0 text-muted">
+      <div class="form-group col-sm-3">
+        <button
+          printSectionId="ptint-section"
+          [printStyle]="{
+            table: { 'border-collapse': 'collapse' },
+            td: { border: '1px solid black', padding: '5px' }
+          }"
+          printTitle="Credit Report"
+          ngxPrint
+        >
+          print
+        </button>
+      </div>
+
+      <div class="row" id="ptint-section">
+        <h1>Credit Report</h1>
+        <table class="table table-light">
+          <thead class="thead-light">
+            <tr>
+              <th>
+                S No
+              </th>
+              <th>
+                Account Name
+              </th>
+              <th>
+                Address
+              </th>
+              <th>
+                Phone No
+              </th>
+              <th>
+                Balance
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of data; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ item.CustomerName }}</td>
+              <td>{{ item.Address }}, {{ item.City }}</td>
+              <td>{{ item.PhoneNo1 }}, {{ item.PhoneNo2 }}</td>
+              <td>{{ item.Balance }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>#</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

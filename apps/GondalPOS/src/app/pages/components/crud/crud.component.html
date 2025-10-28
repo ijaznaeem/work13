@@ -1,0 +1,186 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">{{ form.title }}</h5>
+    <div class="widget-controls">
+      <a data-widgster="expand" href="#" class="transition">
+        <i class="fa fa-chevron-down"></i>
+      </a>
+      <a data-widgster="collapse" href="#" class="transition">
+        <i class="fa fa-chevron-up"></i>
+      </a>
+      <a data-widgster="fullscreen" href="#" class="transition">
+        <i class="fa fa-expand"></i>
+      </a>
+      <a data-widgster="restore" href="#" class="transition">
+        <i class="fa fa-compress"></i>
+      </a>
+    </div>
+  </div>
+  <div class="card-block widget-body">
+    <div class="pull-right">
+      <button
+        *ngIf="Actions.includes('add')"
+        class="btn btn-primary"
+        (click)="Add()"
+      >
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+    <div class="table table-responive">
+      <table datatable [dtTrigger]="dtTrigger" class="row-border hover">
+        <thead class="thead-light">
+          <tr>
+            <th *ngFor="let c of list.columns">{{ c.label }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of data; let i = index">
+            <td *ngFor="let c of list.columns">
+              <img
+                *ngIf="c.type === 'image'; else elseBlock"
+                class="img-thumbnail"
+                [src]="Upload_path + r[c.fldName]"
+                alt=""
+              />
+              <ng-template #elseBlock>
+                 {{ r[c.fldName] }}
+              </ng-template>
+            </td>
+
+            <td>
+              <div class="btn-group" role="group" aria-label="Crud Action">
+                <button
+                  *ngIf="Actions.includes('edit')"
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="Edit(i)"
+                >
+                  <i class="fa fa-pencil"></i>
+                </button>
+                <button
+                  *ngIf="Actions.includes('delete')"
+                  type="button"
+                  class="btn btn-danger"
+                  (click)="Delete(i)"
+                >
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div
+  bsModal
+  #formModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="mySmallModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <form (ngSubmit)="SaveData()" #ClassForm="ngForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title pull-left">{{ form.title }}</h4>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <div
+                [class]="'col-md-' + col.size"
+                *ngFor="let col of form.columns"
+              >
+                <div class="form-group">
+                  <label for="col.fldName"> {{ col.label }}</label>
+                  <input
+                    *ngIf="col.control === 'input'"
+                    [type]="col.type"
+                    class="form-control validation-field"
+                    [required]="col.required"
+                    [(ngModel)]="formData[col.fldName]"
+                    [name]="col.fldName"
+                    [disabled] = "col.disabled"
+                    [readonly] = "col.readonly"
+                    placeholder=""
+                  />
+                  <ejs-autocomplete
+                    [name]="col.fldName"
+                    [(ngModel)]="formData[col.fldName]"
+                    *ngIf="col.control === 'lookup'"
+                    [dataSource]="col.listData"
+                    [fields]="{ value: col.displayFld }"
+                  ></ejs-autocomplete>
+
+                  <ejs-combobox
+                    [name]="col.fldName"
+                    [(ngModel)]="formData[col.fldName]"
+                    *ngIf="col.control === 'select' && col.type === 'list'"
+                    [dataSource]="col.listData"
+                    [fields]="{ text: col.displayFld, value: col.valueFld }"
+                    [placeholder]=""
+                  ></ejs-combobox>
+
+                  <span *ngIf="col.control === 'file'">
+                    <ngx-dropzone
+                      (change)="onSelect($event)"
+                      [expandable]="true"
+                    >
+                      <ngx-dropzone-label>{{ col.label }}</ngx-dropzone-label>
+                      <ngx-dropzone-image-preview
+                        ngProjectAs="ngx-dropzone-preview"
+                        *ngIf="files"
+                        [file]="files"
+                        [removable]="true"
+                        (removed)="onRemove(files)"
+                      >
+                        <ngx-dropzone-label
+                          >{{ files.name }} ({{
+                            files.type
+                          }})</ngx-dropzone-label
+                        >
+                      </ngx-dropzone-image-preview>
+                    </ngx-dropzone>
+                    <input
+                      type="hidden"
+                      [(ngModel)]="formData[col.fldName]"
+                      [name]="col.fldName"
+                      placeholder=""
+                    />
+                  </span>
+
+                  <textarea
+                    *ngIf="col.control === 'textarea'"
+
+                    class="form-control validation-field"
+                    [required]="col.required"
+                    [(ngModel)]="formData[col.fldName]"
+                    [name]="col.fldName"
+                    placeholder=""
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="!ClassForm.form.valid"
+          >
+            Save
+          </button>
+          <button type="button" class="btn btn-primary" (click)="closeModal()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

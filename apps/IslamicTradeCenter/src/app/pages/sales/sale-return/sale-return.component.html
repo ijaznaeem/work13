@@ -1,0 +1,37 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <div class="row no-gutter">
+      <div class="col-md-4">
+        <h5 class="mb-3">Sale Return</h5>
+      </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+       <div class="row no-gutter">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label for="">Give Invoice No to Return</label>
+            <input class="form-control" type="text" name="returnini"
+            [(ngModel)]="returnID"
+            placeholder="Give Invioice No" aria-label="Give Invioice No">
+
+          </div>
+          </div>
+          <div class="col-md-4">
+            <label for="">&nbsp;</label>
+            <button class="form-control btn btn-primary"
+            (click)="FindINo()"><i class="fa fa-search"></i>
+              Find
+            </button>
+          </div>
+       </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="card-block widget-body">
+    <app-sale-invoice #saleInvoice
+      [Type]="'DT'"
+      [EditID]="EditID"
+    ></app-sale-invoice>
+  </div>
+</div>

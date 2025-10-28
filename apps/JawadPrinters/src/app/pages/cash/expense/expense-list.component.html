@@ -1,0 +1,30 @@
+<!--table starts-->
+
+<div class="card">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-4">Expense</h5>
+  </div>
+  <div class="card-content">
+    <div class="card-body">
+      <div>
+        <ft-crud-form
+          [form]="FilterForm"
+          [formdata]="Filter"
+          [CrudButtons]="false"
+        >
+        </ft-crud-form>
+        <div class="row no-pad" id="print-section">
+          <div class="col-md-12">
+            <ft-dynamic-table
+              #rptTable
+              [Settings]="Settings"
+              [Data]="data"
+              [Search]="Filter.search"
+              (ClickAction)="Clicked($event)"
+            ></ft-dynamic-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

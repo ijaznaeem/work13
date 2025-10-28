@@ -1,0 +1,45 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Sale Return</h5>
+
+  </div>
+
+
+  <form #frmFilter="ngForm">
+    <div class="row no-pad">
+
+      <div class="col-md-4">
+        <label for="dtTo">Give Invoice No to Return</label>
+
+          <input
+            class="form-control"
+
+            name="ino"
+            [(ngModel)]="Filter.INo"
+
+          />
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button
+            type="button"
+            class="btn btn-warning form-control"
+            (click)="FindINo()"
+            accesskey="F"
+          >
+            <i class="fa fa-search"></i>
+            Find Invoice
+          </button>
+        </div>
+      </div>
+
+
+
+    </div>
+  </form>
+  <hr>
+  <div class="card-block widget-body">
+    <app-invoice [Type]="'DT'" [EditID]="EditID"></app-invoice>
+  </div>
+</div>

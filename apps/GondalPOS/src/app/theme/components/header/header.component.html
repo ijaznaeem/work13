@@ -1,0 +1,66 @@
+<nav
+  class="navbar box-shadow app-header"
+  [class.fixed-top]="settings.theme.navbarIsFixed"
+  [class.logo-visible]="showInfoContent"
+>
+  <div class="d-flex flex-column w-100">
+    <!-- <div class="d-flex justify-content-start align-items-center top-navbar" style = 'background-image: url("../../../../assets/img/app/back.jpg")'> !-->
+    <div style="height: 55px" class="d-flex justify-content-start align-items-center top-navbar">
+      <a class="logo" routerLink="/" (click)="closeSubMenus()">
+        <span class="start"> FT </span>
+        <!-- <span class="ng">{{ settings.name }}</span> -->
+      </a>
+
+      <span
+        class="navbar-text menu-icon transition ml-3 mr-3"
+        (click)="settings.theme.showMenu = !settings.theme.showMenu"
+      >
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </span>
+      <div style="color:#000080;">{{ date }}</div>
+      <h4
+        class="col text-center hidden-xs-down"
+        style="color:#000080; font-family: 'Times New Roman', Times, serif"
+      >
+        {{ settings.title }}
+      </h4>
+
+      <!-- <p style="margin-top: 13px;" class="d-none d-lg-block"><img height="50px" [src]="IMAGE_URL + 'blueLogo.jpeg'" alt="Logo" /></p>
+      <!-- <p style="color:#000080;" class="d-none d-lg-block">
+        {{ settings.address }}
+      </p> -->
+
+      <div class="top-rigth-icons ml-auto" *ngIf="cordin">
+        <span class="hidden-xs-down">
+          <app-user-menu></app-user-menu>
+        </span>
+      </div>
+      <div class="top-rigth-icons ml-auto" *ngIf="!cordin">
+        <a
+          style="color:#000080"
+          class="dropdown-item mb-1 hover-item"
+          routerLink="/login"
+          ><i class="fa fa-power-off mr-2"></i
+          ><span class="hidden-xs-down">Log Out</span></a
+        >
+      </div>
+    </div>
+
+    <div
+      class="horizontal-menu-outer"
+      *ngIf="settings.theme.menu == 'horizontal'"
+    >
+      <app-horizontal-menu
+        *ngIf="showHorizontalMenu"
+        [menuItems]="menuItems"
+      ></app-horizontal-menu>
+      <app-vertical-menu
+        *ngIf="!showHorizontalMenu"
+        [menuItems]="menuItems"
+      ></app-vertical-menu>
+    </div>
+  </div>
+</nav>

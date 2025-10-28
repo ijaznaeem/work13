@@ -1,0 +1,23 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">
+        Visa Tracking Alert
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        
+        <div class="row">
+          <div class="col-md-12">
+            <ft-dynamic-table #dataList [Data]="data"  [Settings]="Settings"
+              (ClickAction)="Clicked($event)"></ft-dynamic-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

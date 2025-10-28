@@ -1,0 +1,6 @@
+{
+  "CustomerName": "Abdul Rafey",
+  "CompleteAddress": "333444",
+  "MobileNo": "030030",
+  "Order": "[{\"productID\":\"4\",\"productName\":\"Pepsi 1.5 Ltr Pepsi\",\"saleRate\":440.0,\"qty\":3,\"amount\":1320.0,\"image\":\"c1336e8f6651db92cb1ee89ec4437e7a.png\"},{\"productID\":\"7\",\"productName\":\"Mirinda 1.5 ltr\",\"saleRate\":440.0,\"qty\":1,\"amount\":440.0,\"image\":\"4585acb746d679a65a02a9598bcf82a4.png\"}]"
+}

@@ -1,0 +1,68 @@
+<!--table starts-->
+<div class="container">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Add Visa Tracking Info</h4>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="mb-2">
+            <div class="row no-pad">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Customer</label>
+                  <label>
+                    <strong>
+                      {{CustomerData.customer_name}}
+                    </strong>
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Nationality</label>
+                  <label>
+                    <strong>
+                      {{CustomerData.nationality_name}}
+                    </strong>
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Product</label>
+                  <label>
+                    <strong>
+                      {{CustomerData.product_name}}
+                    </strong>
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Agent Name</label>
+                  <label>
+                    <strong>
+                      {{CustomerData.name}}
+                    </strong>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row-nopad">
+              <div class="col-md-12">
+                <app-crud-form [Form]="visatracking_form" [formdata]="tarcking_model" (DataSaved)="Save($event)"
+                  (Cancelled)="Cancel($event)">
+                </app-crud-form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,900 @@
+<div class="mt-3">
+  <tabset>
+    <tab heading="Cash Sale" id="sale">
+      <div widget class="card border-0 box-shadow">
+        <div class="card-header transparent border-0 text-muted">
+          <h5 class="mb-3">Cash XX Sale # {{ sale.InvoiceID }}</h5>
+        </div>
+        <div class="card-block widget-body">
+          <form #fromPurchase="ngForm">
+            <div class="row no-gutter p-3">
+              <div class="form-group col-md-2">
+                <label for="customer">Salesman</label>
+                <select
+                  name="salesman"
+                  id="salesman"
+                  class="form-control"
+                  [(ngModel)]="sale.SalesmanID"
+                  required
+                  disabled
+                  #cmbSM
+                >
+                  <option [value]="">--select salesman--</option>
+                  <option *ngFor="let s of Salesman" [value]="s.SalesmanID">
+                    {{ s.SalesmanName }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label for="dp2">Barcode:</label>
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    placeholder="00000000"
+                    name="pcode"
+                    [(ngModel)]="sdetails.PCode"
+                    (keydown.enter)="Find()"
+                    #Barcode
+                  />
+                  <!--
+                    (keydown.f2)="Search()"
+                    (keydown.f3)="AddProd()"
+                    (keydown.f6)="HoldBill()"
+                    (keydown.f4)="Type = Type * -1"
+ -->
+                  <div class="input-group-append">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      (click)="Search()"
+                    >
+                      <i class="fa fa-search"></i>
+                      F2
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-warning"
+                      (click)="OpenSpecialItem()"
+                    >
+                      <i class="fa fa-plus"></i>
+                      F3
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="button"
+                    class="btn form-control"
+                    (click)="Type = Type * -1"
+                    [ngClass]="{
+                      'btn-success': Type == 1,
+                      'btn-danger': Type == -1
+                    }"
+                  >
+                    <div class="row">
+                      <div class="col-sm-4">F4</div>
+                      <div class="col-sm-8">
+                        {{ Type == 1 ? 'Sale' : 'Sale Return' }}
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>&nbsp; </label>
+                  <div class="checkbox checkbox-danger">
+                    <input
+                      type="checkbox"
+                      id="bPrint"
+                      name="bPrint"
+                      [(ngModel)]="bPrint"
+                    />
+                    <label for="bPrint"><span>Print</span></label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <div
+                    class="dropdown nav-item"
+                    placement="bottom-left"
+                    display="static"
+                    ngbDropdown
+                  >
+                    <a
+                      class="nav-link dropdown-toggle dropdown-notification p-0 mt-2"
+                      id="drp-notification"
+                      href="javascript:;"
+                      data-toggle="dropdown"
+                      ngbDropdownToggle
+                      >Offline Data<span
+                        class="notification badge badge-pill badge-danger"
+                        >{{ offlineCount }}</span
+                      ></a
+                    >
+                    <ul
+                      ngbDropdownMenu
+                      class="notification-dropdown dropdown-menu dropdown-menu-media dropdown-menu-right m-0 overflow-hidden"
+                    >
+                      <li class="scrollable-container">
+                        <a
+                          (click)="UpdateInvoices()"
+                          class="d-flex justify-content-between"
+                        >
+                          <div class="media d-flex align-items-center">
+                            <div class="media-left">
+                              <div class="mr-3">
+                                <i class="ft upload"></i>
+                              </div>
+                            </div>
+                            <div class="media-body">
+                              <h6 class="m-0">
+                                <span> Upload Offline Data</span>
+                              </h6>
+                            </div>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- details table -->
+            <div class="row no-gutter">
+              <div class="col-md-12">
+                <h5 class="mb-0">Sale Details</h5>
+
+                <div class="table-responsive">
+                  <table class="table table-sm text-center m-0">
+                    <thead>
+                      <th>Barcode</th>
+                      <th>Description</th>
+                      <th>Qty</th>
+                      <th>Packing</th>
+                      <th>Rate</th>
+                      <th>Disc %</th>
+                      <th>Discount</th>
+                      <th>Amount</th>
+                      <th>Actions</th>
+                    </thead>
+                    <tbody>
+                      <tr
+                        *ngFor="let d of saledata; let i = index"
+                        [ngClass]="{ 'table-danger': d.Qty < 0 }"
+                      >
+                        <td>{{ d.PCode }}</td>
+                        <td>{{ d.ProductName }}</td>
+                        <td>
+                          <div class="btn-group ml-1">
+                            <a
+                              class="btn btn-primary px-1 py-1 font-medium-5"
+                              href="javascript:void(0)"
+                              (click)="onEdit(-1, d)"
+                              >-</a
+                            >
+                            <input
+                              type="text"
+                              class="btn btn-primary font-medium px-1 py-1"
+                              name="qty"
+                              id="qty"
+                              (change)="OnChange($event.target.value, d)"
+                              [value]="d.Qty"
+                              style="width: 40px"
+                            />
+                            <!-- <a class="btn btn-primary px-1 py-1" href="javascript:void(0)">{{ d.Qty }}</a> -->
+                            <a
+                              class="btn btn-primary px-1 py-1 font-medium-5"
+                              href="javascript:void(0)"
+                              (click)="onEdit(1, d)"
+                              >+</a
+                            >
+                          </div>
+                          <!-- <div class="input-group">
+                          <input type="number" class="form-control" style="width: 70px; height: 28px" name="dqty" id="dqty"
+                            (change)="onEdit($event.target.value, i)" value="{{ d.Qty }}" />
+                          <span style="cursor: pointer; margin: 5px" (click)="onEdit(1, i)">
+                            <i class="fa fa-tint"></i>
+                          </span>
+                        </div> -->
+                        </td>
+                        <td>{{ d.Packing }}</td>
+                        <td><input
+                              type="text"
+                              class="btn btn-primary font-medium px-1 py-1"
+                              name="txtrate"
+                              id="txtrate"
+                              (change)="OnRateChange($event.target.value, d)"
+                              [value]="d.SPrice"
+                              style="width: 40px"
+                            />
+
+
+                        </td>
+                        <td class="text-center">
+                          <input
+                            type="number"
+                            class="form-control"
+                            name="DiscRatio"
+                            id="DiscRatio"
+                            (change)="DiscountPercentageChange($event, i)"
+                            value="{{ d.DiscRatio }}"
+                            style="width: 80px"
+                          />
+                        </td>
+                        <td>
+                          <!-- {{ d.Discount }} -->
+
+                          <input
+                            type="number"
+                            class="form-control"
+                            name="itemdiscount"
+                            id="itemdiscount"
+                            (change)="DiscountChange($event, i)"
+                            value="{{ d.Discount }}"
+                            style="width: 80px"
+                            [disabled]="http.getBusinessID() != '2'"
+                          />
+                        </td>
+
+                        <td>{{ d.NetAmount }}</td>
+                        <td>
+                          <span
+                            style="cursor: pointer"
+                            (click)="onDeleteConfirm(i)"
+                          >
+                            <i class="ft-trash font-medium-3 text-danger"></i>
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- table end -->
+            <div class="row no-gutter">
+              <div class="col-md-2">
+                <div class="card gradient-king-yna">
+                  <div class="card-content">
+                    <div class="card-body py-0">
+                      <div class="media pb-1">
+                        <div class="media-body white text-right">
+                          <h3 class="font-large-1 white mb-0">
+                            {{ sale.Items }}
+                          </h3>
+                          <span>Total Items</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card gradient-mint">
+                  <div class="card-content">
+                    <div class="card-body py-0">
+                      <div class="media pb-1">
+                        <div class="media-body white text-right">
+                          <h3 class="font-large-1 white mb-0">
+                            Rs. {{ sale.Amount }}
+                          </h3>
+                          <span>Bill Amount</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="card gradient-purple-love">
+                  <div class="card-content">
+                    <div class="card-body py-0">
+                      <div class="media pb-1">
+                        <div class="media-body white text-right">
+                          <h3 class="font-large-1 white mb-0">
+                            Rs. {{ sale.Discount }}
+                          </h3>
+                          <span>Discount</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="card gradient-mint">
+                  <div class="card-content">
+                    <div class="card-body py-0">
+                      <div class="media pb-1">
+                        <div class="media-body white text-right">
+                          <h3 class="font-large-1 white mb-0">
+                            Rs. {{ sale.Rounding }}
+                          </h3>
+                          <span>Rounding</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card gradient-ibiza-sunset">
+                  <div class="card-content">
+                    <div class="card-body py-0">
+                      <div class="media pb-1">
+                        <div class="media-body white text-right">
+                          <h3 class="font-large-1 white mb-0">
+                            Rs. {{ sale.NetAmount | number: '1.0-0' }}
+                          </h3>
+                          <span>Total Amount</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row no-gutter">
+              <div class="col-md-2">
+                <div class="card card-inverse bg-success">
+                  <div class="card-content">
+                    <div
+                      class="card-body"
+                      (click)="openModal(formPayment)"
+                      style="cursor: pointer"
+                    >
+                      <div class="media">
+                        <div class="media-body text-left">
+                          <i class="ft-save font-large float-left"></i>
+                          <h5 class="card-text">Save</h5>
+                        </div>
+                        <div class="media-right align-self-center">
+                          <span class="float-right"> Enter </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="card card-inverse bg-warning">
+                  <div class="card-content">
+                    <div
+                      class="card-body"
+                      (click)="HoldBill(1)"
+                      style="cursor: pointer"
+                    >
+                      <div class="media">
+                        <div class="media-body text-left">
+                          <i class="ft-save font-large float-left"></i>
+                          <h5 class="card-text">Hold Bill</h5>
+                        </div>
+                        <div class="media-right align-self-center">
+                          <span class="float-right"> F6 </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="card card-inverse bg-warning">
+                  <div class="card-content">
+                    <div
+                      class="card-body"
+                      (click)="HoldBill(2)"
+                      style="cursor: pointer"
+                    >
+                      <div class="media">
+                        <div class="media-body text-left">
+                          <i class="ft-save font-large float-left"></i>
+                          <h5 class="card-text">Load Bill</h5>
+                        </div>
+                        <div class="media-right align-self-center">
+                          <span class="float-right"> F7 </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="card card-inverse bg-danger">
+                  <div class="card-content">
+                    <div
+                      class="card-body"
+                      (click)="Cancel()"
+                      style="cursor: pointer"
+                    >
+                      <div class="media">
+                        <div class="media-body text-left">
+                          <i class="ft-save font-large float-left"></i>
+                          <h5 class="card-text">Cancel Bill</h5>
+                        </div>
+                        <div class="media-right align-self-center">
+                          <span class="float-right"> F8 </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="card card-inverse bg-primary">
+                  <div class="card-content">
+                    <div
+                      class="card-body"
+                      style="cursor: pointer"
+                      (click)="SaveToAccount()"
+                    >
+                      <div class="media">
+                        <div class="media-body text-left">
+                          <i class="ft-user font-large float-left"></i>
+                          <h5 class="card-text">Account</h5>
+                        </div>
+                        <div class="media-right align-self-center">
+                          <span class="float-right"> F9 </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="card card-inverse bg-primary">
+                  <div class="card-content">
+                    <div
+                      class="card-body"
+                      style="cursor: pointer"
+                      (click)="SaveToCredit()"
+                    >
+                      <div class="media">
+                        <div class="media-body text-left">
+                          <i class="ft-user font-large float-left"></i>
+                          <h5 class="card-text">Credit Card</h5>
+                        </div>
+                        <div class="media-right align-self-center">
+                          <span class="float-right"> F10 </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <!-- Card end -->
+        </div>
+      </div>
+    </tab>
+    <tab heading="Daily Report" id="report" (selectTab)="onTabSelect($event)">
+      <div widget class="card border-0 box-shadow">
+        <div class="card-header transparent border-0 text-muted">
+          <h5 class="mb-3">Sale Report</h5>
+          <span>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              (click)="FilterData()"
+              accesskey="a"
+            >
+              <i class="fa fa-search"></i>
+              Refresh
+            </button>
+          </span>
+        </div>
+        <div class="card-block widget-body">
+          <div class="row" id="print-section">
+            <div class="col-md-12">
+              <ft-dynamic-table
+                #RptTable
+                [Settings]="setting"
+                [Data]="salereport"
+                (ClickAction)="Clicked($event)"
+              ></ft-dynamic-table>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div id="elemEmb"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </tab>
+  </tabset>
+</div>
+
+<ng-template #dlgHoldBills>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Hold Bills</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="modalRef?.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <ft-dynamic-table
+      [Settings]="holdSetting"
+      [Data]="holdData"
+      (ClickAction)="HoldClicked($event)"
+    ></ft-dynamic-table>
+  </div>
+</ng-template>
+<ng-template #dlgOfflineInvoices>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Offline Invoices</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="modalRef?.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <ft-dynamic-table
+      [Settings]="offlineSetting"
+      [Data]="offlineData"
+      (ClickAction)="HoldClicked($event)"
+    ></ft-dynamic-table>
+  </div>
+</ng-template>
+<ng-template #formPayment>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Save Invoice</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="modalRef?.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form class="paymentform" (ngSubmit)="SaveData()">
+      <div class="row no-pad">
+        <div class="form-group col-md-4">
+          <div class="custom-control custom-radio">
+            <input
+              class="custom-control-input radio-inline radio-primary"
+              id="radioSale"
+              name="radio"
+              type="radio"
+              value="1"
+              [(ngModel)]="sale.Type"
+            /><label class="custom-control-label text-success" for="radioSale">
+              Cash Sale</label
+            >
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <div class="custom-control custom-radio">
+            <input
+              class="custom-control-input radio-inline radio-warning"
+              id="radioPurchase"
+              name="radio"
+              type="radio"
+              value="2"
+              [(ngModel)]="sale.Type"
+            /><label
+              class="custom-control-label text-warning"
+              for="radioPurchase"
+              >Credit Sale</label
+            >
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <div class="custom-control custom-radio">
+            <input
+              class="custom-control-input radio-inline radio-inline radio-success"
+              id="radioSuccess"
+              name="radio"
+              type="radio"
+              value="3"
+              [(ngModel)]="sale.Type"
+            />
+            <label class="custom-control-label text-danger" for="radioSuccess">
+              Credit Card Sale
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="row no-pad" *ngIf="sale.Type == '2'">
+        <!-- <div class="col-md-12">
+          <ft-search-grid
+            style="max-height: 50px"
+            [Table]="'customers'"
+            [Flds]="[
+                {fldName: 'CustomerID', label: 'No', search: true},
+                {fldName: 'CustomerName', label: 'Name', search: true},
+                {fldName: 'Address', label: 'Address', search: false},
+            ]"
+            [Search]="''"
+            [Orderby]="'CustomerName'"
+
+          >
+          </ft-search-grid>
+        </div> -->
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for=""> Customer Name: </label>
+            <p>
+              <strong>{{ Customer.CustomerName }}</strong>
+            </p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label> Address </label>
+            <p>
+              <strong>{{ Customer.Address }}</strong>
+            </p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label> Balance </label>
+            <p>
+              <strong>{{ Customer.Balance }}</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="">&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-primary form-control"
+              (click)="FindAccount()"
+            >
+              <i class="fa-fa-search"></i>
+              Find Account
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row no-pad">
+        <div class="col-md-6">
+          <div class="row nopad">
+            <div class="col-md-12">
+              <div class="form-group text-danger">
+                <label for="">Total Bill:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [value]="sale.Amount"
+                  disabled
+                />
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group text-primary">
+                <label for="">Discount:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [value]="sale.Discount"
+                  disabled
+                />
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group text-danger">
+                <label for="">Payable Amount:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [value]="sale.Amount - sale.Discount - sale.ExtraDisc"
+                  disabled
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row no-pad" *ngIf="sale.Type == '1'">
+            <div class="col-md-12">
+              <div class="form-group text-success">
+                <label for="email">Cash Paid:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="amountRecieved"
+                  name="amountRecieved"
+                  [ftAutoFocusDirective]
+                  [(ngModel)]="sale.AmountRecvd"
+                />
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group text-warning">
+                <label for="email">Change:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [value]="
+                    RoundIt(
+                      sale.NetAmount - sale.AmountRecvd <= 0
+                        ? (sale.NetAmount - sale.AmountRecvd - sale.ExtraDisc) *
+                            -1
+                        : 0
+                    )
+                  "
+                  disabled
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row no-pad" *ngIf="sale.Type == '2'">
+            <div class="col-md-12">
+              <div class="form-group text-success">
+                <label for="email">Cash Paid:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="amountRecieved"
+                  name="amountRecieved"
+                  [ftAutoFocusDirective]
+                  [(ngModel)]="sale.AmountRecvd"
+                />
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group text-warning">
+                <label for="email">Balance:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  [value]="
+                    RoundIt(
+                      sale.NetAmount - sale.AmountRecvd - sale.ExtraDisc * 1
+                    )
+                  "
+                  disabled
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row no-pad" *ngIf="sale.Type == '3'">
+            <div class="col-md-12">
+              <div class="col-md-12">
+                <div class="form-group text-success">
+                  <label for="email">Credit Card No:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="creditcardno"
+                    name="creditcardno"
+                    [ftAutoFocusDirective]
+                    [(ngModel)]="sale.CreditCard"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row no-pad">
+        <div class="col-md-12">
+          <button
+            type="submit"
+            class="btn btn-success form-control"
+            [disabled]="
+              (sale.Type == '1' && sale.NetAmount > sale.AmountRecvd) ||
+              (sale.Type == '2' && !Customer.CustomerID) ||
+              (sale.Type == '3' && Sale.CreditCard == '')
+            "
+          >
+            <i class="fa-fa-search"></i>
+            Save Invoice
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
+<ng-template #dlgSpecialItem>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Special Item</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="modalRef?.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #frmSpecial="ngForm">
+      <div class="row no-gutter">
+        <div class="form-group col-md-8">
+          <label for="dtFrom"> Item Name:</label>
+          <input
+            type="text"
+            class="form-control"
+            name="description"
+            [(ngModel)]="specialItem.ProductName"
+            required
+          />
+        </div>
+        <div class="form-group col-md-4">
+          <label for="dtFrom">Qty</label>
+          <input
+            type="number"
+            class="form-control"
+            name="iqty"
+            [(ngModel)]="specialItem.Qty"
+            required
+          />
+        </div>
+        <div class="form-group col-md-4">
+          <label for="dtFrom">Rate</label>
+          <input
+            type="number"
+            class="form-control"
+            name="iprice"
+            [(ngModel)]="specialItem.Price"
+            required
+          />
+        </div>
+        <div class="form-group col-md-4">
+          <label for="dtFrom">Amount</label>
+          <input
+            type="number"
+            class="form-control"
+            disabled
+            name="namount"
+            [value]="specialItem.Price * specialItem.Qty"
+          />
+        </div>
+      </div>
+      <div class="row no-gutter">
+        <div class="col-md-6"></div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <button
+              type="submit"
+              [disabled]="!frmSpecial.form.valid"
+              class="btn btn-primary form-control"
+              (click)="AddSpecialItem()"
+            >
+              <i class="fa fa-plus"></i> Add
+            </button>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+
+            <button
+              type="button"
+              class="btn btn-warning form-control"
+              (click)="CancelDlg()"
+              accesskey="c"
+            >
+              <i class="fa fa-close"></i>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>

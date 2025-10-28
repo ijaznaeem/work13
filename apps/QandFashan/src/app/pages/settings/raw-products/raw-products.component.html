@@ -1,0 +1,99 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Raw Products List</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          <form #frmFilter="ngForm">
+            <div class="row no-pad">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Category</label>
+                  <select
+                    name="Category"
+                    id="Category"
+                    [(ngModel)]="Filter.CategoryID"
+                    class="form-control"
+                  >
+                    <option value="" selected>--Select Category--</option>
+                    <option
+                      *ngFor="let cat of Categories"
+                      [value]="cat.CategoryID"
+                    >
+                      {{ cat.CategoryName }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-primary form-control"
+                    (click)="FilterData()"
+                    accesskey="a"
+                  >
+                    <i class="fa fa-search"></i>
+                    Filter
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-warning form-control"
+                    (click)="Add()"
+                    accesskey="a"
+                  >
+                    <i class="fa fa-plus"></i>
+                    Add Product
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+          <ft-datatable
+            #dataList
+            [Settings]="Settings"
+            (ClickAction)="Clicked($event)"
+          >
+          </ft-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ng-template #prodmodal>
+  <div class="container">
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">{{ form.title }}</h4>
+      <button
+        type="button"
+        class="btn-close close pull-right"
+        aria-label="Close"
+        (click)="modalRef.hide()"
+      >
+        <span aria-hidden="true" class="visually-hidden">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <ft-crud-form
+        #formAdd
+        [form]="form"
+        [formdata]="formdata"
+        [CrudButtons]="false"
+      >
+      </ft-crud-form>
+    </div>
+  </div>
+</ng-template>

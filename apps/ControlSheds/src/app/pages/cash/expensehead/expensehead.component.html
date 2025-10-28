@@ -1,0 +1,35 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Expense Heads</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-9"></div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-warning form-control"
+              (click)="Add()"
+              accesskey="a"
+            >
+              <i class="fa fa-plus"></i>
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <ft-dynamic-table
+            [Settings]="list"
+            [Data]="data"
+            (ClickAction)="Clicked($event)"
+          ></ft-dynamic-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

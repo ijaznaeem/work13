@@ -1,0 +1,303 @@
+<section class="buttonarea">
+  <div>
+    <label class="radio-inline">
+      <input
+        type="radio"
+        name="optradio"
+        checked
+        value="1"
+        [(ngModel)]="prtType"
+      />
+      Laser Printer
+    </label>
+    <label class="radio-inline">
+      <input
+        type="radio"
+        name="optradio"
+        value="2"
+        [(ngModel)]="prtType"
+      />Thermal
+    </label>
+    <input type="button" value="Print" (click)="Print()" />
+  </div>
+</section>
+
+<section class="sheet A5" *ngIf="prtType == '1'">
+  <table class="table">
+    <tr>
+      <td colspan="4" style="border:0px" class="text-center">
+        <h2>{{ settings.title }}</h2>
+        <h4>{{ settings.address }}</h4>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4" style="border:0px">
+        <h3 class="text-center">SALE</h3>
+      </td>
+    </tr>
+    <tr>
+      <td style="border:0px">Customer Name:</td>
+      <td style="border:0px">
+        <strong>{{ Invoice.CustomerName }}</strong>
+      </td>
+      <td style="border:0px">Date:</td>
+      <td style="border:0px">
+        <strong>{{ Invoice.Date }} {{Invoice.Time}}</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>Address:</td>
+      <td>
+        <strong>{{ Invoice.Address }}</strong>
+      </td>
+      <td>Invoice No:</td>
+      <td>
+        <strong>{{ Invoice.InvoiceID }}</strong>
+      </td>
+    </tr>
+    <tr>
+      <td>City:</td>
+      <td>
+        <strong>{{ Invoice.City }}</strong>
+      </td>
+      <td>Customer No:</td>
+      <td>
+        <strong>{{ Invoice.CustomerID }}</strong>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4">
+        <table class="table table-bordered ">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Qty</th>
+
+              <th>Pending</th>
+              <th>Price</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of Details">
+              <td>
+                {{ d.ProductName }}
+              </td>
+
+              <td>
+                {{ d.Qty }}
+              </td>
+              <td>
+                {{ d.Pending }}
+              </td>
+              <td>
+                {{ d.SPrice }}
+              </td>
+              <td>
+                {{ d.Amount }}
+              </td>
+            </tr>
+            <tr><td>Total Items:</td>
+            <td>{{FindTotal('Qty')}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+
+            </tr>
+            <tr>
+              <td colspan="2" style="border:0px">
+                <table class="" style="width: 100%">
+                  <tbody>
+                    <tr>
+                      <td>Prev. Balance</td>
+                      <td>{{ Invoice.PrevBalance }}</td>
+                    </tr>
+                    <tr>
+                      <td>Cash Recieved</td>
+                      <td>{{ Invoice.AmntRecvd }}</td>
+                    </tr>
+                    <tr>
+                      <td>This Bill</td>
+                      <td>{{ Invoice.NetAmount }}</td>
+                    </tr>
+                    <tr>
+                      <td>New Balance</td>
+                      <td>
+                        {{
+                          Invoice.PrevBalance -
+                            Invoice.AmntRecvd * 1 +
+                            Invoice.NetAmount * 1
+                        }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td colspan="5" style="border:0px">
+                <table class="table table-bordered">
+                  <tr>
+                    <td>Total Amount:</td>
+                    <td>
+                      <strong>{{ Invoice.Amount }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Packing Charges:</td>
+                    <td>
+                      <strong>{{ Invoice.PackingCharges }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Labour Charges:</td>
+                    <td>
+                      <strong>{{ Invoice.Labour }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Discount:</td>
+                    <td>
+                      <strong>{{ Invoice.Discount }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Net Amount:</td>
+                    <td>
+                      <strong>{{ Invoice.NetAmount }} </strong>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="7" style="border:0px">
+                <p>{{ Invoice.Note }}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </table>
+</section>
+<section class="sheet" *ngIf="prtType == '2'">
+  <table class="" style="width: 80mm">
+    <tr>
+      <td colspan="4" style="border:0px" class="text-center">
+        <h4>{{ settings.title }}</h4>
+        <h6>{{ settings.address }}</h6>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4" style="border:0px">
+        <h6 class="text-center">SALE</h6>
+      </td>
+    </tr>
+    <tr>
+      <td style="border:0px">
+        Date: <strong>{{ Invoice.Date }} {{Invoice.Time}}</strong>
+      </td>
+      <td style="border:0px">
+        Invoice #: <strong>{{ Invoice.InvoiceID }}</strong>
+      </td>
+    </tr>
+    <tr>
+      <td style="border:0px">Customer Name:</td>
+    </tr>
+
+    <tr>
+      <td style="border:0px">
+        <strong>{{ Invoice.CustomerName }}</strong>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4">
+        <table class="table-bordered">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th class="text-center">Qty</th>
+              <th class="text-right">Price</th>
+              <th class="text-right">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of Details">
+              <td>
+                {{ d.ProductName }}
+              </td>
+
+              <td class="text-center">
+                {{ d.Qty }}
+              </td>
+
+              <td class="text-right">
+                {{ d.SPrice }}
+              </td>
+              <td class="text-right">
+                {{ d.Amount }}
+              </td>
+            </tr>
+            <tr >
+              <td>
+                Total Items
+              </td>
+
+              <td class="text-center">
+                {{ FindTotal('Qty') }}
+              </td>
+
+              <td class="text-right">
+
+              </td>
+              <td class="text-right">
+
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4" style="border:0px">
+
+                <table style="width: 100%;">
+                  <tr>
+                    <td>Total Amount:</td>
+                    <td class="text-right">
+                      <strong>{{ Invoice.Amount }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Packing Charges:</td>
+                    <td class="text-right">
+                      <strong>{{ Invoice.PackingCharges }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Labour Charges:</td>
+                    <td class="text-right">
+                      <strong>{{ Invoice.Labour }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Discount:</td>
+                    <td class="text-right">
+                      <strong>{{ Invoice.Discount }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Net Amount:</td>
+                    <td class="text-right">
+                      <strong>{{ Invoice.NetAmount }} </strong>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="7" style="border:0px">
+                <p>{{ Invoice.Note }}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </table>
+</section>

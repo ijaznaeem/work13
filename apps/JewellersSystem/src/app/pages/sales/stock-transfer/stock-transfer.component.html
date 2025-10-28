@@ -1,0 +1,369 @@
+<div #scrollTop></div>
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <div class="row">
+      <div class="col-md-4">
+        <h5 class="mb-3">Stock Transfer</h5>
+      </div>
+      <div class="col-md-4">
+        <div *ngIf="isPosted" class="text-center btn btn-danger btn-sm">
+          POSTED INVOICE
+        </div>
+      </div>
+      <div class="col-md-4">
+        <form #frmFilter="ngForm">
+          <div class="row">
+            <div class="col-md-6">
+              <input
+                class="form-control"
+                name="ino"
+                [(ngModel)]="Ino"
+                placeholder="Transfer No"
+              />
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <button
+                  type="submit"
+                  class="btn btn-primary form-control"
+                  (click)="FindINo()"
+                  accesskey="F"
+                >
+                  <i class="fa fa-search"></i>
+                  Find Transfer
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-block widget-body">
+    <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+      <div class="row no-gutter">
+        <div class="col-md-2">
+          <label for="dp1">Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dp1"
+              [(ngModel)]="stocktransfer.Date"
+              ngbDatepicker
+              #d1="ngbDatepicker"
+              required
+              disabled
+            />
+            <div class="input-group-addon">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="d1.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-3">
+          <label for="stores"> Select From Store </label>
+          <ng-select
+            name="cmbFromStore"
+            id="cmbFromStore"
+            class="custom"
+            [items]="Stores | async"
+            [virtualScroll]="true"
+            bindLabel="StoreName"
+            bindValue="StoreID"
+            placeholder="Select Store"
+            (change)="StoreSelected($event)"
+            required
+            [(ngModel)]="stocktransfer.FromStore"
+          >
+          </ng-select>
+        </div>
+        <div class="col-md-3">
+          <label for="stores"> Select To Store </label>
+          <ng-select
+            name="cmbToStore"
+            id="cmbToStore"
+            class="custom"
+            [items]="Stores | async"
+            [virtualScroll]="true"
+            bindLabel="StoreName"
+            bindValue="StoreID"
+            placeholder="Select Store"
+            required
+            [(ngModel)]="stocktransfer.ToStore"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <form #formqty="ngForm">
+        <div class="row no-gutter">
+          <div class="col-md-4">
+            <label for="customer"> Select product </label>
+            <ng-select
+              #cmbProduct
+              name="cmbProduct"
+              id="cmbProduct"
+              class="custom"
+              [items]="Stock"
+              [virtualScroll]="true"
+              bindLabel="ProductName"
+              bindValue="ProductID"
+              placeholder="Select Product"
+              (change)="ProductSelected($event)"
+              [searchFn]="ProductSearchFn"
+              required
+              [(ngModel)]="transferdetails.StockID"
+              (keydown.enter)="qty.focus()"
+            >
+              <ng-template ng-option-tmp let-item="item">
+                <div class="row no-gutter">
+                  <div class="col-md-9">
+                    {{ item.ProductName }}
+                  </div>
+                  <div class="col-md-3 text-italic font-small-2 mt-1">
+                    <small>
+                      {{ item.Stock }}
+                    </small>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-select>
+          </div>
+
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="qty">Qty</label>
+              <input
+                type="number"
+                class="form-control dation-field"
+                required="required"
+                id="qty"
+                name="qty"
+                [(ngModel)]="transferdetails.Qty"
+                #qty
+                (keydown.enter)="Agency.focus()"
+                (focus)="qty.select()"
+              />
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="Packing">Packing</label>
+              <input
+                type="number"
+                class="form-control dation-field"
+                required="required"
+                id="Packing"
+                name="Packing"
+                [(ngModel)]="transferdetails.Packing"
+                disabled
+              />
+            </div>
+          </div>
+
+
+
+          <div class="col-md-2">
+            <ft-input-control
+            #Agency
+            [label]="'Agency'"
+            [type]="'text'"
+            [name]="'Agency'"
+            [required]="true"
+            [(ngModel)]="transferdetails.Agency"
+          >
+          </ft-input-control>
+          </div>
+          <div class="col-md-2">
+            <ft-input-control
+            [label]="'SPR #'"
+            [type]="'text'"
+            [required]="true"
+            [(ngModel)]="transferdetails.SPR"
+          >
+          </ft-input-control>
+          </div>
+          <div class="col-md-1">
+            <ft-input-control
+            [label]="'Frieght'"
+            [type]="'number'"
+            [name]="'Frieght'"
+            [required]="true"
+            [(ngModel)]="transferdetails.Frieght"
+          >
+          </ft-input-control>
+          </div>
+          <div class="col-md-1">
+            <ft-input-control
+            [label]="'Labour'"
+            [type]="'number'"
+            [name]="'Labour'"
+            [required]="true"
+            [(ngModel)]="transferdetails.Labour"
+          >
+
+          </ft-input-control>
+          </div>
+          <div class="col-md-2">
+            <ft-input-control
+            [label]="'Document Date'"
+            [type]="'date'"
+            [name]="'DocDate'"
+            [required]="true"
+            [(ngModel)]="transferdetails.DocDate"
+          >
+          </ft-input-control>
+          </div>
+          <div class="col-md-2">
+            <ft-input-control
+            [label]="'Adda'"
+            [type]="'text'"
+            [name]="'Adda'"
+            [required]="true"
+            [(ngModel)]="transferdetails.Adda"
+          >
+          </ft-input-control>
+          </div>
+          <div class="col-md-2">
+            <ft-input-control
+            [label]="'VehicleNo'"
+            [type]="'text'"
+            [name]="'VehicleNo'"
+            [required]="true"
+            [(ngModel)]="transferdetails.VehicleNo"
+          >
+          </ft-input-control>
+          </div>
+          <div class="col-md-2">
+            <ft-input-control
+            [label]="'Builty No'"
+            [type]="'text'"
+            [name]="'BuiltyNo'"
+            [required]="true"
+            [(ngModel)]="transferdetails.BuiltyNo"
+          >
+          </ft-input-control>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button
+                #btnAdd
+                type="button"
+                class="btn btn-primary form-control"
+                [disabled]="!formqty.form.valid || isPosted"
+                (click)="AddOrder()"
+                accesskey="a"
+              >
+                <i class="fa fa-plus"></i>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div>
+        <div
+          class="table-responsive custom-table-height table-bordered table-condensed"
+        >
+          <ng2-smart-table
+            class="table table-hover"
+            [settings]="settings"
+            [source]="data"
+            (deleteConfirm)="onDeleteConfirm($event)"
+            (editConfirm)="onEdit($event)"
+          >
+          </ng2-smart-table>
+        </div>
+
+        <div class="row no-gutter">
+          <div class="col-md-7">
+            <div class="form-group">
+              <label for="Notes">Notes</label>
+              <input
+                type="text"
+                class="form-control"
+                id="Notes"
+                name="Notes"
+                [(ngModel)]="stocktransfer.Notes"
+                tabindex="-1"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row no-gutter">
+          <div class="col-md-3">
+            <div class="form-group">
+              <ft-navigator (ClickAction)="NavigatorClicked($event)">
+              </ft-navigator>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row no-gutter">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block"
+                    (click)="NewInvoice()"
+                    accesskey="s"
+                  >
+                    New
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block"
+                    [disabled]="
+                      !fromPurchase.form.valid || data.count() == 0 || isPosted
+                    "
+                    (click)="SaveData()"
+                    accesskey="s"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block"
+                    [disabled]="!fromPurchase.form.valid || data.count() == 0"
+                    (click)="PrintInvoice()"
+                    accesskey="p"
+                  >
+                    Print
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-block"
+                    (click)="Cancel()"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

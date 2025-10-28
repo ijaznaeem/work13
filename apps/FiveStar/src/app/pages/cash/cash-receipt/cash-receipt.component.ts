@@ -1,0 +1,82 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { AcctTypes } from '../../../factories/constants';
+import { GetDateJSON, GetProps, JSON2Date } from '../../../factories/utilities';
+import { HttpBase } from '../../../services/httpbase.service';
+import { MyToastService } from '../../../services/toaster.server';
+import { VoucherModel } from '../voucher.model';
+
+@Component({
+  selector: 'app-cash-receipt',
+  templateUrl: './cash-receipt.component.html',
+  styleUrls: ['./cash-receipt.component.scss']
+})
+export class CashReceiptComponent implements OnInit {
+  @ViewChild('cmbCustomer') cmbCustomer;
+  public Voucher = new VoucherModel();
+  Customers = [];
+  AcctTypes = AcctTypes;
+  EditID = '';
+
+  curCustomer: any = {};
+  constructor(
+    private http: HttpBase,
+    private alert: MyToastService,
+    private activatedRoute: ActivatedRoute) { }
+
+  ngOnInit() {
+    this.activatedRoute.params.subscribe((params: Params) => {
+      this.EditID = params.EditID;
+      if (this.EditID) {
+        this.http.getData('qryvouchers?filter=VoucherID=' + this.EditID).then((r: any) => {
+          this.LoadCustomer({ AcctTypeID: r[0].AcctTypeID });
+          setTimeout(() => {
+            this.Voucher = GetProps(r[0], Object.getOwnPropertyNames((new VoucherModel)));
+          console.log(this.Voucher);
+          this.Voucher.Date = GetDateJSON(new Date(r[0].Date));
+          }, 1000);
+        })
+      }
+    });
+  }
+  LoadCustomer(event) {
+    if (event) {
+      this.http.getCustByType(event.AcctTypeID).then((response: any) => {
+        this.Customers = response;
+      });
+    }
+  }
+  SaveData() {
+    let voucherid = '';
+    this.Voucher.Date = JSON2Date(this.Voucher.Date);
+    if (this.EditID != '') {
+      voucherid = '/' + this.EditID;
+    }
+
+    console.log(this.Voucher);
+    this.http.postTask('vouchers' + voucherid, this.Voucher).then(() => {
+      this.alert.Sucess('Receipt Saved', 'Save', 1);
+
+      this.Voucher = Object.assign(new VoucherModel(), { AcctTypeID: this.Voucher.AcctTypeID });
+      this.cmbCustomer.focusIn();
+
+    },(err) => {
+      this.alert.Error(err.error.message, "Error", 2);
+      console.log(err);
+      this.Voucher.Date =GetDateJSON();;
+    });
+  }
+  GetCustomer(e) {
+    console.log(e);
+    if (e.itemData) {
+      this.http.getData('qrycustomers?filter=CustomerID=' + e.itemData.CustomerID).then((r: any) => {
+        this.curCustomer = r[0];
+      });
+
+    }
+
+  }
+  Round(amnt) {
+    return Math.round(amnt);
+  }
+}

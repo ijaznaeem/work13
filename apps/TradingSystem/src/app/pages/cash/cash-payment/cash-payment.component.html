@@ -1,0 +1,133 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div widget class="card border-0 box-shadow">
+      <div class="card-header transparent border-0 text-muted">
+        <div class="row">
+          <div class="col-md-4">
+            <h5 class="mb-3">Cash Payment</h5>
+          </div>
+          <div class="col-md-4">
+            <div *ngIf="isPosted" class="text-center btn btn-danger btn-sm">
+              POSTED VOUCHER
+            </div>
+          </div>
+          <div class="col-md-4">
+            <form #frmFilter="ngForm">
+              <div class="row">
+                <div class="col-md-8">
+                  <input
+                    class="form-control"
+                    name="ino"
+                    [(ngModel)]="Ino"
+                    placeholder="Invoice No"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <button
+                      type="submit"
+                      class="btn btn-primary form-control"
+                      (click)="FindINo()"
+                      accesskey="F"
+                    >
+                      <i class="fa fa-search"></i>
+                      Find Voucher
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="card-block widget-body">
+        <form #frmFilter="ngForm" (submit)="SaveData()">
+          <div class="container">
+            <div class="row no-pad">
+              <div class="col-md-2">
+                <label for="dp1">Date:</label>
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    placeholder="yyyy-mm-dd"
+                    name="dp1"
+                    [(ngModel)]="voucher.Date"
+                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                    bsDatepicker
+                    disabled
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-2">
+                <label for="ino">Voucher No:</label>
+                <input
+                  class="form-control"
+                  name="ino"
+                  [(ngModel)]="voucher.VoucherNo"
+                  placeholder="Voucher No"
+                  disabled
+                />
+              </div>
+              <div class="col-md-2">
+                <label for="ino">Day No:</label>
+                <input
+                  class="form-control"
+                  name="dayno"
+                  [(ngModel)]="voucher.DayNo"
+                  placeholder="Day No"
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="ino">Description:</label>
+                <input
+                  class="form-control"
+                  name="Description"
+                  [(ngModel)]="voucher.Description"
+                  placeholder="Description"
+                />
+              </div>
+
+            </div>
+
+            <div class="row no-gutter">
+              <div class="col-md-12">
+                <ft-crud-form
+                #formDetail
+                  [form]="vDetailForm"
+                  [formdata]="voucherDetails"
+                  [CrudButtons]="false"
+                  (ItemChanged)="Changed($event)"
+                  (ButtonClicked)="AddToVoucher($event)"
+                >
+                </ft-crud-form>
+              </div>
+            </div>
+            <div class="row no-gutter">
+              <div class="col-md-12">
+                <ft-dynamic-table
+                  #rptTable
+                  [Settings]="settings"
+                  [Data]="vDetails"
+                  (ClickAction)="Clicked($event)"
+                ></ft-dynamic-table>
+              </div>
+            </div>
+            <div class="row no-gutter">
+              <div class="form-group col-md-12">
+                <ft-crud-form
+                  [form]="frmNavigation"
+                  [formdata]="{}"
+                  [CrudButtons]="false"
+                  (ItemChanged)="Changed($event)"
+                  (ButtonClicked)="NavigatorClicked($event)"
+                >
+                </ft-crud-form>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

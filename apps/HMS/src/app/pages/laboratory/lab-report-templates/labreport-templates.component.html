@@ -1,0 +1,113 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-4">Appointments</h5>
+  </div>
+  <div class="card-block widget-body">
+    <form #frmFilter="ngForm">
+      <div class="row no-gutter">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Test Name:</label>
+            <ejs-combobox
+              id="test_id"
+              name="test_id"
+              [dataSource]="test_list"
+              [fields]="{ text: 'test_name', value: 'test_id' }"
+              placeholder="Select Test"
+              popupHeight="250px"
+              [(ngModel)]="model.test_id"
+              (change)="TestSelected($event)"
+            ></ejs-combobox>
+          </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row no-gutter">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Profile Name:</label>
+                        <p><strong>
+                            {{test.group_name}}
+                        </strong> </p>
+
+                      </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Profile Notes:</label>
+                        <p><strong>
+                            {{test.notes}}
+                        </strong> </p>
+
+                      </div>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="row no-gutter">
+        <div class="col-md-4">
+            <div class="form-group">
+              <label>Test Name:</label>
+              <ejs-combobox
+              id="obs_id"
+              name="obs_id"
+              #cmbObs
+              [dataSource]="obs_list"
+              [fields]="{ text: 'obs_name', value: 'obs_id' }"
+              placeholder="Select Test to Add"
+              popupHeight="250px"
+              [(ngModel)]="model.obs_id"
+              (change)="ObsSelected($event)"
+            ></ejs-combobox>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row no-gutter">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Unit:</label>
+                        <p><strong>
+                            {{obs.unit}}
+                        </strong> </p>
+
+                      </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Normal Range:</label>
+                        <p><strong>
+                            {{obs.normal_range}}
+                        </strong> </p>
+
+                      </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              (click)="AddToTemplate()"
+              accesskey="a"
+            >
+              <i class="fa fa-plus"></i>
+              Add To Template
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </form>
+    <div class="row" id="print-section">
+      <div class="col-md-12">
+        <ft-dynamic-table
+          [Settings]="setting"
+          [Data]="data"
+
+          (ClickAction)="ActionClicked($event)"
+        ></ft-dynamic-table>
+      </div>
+    </div>
+  </div>
+</div>

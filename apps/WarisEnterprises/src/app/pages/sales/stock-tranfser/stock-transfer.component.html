@@ -1,0 +1,263 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Stock Transfer</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <form (ngSubmit)="SaveData()" #fromProducts="ngForm">
+          <div class="row no-pad">
+            <div class="col-md-2">
+              <label for="dp1">Date:</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="dp1"
+                  [(ngModel)]="Transfer.Date"
+                  ngbDatepicker
+                  disabled
+                  #d1="ngbDatepicker"
+                />
+
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    (click)="d1.toggle()"
+                  >
+                    <i class="fa fa-calendar"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="storeid1">To Store</label>
+
+                <select
+                  class="form-control validation-field"
+                  name="storeid1"
+                  id="storeid1"
+                  required
+                  [(ngModel)]="Transfer.ToStore"
+                >
+                  <option
+                    *ngFor="let Storesdata of Stores"
+                    value="{{ Storesdata.BusinessID }}"
+                  >
+                    {{ Storesdata.BusinessName }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="gpno">GP No:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="gpno"
+                  name="gpno"
+                  [(ngModel)]="Transfer.GPNo"
+                  placeholder="0"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="Remarks">Remarks:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Remarks"
+                  name="Remarks"
+                  [(ngModel)]="Transfer.Remarks"
+                />
+              </div>
+            </div>
+          </div>
+          <form #formqty="ngForm">
+            <div class="row no-gutter">
+              <div class="form-group col-md-2">
+                <label for="customer">Company</label>
+                <ejs-combobox
+                  name="company"
+                  id="company"
+                  #cmbCompany
+                  [dataSource]="Companies"
+                  [fields]="{ text: 'CompanyName', value: 'CompanyID' }"
+                  (change)="getProducts($event.value)"
+                >
+                </ejs-combobox>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="supplier">Product:</label>
+                  <ft-multi-col-combobox
+                    #cmbProd
+                    [dataSource]="Prods"
+                    [fields]="{ text: 'ProductName', value: 'StockID' }"
+                    [Cols]="[
+                      { title: 'Product Name', fldName: 'ProductName', size: 9 },
+                      { title: 'Stock', fldName: 'Stock', size: 3 }
+                    ]"
+                    [(ngModel)]="productdetails.StockID"
+                    name="testCombo"
+                    (Change)="ProductSelected($event)"
+                  >
+                  </ft-multi-col-combobox>
+                </div>
+              </div>
+              <div class="col-md-1">
+                <div class="form-group">
+                  <label for="qty">Qty:</label>
+                  <input
+                    type="number"
+                    #qty
+                    class="form-control dation-field"
+                    required="required"
+                    id="qty"
+                    name="qty"
+                    [(ngModel)]="productdetails.Qty"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+              <div class="col-lg-1">
+                <div class="form-group">
+                  <label for="packing">Packing:</label>
+                  <input
+                    type="text"
+                    class="form-control dation-field"
+                    required="required"
+                    id="packing"
+                    name="packing"
+                    [(ngModel)]="productdetails.Packing"
+                    placeholder="0"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="col-lg-1">
+                <div class="form-group">
+                  <label for="packing">SPrice:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    required="required"
+                    id="SPrice"
+                    name="SPrice"
+                    [value]="productdetails.SPrice"
+                    placeholder="0"
+                     
+                    
+                  />
+                </div>
+              </div>
+              <div class="col-lg-1">
+                <div class="form-group">
+                  <label for="packing">Amount:</label>
+                  <input
+                    type="text"
+                    class="form-control dation-field"
+                    required="required"
+                    id="amount"
+                    name="amount"
+                    [value]="productdetails.SPrice * productdetails.Qty"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="col-lg-2">
+                <div class="form-group">
+                  <label for="dp2">&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-primary form-control"
+                    [disabled]="!formqty.form.valid"
+                    (click)="AddOrder()"
+                    accesskey="a"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="card-block pt-0 widget-body">
+            <h5 class="mb-0">Transfer Items List</h5>
+            <div class="table-responsive">
+              <ng2-smart-table
+                class="table table-hover"
+                [settings]="settings"
+                [source]="data"
+                (deleteConfirm)="onDeleteConfirm($event)"
+                (editConfirm)="onEdit($event)"
+              ></ng2-smart-table>
+            </div>
+          </div>
+
+          <!-- <div class="row">
+            <div class="col-lg-8"></div>
+            <div class="col-lg-2"> <label for="">Amount</label></div>
+            <div class="col-lg-2 form-group"> 
+              <input
+                    type="text"
+                    class="form-control dation-field"
+                    readonly
+                    id="trAmount"
+                    name="trAmount"
+                    [value]="Transfer.Amount"
+                    placeholder="0"
+                  />
+            </div>
+
+            
+
+           
+          </div> -->
+          <div class="row">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-4"></div>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-2">
+              <div class="form-group">
+                <label for="dp2">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-primary form-control"
+                  [disabled]="!fromProducts.form.valid"
+                  (click)="SaveData()"
+                >
+                  Transfer
+                </button>
+              </div>
+            </div>
+
+            <div class="col-lg-2">
+              <div class="form-group">
+                <label for="dp2">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-danger form-control"
+                  (click)="cancel()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,36 @@
+# Custom .htaccess for POS Plus APIs
+RewriteEngine On
+
+# Handle PHP errors for this specific application
+php_value error_reporting "E_ALL & ~E_DEPRECATED & ~E_STRICT"
+php_value display_errors Off
+php_value log_errors On
+
+# CodeIgniter URL rewriting
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
+
+# Security improvements
+<Files "composer.json">
+    Require all denied
+</Files>
+
+<Files "*.md">
+    Require all denied
+</Files>
+
+<Files ".travis.yml">
+    Require all denied
+</Files>
+
+# Cache static files
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+</IfModule>

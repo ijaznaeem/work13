@@ -1,0 +1,114 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">Details</h5>
+  </div>
+  <div widget class="card border-0 box-shadow">
+    <div class="card-header transparent border-0 text-muted">
+      <form #cashreportModel="ngForm">
+        <div class="form-group row">
+          <div class="col-sm-1"></div>
+
+          <div class="form-group col-sm-3">
+            <label for="dp1">From Date</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dp1"
+                [(ngModel)]="dteFilter.dteFrom"
+                ngbDatepicker
+                #d1="ngbDatepicker"
+              />
+
+              <div class="input-group-append">
+                <button class="btn btn-primary"  (click)="d1.toggle()">
+                <i class="fa fa-calendar"></i> </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-sm-3">
+            <label for="dp2">To Date</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dp2"
+                [(ngModel)]="dteFilter.dteTo"
+                ngbDatepicker
+                #d2="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-primary"  (click)="d2.toggle()">
+                <i class="fa fa-calendar"></i> </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3">
+            <div class="form-group">
+              <label for="storeid">Select Store</label>
+              <ejs-combobox
+                name="storeid"
+                id="storeid"
+                [dataSource]="Stores"
+                required
+                [fields]="Storefields"
+                [(ngModel)]="StoreID"
+              >
+              </ejs-combobox>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-1">
+            <button
+              type="button"
+              style="margin-top:22px;"
+              class="btn btn-success"
+              (click)="filter()"
+              [disabled]="!cashreportModel.form.valid"
+            >
+              Filter
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="card-block pt-0 widget-body">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>SPirce</th>
+          <th>PPrice</th>
+          <th>Qty</th>
+          <th>SValue</th>
+          <th>PValue</th>
+          <th>Profit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let saledata of data1">
+          <td>{{ saledata.productname }}</td>
+          <td>{{ saledata.sprice }}</td>
+          <td>{{ saledata.pprice1 }}</td>
+          <td>{{ saledata.qty }}</td>
+          <td>{{ saledata.Amount }}</td>
+          <td>{{ saledata.pprice }}</td>
+          <td>{{ saledata.Amount - saledata.pprice }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th class="text-danger"></th>
+          <th class="text-danger"></th>
+          <th class="text-danger"></th>
+          <th class="text-danger">{{ saletqty }}</th>
+          <th class="text-danger">{{ saletamnt }}</th>
+          <th class="text-danger">{{ purchasetamnt }}</th>
+          <th class="text-danger">{{ saletamnt - purchasetamnt }}</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>

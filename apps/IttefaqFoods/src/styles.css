@@ -1,0 +1,53 @@
+/* You can add global styles to this file, and also import other style files */
+/* @import "../../../node_modules/bootstrap/scss/bootstrap"; */
+html{
+  font-size: 0.875rem;
+
+
+}
+
+.row.no-pad {
+  margin-right:4px;
+  margin-left:4px;
+}
+.row.no-pad > [class*='col-'] {
+  padding-right:4px;
+  padding-left:4px;
+}
+
+
+.card-body {
+  padding: 4px;
+}
+.container {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.form-control{
+  height: calc(1.5em + 0.5rem );
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+
+}
+
+.btn{
+
+  font-size: 0.875rem;
+}
+
+input.e-input, .e-input-group input, .e-input-group.e-control-wrapper input,
+.e-input-group input.e-input, .e-input-group.e-control-wrapper input.e-input
+{
+   height: 24px;
+   font-size: 0.875rem;
+}
+.e-input-group .e-clear-icon,
+.e-input-group.e-control-wrapper .e-clear-icon
+.e-input-group .e-input-group-icon, .e-input-group.e-control-wrapper .e-input-group-icon{
+  min-height: 24px;
+}
+.cdk-overlay-container{
+  font-size: 0.875rem;
+}

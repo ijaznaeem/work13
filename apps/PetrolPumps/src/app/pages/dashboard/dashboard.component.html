@@ -1,0 +1,164 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-2">Day Book</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="row no-pad">
+      <div class="col-md-10">
+        <form #frmFilter="ngForm">
+          <div class="row no-pad">
+            <div class="col-md-2">
+              <label for="dtFrom">Date:</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="dtFrom"
+                  [(ngModel)]="Filter.Date"
+                  ngbDatepicker
+                  #dtFrom="ngbDatepicker"
+                />
+                <div class="input-group-addon">
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    (click)="dtFrom.toggle()"
+                  >
+                    <i class="fa fa-calendar"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-success form-control"
+                  (click)="FilterData()"
+                >
+                  <i class="fa fa-refresh"></i>
+                  Refresh
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row no-gutter">
+          <div class="col-md-12">
+            <ft-table-with-group
+              [Settings]="settings"
+              [Data]="data"
+              (ClickAction)="Clicked($event)"
+            ></ft-table-with-group>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="row no-pad">
+          <div class="col-md-12">
+            <div class="mt-5"></div>
+            <div class="form-group">
+              <button
+                type="button"
+                class="btn btn-success form-control"
+                (click)="AddOildSale()"
+              >
+                <i class="fa fa-car"></i>
+                Add Oil Sale
+              </button>
+            </div>
+            <div class="form-group">
+              <button
+                type="button"
+                class="btn btn-success form-control"
+                (click)="AddLubSale()"
+              >
+                <i class="fa fa-truck"></i>
+                Add Lubricant
+              </button>
+            </div>
+            <div class="form-group">
+              <button
+                type="button"
+                class="btn btn-danger form-control"
+                (click)="AddRefund()"
+                accesskey="s"
+              >
+                <i class="fa fa-refresh"></i>
+                Add Refund
+              </button>
+            </div>
+            <div class="form-group">
+              <button
+                type="button"
+                class="btn btn-danger form-control"
+                (click)="CreditSale()"
+                accesskey="s"
+              >
+                <i class="fa fa-dollar"></i>
+                Add Credit Sale
+              </button>
+            </div>
+            <div class="form-group">
+              <button
+                type="button"
+                class="btn btn-warning form-control"
+                (click)="CashPayment()"
+                accesskey="s"
+              >
+                <i class="fa fa-dollar"></i>
+                Cash Out
+              </button>
+            </div>
+            <div class="form-group">
+              <button
+                type="button"
+                class="btn btn-warning form-control"
+                (click)="CashReciept()"
+                accesskey="s"
+              >
+                <i class="fa fa-dollar"></i>
+                Cash In
+              </button>
+            </div>
+            <div class="form-group">
+              <button
+                type="button"
+                class="btn btn-warning form-control"
+                (click)="AddExpense()"
+                accesskey="s"
+              >
+                <i class="fa fa-dollar"></i>
+                Add Expense
+              </button>
+            </div>
+            <div class="form-group">
+              <button
+                type="button"
+                class="btn btn-primary form-control"
+                (click)="CloseAccounts()"
+                accesskey="s"
+              >
+                <i class="fa fa-save"></i>
+                Post All
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-3">
+        <div class="form-group">
+          <h4 for="">Closing Cash: <span class="text-danger">
+              <strong>{{
+                FindBalance2()
+              }}</strong>
+            </span></h4>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

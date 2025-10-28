@@ -1,0 +1,227 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Process Product</h4>
+  <button
+    type="button"
+    class="btn-close close pull-right"
+    aria-label="Close"
+    (click)="bsModalRef.hide()"
+  >
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <section id="ng-tables">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div>
+            <form #frmFilter="ngForm">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>Date:</label>
+                    <input
+                      type="date"
+                      name="date"
+                      id="date"
+                      class="form-control"
+                      [(ngModel)]="SupplierBills.date"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>Nationality</label>
+                    <strong
+                      ><p>{{ Nationality.nationality_name }}</p></strong
+                    >
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>Region</label>
+                    <strong
+                      ><p>{{ Nationality.region }}</p></strong
+                    >
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>Product</label>
+                    <strong>
+                      <p>{{ Detail.product_name }}</p></strong
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="row no-pad">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="vat">Supplier</label>
+                    <ejs-dropdownlist
+                      id="vendor"
+                      name="vendor"
+                      [dataSource]="Vendors"
+                      placeholder=""
+                      required
+                      [allowFiltering]="true"
+                      [sortOrder]="'Ascending'"
+                      [(ngModel)]="SupplierBills.supplier_id"
+                      [fields]="{ value: 'account_id', text: 'account_name' }"
+                      (change)="VendorSelected($event)"
+                    >
+                    </ejs-dropdownlist>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>Rate:</label>
+                    <input
+                      type="number"
+                      name="rate"
+                      id="rate"
+                      class="form-control"
+                      [(ngModel)]="SupplierBills.rate"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>Security:</label>
+                    <input
+                      type="number"
+                      name="secuirty"
+                      id="secuirty"
+                      class="form-control"
+                      [(ngModel)]="SupplierBills.security"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>Vat:</label>
+                    <input
+                      type="number"
+                      name="secuirty"
+                      id="secuirty"
+                      class="form-control"
+                      [(ngModel)]="SupplierBills.extra"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-1">
+                  <div class="form-group">
+                    <label>Qty:</label>
+                    <input
+                      type="number"
+                      name="qty"
+                      id="qty"
+                      class="form-control"
+                      [(ngModel)]="SupplierBills.qty"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label
+                      >Total Cost:<span
+                        *ngIf="
+                          SupplierBills.rate * 1 +
+                            SupplierBills.security * 1 +
+                            SupplierBills.extra * 1 <
+                          data.staff_cost * 1
+                        "
+                        class="text-danger text-sm"
+                      >
+                        Invalid</span
+                      >
+                    </label>
+                    <input
+                      type="number"
+                      name="cost"
+                      id="cost"
+                      [value]="
+                        (SupplierBills.rate * 1 +
+                          SupplierBills.security * 1 +
+                          SupplierBills.extra * 1) *
+                        SupplierBills.qty
+                      "
+                      class="form-control"
+                      [(ngModel)]="Detail.cost"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>Ticket No:</label>
+                    <input
+                      type="text"
+                      name="ticket_no"
+                      id="ticket_no"
+                      class="form-control"
+                      [(ngModel)]="SupplierBills.ticket_no"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label>Booking Ref No:</label>
+                    <input
+                      type="text"
+                      name="book_no"
+                      id="book_no"
+                      class="form-control"
+                      [(ngModel)]="SupplierBills.book_ref"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>Staff Cost: </label>
+                    <input
+                      type="number"
+                      name="staffcost"
+                      id="staffcost"
+                      class="form-control"
+                      [(ngModel)]="Detail.staff_cost"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button
+                      type="submit"
+                      class="btn btn-success form-control"
+                      (click)="SaveData()"
+                      accesskey="a"
+                    >
+                      <i class="fa fa-save"></i>
+                      Save
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button
+                      type="submit"
+                      class="btn btn-primary form-control"
+                      (click)="bsModalRef.hide()"
+                      accesskey="a"
+                    >
+                      <i class="fa fa-refresh"></i>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

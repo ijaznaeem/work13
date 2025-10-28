@@ -1,0 +1,205 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Stock Issue for Production</h5>
+  </div>
+  <div class="card-block widget-body">
+    <form #formstockissue="ngForm">
+      <div class="row no-gutter">
+        <div class="col-md-2">
+          <label for="dp1">Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dp1"
+              [(ngModel)]="stockIssue.Date"
+              ngbDatepicker
+              disabled
+              #d1="ngbDatepicker"
+            />
+            <div class="input-group-append">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="d1.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="dp2">Time:</label>
+            <input
+              class="form-control"
+              name="txtTime"
+              [(ngModel)]="stockIssue.Time"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="dp2">Description:</label>
+            <input
+              class="form-control"
+              name="txtDesc"
+              [(ngModel)]="stockIssue.Description"
+            />
+          </div>
+        </div>
+      </div>
+
+      <form #formqty="ngForm">
+        <div class="row no-gutter">
+          <div class="col-md-2">
+            <label for="dp2">Code:</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                name="pcode"
+                [(ngModel)]="productdetails.PCode"
+                (keydown.f2)="Search()"
+                (keydown.enter)="Find()"
+                #Barcode
+              />
+
+              <div class="input-group-append">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="Search()"
+                >
+                  <i class="fa fa-search"></i>
+                  F2
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group col-md-3">
+            <label for="dp2">Select Item:</label>
+
+            <ejs-combobox
+              name="product"
+              id="product"
+              #cmbProduct
+              [allowFiltering]="true"
+              [dataSource]="Products"
+              [fields]="{ text: 'ProductName', value: 'ProductID' }"
+              [(ngModel)]="productdetails.ProductID"
+              (change)="ProductSelected($event.itemData)"
+              required
+            >
+            </ejs-combobox>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="dp1">stock:</label>
+
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                id="tqty"
+                name="tqty"
+                [(ngModel)]="productdetails.Stock"
+                placeholder="0"
+              />
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="qty">Qty:</label>
+              <input
+                type="number"
+                #qty
+                class="form-control dation-field"
+                required="required"
+                id="qty"
+                name="qty"
+                [(ngModel)]="productdetails.Qty"
+                placeholder="0"
+              />
+            </div>
+          </div>
+          <div class="col-lg-1">
+            <div class="form-group">
+              <label for="packing">Packing:</label>
+              <input
+                type="text"
+                class="form-control dation-field"
+                required="required"
+                id="packing"
+                name="packing"
+                [(ngModel)]="productdetails.Packing"
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          <div class="col-lg-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="submit"
+                class="btn btn-primary form-control"
+                [disabled]="!formqty.form.valid"
+                (click)="AddOrder()"
+                accesskey="a"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </form>
+
+    <div class="card-block pt-0 widget-body">
+      <h5 class="mb-0">Stock Issue Details</h5>
+      <div class="table-responsive">
+        <ng2-smart-table
+          class="table table-hover"
+          [settings]="settings"
+          [source]="data"
+          (deleteConfirm)="onDeleteConfirm($event)"
+          (editConfirm)="onEdit($event)"
+        ></ng2-smart-table>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-1"></div>
+      <div class="col-lg-4"></div>
+      <div class="col-lg-1"></div>
+      <div class="col-lg-2">
+        <div class="form-group">
+          <label for="dp2">&nbsp;</label>
+          <button
+            type="button"
+            [disabled]="!btnsave"
+            class="btn btn-primary form-control"
+            (click)="SaveData()"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+
+      <div class="col-lg-2">
+        <div class="form-group">
+          <label for="dp2">&nbsp;</label>
+          <button
+            type="button"
+            class="btn btn-danger form-control"
+            (click)="cancel()"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

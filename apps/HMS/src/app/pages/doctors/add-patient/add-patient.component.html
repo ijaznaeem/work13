@@ -1,0 +1,162 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Register Patient</h4>
+  <button
+    type="button"
+    class="close pull-right"
+    aria-label="Close"
+    (click)="bsModalRef.hide()"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="row no-gutter">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      <form #frmFilter="ngForm">
+        <div class="row no-gutter">
+          <div class="col-md-4">
+            <label for="dtFrom">Reg Date:</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dtFrom"
+                [(ngModel)]="patient.regdate"
+                ngbDatepicker
+                #dtFrom="ngbDatepicker"
+                required
+              />
+              <div class="input-group-addon">
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  (click)="dtFrom.toggle()"
+                >
+                  <i class="fa fa-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="">Reg No:</label>
+              <input
+                class="form-control"
+                type="text"
+                name="regNo"
+                id="regNo"
+                [(ngModel)]="patient.regno"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="">Mobile No:</label>
+              <input
+                class="form-control"
+                type="text"
+                name="mobile"
+                id="mobile"
+                [(ngModel)]="patient.mobile"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="">Patient Name:</label>
+              <input
+                class="form-control"
+                type="text"
+                name="patName"
+                id="patName"
+                [(ngModel)]="patient.fullname"
+              />
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="">Address:</label>
+              <input
+                class="form-control"
+                type="text"
+                name="address"
+                id="address"
+                [(ngModel)]="patient.address"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Gender:</label>
+              <select
+                class="form-control"
+                type="text"
+                name="gender"
+                id="gender"
+                [(ngModel)]="patient.gender"
+              >
+                <option value="Male">Male</option>
+                <option value="Fe-Male">Fe-Male</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="">Weight:</label>
+              <input
+                class="form-control"
+                type="number"
+                name="weight"
+                id="weight"
+                [(ngModel)]="patient.weight"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label for="">Age:</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                type="age"
+                name="age"
+                id="age"
+                [(ngModel)]="Age.age"
+              />
+              <div class="input-group-addon">
+                <select
+                  class="form-control"
+                  [(ngModel)]="Age.ageopt"
+                  name="agetpe"
+                  id="agetype"
+                >
+                  <option value="365" selected>Year</option>
+                  <option value="30">Months</option>
+                  <option value="1">Days</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="">&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-danger form-control"
+              (click)="AddPatient()"
+              accesskey="a"
+            >
+              <i class="fa fa-save"></i>
+              Save Patient
+            </button>
+          </div>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+</div>

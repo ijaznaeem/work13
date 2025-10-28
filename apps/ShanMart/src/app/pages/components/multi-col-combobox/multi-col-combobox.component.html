@@ -1,0 +1,30 @@
+<ejs-combobox
+  #cmbMulti
+  [allowFiltering]="true"
+  [dataSource]="Data"
+  [fields]="fields"
+  placeholder="Select Item..."
+  required="required"
+  (change)="Selected($event)"
+  (filtering)="onFiltering($event)"
+  [itemTemplate]="itemTemplate"
+  [headerTemplate]="headerTemplate"
+  [(ngModel)]="value"
+>
+  <ng-template #headerTemplate let-data="">
+    <div class="container" *ngIf="Cols.length > 0">
+      <div class="row">
+        <div class="col-sm-{{ col.size }}" *ngFor="let col of Cols">
+          {{ col.title }}
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #itemTemplate let-data="">
+    <div class="row">
+      <div class="col-sm-{{ col.size }}" *ngFor="let col of Cols">
+        {{ data[col.fldName] }}
+      </div>
+    </div>
+  </ng-template>
+</ejs-combobox>

@@ -1,0 +1,148 @@
+<style>
+  .carousel-caption {
+    position: relative;
+    left: auto;
+    right: auto;
+  }
+</style>
+<div class="card overflow-hidden">
+  <div class="card-content">
+    <div class="card-img">
+      <ngb-carousel>
+        <ng-template ngbSlide *ngFor="let img of Order.details">
+          <img
+            src="{{ ImageUrl + (img.Image == '' ? 'logo.png' : img.Image) }}"
+            class="d-block w-100"
+            alt="{{ img.ProductName }}"
+          />
+          <div class="carousel-caption">
+            <h5 class="mb-0 ff-serif text-uppercase">{{ img.ProductName }}</h5>
+            <p class="mb-0 text-danger">Ordered Quantity {{ img.Qty }}.</p>
+          </div>
+        </ng-template>
+      </ngb-carousel>
+      <a
+        class="btn btn-floating halfway-fab btn-small bg-success"
+        (click)="Confirm(Order)"
+        ><i class="ft-check"></i> Confirm
+      </a>
+    </div>
+    <div class="card-body">
+      <h4 class="card-title">{{ Order.CustomerName }}</h4>
+      <p class="card-text">
+        Address: <Span class="text-primary"> {{ Order.CompleteAddress }}</Span>
+      </p>
+      <p class="card-text">
+        WhatsApp #: <Span class="text-primary"> {{ Order.MobileNo }}</Span>
+      </p>
+      <p class="card-text">
+        Amount: <Span class="text-primary"> {{ Order.OrderAmount }}</Span>
+      </p>
+      <p class="card-text">
+        No of Items:
+        <Span class="text-primary"> {{ Order.details.length }}</Span>
+      </p>
+
+      <div class="card-footer pt-0">
+        <a class="card-link danger" (click)="ShowDetails(Order)"
+          >Order Detail</a
+        >
+        <a class="card-link danger">Cancel Order</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #dlgdetails>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Order Details</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="modalRef?.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <section id="shopping-cart">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header"></div>
+            <div class="card-content">
+              <div class="card-body table-responsive">
+                <table class="table text-center m-0">
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>Product</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Amount</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of Details">
+                      <td>
+                        <img
+                          src="{{
+                            ImageUrl +
+                              (item.Image == '' ? 'logo.png' : item.Image)
+                          }}"
+                          alt="{{ item.ProductName }}"
+                          style="height: 75px"
+                        />
+                      </td>
+                      <td>{{ item.ProductName }}</td>
+
+                      <td>Rs. {{ item.SPrice }}</td>
+                      <td>
+                        <div class="btn-group ml-1">
+                          <a
+                            class="btn btn-primary px-1 py-1 font-medium-5"
+                            href="javascript:void(0)"
+                            >-</a
+                          >
+                          <a
+                            class="btn btn-primary px-1 py-1"
+                            href="javascript:void(0)"
+                            >{{ item.Qty }}</a
+                          >
+                          <a
+                            class="btn btn-primary px-1 py-1 font-medium-5"
+                            href="javascript:void(0)"
+                            >+</a
+                          >
+                        </div>
+                      </td>
+                      <td>Rs. {{ item.Amount }}</td>
+                      <td>
+                        <a href="javascript:;" class="danger">
+                          <i class="ft-trash font-medium-3"></i>
+                        </a>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td><b>Total</b></td>
+                      <td>
+                        <b>Rs. {{ GetTotal(Details) }} </b>
+                      </td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</ng-template>

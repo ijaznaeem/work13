@@ -1,0 +1,22 @@
+<div widget class="card border-0 box-shadow">
+    <div class="card-header transparent border-0 text-muted">
+  
+      <h5 class="mb-3">Account Typess</h5>
+  
+    </div>
+    <div class="card-block widget-body">
+      
+      <div id="print-section">
+        <div class="row">
+          <div class="col-md-12">
+            <ft-dynamic-table
+              [Settings]="setting"
+              [Data]="data"
+              (ClickAction)="Clicked($event)"
+            ></ft-dynamic-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

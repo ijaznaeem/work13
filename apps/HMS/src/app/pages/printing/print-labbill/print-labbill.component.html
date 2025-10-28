@@ -1,0 +1,76 @@
+<div id="sheet">
+  <section id="print-content">
+    <h3 class="text-center">{{ settings.title }}</h3>
+    <h5 class="text-center">
+      {{ settings.address }}, Phone No: {{ settings.phoneno }}
+    </h5>
+
+    <p></p>
+    <table class="bill-details">
+      <tbody>
+        <tr>
+          <td>
+            Date : <span>{{ printdata.date | date }}</span>
+          </td>
+          <td>
+            Time : <span>{{ printdata.time }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Reg #: <span>{{ printdata.regno }}</span>
+          </td>
+          <td>
+            <span class="heading"> {{ printdata.fullname }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Gender: <span>{{ printdata.gender }}</span>
+          </td>
+          <td>
+            <span class="heading"> {{ printdata.address }}</span>
+          </td>
+        </tr>
+        <tr>
+          <th class="center-align" colspan="2">
+            <span class="receipt">Lab Receipt</span>
+          </th>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="items">
+      <thead>
+        <tr>
+          <th class="heading name">Test</th>
+          <th class="heading amount">Amount</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let d of printdata.details">
+          <td> &nbsp; &nbsp;{{ d.test_name }}</td>
+
+          <td class="price">{{ d.price }}</td>
+        </tr>
+
+        <tr *ngIf="printdata.refund * 1 > 0">
+          <th class="total text">Amount</th>
+          <th class="total price">{{ printdata.amount }}</th>
+        </tr>
+        <tr *ngIf="printdata.refund * 1 > 0">
+          <th class="total text">Refund</th>
+          <th class="total price">{{ printdata.refund }}</th>
+        </tr>
+        <tr>
+          <th class="total text">Total Amount</th>
+          <th class="total price">{{ printdata.net_amount }}</th>
+        </tr>
+      </tbody>
+    </table>
+    <section>
+      <p style="text-align: center">Thank you for your visit!</p>
+    </section>
+  </section>
+</div>
