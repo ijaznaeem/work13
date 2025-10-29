@@ -1,0 +1,30 @@
+<div class="card">
+  <div class="card-header transparent border-0 text-muted">
+    <div class="row">
+      <div class="col-md-4">
+        <h5>User: <span class="text-primary"><strong> {{ User.full_name }} </strong></span></h5>
+      </div>
+      <div class="col-md-4">
+        <h5>Department: <span class="text-success"><strong>{{ User.dept_name }}</strong></span></h5>
+      </div>
+      <div class="col-md-4">
+        <h5>Group: <span class="text-warning"><strong>{{ User.group_name }}</strong></span></h5>
+      </div>
+    </div>
+  </div>
+  <div class="card-content">
+    <div class="card-body">
+      <div class="row no-gutter">
+        <div class="col-md-3" *ngFor="let Card of Cards; let index=i">
+
+          <app-gradient-card
+          [Caption]="Card.Caption"
+          [Value]="Card.Value"
+          [Style]="Card.Style"
+          > </app-gradient-card>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<div class="row no-gutter">
+  <div class="col-md-8 offset-md-2">
+    <div widget class="card border-0 box-shadow">
+      <div class="card-header transparent border-0 text-muted">
+        <h5 class="mb-3">Add Mortality</h5>
+      </div>
+      <div class="card-block widget-body">
+        <div class="container">
+          <ft-crud-form
+            [form]="form"
+            [formdata]="data"
+            (DataSaved)="DataSaved($event)"
+            (ItemChanged)="ItemChanged($event)"
+            (BeforeSave)="BeforeDataSaved($event)"
+            
+          >
+          </ft-crud-form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

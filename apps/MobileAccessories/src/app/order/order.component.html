@@ -1,0 +1,1273 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Add Order</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+          <div class="row no-gutter">
+            <div class="col-md-2">
+              <label for="dp1">Date:</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="dp1"
+                  [(ngModel)]="order.Date"
+                  ngbDatepicker
+                  #d1="ngbDatepicker"
+                  required
+                />
+                <div class="input-group-addon">
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    (click)="d1.toggle()"
+                  >
+                    <i class="fa fa-calendar"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-md-6">
+              <label for="customer">Customer </label>
+              <ng-select
+                #cmbCustomers
+                name="customer"
+                class="custom"
+                [items]="Accounts"
+                [virtualScroll]="true"
+                bindLabel="CustomerName"
+                bindValue="CustomerID"
+                placeholder="Select Customer"
+                required
+                [(ngModel)]="order.CustomerID"
+                selectOnTab="true"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <div class="row no-gutter">
+                    <div class="col-md-12">
+                      <strong>{{ item.CustomerName }}</strong>
+                    </div>
+                    <div class="col-md-9 text-italic font-small-2 mt-1">
+                      <small>
+                        {{ item.Address }}
+                      </small>
+                    </div>
+                    <div class="col-md-3 text-italic font-small-2 mt-1">
+                      <small>
+                        {{ item.City }}
+                      </small>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="gtotal">Total Order Amount</label>
+                <input
+                  type="text"
+                  class="form-control bold-input bg-light"
+                  id="gtotal"
+                  name="gtotal"
+                  [value]="order.Amount | currency: 'EUR':'symbol':'1.2-2'"
+                  readonly
+                  style="font-weight: bold; font-size: 1.1rem"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Enhanced Category & View Selection Row -->
+          <div class="row no-gutter mb-3">
+            <div class="col-md-4">
+              <label for="customer">Filter by Category</label>
+              <ng-select
+                [items]="Categories"
+                name="cmbCategory"
+                id="cmbCategory"
+                [virtualScroll]="true"
+                bindLabel="CategoryName"
+                bindValue="CategoryID"
+                placeholder="All Categories"
+                (change)="categorySelected($event)"
+                [clearable]="true"
+              >
+                <!-- Custom option template -->
+                <ng-template ng-option-tmp let-item="item">
+                  <div class="option-wrapper">
+                    <img
+                      class="product-thumb"
+                      [src]="getOptimizedImageUrl(item.ImageUrl)"
+                      alt="{{ item.CategoryName }}"
+                      style="
+                        width: 30px;
+                        height: 30px;
+                        object-fit: cover;
+                        border-radius: 4px;
+                      "
+                      loading="lazy"
+                      (load)="onImageLoad(item.ImageUrl)"
+                      (error)="onImageError($event, item.ImageUrl)"
+                    />
+                    <span class="ml-2">{{ item.CategoryName }}</span>
+                  </div>
+                </ng-template>
+
+                <!-- Custom selected value template -->
+                <ng-template ng-label-tmp let-item="item">
+                  <div class="selected-wrapper">
+                    <img
+                      class="product-thumb"
+                      [src]="getOptimizedImageUrl(item.ImageUrl)"
+                      alt="{{ item.CategoryName }}"
+                      style="
+                        width: 20px;
+                        height: 20px;
+                        object-fit: cover;
+                        border-radius: 4px;
+                      "
+                      loading="lazy"
+                      (load)="onImageLoad(item.ImageUrl)"
+                      (error)="onImageError($event, item.ImageUrl)"
+                    />
+                    <span class="ml-2">{{ item.CategoryName }}</span>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+
+            <div class="col-md-4">
+              <label>Product View</label>
+              <div class="btn-group w-100">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  (click)="setViewMode('grid')"
+                  [class.active]="viewMode === 'grid'"
+                >
+                  <i class="fa fa-th-large"></i> Grid
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="setViewMode('list')"
+                  [class.active]="viewMode === 'list'"
+                >
+                  <i class="fa fa-list"></i> List
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-info"
+                  (click)="setViewMode('card')"
+                  [class.active]="viewMode === 'card'"
+                >
+                  <i class="fa fa-id-card"></i> Cards
+                </button>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label>Quick Actions</label>
+              <div class="btn-group w-100">
+                <button
+                  type="button"
+                  class="btn btn-outline-success"
+                  (click)="enableBulkMode()"
+                  [class.active]="bulkAddMode"
+                  title="Select multiple products quickly"
+                >
+                  <i class="fa fa-shopping-cart"></i> Bulk Add
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-warning"
+                  (click)="clearAllSelections()"
+                  title="Clear current selection"
+                >
+                  <i class="fa fa-eraser"></i> Clear
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading Indicator -->
+          <div *ngIf="isLoading && FilteredProducts.length === 0" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="sr-only">Loading products...</span>
+            </div>
+            <p class="mt-2 text-muted">Loading products...</p>
+          </div>
+
+          <!-- No Products Message -->
+          <div *ngIf="!isLoading && FilteredProducts.length === 0 && searchTerm" class="text-center py-4">
+            <i class="fa fa-search fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No products found</h5>
+            <p class="text-muted">Try adjusting your search terms or category filter</p>
+            <button class="btn btn-outline-primary" (click)="clearSearch()">
+              <i class="fa fa-times"></i> Clear Search
+            </button>
+          </div>
+
+          <!-- Enhanced Product Search -->
+          <div class="row no-gutter mb-3" *ngIf="Products.length > 0">
+            <div class="col-md-6 col-sm-12">
+              <label>Search Products</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Type to search products by name, description..."
+                  [(ngModel)]="searchTerm"
+                  (input)="onSearchProducts()"
+                  name="searchTerm"
+                  (keydown.enter)="$event.preventDefault(); focusFirstProduct()"
+                />
+                <div class="input-group-append">
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="clearSearch()"
+                    title="Clear search"
+                  >
+                    <i class="fa fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label>Sort by</label>
+              <select
+                class="form-control"
+                [(ngModel)]="sortBy"
+                (change)="changeSorting(sortBy)"
+                name="sortBy"
+              >
+                <option value="name">Product Name</option>
+                <option value="price">Price (Low to High)</option>
+                <option value="price-desc">Price (High to Low)</option>
+                <option value="category">Category</option>
+              </select>
+            </div>
+            <div class="col-md-3 text-right">
+              <label>&nbsp;</label>
+              <div>
+                <small class="text-muted">
+                  {{ FilteredProducts.length }}
+                  <span *ngIf="totalProducts > FilteredProducts.length">of {{ totalProducts }}</span>
+                  products
+                  <span *ngIf="isLoading">
+                    <i class="fa fa-spinner fa-spin"></i>
+                  </span>
+                </small>
+                <br />
+                <small class="text-info" *ngIf="selectedCategory?.CategoryName">
+                  Category: {{ selectedCategory.CategoryName }}
+                </small>
+                <br />
+                <small class="text-muted" *ngIf="totalPages > 1">
+                  Page {{ currentPage }} of {{ totalPages }}
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bulk Selection Panel -->
+          <div
+            *ngIf="bulkAddMode && bulkSelectedProducts.length > 0"
+            class="alert alert-success mb-3"
+          >
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h6 class="mb-1">
+                  <i class="fa fa-shopping-cart"></i>
+                  {{ bulkSelectedProducts.length }} product(s) selected for bulk
+                  add
+                </h6>
+                <div class="d-flex flex-wrap gap-1">
+                  <span
+                    *ngFor="let product of bulkSelectedProducts"
+                    class="badge badge-primary mr-1 mb-1"
+                  >
+                    {{ product.ProductName }}
+                    <i
+                      class="fa fa-times ml-1 cursor-pointer"
+                      (click)="removeFromBulkSelection(product)"
+                    ></i>
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-4 text-right">
+                <button
+                  class="btn btn-sm btn-success mr-2"
+                  (click)="processBulkAdd()"
+                >
+                  <i class="fa fa-plus"></i> Add All to Order
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="clearBulkSelection()"
+                >
+                  <i class="fa fa-times"></i> Clear
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Enhanced Product Grid View -->
+          <div
+            *ngIf="viewMode === 'grid' && FilteredProducts.length > 0"
+            class="row mb-4"
+          >
+            <div class="col-12">
+              <h6>
+                Select Products from Grid
+                <small class="text-muted"
+                  >({{
+                    bulkAddMode
+                      ? 'Click multiple products to select'
+                      : 'Click to quick add'
+                  }})</small
+                >
+              </h6>
+              <div
+                class="product-grid"
+                style="max-height: 500px; overflow-y: auto"
+              >
+                <div class="row">
+                  <div
+                    class="col-md-4 col-xs-12 col-sm-12 mb-3"
+                    *ngFor="let product of FilteredProducts; let i = index"
+                  >
+                    <div
+                      class="card product-card h-100"
+                      [id]="'product-' + i"
+                      (click)="handleProductGridClick(product)"
+                      [class.selected]="isProductSelected(product)"
+                      [class.bulk-selected]="isBulkSelected(product)"
+                      style="cursor: pointer; transition: all 0.3s"
+                    >
+                      <img
+                        [src]="product.Image"
+                        class="card-img-top"
+                        [alt]="product.ProductName"
+                        style="height: 200px; object-fit: cover"
+                        loading="lazy"
+                        (error)="onImageError($event, product.OriginalImage || product.Image)"
+                        (load)="onImageLoad(product.OriginalImage || product.Image)"
+                      />
+                      <div class="card-body p-2 d-flex flex-column">
+                        <h6
+                          class="card-title text-truncate flex-grow-1"
+                          [title]="product.ProductName"
+                        >
+                          {{ product.ProductName }}
+                        </h6>
+                        <div
+                          class="d-flex justify-content-between align-items-center mt-auto"
+                        >
+                          <span class="badge badge-primary"
+                            >€{{ product.SPrice | number: '1.2-2' }}</span
+                          >
+                        </div>
+                        <div class="mt-1" *ngIf="bulkAddMode">
+                          <i
+                            class="fa fa-check-circle text-success"
+                            *ngIf="isBulkSelected(product)"
+                          ></i>
+                          <i
+                            class="fa fa-circle-o text-muted"
+                            *ngIf="!isBulkSelected(product)"
+                          ></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Enhanced Product Card View -->
+          <div
+            *ngIf="viewMode === 'card' && FilteredProducts.length > 0"
+            class="row mb-4"
+          >
+            <div class="col-12">
+              <h6>
+                Product Cards
+                <small class="text-muted"
+                  >({{
+                    bulkAddMode
+                      ? 'Click multiple products to select'
+                      : 'Click to quick add'
+                  }})</small
+                >
+              </h6>
+              <div style="max-height: 500px; overflow-y: auto">
+                <div class="row">
+                  <div
+                    class="col-md-6 mb-3"
+                    *ngFor="let product of FilteredProducts; let i = index"
+                  >
+                    <div
+                      class="card product-card-horizontal"
+                      [id]="'product-card-' + i"
+                      (click)="handleProductGridClick(product)"
+                      [class.selected]="isProductSelected(product)"
+                      [class.bulk-selected]="isBulkSelected(product)"
+                      style="cursor: pointer; transition: all 0.3s"
+                    >
+                      <div class="row no-gutters">
+                        <div class="col-6">
+                          <img
+                            [src]="product.Image"
+                            class="card-img h-100"
+                            [alt]="product.ProductName"
+                            style="object-fit: cover; min-height: 180px"
+                            loading="lazy"
+                            (error)="onImageError($event, product.OriginalImage || product.Image)"
+                            (load)="onImageLoad(product.OriginalImage || product.Image)"
+                          />
+                        </div>
+                        <div class="col-6">
+                          <div class="card-body p-3">
+                            <h6 class="card-title">
+                              {{ product.ProductName }}
+                            </h6>
+                            <p class="card-text">
+                              <small class="text-muted">{{
+                                product.Description ||
+                                  'No description available'
+                              }}</small>
+                            </p>
+                            <div
+                              class="d-flex justify-content-between align-items-center"
+                            >
+                              <span class="badge badge-primary"
+                                >€{{ product.SPrice | number: '1.2-2' }}</span
+                              >
+                              <small
+                                class="text-muted"
+                                *ngIf="product.StockQty >= 0"
+                              >
+                                Stock: {{ product.StockQty }}
+                              </small>
+                              <div *ngIf="bulkAddMode">
+                                <i
+                                  class="fa fa-check-circle text-success"
+                                  *ngIf="isBulkSelected(product)"
+                                ></i>
+                                <i
+                                  class="fa fa-circle-o text-muted"
+                                  *ngIf="!isBulkSelected(product)"
+                                ></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Enhanced List View -->
+          <div
+            *ngIf="viewMode === 'list' && FilteredProducts.length > 0"
+            class="row mb-4"
+          >
+            <div class="col-12">
+              <h6>
+                Product List
+                <small class="text-muted"
+                  >({{
+                    bulkAddMode
+                      ? 'Click checkbox to select multiple'
+                      : 'Click row to quick add'
+                  }})</small
+                >
+              </h6>
+              <div
+                class="table-responsive"
+                style="max-height: 400px; overflow-y: auto"
+              >
+                <table class="table table-striped table-hover">
+                  <thead class="thead-light sticky-top">
+                    <tr>
+                      <th *ngIf="bulkAddMode" width="50">
+                        <input
+                          type="checkbox"
+                          (change)="toggleSelectAll($event)"
+                          [checked]="isAllSelected()"
+                          class="form-check-input"
+                        />
+                      </th>
+                      <th width="80">Image</th>
+                      <th>Product Name</th>
+                      <th width="100">Price</th>
+                      <th width="100">Stock</th>
+                      <th width="150" *ngIf="!bulkAddMode">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      *ngFor="let product of FilteredProducts; let i = index"
+                      [id]="'product-row-' + i"
+                      (click)="!bulkAddMode && handleProductGridClick(product)"
+                      [class.table-active]="isProductSelected(product)"
+                      [style.cursor]="!bulkAddMode ? 'pointer' : 'default'"
+                    >
+                      <td *ngIf="bulkAddMode">
+                        <input
+                          type="checkbox"
+                          [checked]="isBulkSelected(product)"
+                          (change)="toggleBulkSelection(product)"
+                          (click)="$event.stopPropagation()"
+                          class="form-check-input"
+                        />
+                      </td>
+                      <td>
+                        <img
+                          [src]="product.Image"
+                          [alt]="product.ProductName"
+                          style="
+                            width: 50px;
+                            height: 50px;
+                            object-fit: cover;
+                            border-radius: 4px;
+                          "
+                          loading="lazy"
+                          (error)="onImageError($event, product.OriginalImage || product.Image)"
+                          (load)="onImageLoad(product.OriginalImage || product.Image)"
+                        />
+                      </td>
+                      <td>
+                        <strong>{{ product.ProductName }}</strong>
+                        <br />
+                        <small class="text-muted">{{
+                          product.Description || 'No description'
+                        }}</small>
+                      </td>
+                      <td>
+                        <span class="badge badge-primary"
+                          >€{{ product.SPrice | number: '1.2-2' }}</span
+                        >
+                      </td>
+                      <td>
+                        <span
+                          [class]="
+                            product.StockQty > 0
+                              ? 'text-success'
+                              : 'text-danger'
+                          "
+                        >
+                          {{ product.StockQty >= 0 ? product.StockQty : 'N/A' }}
+                        </span>
+                      </td>
+                      <td *ngIf="!bulkAddMode">
+                        <button
+                          class="btn btn-sm btn-primary"
+                          (click)="
+                            $event.stopPropagation();
+                            handleProductGridClick(product)
+                          "
+                          title="Quick add this product"
+                        >
+                          <i class="fa fa-plus"></i> Add
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Load More Button for List View -->
+              <div class="text-center mt-3" *ngIf="hasMoreProducts()">
+                <button
+                  class="btn btn-outline-primary"
+                  (click)="loadMoreProducts()"
+                  [disabled]="loadingMore"
+                >
+                  <i class="fa fa-spinner fa-spin" *ngIf="loadingMore"></i>
+                  <i class="fa fa-plus" *ngIf="!loadingMore"></i>
+                  {{ loadingMore ? 'Loading...' : 'Load More Products' }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Load More Button for Grid and Card Views -->
+          <div
+            *ngIf="(viewMode === 'grid' || viewMode === 'card') && hasMoreProducts()"
+            class="row mb-3"
+          >
+            <div class="col-12 text-center">
+              <button
+                class="btn btn-outline-primary"
+                (click)="loadMoreProducts()"
+                [disabled]="loadingMore"
+              >
+                <i class="fa fa-spinner fa-spin" *ngIf="loadingMore"></i>
+                <i class="fa fa-plus" *ngIf="!loadingMore"></i>
+                {{ loadingMore ? 'Loading...' : 'Load More Products' }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Enhanced Quick Add Panel -->
+          <div
+            *ngIf="quickAddMode && selectedProduct"
+            class="alert alert-info mb-3"
+          >
+            <div class="row align-items-center">
+              <div class="col-md-2">
+                <img
+                  [src]="selectedProduct.Image"
+                  [alt]="selectedProduct.ProductName"
+                  class="img-fluid rounded"
+                  style="max-height: 80px; object-fit: cover"
+                  loading="lazy"
+                  (error)="onImageError($event, selectedProduct.OriginalImage || selectedProduct.Image)"
+                  (load)="onImageLoad(selectedProduct.OriginalImage || selectedProduct.Image)"
+                />
+              </div>
+              <div class="col-md-6">
+                <strong>{{ selectedProduct.ProductName }}</strong>
+                <br />
+                <span class="text-muted"
+                  >Price: €{{ selectedProduct.SPrice | number: '1.2-2' }}</span
+                >
+                <br />
+                <small class="text-muted" *ngIf="selectedProduct.StockQty >= 0">
+                  Available Stock: {{ selectedProduct.StockQty }}
+                </small>
+              </div>
+              <div class="col-md-4 text-right">
+                <button
+                  class="btn btn-sm btn-success mr-2"
+                  (click)="AddOrder()"
+                  [disabled]="!orderdetail.Qty || orderdetail.Qty <= 0"
+                >
+                  <i class="fa fa-plus"></i> Add to Order
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  (click)="cancelQuickAdd()"
+                >
+                  <i class="fa fa-times"></i> Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Selection Form (Traditional) -->
+          <div class="row no-gutter" *ngIf="!quickAddMode && viewMode === 'list'">
+            <div class="col-md-6">
+              <label for="cmbProduct">Select Product</label>
+              <ng-select
+                #cmbProduct
+                [items]="Products"
+                name="cmbProduct"
+                id="cmbProduct"
+                [virtualScroll]="true"
+                [searchable]="true"
+                [searchFn]="ProductSearchFn"
+                bindLabel="ProductName"
+                bindValue="ProductID"
+                placeholder="Select product or use visual modes above"
+                (change)="productSelected($event)"
+                [(ngModel)]="orderdetail.ProductID"
+                [clearable]="true"
+              >
+                <!-- Custom option template -->
+                <ng-template ng-option-tmp let-item="item">
+                  <div class="option-wrapper d-flex align-items-center">
+                    <img
+                      class="product-thumb mr-2"
+                      [src]="getOptimizedImageUrl(item.Image)"
+                      alt="{{ item.ProductName }}"
+                      style="
+                        width: 40px;
+                        height: 40px;
+                        object-fit: cover;
+                        border-radius: 4px;
+                      "
+                      loading="lazy"
+                      (load)="onImageLoad(item.Image)"
+                      (error)="onImageError($event, item.Image)"
+                    />
+                    <div>
+                      <div>
+                        <strong>{{ item.ProductName }}</strong>
+                      </div>
+                      <small class="text-muted"
+                        >Price: €{{ item.SPrice | number: '1.2-2' }}</small
+                      >
+                    </div>
+                  </div>
+                </ng-template>
+
+                <!-- Custom selected value template -->
+                <ng-template ng-label-tmp let-item="item">
+                  <div class="selected-wrapper d-flex align-items-center">
+                    <img
+                      class="product-thumb mr-2"
+                      [src]="getOptimizedImageUrl(item.Image)"
+                      alt="{{ item.ProductName }}"
+                      style="
+                        width: 25px;
+                        height: 25px;
+                        object-fit: cover;
+                        border-radius: 4px;
+                      "
+                      loading="lazy"
+                      (load)="onImageLoad(item.Image)"
+                      (error)="onImageError($event, item.Image)"
+                    />
+                    <span>{{ item.ProductName }}</span>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+
+            <!-- Selected Product Display (when in quick mode or other visual modes) -->
+            <div class="col-md-6" *ngIf="quickAddMode || viewMode !== 'list'">
+              <label>Selected Product</label>
+              <div
+                class="form-control-static p-2 bg-light rounded"
+                *ngIf="selectedProduct?.ProductID"
+              >
+                <div class="d-flex align-items-center">
+                  <img
+                    [src]="getOptimizedImageUrl(selectedProduct.Image)"
+                    [alt]="selectedProduct.ProductName"
+                    class="mr-2"
+                    style="
+                      width: 30px;
+                      height: 30px;
+                      object-fit: cover;
+                      border-radius: 4px;
+                    "
+                    loading="lazy"
+                    (load)="onImageLoad(selectedProduct.Image)"
+                    (error)="onImageError($event, selectedProduct.Image)"
+                  />
+                  <div>
+                    <strong>{{ selectedProduct.ProductName }}</strong>
+                    <br />
+                    <small class="text-muted"
+                      >€{{ selectedProduct.SPrice | number: '1.2-2' }}</small
+                    >
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-control-static p-2 bg-light rounded text-muted"
+                *ngIf="!selectedProduct?.ProductID"
+              >
+                No product selected. Use the visual modes above or dropdown to
+                select a product.
+              </div>
+            </div>
+          </div>
+
+          <form #formqty="ngForm">
+            <div class="row no-gutter">
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="color">Color</label>
+                  <ng-select
+                    [(ngModel)]="orderdetail.Color"
+                    name="color"
+                    id="color"
+                    placeholder="Select color"
+                    [clearable]="true"
+                    [items]="availableColors"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="size">Size</label>
+                  <ng-select
+                    [(ngModel)]="orderdetail.Size"
+                    name="size"
+                    id="size"
+                    placeholder="Select size"
+                    [clearable]="true"
+                    [items]="availableSizes"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="qty">Quantity*</label>
+                  <input
+                    [(ngModel)]="orderdetail.Qty"
+                    #qty="ngModel"
+                    class="form-control"
+                    id="qty"
+                    name="qty"
+                    type="number"
+                    required
+                    min="1"
+                    step="1"
+                  />
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="sprice">Unit Price*</label>
+                  <input
+                    [(ngModel)]="orderdetail.SPrice"
+                    class="form-control"
+                    id="sprice"
+                    name="sprice"
+                    type="number"
+                    required
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="notes">Notes</label>
+                  <input
+                    [(ngModel)]="orderdetail.Notes"
+                    class="form-control"
+                    id="notes"
+                    name="notes"
+                    type="text"
+                    placeholder="Optional notes"
+                  />
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="button"
+                    class="btn btn-primary w-100"
+                    (click)="AddOrder()"
+                    [disabled]="
+                      !orderdetail.ProductID ||
+                      !orderdetail.Qty ||
+                      orderdetail.Qty <= 0 ||
+                      !orderdetail.SPrice ||
+                      orderdetail.SPrice <= 0
+                    "
+                  >
+                    <i class="fa fa-plus"></i> Add to Order
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="row">
+            <div class="col-md-12">
+              <!-- Order Items Summary -->
+              <div class="card border-primary">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0">
+                    <i class="fa fa-shopping-cart"></i> Order Items
+                    <span class="badge badge-light text-primary ml-2">{{ orderItemsCount }}</span>
+                  </h6>
+                  <button
+                    type="button"
+                    class="btn btn-light btn-sm"
+                    (click)="showOrderDetails()"
+                    [disabled]="orderItemsCount === 0"
+                  >
+                    <i class="fa fa-list"></i> View Details
+                  </button>
+                </div>
+                <div class="card-body" *ngIf="orderItemsCount > 0">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <p class="mb-1"><strong>Items in order:</strong> {{ orderItemsCount }}</p>
+                      <p class="mb-0 text-muted">
+                        <small>Click "View Details" to edit quantities or remove items</small>
+                      </p>
+                    </div>
+                    <div class="col-md-4 text-right">
+                      <h5 class="text-success mb-0">
+                        Total: {{ order.Amount | currency: 'EUR':'symbol':'1.2-2' }}
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body text-center text-muted" *ngIf="orderItemsCount === 0">
+                  <i class="fa fa-shopping-cart fa-3x mb-3 text-muted"></i>
+                  <p>No items in order yet. Add products using the options above.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="Cancel()"
+              >
+                <i class="fa fa-times"></i> Cancel
+              </button>
+            </div>
+            <div class="col-md-6">
+              <button
+                type="submit"
+                class="btn btn-success float-right"
+                [disabled]="!fromPurchase.form.valid || orderItemsCount === 0"
+              >
+                <i class="fa fa-save"></i> Save Order
+              </button>
+            </div>
+          </div>
+
+          <!-- Order Details Modal -->
+          <div
+            class="modal fade show"
+            [style.display]="showOrderDetailsModal ? 'block' : 'none'"
+            *ngIf="showOrderDetailsModal"
+            tabindex="-1"
+            role="dialog"
+            style="background-color: rgba(0, 0, 0, 0.5)"
+          >
+            <div class="modal-dialog modal-xl" role="document">
+              <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                  <h5 class="modal-title">
+                    <i class="fa fa-shopping-cart"></i> Order Details
+                    <span class="badge badge-light text-primary ml-2">{{ orderItemsCount }} items</span>
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn btn-link text-white"
+                    (click)="closeOrderDetails()"
+                    title="Close"
+                  >
+                    <i class="fa fa-times fa-lg"></i>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div *ngIf="orderItemsCount === 0" class="text-center py-4">
+                    <i class="fa fa-shopping-cart fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No items in order</h5>
+                    <p class="text-muted">Add products to see them here</p>
+                  </div>
+
+                  <div *ngIf="orderItemsCount > 0">
+                    <div class="table-responsive">
+                      <table class="table table-bordered order-details-table">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th width="40%">Product Information</th>
+                            <th width="15%">Color & Size</th>
+                            <th width="15%">Price & Qty</th>
+                            <th width="15%">Amount</th>
+                            <th width="15%">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let item of orderItems; let i = index">
+                            <!-- First Row: Product Name -->
+                            <tr class="table-light">
+                              <td colspan="5" class="py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                  <div>
+                                    <h6 class="mb-0 text-primary">
+                                      <i class="fa fa-cube mr-2"></i>
+                                      {{ item.ProductName }}
+                                    </h6>
+                                    <small class="text-muted" *ngIf="item.Notes && item.Notes !== 'N/A'">
+                                      <i class="fa fa-comment mr-1"></i> {{ item.Notes }}
+                                    </small>
+                                  </div>
+                                  <small class="text-muted">Item #{{ i + 1 }}</small>
+                                </div>
+                              </td>
+                            </tr>
+                            
+                            <!-- Second Row: Details -->
+                            <tr class="border-top-0">
+                              <td class="py-2">
+                                <small class="text-muted">Product Details</small>
+                              </td>
+                              <td class="py-2">
+                                <div>
+                                  <div class="mb-1" *ngIf="item.Color && item.Color !== 'N/A'">
+                                    <small class="text-muted">Color:</small>
+                                    <span class="badge badge-secondary ml-1">{{ item.Color }}</span>
+                                  </div>
+                                  <div *ngIf="item.Size && item.Size !== 'N/A'">
+                                    <small class="text-muted">Size:</small>
+                                    <span class="badge badge-info ml-1">{{ item.Size }}</span>
+                                  </div>
+                                  <div *ngIf="(!item.Color || item.Color === 'N/A') && (!item.Size || item.Size === 'N/A')">
+                                    <span class="text-muted">-</span>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="py-2">
+                                <div class="mb-1">
+                                  <small class="text-muted">Unit Price:</small>
+                                  <strong class="d-block">€{{ item.SPrice | number: '1.2-2' }}</strong>
+                                </div>
+                                <div>
+                                  <small class="text-muted d-block mb-1">Quantity:</small>
+                                  <div class="input-group input-group-sm" style="max-width: 120px;">
+                                    <div class="input-group-prepend">
+                                      <button
+                                        class="btn btn-outline-secondary btn-sm"
+                                        type="button"
+                                        (click)="updateOrderItemQty(item, item.Qty - 1)"
+                                        [disabled]="item.Qty <= 1"
+                                      >
+                                        <i class="fa fa-minus"></i>
+                                      </button>
+                                    </div>
+                                    <input
+                                      type="number"
+                                      class="form-control form-control-sm text-center"
+                                      [(ngModel)]="item.Qty"
+                                      (change)="updateOrderItemQty(item, item.Qty)"
+                                      min="1"
+                                      style="max-width: 50px;"
+                                    />
+                                    <div class="input-group-append">
+                                      <button
+                                        class="btn btn-outline-secondary btn-sm"
+                                        type="button"
+                                        (click)="updateOrderItemQty(item, item.Qty + 1)"
+                                      >
+                                        <i class="fa fa-plus"></i>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="py-2">
+                                <small class="text-muted d-block">Total:</small>
+                                <h5 class="mb-0 text-success">€{{ item.Amount | number: '1.2-2' }}</h5>
+                              </td>
+                              <td class="py-2">
+                                <div class="btn-group-vertical btn-group-sm w-100">
+                                  <button
+                                    class="btn btn-outline-primary btn-sm mb-1"
+                                    (click)="editOrderItem(item)"
+                                    title="Edit item"
+                                  >
+                                    <i class="fa fa-edit mr-1"></i> Edit
+                                  </button>
+                                  <button
+                                    class="btn btn-outline-danger btn-sm"
+                                    (click)="removeOrderItem(item)"
+                                    title="Remove item"
+                                  >
+                                    <i class="fa fa-trash mr-1"></i> Remove
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            
+                            <!-- Separator row between items -->
+                            <tr *ngIf="i < orderItems.length - 1" class="table-separator">
+                              <td colspan="5" class="p-0" style="height: 8px; background-color: #f8f9fa; border: none;"></td>
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                        <tfoot class="thead-light">
+                          <tr>
+                            <td colspan="3" class="text-right py-3">
+                              <strong>Total Amount:</strong>
+                            </td>
+                            <td class="py-3">
+                              <h5 class="mb-0 text-success">
+                                €{{ order.Amount | currency: 'EUR':'symbol-narrow':'1.2-2' }}
+                              </h5>
+                            </td>
+                            <td class="py-3"></td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="closeOrderDetails()"
+                  >
+                    <i class="fa fa-times"></i> Close
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    (click)="closeOrderDetails()"
+                    *ngIf="orderItemsCount > 0"
+                  >
+                    <i class="fa fa-check"></i> Continue Order
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Modal for Enhanced Selection -->
+          <div
+            class="modal fade show"
+            [style.display]="showProductModal ? 'block' : 'none'"
+            *ngIf="showProductModal"
+            tabindex="-1"
+            role="dialog"
+          >
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">
+                    <i class="fa fa-shopping-cart"></i> Add Product to Order
+                  </h5>
+                  <button
+                    type="button"
+                    class="close"
+                    (click)="closeProductModal()"
+                  >
+                    <span>&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <img
+                        [src]="modalProduct.Image"
+                        [alt]="modalProduct.ProductName"
+                        class="img-fluid rounded shadow-sm"
+                        style="max-height: 200px; object-fit: cover; width: 100%"
+                      />
+                    </div>
+                    <div class="col-md-8">
+                      <h5>{{ modalProduct.ProductName }}</h5>
+                      <p class="text-muted">
+                        {{ modalProduct.Description || 'No description available' }}
+                      </p>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <strong>Price: €{{ modalProduct.SPrice | number: '1.2-2' }}</strong>
+                        </div>
+                        <div class="col-md-6" *ngIf="modalProduct.StockQty >= 0">
+                          <span class="text-muted">Stock: {{ modalProduct.StockQty }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="row">
+                    <div class="col-md-3">
+                      <label for="modalQty">Quantity*</label>
+                      <input
+                        [(ngModel)]="modalOrderDetail.Qty"
+                        class="form-control"
+                        id="modalQty"
+                        type="number"
+                        required
+                        min="1"
+                        step="1"
+                        (keydown.enter)="focusNextInput('modalPrice')"
+                      />
+                    </div>
+                    <div class="col-md-3">
+                      <label for="modalPrice">Unit Price*</label>
+                      <input
+                        [(ngModel)]="modalOrderDetail.SPrice"
+                        class="form-control"
+                        id="modalPrice"
+                        type="number"
+                        required
+                        min="0"
+                        step="0.01"
+                        (keydown.enter)="focusNextInput('modalColor')"
+                      />
+                    </div>
+                    <div class="col-md-3">
+                      <label for="modalColor">Color</label>
+                      <ng-select
+                        [(ngModel)]="modalOrderDetail.Color"
+                        id="modalColor"
+                        placeholder="Select color"
+                        [clearable]="true"
+                        [items]="availableColors"
+                      >
+                      </ng-select>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="modalSize">Size</label>
+                      <ng-select
+                        [(ngModel)]="modalOrderDetail.Size"
+                        id="modalSize"
+                        placeholder="Select size"
+                        [clearable]="true"
+                        [items]="availableSizes"
+                      >
+                      </ng-select>
+                    </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-md-12">
+                      <label for="modalNotes">Notes</label>
+                      <input
+                        [(ngModel)]="modalOrderDetail.Notes"
+                        class="form-control"
+                        id="modalNotes"
+                        type="text"
+                        placeholder="Optional notes"
+                        (keydown.enter)="addProductFromModal()"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    (click)="addProductFromModal()"
+                    [disabled]="
+                      !modalOrderDetail.Qty ||
+                      modalOrderDetail.Qty <= 0 ||
+                      !modalOrderDetail.SPrice ||
+                      modalOrderDetail.SPrice <= 0
+                    "
+                  >
+                    <i class="fa fa-plus"></i> Add to Order
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="closeProductModal()"
+                    title="Cancel (Esc)"
+                  >
+                    <i class="fa fa-times"></i> Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

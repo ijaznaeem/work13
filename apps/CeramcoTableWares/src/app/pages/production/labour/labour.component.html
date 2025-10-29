@@ -1,0 +1,21 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Labour</h5>
+  </div>
+  <div class="card-block widget-body">
+    <ft-crud-form [form]="filterForm" [formdata]="Filter" [CrudButtons]="false">
+    </ft-crud-form>
+    <div class="row no-gutter" id="print-section">
+      <div class="col-md-12">
+        <h1>Details</h1>
+        <ft-dynamic-table
+          #RptTable
+          [Settings]="Settings"
+          [Data]="data"
+
+        >
+        </ft-dynamic-table>
+      </div>
+    </div>
+  </div>
+</div>

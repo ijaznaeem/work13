@@ -1,0 +1,174 @@
+.detail-group {
+  margin-bottom: 1rem;
+}
+
+.detail-group label {
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.detail-value {
+  font-weight: 500;
+  color: #495057;
+}
+
+.detail-box {
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  min-height: 3rem;
+  white-space: pre-wrap;
+}
+
+.card-header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.required::after {
+  content: "*";
+  color: red;
+  margin-left: 4px;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Timeline Styles */
+.timeline {
+  position: relative;
+  padding: 20px 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #dee2e6;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 2rem;
+  padding-left: 60px;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: white;
+}
+
+.timeline-marker-primary {
+  background-color: #007bff;
+}
+
+.timeline-marker-secondary {
+  background-color: #6c757d;
+}
+
+.timeline-content {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.timeline-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.timeline-date {
+  font-weight: 600;
+  color: #007bff;
+}
+
+.timeline-user {
+  font-weight: 500;
+  color: #28a745;
+}
+
+.timeline-department {
+  color: #6c757d;
+}
+
+.timeline-body p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.timeline-meta {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.form-actions {
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.is-invalid {
+  border-color: #dc3545;
+}
+
+.invalid-feedback {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #dc3545;
+}
+
+@media (max-width: 768px) {
+  .timeline-header {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .card-header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .card-header-actions button {
+    width: 100%;
+  }
+}

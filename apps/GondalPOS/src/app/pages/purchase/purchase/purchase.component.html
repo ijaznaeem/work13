@@ -1,0 +1,25 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">Purchases</h5>
+    <div class="widget-controls">
+      <a data-widgster="expand" href="#" class="transition">
+        <i class="fa fa-chevron-down"></i>
+      </a>
+      <a data-widgster="collapse" href="#" class="transition">
+        <i class="fa fa-chevron-up"></i>
+      </a>
+      <a data-widgster="fullscreen" href="#" class="transition">
+        <i class="fa fa-expand"></i>
+      </a>
+      <a data-widgster="restore" href="#" class="transition">
+        <i class="fa fa-compress"></i>
+      </a>
+    </div>
+  </div>
+  <div class="card-block widget-body">
+    <app-purchase-invoice
+      [Type]="'CR'"
+      [EditID]="EditID"
+    ></app-purchase-invoice>
+  </div>
+</div>

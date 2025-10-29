@@ -1,0 +1,93 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">purchase Details</h5>
+
+  </div>
+  <div widget class="card border-0 box-shadow">
+    <div class="card-header transparent border-0 text-muted">
+      <form #cashreportModel="ngForm">
+        <div class="form-group row">
+
+
+          <div class="form-group col-sm-3">
+            <label for="dp1">From Date</label>
+            <div class="input-group">
+
+              <input class="form-control" placeholder="yyyy-mm-dd" name="dp1" [(ngModel)]="dteFilter.dteFrom"
+                ngbDatepicker #d1="ngbDatepicker">
+
+              <div class="input-group-append">
+                <button class="btn btn-primary"  (click)="d1.toggle()">
+                <i class="fa fa-calendar"></i> </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-sm-3">
+            <label for="dp2">To Date</label>
+            <div class="input-group">
+
+              <input class="form-control" placeholder="yyyy-mm-dd" name="dp2" [(ngModel)]="dteFilter.dteTo"
+                ngbDatepicker #d2="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-primary"  (click)="d2.toggle()">
+                <i class="fa fa-calendar"></i> </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group col-sm-2">
+            <label for="type">Select Type</label>
+            <ejs-combobox name="type" id="type" (change)='TypeSelect($event)' [dataSource]='Typeinfo'
+              [fields]='Typefields' required>
+            </ejs-combobox>
+          </div>
+
+          <div class="form-group col-sm-3">
+            <label for="customer">Select Account</label>
+            <ejs-combobox name="customer" id="customer" [dataSource]='customerinfo' [fields]='customerfields'
+              [(ngModel)]="CustomerID" required>
+            </ejs-combobox>
+          </div>
+          <div class="form-group col-sm-1">
+            <button type="button" style="margin-top:22px;" class="btn btn-success" (click)="filter()">Filter</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="card-block pt-0 widget-body">
+
+    <div class="table-responsive">
+      <ng2-smart-table class="table table-hover" [settings]="settings" [source]="data"
+        (deleteConfirm)="onDeleteConfirm($event)" (rowSelect)="onRowSelect($event)"
+        (userRowSelect)="onUserRowSelect($event)" (rowHover)="onRowHover($event)" (custom)="onCustom($event)"
+        (edit)="onEdit($event)"></ng2-smart-table>
+    </div>
+  </div>
+
+  <ng-template #DetailModel let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Purchase Items Detail</h4>
+
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card-block pt-0 widget-body">
+            <p class="text-left fs-13 text-gray">
+              Purchase Details for use.</p>
+
+            <div class="table-responsive">
+              <ng2-smart-table class="table table-hover" [settings]="settings1" [source]="detaildata"
+                (delete)="onDeleteConfirm($event)" (rowSelect)="onRowSelect($event)" (edit)="onEdit($event)"
+                (create)="onCreate($event)">
+
+              </ng2-smart-table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

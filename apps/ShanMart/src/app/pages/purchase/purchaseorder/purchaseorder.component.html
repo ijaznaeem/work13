@@ -1,0 +1,132 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+      <h5 class="mb-0">Purchase Order</h5>
+
+  </div>
+      <div class="card-block widget-body">
+
+        <form (ngSubmit)="SaveData()" #fromProducts>
+          <div class="row">
+              <div class="col-lg-3"></div>
+              <div class="col-lg-6">
+                  <div class="form-group">
+                    <label for="supplier">Select Supplier:</label>
+                    <ejs-combobox id='supplier'  name="supplier"
+                        [dataSource]='SupplierData'
+                        [fields]='Supplierfields'
+                        placeholder="Select Supplier..."
+                        [(ngModel)]= "totalorder.CustomerID"
+                        >
+                    </ejs-combobox>
+                 </div>
+                  </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-2"></div>
+                <div class="col-lg-8">
+                <div class="form-group">
+                <label for="txtbarcode">Barcode:</label>
+                <input type="text" class="form-control"
+                  id="txtBarcode" name="txtBarcode" [(ngModel)]= "barcode"
+                  (keydown.enter)="onKeydown($event)">
+
+              </div>
+            </div>
+</div>
+
+
+  <div class="card-block pt-0 widget-body">
+    <h5 class="mb-0">Purchase Order Item List</h5>
+      <div class="table-responsive">
+          <ng2-smart-table  class="table table-hover"
+                            [settings]="settings"
+                            [source]="data"
+                            (deleteConfirm)="onDeleteConfirm($event)"
+                            (rowSelect)="onRowSelect($event)"
+                            (userRowSelect)="onUserRowSelect($event)"
+                            (editConfirm)="onEdit($event)"
+                            (rowHover)="onRowHover($event)"></ng2-smart-table>
+      </div>
+  </div>
+
+
+  <div class="row">
+      <div class="col-lg-8"></div>
+      <div class="col-lg-1">
+      <label for="gtotal" style = "padding-top:5px;">Grand Total:</label>
+    </div>
+      <div class="col-lg-2">
+          <div class="form-group">
+          <input type="text" class="form-control"
+            id="gtotal" name="gtotal" [(ngModel)]= "totalorder.amount" readonly>
+
+        </div>
+      </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8"></div>
+        <div class="col-lg-1">
+        <label for="discratio" style = "padding-top:5px;">Disc Rato:</label>
+      </div>
+        <div class="col-lg-2" >
+            <div class="form-group">
+            <input type="text" class="form-control"
+              id="discratio" name="discratio" [(ngModel)]= "totalorder.discratio" (change) = "changel()">
+
+          </div>
+        </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-8"></div>
+          <div class="col-lg-1">
+          <label for="rdisc" style = "padding-top:5px;">Rs Disc:</label>
+        </div>
+          <div class="col-lg-2">
+              <div class="form-group">
+              <input type="text" class="form-control"
+                id="rdisc" name="rdisc" [(ngModel)]= "totalorder.discount" >
+
+            </div>
+          </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-8"></div>
+            <div class="col-lg-1">
+            <label for="amount" style = "padding-top:5px;">Net Amount:</label>
+          </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                <input type="text" class="form-control"
+                  id="amount" name="amount" [(ngModel)]= "totalorder.netamount" readonly>
+
+              </div>
+            </div>
+            </div>
+
+
+           <div class="row">
+                        <div class="col-lg-4">
+                          </div>
+              <div class="col-lg-2">
+                <div class="form-group">
+                  <label for="dp2">&nbsp;</label>
+                  <button type="button" class="btn btn-primary Form-control"  (click) = "SaveData()">Save</button>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                  <div class="form-group">
+                    <label for="dp2">&nbsp;</label>
+                    <button type="button" class="btn btn-danger Form-control">Cancel</button>
+                  </div>
+                </div>
+            </div>
+            </form>
+            </div>
+
+        </div>
+
+

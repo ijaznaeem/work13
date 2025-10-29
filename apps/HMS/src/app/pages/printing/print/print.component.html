@@ -1,0 +1,30 @@
+<section id="print-content">
+  <h1>{{printdata.Title}} </h1>
+  <h5>{{printdata.SubTitle}} </h5>
+ 
+
+  <table class="center">
+    <thead>
+      <tr>
+      <th *ngFor="let column of printdata.Columns"> {{ column.label }} </th>
+    </tr>
+
+    </thead>
+    <tr *ngFor="let row of printdata.Data">
+        <td *ngFor= "let col of printdata.Columns"> {{ row[col.fldName]}}</td>
+      </tr>
+      <tfoot>
+        <tr>
+          <th *ngFor="let column of printdata.Columns"> 
+            {{ column.sum ? FindTotal(column.fldName) : "" }}
+
+            </th>
+        </tr>
+      </tfoot>
+  </table>
+
+  
+  
+
+</section>
+

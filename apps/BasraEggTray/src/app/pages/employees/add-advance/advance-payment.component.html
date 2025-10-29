@@ -1,0 +1,206 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Add Advance</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="container">
+      <div class="row no-gutter">
+        <div class="col-md-6">
+          <form #frmFilter="ngForm" (submit)="SaveData()">
+            <div class="form-group row">
+              <label for="dtFrom" class="col-sm-4 col-form-label">Date: </label>
+              <div class="col-md-8">
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    placeholder="yyyy-mm-dd"
+                    name="dtFrom"
+                    [(ngModel)]="Voucher.Date"
+                    ngbDatepicker
+                    #dtFrom="ngbDatepicker"
+                    required
+                  />
+                  <div class="input-group-addon">
+                    <button
+                      type="button"
+                      class="btn btn-warning"
+                      (click)="dtFrom.toggle()"
+                    >
+                      <i class="fa fa-calendar"> </i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6"></div>
+            </div>
+            <div class="form-group row">
+              <label for="cmbDesignation" class="form-label col-md-4">
+                Designation
+              </label>
+              <div class="col-md-8">
+                <ejs-combobox
+                  name="cmbDesignation"
+                  id="cmbDesignation"
+                  [dataSource]="Designations"
+                  [fields]="{ text: 'Designation', value: 'DesignationID' }"
+                  [(ngModel)]="Voucher.DesignationID"
+                  required
+                  (change)="LoadEmployee($event.itemData)"
+                >
+                </ejs-combobox>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="cmbEmployee" class="form-label col-md-4">
+                Employees
+              </label>
+              <div class="col-md-8">
+                <ng-select
+                  name="ng2select"
+                  class="custom"
+                  [items]="Employees"
+                  [virtualScroll]="true"
+                  bindLabel="EmployeeName"
+                  bindValue="EmployeeID"
+                  placeholder="Select Account"
+                  (change)="GetEmployee($event.EmployeeID)"
+                  required
+                  [(ngModel)]="Voucher.EmployeeID"
+                >
+                  <ng-template ng-option-tmp let-item="item">
+                    <div class="row no-gutter">
+                      <div class="col-md-12">
+                        {{ item.EmployeeName }}
+                      </div>
+                      <div class="col-md-9 text-italic font-small-2 mt-1">
+                        <small>
+                          {{ item.Address }}
+                        </small>
+                      </div>
+                      <div class="col-md-3 text-italic font-small-2 mt-1">
+                        <small>
+                          {{ item.Balance }}
+                        </small>
+                      </div>
+                    </div>
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="description" class="col-md-4 form-label"
+                >Description
+              </label>
+              <div class="col-md-8">
+                <input
+                  name="description"
+                  class="form-control"
+                  type="text"
+                  name="description"
+                  [(ngModel)]="Voucher.Description"
+                  id="description"
+                />
+              </div>
+            </div>
+            <div class="row form-group" *ngIf="nWhat == 1">
+              <label for="amount" class="col-md-4 form-label"
+                >Amount Paid
+              </label>
+              <div class="col-md-8">
+                <input
+                  class="form-control"
+                  type="number"
+                  name="amountDebit"
+                  [(ngModel)]="Voucher.Debit"
+                  id="amount"
+                  required
+                />
+              </div>
+            </div>
+            <div class="row form-group" *ngIf="nWhat == 2">
+              <label for="amount" class="col-md-4 form-label"
+                >Reverse Amount:
+              </label>
+              <div class="col-md-8">
+                <input
+                  class="form-control"
+                  type="number"
+                  name="amountCredit"
+                  [(ngModel)]="Voucher.Credit"
+                  id="amount"
+                  required
+                />
+              </div>
+            </div>
+            <div class="row form-group">
+              <label for="amount" class="col-md-4 form-label"
+                >Transaction Type:
+              </label>
+              <div class="col-md-8">
+                <div class="custom-control custom-radio">
+                  <input
+                    class="custom-control-input radio-inline"
+                    id="radioDefault"
+                    name="radio"
+                    type="radio"
+                    value="1"
+                    [(ngModel)]="nWhat"
+                  />
+                  <label class="custom-control-label" for="radioDefault"
+                    >Advance</label
+                  >
+                </div>
+                <div class="custom-control custom-radio">
+                  <input
+                    class="custom-control-input radio-inline radio-primary"
+                    id="radioPrimary"
+                    name="radio"
+                    type="radio"
+                    value="2"
+                    [(ngModel)]="nWhat"
+                  />
+                  <label class="custom-control-label" for="radioPrimary"
+                    >Reverse</label
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="row no-gutter">
+              <div class="form-group col-md-12">
+                <label>&nbsp;</label>
+                <button
+                  type="submit"
+                  class="btn btn-primary form-control"
+                  accesskey="s"
+                  [disabled]="!frmFilter.valid"
+                >
+                  <i class="fa fa-save"></i>
+                </button>
+              </div>
+            </div>
+            <div class="row no-gutter"></div>
+          </form>
+        </div>
+        <div class="col-md-6">
+          <div class="row form-group">
+            <label for="amount" class="col-md-4 form-label">Address: </label>
+            <div class="col-md-8">
+              <strong>
+                {{ curEmployee.Address }}
+              </strong>
+            </div>
+          </div>
+          <div class="row form-group">
+            <label for="amount" class="col-md-4 form-label">Balance: </label>
+            <div class="col-md-8">
+              <strong>
+                {{ Round(curEmployee.Balance) }}
+              </strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

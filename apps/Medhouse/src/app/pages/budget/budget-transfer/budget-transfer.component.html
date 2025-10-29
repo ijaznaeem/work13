@@ -1,0 +1,314 @@
+<!-- Budget Transfer Component -->
+<div class="budget-transfer">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="page-header">
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary btn-sm mr-3"
+            (click)="goBack()"
+            title="Back to Budget Management"
+          >
+            <i class="fas fa-arrow-left"></i>
+            Back
+          </button>
+          <div class="header-content">
+            <h3 class="page-title">
+              <i class="fas fa-exchange-alt text-primary mr-2"></i>
+              Budget Transfer
+            </h3>
+            <p class="instruction-text text-info">
+              Transfer budget amounts between different budget heads
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 text-right">
+        <div class="action-buttons">
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm mr-2"
+            (click)="resetForm()"
+            title="Reset form"
+          >
+            <i class="fas fa-redo"></i>
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Transfer Form -->
+  <div class="transfer-form-container">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-form text-primary mr-2"></i>
+          Transfer Details
+        </h5>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="transferForm" (ngSubmit)="submitTransfer()">
+          <!-- Basic Transfer Info -->
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <label for="transferDate" class="form-label">
+                Transfer Date <span class="text-danger">*</span>
+              </label>
+              <input
+                type="date"
+                id="transferDate"
+                class="form-control"
+                formControlName="date"
+                [class.is-invalid]="hasFieldError('date')"
+              />
+              <div class="invalid-feedback" *ngIf="hasFieldError('date')">
+                {{ getFieldError('date') }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="transactionType" class="form-label">
+                Transaction Type <span class="text-danger">*</span>
+              </label>
+              <select
+                id="transactionType"
+                class="form-control"
+                formControlName="transactionType"
+                [class.is-invalid]="hasFieldError('transactionType')"
+              >
+                <option value="">Select Transaction Type</option>
+                <option 
+                  *ngFor="let type of transactionTypes" 
+                  [value]="type.value"
+                  [title]="type.description"
+                >
+                  {{ type.label }}
+                </option>
+              </select>
+              <div class="invalid-feedback" *ngIf="hasFieldError('transactionType')">
+                {{ getFieldError('transactionType') }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="amount" class="form-label">
+                Transfer Amount <span class="text-danger">*</span>
+              </label>
+              <input
+                type="number"
+                id="amount"
+                class="form-control"
+                formControlName="amount"
+                placeholder="0.00"
+                min="0.01"
+                step="0.01"
+                [class.is-invalid]="hasFieldError('amount')"
+              />
+              <div class="invalid-feedback" *ngIf="hasFieldError('amount')">
+                {{ getFieldError('amount') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Budget Selection -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="budget-selection from-budget">
+                <h6 class="selection-title">
+                  <i class="fas fa-minus-circle text-danger mr-2"></i>
+                  Transfer From
+                </h6>
+                <select
+                  id="fromBudget"
+                  class="form-control"
+                  formControlName="fromBudgetId"
+                  [class.is-invalid]="hasFieldError('fromBudgetId')"
+                >
+                  <option value="">Select Source Budget</option>
+                  <option 
+                    *ngFor="let budget of state.availableBudgets" 
+                    [value]="budget.BudgetID"
+                  >
+                    {{ budget.BudgetName }} ({{ formatCurrency(budget.Balance) }})
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="hasFieldError('fromBudgetId')">
+                  {{ getFieldError('fromBudgetId') }}
+                </div>
+
+                <!-- From Budget Balance Info -->
+                <div class="balance-info" *ngIf="state.fromBudget">
+                  <div class="balance-item">
+                    <span class="balance-label">Current Balance:</span>
+                    <span class="balance-value" [class]="getBalanceStatusClass(state.fromBalance)">
+                      {{ formatCurrency(state.fromBalance) }}
+                    </span>
+                  </div>
+                  <div class="balance-item">
+                    <span class="balance-label">After Transfer:</span>
+                    <span class="balance-value" [class]="getBalanceStatusClass(state.fromBalanceAfterTransfer)">
+                      {{ formatCurrency(state.fromBalanceAfterTransfer) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="budget-selection to-budget">
+                <h6 class="selection-title">
+                  <i class="fas fa-plus-circle text-success mr-2"></i>
+                  Transfer To
+                </h6>
+                <select
+                  id="toBudget"
+                  class="form-control"
+                  formControlName="toBudgetId"
+                  [class.is-invalid]="hasFieldError('toBudgetId')"
+                >
+                  <option value="">Select Destination Budget</option>
+                  <option 
+                    *ngFor="let budget of getAvailableToBudgets()" 
+                    [value]="budget.BudgetID"
+                  >
+                    {{ budget.BudgetName }} ({{ formatCurrency(budget.Balance) }})
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="hasFieldError('toBudgetId')">
+                  {{ getFieldError('toBudgetId') }}
+                </div>
+
+                <!-- To Budget Balance Info -->
+                <div class="balance-info" *ngIf="state.toBudget">
+                  <div class="balance-item">
+                    <span class="balance-label">Current Balance:</span>
+                    <span class="balance-value" [class]="getBalanceStatusClass(state.toBalance)">
+                      {{ formatCurrency(state.toBalance) }}
+                    </span>
+                  </div>
+                  <div class="balance-item">
+                    <span class="balance-label">After Transfer:</span>
+                    <span class="balance-value" [class]="getBalanceStatusClass(state.toBalanceAfterTransfer)">
+                      {{ formatCurrency(state.toBalanceAfterTransfer) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="row mb-4">
+            <div class="col-12">
+              <label for="description" class="form-label">
+                Description <span class="text-danger">*</span>
+              </label>
+              <textarea
+                id="description"
+                class="form-control"
+                formControlName="description"
+                rows="3"
+                placeholder="Enter transfer description or reason..."
+                maxlength="255"
+                [class.is-invalid]="hasFieldError('description')"
+              ></textarea>
+              <div class="invalid-feedback" *ngIf="hasFieldError('description')">
+                {{ getFieldError('description') }}
+              </div>
+              <small class="form-text text-muted">
+                {{ transferForm.get('description')?.value?.length || 0 }}/255 characters
+              </small>
+            </div>
+          </div>
+
+          <!-- Transfer Summary -->
+          <div class="transfer-summary" *ngIf="isTransferReady()">
+            <div class="alert alert-info">
+              <h6><i class="fas fa-info-circle"></i> Transfer Summary</h6>
+              <p class="mb-0">{{ getTransferSummaryText() }}</p>
+            </div>
+          </div>
+
+          <!-- Validation Summary -->
+          <div class="alert alert-warning" *ngIf="transferForm.invalid && transferForm.touched">
+            <h6><i class="fas fa-exclamation-triangle"></i> Please correct the following errors:</h6>
+            <ul class="mb-0">
+              <li *ngIf="hasFieldError('date')">{{ getFieldError('date') }}</li>
+              <li *ngIf="hasFieldError('fromBudgetId')">{{ getFieldError('fromBudgetId') }}</li>
+              <li *ngIf="hasFieldError('toBudgetId')">{{ getFieldError('toBudgetId') }}</li>
+              <li *ngIf="hasFieldError('amount')">{{ getFieldError('amount') }}</li>
+              <li *ngIf="hasFieldError('transactionType')">{{ getFieldError('transactionType') }}</li>
+              <li *ngIf="hasFieldError('description')">{{ getFieldError('description') }}</li>
+            </ul>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-secondary mr-3"
+              (click)="cancel()"
+              [disabled]="formSubmitting"
+            >
+              <i class="fas fa-times"></i>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="!isTransferReady() || formSubmitting || !state.canTransfer"
+            >
+              <i class="fas fa-spinner fa-spin" *ngIf="formSubmitting"></i>
+              <i class="fas fa-exchange-alt" *ngIf="!formSubmitting"></i>
+              {{ formSubmitting ? 'Processing Transfer...' : 'Execute Transfer' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="state.loading" class="loading-overlay">
+    <div class="loading-content">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <p class="loading-text">Loading budget data...</p>
+    </div>
+  </div>
+
+  <!-- Permissions Info -->
+  <div class="permissions-info" *ngIf="!state.canTransfer">
+    <div class="alert alert-warning">
+      <i class="fas fa-exclamation-triangle"></i>
+      You do not have permission to create budget transfers. Please contact your system administrator.
+    </div>
+  </div>
+
+  <!-- Transfer Guidelines -->
+  <div class="transfer-guidelines">
+    <div class="card">
+      <div class="card-header">
+        <h6 class="card-title mb-0">
+          <i class="fas fa-lightbulb text-warning mr-2"></i>
+          Transfer Guidelines
+        </h6>
+      </div>
+      <div class="card-body">
+        <ul class="guidelines-list">
+          <li>Ensure sufficient balance is available in the source budget before initiating transfer</li>
+          <li>Transfer amount must be greater than zero</li>
+          <li>Source and destination budgets must be different</li>
+          <li>Provide a clear description explaining the reason for the transfer</li>
+          <li>All transfers are logged and can be tracked for audit purposes</li>
+          <li>Transfers cannot be undone, but reverse transfers can be created if needed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

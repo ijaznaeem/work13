@@ -1,0 +1,65 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">Appointments</h5>
+    <div class="widget-controls">
+      <a data-widgster="expand" href="#" class="transition">
+        <i class="fa fa-chevron-down"></i>
+      </a>
+      <a data-widgster="collapse" href="#" class="transition">
+        <i class="fa fa-chevron-up"></i>
+      </a>
+      <a data-widgster="fullscreen" href="#" class="transition">
+        <i class="fa fa-expand"></i>
+      </a>
+      <a data-widgster="restore" href="#" class="transition">
+        <i class="fa fa-compress"></i>
+      </a>
+    </div>
+  </div>
+  <div class="card-block widget-body">
+    <form #frmFilter="ngForm">
+      <div class="row">
+        <div class="form-group col-md-3">
+          <label for="customer">Status</label>
+          <ejs-combobox
+            name="status"
+            id="status"
+            [dataSource]="[
+              { status_id: '1', status: 'Confirmed' },
+              { status_id: '0', status: 'Not Confirmed' },
+              { status_id: '2', status: 'Checked' },
+              { status_id: '-1', status: 'Cancelled' }
+            ]"
+            [fields]="{ text: 'status', value: 'status_id' }"
+            [(ngModel)]="Filter.status"
+          >
+          </ejs-combobox>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              (click)="FilterData()"
+              accesskey="a"
+            >
+              <i class="fa fa-search"></i>
+              Filter
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="row" id="print-section">
+      <div class="col-md-12">
+        <ft-dynamic-table
+          [Settings]="setting"
+          [Data]="data"
+          (ClickAction)="ActionClicked($event)"
+        ></ft-dynamic-table>
+      </div>
+    </div>
+  </div>
+</div>

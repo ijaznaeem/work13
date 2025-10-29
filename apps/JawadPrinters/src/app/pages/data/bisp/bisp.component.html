@@ -1,0 +1,38 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">BISP List</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          <app-crud-form
+            [Form]="FilterForm"
+            [formdata]="Filter"
+            [CrudButtons]="false"
+          >
+          </app-crud-form>
+          <div class="row no-pad" id="print-section">
+            <div class="row">
+              <div class="col-md-12">
+                <label for="">Total records <strong>{{totalCount}}</strong></label>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <ft-dynamic-table
+              #rptTable
+                [Settings]="Settings"
+                [Data]="data"
+                [Search]="Filter.search"
+                (ClickAction)="Clicked($event)"
+              ></ft-dynamic-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

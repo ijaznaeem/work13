@@ -1,0 +1,221 @@
+<div class="ft-data-grid" [class]="customCssClass">
+  <!-- Search Bar -->
+  <div class="row no-gutter" *ngIf="ShowSearch">
+    <div class="col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="Search"
+        (keyup)="FilterData()"
+        #search
+        placeholder="Search..."
+      />
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="loading-content">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="row no-gutter">
+    <div class="col-md-12">
+      <ejs-grid
+        #grid
+        [selectedRowIndex]="0"
+        [selectionSettings]="selectionOptions"
+        [dataSource]="data"
+        [height]="height"
+        [allowPaging]="allowPaging"
+        [allowSorting]="allowSorting"
+        [allowFiltering]="allowFiltering"
+        [allowResizing]="allowResizing"
+        [allowReordering]="allowReordering"
+        [pageSettings]="pageSettings"
+        [sortSettings]="sortSettings"
+        [filterSettings]="filterSettings"
+        [editSettings]="{ allowEditing: false, allowDeleting: false }"
+        [enableRtl]="enableRtl"
+        [enableVirtualization]="enableVirtualization"
+        [frozenColumns]="frozenColumns"
+        [frozenRows]="frozenRows"
+        [toolbar]="showToolbar ? toolbarItems : []"
+        [columns]="columns"
+        allowScrolling="true"
+        (rowSelected)="GridRowClicked($event)"
+        (commandClick)="commandClick($event)"
+        (recordDoubleClick)="onRowDoubleClick($event)"
+        (dataBound)="onDataBound($event)"
+        (actionBegin)="onActionBegin($event)"
+        (actionComplete)="onActionComplete($event)"
+        (cellSave)="onCellSave($event)"
+        (beforePrint)="onBeforePrint($event)"
+        (beforeExcelExport)="onBeforeExport($event)"
+        (beforePdfExport)="onBeforeExport($event)"
+      >
+        <!-- Custom Templates -->
+        <ng-template #template let-data>
+          <!-- Link Template -->
+          <a
+            *ngIf="data.column?.Type == 'link'"
+            href="javascript:void(0)"
+            (click)="OnLinkClicked(data)"
+            class="grid-link"
+          >
+            {{ data[data.column.field] }}
+          </a>
+          
+          <!-- Currency Template -->
+          <span *ngIf="data.column?.Type == 'currency'" class="text-right">
+            {{ data[data.column.field] | currency:'PKR':'symbol':'1.0-0' }}
+          </span>
+          
+          <!-- Date Template -->
+          <span *ngIf="data.column?.Type == 'date'">
+            {{ data[data.column.field] | date:'dd-MMM-yyyy' }}
+          </span>
+          
+          <!-- Number Template -->
+          <span *ngIf="data.column?.Type == 'number'" class="text-right">
+            {{ data[data.column.field] | number:'1.0-2' }}
+          </span>
+          
+          <!-- Boolean Template -->
+          <span *ngIf="data.column?.Type == 'boolean'">
+            <i class="fas" 
+               [class.fa-check-circle]="data[data.column.field]" 
+               [class.fa-times-circle]="!data[data.column.field]"
+               [class.text-success]="data[data.column.field]"
+               [class.text-danger]="!data[data.column.field]">
+            </i>
+          </span>
+
+          <!-- Status Badge Template -->
+          <span *ngIf="data.column?.Type == 'status'" 
+                [class]="'badge badge-' + (data[data.column.field]?.toLowerCase() || 'secondary')">
+            {{ data[data.column.field] }}
+          </span>
+
+          <!-- Action Buttons Template -->
+          <div *ngIf="data.column?.Type == 'actions'" class="btn-group btn-group-sm">
+            <button *ngFor="let action of data.column.actions"
+                    type="button" 
+                    [class]="'btn btn-outline-' + (action.color || 'primary') + ' btn-sm'"
+                    (click)="action.handler(data.rowData)"
+                    [disabled]="action.disabled && action.disabled(data.rowData)"
+                    [title]="action.title">
+              <i [class]="action.icon"></i>
+              <span *ngIf="action.text">{{ action.text }}</span>
+            </button>
+          </div>
+          
+          <!-- Default Text Template -->
+          <span *ngIf="!data.column?.Type || data.column?.Type == 'text'">
+            {{ data[data.column.field] }}
+          </span>
+        </ng-template>
+
+        <!-- Empty Record Template -->
+        <ng-template #emptyRecordTemplate>
+          <div class="empty-grid-message">
+            <div class="text-center py-4">
+              <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">No Data Available</h5>
+              <p class="text-muted">There are no records to display</p>
+            </div>
+          </div>
+        </ng-template>
+      </ejs-grid>
+    </div>
+  </div>
+
+  <!-- Grid Information Footer -->
+  <div class="grid-footer mt-2" *ngIf="data && data.length > 0">
+    <div class="row">
+      <div class="col-md-6">
+        <small class="text-muted">
+          Showing {{ GetCurrentPageData().length }} of {{ GetTotalrecord() }} records
+        </small>
+      </div>
+      <div class="col-md-6 text-right">
+        <small class="text-muted" *ngIf="selectedRecords.length > 0">
+          {{ selectedRecords.length }} record(s) selected
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.ft-data-grid {
+  position: relative;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-content {
+  text-align: center;
+}
+
+.grid-link {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.grid-link:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+.empty-grid-message {
+  padding: 2rem;
+}
+
+.grid-footer {
+  border-top: 1px solid #dee2e6;
+  padding-top: 0.5rem;
+}
+
+/* Custom badge colors */
+.badge.badge-in-process,
+.badge.badge-inprocess {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.badge.badge-completed {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge.badge-rejected {
+  background-color: #dc3545;
+  color: white;
+}
+
+.badge.badge-pending {
+  background-color: #6c757d;
+  color: white;
+}
+
+.badge.badge-approved {
+  background-color: #17a2b8;
+  color: white;
+}
+</style>

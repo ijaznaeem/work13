@@ -1,0 +1,323 @@
+// Enhanced Orders List Styling
+
+// Card and layout enhancements
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  }
+}
+
+.card-header {
+  border-radius: 8px 8px 0 0;
+
+  &.bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  }
+}
+
+// Statistics cards
+.card.bg-primary,
+.card.bg-success,
+.card.bg-info,
+.card.bg-warning {
+  border: none;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  .card-body {
+    padding: 1.5rem 1rem;
+  }
+
+  h4 {
+    font-weight: 700;
+    font-size: 1.8rem;
+  }
+}
+
+// Content header
+.content-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+// Button group enhancements
+.btn-group .btn {
+  &.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+  }
+}
+
+// Customer group cards
+.card.shadow-sm {
+  border: 1px solid #e3e6f0;
+
+  .card-header {
+    padding: 1rem 1.25rem;
+
+    h5 {
+      font-weight: 600;
+    }
+
+    small {
+      opacity: 0.9;
+    }
+  }
+}
+
+// Order items styling
+.card.border-0.shadow-sm {
+  border: 1px solid #e9ecef !important;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #007bff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1) !important;
+  }
+
+  .card-img {
+    border-radius: 4px 0 0 4px;
+  }
+
+  .card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+    color: black;
+  }
+}
+
+// Badge styling
+.badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+
+  &.badge-primary {
+    background-color: #007bff;
+  }
+
+  &.badge-success {
+    background-color: #28a745;
+  }
+
+  &.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+  }
+
+  &.badge-info {
+    background-color: #17a2b8;
+  }
+
+  &.badge-secondary {
+    background-color: #6c757d;
+  }
+}
+
+// Button styling
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+// Alert styling
+.alert {
+  border-radius: 8px;
+  border: none;
+
+  &.alert-info {
+    background-color: #e7f3ff;
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+  }
+
+  &.alert-warning {
+    background-color: #fff8e1;
+    color: #856404;
+    border-left: 4px solid #ffc107;
+  }
+
+  .fa-2x {
+    color: rgba(0,0,0,0.3);
+  }
+}
+
+// Background utilities
+.bg-light {
+  background-color: #f8f9fa !important;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+}
+
+// Text utilities
+.text-muted {
+  color: #6c757d !important;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Spacing utilities
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.mb-3 {
+  margin-bottom: 1rem !important;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem !important;
+}
+
+.mb-1 {
+  margin-bottom: 0.25rem !important;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.mr-1 {
+  margin-right: 0.25rem !important;
+}
+
+.mr-2 {
+  margin-right: 0.5rem !important;
+}
+
+.mt-1 {
+  margin-top: 0.25rem !important;
+}
+
+.mt-2 {
+  margin-top: 0.5rem !important;
+}
+
+// Border utilities
+.border-bottom {
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+.border-0 {
+  border: 0 !important;
+}
+
+// Height utilities
+.h-100 {
+  height: 100% !important;
+}
+
+// Flexbox utilities
+.d-flex {
+  display: flex !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+
+.align-items-end {
+  align-items: flex-end !important;
+}
+
+.justify-content-between {
+  justify-content: space-between !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .content-header {
+    font-size: 1.25rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .btn-group {
+    display: flex;
+    width: 100%;
+    margin-bottom: 1rem;
+
+    .btn {
+      flex: 1;
+    }
+  }
+
+  .col-md-6.col-lg-4 {
+    .card.border-0.shadow-sm {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .col-md-6.col-lg-4 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .card.border-0.shadow-sm {
+    .row.no-gutters {
+      .col-4 {
+        flex: 0 0 40%;
+        max-width: 40%;
+      }
+
+      .col-8 {
+        flex: 0 0 60%;
+        max-width: 60%;
+      }
+    }
+  }
+}

@@ -1,0 +1,376 @@
+<div class="container">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Tolla Invoice</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="bsModalRef.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <form (ngSubmit)="SaveInvoice()" #fromPurchase="ngForm">
+        <div class="row no-gutter">
+          <div class="col-md-2">
+            <label for="dp1">Date:</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dp1"
+                [(ngModel)]="sale.Date"
+                ngbDatepicker
+                #d1="ngbDatepicker"
+                required
+                disabled
+              />
+              <div class="input-group-append">
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  (click)="d1.toggle()"
+                >
+                  <i class="fa fa-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <label for="dp1">Select Trolla</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                type="text"
+                name="OrderNo"
+                placeholder="Booking No"
+                aria-label="Order No"
+                aria-describedby="my-addon"
+                (keydown.enter)="Find()"
+                #OrderNo
+                [(ngModel)]="sale.OrderID"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-warning" type="button">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="bonus">Product:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="txtProduct"
+                name="txtProduct"
+                readonly
+                [value]="selectedProduct['ProductName']"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="bonus">Booked Rate:</label>
+              <input
+                type="number"
+                class="form-control"
+                id="txtProduct"
+                name="txtProduct"
+                readonly
+                [value]="selectedProduct.PPrice"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="bonus">Booked Weight:</label>
+              <input
+                type="number"
+                class="form-control"
+                id="txtProduct"
+                name="txtProduct"
+                readonly
+                [value]="selectedProduct.Qty"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row no-gutter">
+          <div class="form-group col-md-4">
+            <label for="customer">Customer </label>
+            <ng-select
+              #cmbCustomers
+              name="ng2select"
+              class="custom"
+              [items]="Accounts"
+              [virtualScroll]="true"
+              bindLabel="CustomerName"
+              bindValue="CustomerID"
+              placeholder="Select Customer"
+              (change)="CustomerSelected($event)"
+              required
+              [(ngModel)]="sale.CustomerID"
+              (keydown.enter)="cmbStores.focus()"
+            >
+              <ng-template ng-option-tmp let-item="item">
+                <div class="row no-gutter">
+                  <div class="col-md-12">
+                    {{ item.CustomerName }}
+                  </div>
+                  <div class="col-md-9 text-italic font-small-2 mt-1">
+                    <small>
+                      {{ item.Address }}
+                    </small>
+                  </div>
+                  <div class="col-md-3 text-italic font-small-2 mt-1">
+                    <small>
+                      {{ item.Balance }}
+                    </small>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-select>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="RPrice">Rate:</label>
+              <input
+                #txtRate
+                type="number"
+                class="form-control"
+                id="SPrice"
+                name="SPrice"
+                [(ngModel)]="sale.SPrice"
+                min="1"
+                required
+                (focus)="txtRate.select()"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="qty">Vehicle No</label>
+              <input
+                type="text"
+                class="form-control dation-field"
+                id="VehicleNo"
+                name="VehicleNo"
+                [(ngModel)]="sale.VehicleNo"
+                #VehicleNo
+                (focus)="VehicleNo.select()"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="qty">Builty No</label>
+              <input
+                type="text"
+                class="form-control dation-field"
+                id="BuiltyNo"
+                name="BuiltyNo"
+                [(ngModel)]="sale.BuiltyNo"
+                #BuiltyNo
+                (focus)="BuiltyNo.select()"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="qty">Ref No</label>
+              <input
+                type="text"
+                class="form-control dation-field"
+                id="RefNo"
+                name="RefNo"
+                [(ngModel)]="sale.RefNo"
+                #RefNo
+                (focus)="RefNo.select()"
+              />
+            </div>
+          </div>
+        </div>
+
+        <form name="frmOrder" #frmOrder="ngForm">
+          <div class="row no-gutter">
+            <div class="col-md-4">
+              <label for="customer"> Select product </label>
+              <ng-select
+                #cmbProduct
+                name="cmbProduct"
+                id="cmbProduct"
+                class="custom"
+                [items]="Products"
+                [virtualScroll]="true"
+                bindLabel="ProductName"
+                bindValue="ProductID"
+                placeholder="Select Product"
+                (change)="ProductSelected($event)"
+                [(ngModel)]="saleDetails.ProductID"
+                required
+                [searchFn]="ProductSearchFn"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <div class="row no-gutter">
+                    <div class="col-md-10">
+                      {{ item.ProductName }}
+                    </div>
+
+                    <div class="col-md-2 text-italic font-small-2 mt-1">
+                      <small>
+                        {{ item.ProductID }}
+                      </small>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="qty">Net Rate </label>
+                <input
+                  #txtRate
+                  type="number"
+                  class="form-control dation-field"
+                  required="required"
+                  id="txtRate"
+                  name="txtRate"
+                  [(ngModel)]="saleDetails.SPrice"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="qty">Qty</label>
+                <input
+                  #txtQty
+                  type="number"
+                  class="form-control dation-field"
+                  required="required"
+                  [(ngModel)]="saleDetails.Qty"
+                  id="qty"
+                  name="qty"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="qty">Amount</label>
+                <input
+                  #txtQty
+                  type="number"
+                  class="form-control dation-field"
+                  required="required"
+                  id="qty"
+                  name="qty"
+                  [value]="saleDetails.Qty * saleDetails.SPrice"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-primary form-control"
+                  (click)="AddOrder()"
+                  accesskey="a"
+                  [disabled]="!frmOrder.form.valid"
+                >
+                  <i class="ft-plus"></i>
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div
+          class="table-responsive custom-table-height table-bordered table-condensed"
+        >
+          <div class="row no-gutter col-md-12">
+            <ng2-smart-table
+              class="table table-hover"
+              [settings]="settings"
+              [source]="data"
+              (deleteConfirm)="onDeleteConfirm($event)"
+              (editConfirm)="onEdit($event)"
+              tabindex="-1"
+            >
+            </ng2-smart-table>
+          </div>
+        </div>
+        <div>
+          <div class="row no-gutter">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="notes">Notes</label>
+                <input
+                  class="form-control"
+                  [(ngModel)]="sale.Notes"
+                  type="text"
+                  name="notes"
+                  id="notes"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="bonus">Amount:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="pamount"
+                  name="pamount"
+                  readonly
+                  [value]="sale.Amount"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  #btnAdd
+                  type="button"
+                  class="btn btn-success form-control"
+                  [disabled]="!fromPurchase.form.valid"
+                  (click)="SaveInvoice()"
+                  accesskey="a"
+                >
+                  <i class="ft-save"></i>
+                  Save
+                </button>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  #btnAdd
+                  type="button"
+                  class="btn btn-danger form-control"
+                  (click)="Cancel()"
+                  accesskey="a"
+                >
+                  <i class="ft ft-reload"></i>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

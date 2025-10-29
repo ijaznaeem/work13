@@ -1,0 +1,94 @@
+<section class="sheet">
+  <table style="width: 100%;">
+    <tr>
+      <td colspan="4" style="border:0px" class="text-center">
+        <h2>{{ settings.settings.title }}</h2>
+        <h4>{{ settings.settings.address }}</h4>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4" style="border:0px">
+        <h3 class="text-center">SALE</h3>
+      </td>
+    </tr>
+    <tr>
+      <td style="border:0px">
+        Date: <strong>{{ Invoice.Date }}</strong>
+      </td>
+      <td style="border:0px">
+        Invoice #: <strong>{{ Invoice.InvoiceID }}</strong>
+      </td>
+    </tr>
+    <tr>
+      <td style="border:0px">Customer Name:</td>
+    </tr>
+
+    <tr>
+      <td style="border:0px">
+        <strong>{{ Invoice.CustomerName }}</strong>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4">
+        <table class="table-bordered">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th class="text-center">Qty</th>
+              <th class="text-right">Rate</th>
+              <th class="text-right">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let d of Invoice.Detail">
+              <td>
+                {{ d.UrduName }}
+              </td>
+
+              <td class="text-center">
+                {{ RoundIt(d.Qty) }}-{{ RoundIt(d.Pcs) }}
+              </td>
+
+              <td class="text-right">
+                {{ RoundIt(d.SPrice) }}
+              </td>
+              <td class="text-right">
+                {{ d.Amount }}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4" style="border:0px">
+                <table class="">
+                  <tr>
+                    <td>Total Amount:</td>
+                    <td class="text-right">
+                      <strong>{{ RoundIt(Invoice.Amount) }} </strong>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>Discount:</td>
+                    <td class="text-right">
+                      <strong>{{ RoundIt(Invoice.Discount) }} </strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Net Amount:</td>
+                    <td class="text-right">
+                      <strong>{{ RoundIt(Invoice.NetAmount) }} </strong>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4" style="border:0px">
+                <p>{{ Invoice.Notes }}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </table>
+</section>

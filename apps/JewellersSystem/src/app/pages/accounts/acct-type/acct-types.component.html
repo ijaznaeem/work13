@@ -1,0 +1,7 @@
+<!-- <ft-crud [form]="form" [list]="list"> </ft-crud> -->
+
+<ft-crud-list [List]="list" [Data]="data"
+(EditClicked) = "EditClicked($event)"
+(AddClicked)="AddClicked($event)"
+(DeleteClicked)="DeleteClicked($event)"
+></ft-crud-list>

@@ -1,0 +1,265 @@
+<div class="cash-received-container">
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title">Cash Received</h1>
+  </div>
+
+  <!-- Main Form -->
+  <div class="main-frame">
+    <form [formGroup]="cashForm" (ngSubmit)="saveCashReceived()">
+      
+      <!-- Business and Division Selection -->
+      <div class="selection-row">
+        <div class="form-group">
+          <label class="form-label">Business:</label>
+          <ng-select 
+            formControlName="businessID"
+            placeholder="Select Business"
+            [clearable]="false"
+            [searchable]="true"
+            bindLabel="businessName"
+            bindValue="businessID"
+            [items]="businesses"
+            [class.is-invalid]="hasError('businessID')"
+          >
+            <ng-option value="0">Select Business</ng-option>
+          </ng-select>
+          <div class="invalid-feedback" *ngIf="hasError('businessID')">
+            {{ getErrorMessage('businessID') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Division:</label>
+          <ng-select 
+            formControlName="divisionID"
+            placeholder="Select Division"
+            [clearable]="false"
+            [searchable]="true"
+            bindLabel="divisionName"
+            bindValue="divisionID"
+            [items]="divisions"
+            [class.is-invalid]="hasError('divisionID')"
+          >
+            <ng-option value="0">Select Division</ng-option>
+          </ng-select>
+          <div class="invalid-feedback" *ngIf="hasError('divisionID')">
+            {{ getErrorMessage('divisionID') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Date:</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            formControlName="date"
+            [class.is-invalid]="hasError('date')"
+          />
+          <div class="invalid-feedback" *ngIf="hasError('date')">
+            {{ getErrorMessage('date') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Selection Section -->
+      <div class="customer-section">
+        <div class="customer-selection">
+          <label class="customer-label">Please select Receiving Account:</label>
+          
+          <div class="customer-list-container">
+            <!-- Customer List -->
+            <div class="customer-list-box">
+              <div 
+                class="customer-item"
+                *ngFor="let customer of customers"
+                [class.selected]="customer.customerID === f['customerID'].value"
+                (click)="selectCustomer(customer)"
+              >
+                {{ customer.customerName }}
+              </div>
+              <div class="no-customers" *ngIf="customers.length === 0">
+                No customers available. Please select Business and Division.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Details -->
+        <div class="customer-details" *ngIf="selectedCustomer">
+          <div class="detail-group">
+            <label class="detail-label">Address:</label>
+            <div class="detail-value">{{ selectedCustomer.address }}</div>
+          </div>
+
+          <div class="detail-group">
+            <label class="detail-label">City:</label>
+            <div class="detail-value">{{ selectedCustomer.city }}</div>
+          </div>
+
+          <div class="detail-group">
+            <label class="detail-label">Balance:</label>
+            <div class="detail-value balance-value">{{ selectedCustomer.balance | currency:'PKR':'symbol':'1.2-2' }}</div>
+          </div>
+
+          <div class="detail-group">
+            <label class="detail-label">Limit:</label>
+            <div class="detail-value">{{ selectedCustomer.limit | currency:'PKR':'symbol':'1.2-2' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transaction Details -->
+      <div class="transaction-details">
+        <div class="transaction-row">
+          <div class="form-group">
+            <label class="form-label">Description:</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              formControlName="description"
+              placeholder="Enter transaction description"
+              [class.is-invalid]="hasError('description')"
+            />
+            <div class="invalid-feedback" *ngIf="hasError('description')">
+              {{ getErrorMessage('description') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Amount Received:</label>
+            <input 
+              type="number" 
+              class="form-control amount-input" 
+              formControlName="amountReceived"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              [class.is-invalid]="hasError('amountReceived')"
+            />
+            <div class="invalid-feedback" *ngIf="hasError('amountReceived')">
+              {{ getErrorMessage('amountReceived') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">New Balance:</label>
+            <input 
+              type="text" 
+              class="form-control balance-display" 
+              [value]="getCurrentBalance() | currency:'PKR':'symbol':'1.2-2'"
+              readonly
+            />
+          </div>
+        </div>
+
+        <div class="transaction-row">
+          <div class="form-group">
+            <label class="form-label">Reference No:</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              formControlName="referenceNo"
+              placeholder="Reference number (optional)"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Salesman:</label>
+            <ng-select 
+              formControlName="salesmanID"
+              placeholder="Select Salesman (Optional)"
+              [clearable]="true"
+              [searchable]="true"
+              bindLabel="salesmanName"
+              bindValue="salesmanID"
+              [items]="salesmen"
+            >
+              <ng-option value="0">Select Salesman (Optional)</ng-option>
+            </ng-select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">COD No:</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              formControlName="codNo"
+              placeholder="COD number (optional)"
+            />
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Separator -->
+  <div class="separator"></div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button 
+      type="button" 
+      class="btn btn-success action-btn"
+      (click)="saveCashReceived()"
+      [disabled]="!isFormValid() || isSubmitting"
+    >
+      <i class="fa fa-check"></i> OK
+    </button>
+
+    <button 
+      type="button" 
+      class="btn btn-secondary action-btn"
+      (click)="cancel()"
+      [disabled]="isSubmitting"
+    >
+      <i class="fa fa-times"></i> Cancel
+    </button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-overlay" *ngIf="isLoading || isSubmitting">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<!-- Customer List Modal -->
+<ng-template #customerListModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Select Customer</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modalService.dismissAll()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <div class="modal-body">
+    <div class="customer-modal-list">
+      <div 
+        class="customer-modal-item"
+        *ngFor="let customer of customers"
+        (click)="selectCustomer(customer)"
+      >
+        <div class="customer-name">{{ customer.customerName }}</div>
+        <div class="customer-info">
+          <span class="address">{{ customer.address }}</span> | 
+          <span class="city">{{ customer.city }}</span> | 
+          <span class="balance">Balance: {{ customer.balance | currency:'PKR':'symbol':'1.2-2' }}</span>
+        </div>
+      </div>
+      
+      <div class="no-customers-modal" *ngIf="customers.length === 0">
+        <p>No customers found for the selected Business and Division.</p>
+        <p>Please ensure you have selected both Business and Division.</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modalService.dismissAll()">
+      Close
+    </button>
+  </div>
+</ng-template>

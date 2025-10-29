@@ -1,0 +1,105 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">Sale Report</h5>
+
+  </div>
+  <div class="card-block widget-body">
+    <form #frmFilter="ngForm">
+      <div class="row no-gutter">
+        <div class="col-md-2">
+          <label for="dtFrom">For Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dtFrom"
+              [(ngModel)]="Filter.Date"
+              ngbDatepicker
+              #dtFrom="ngbDatepicker"
+            />
+            <div class="input-group-addon">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="dtFrom.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group col-md-3">
+          <label for="customer">Customer</label>
+          <ft-multi-col-combobox
+            name="customer"
+            id="customer"
+            [dataSource]="Accounts"
+            [fields]="AccountsFlds"
+            [(ngModel)]="Filter.CustomerID"
+            (Change)="CustomerSelected($event)"
+            [Cols]="[
+              { title: 'Name', fldName: 'CustomerName', size: 9 },
+              { title: 'Code', fldName: 'CustomerID', size: 3 }
+            ]"
+          >
+          </ft-multi-col-combobox>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              (click)="FilterData()"
+              accesskey="a"
+              [disabled]="frmFilter.invalid"
+            >
+              <i class="fa fa-search"></i>
+              Filter
+            </button>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              (click)="PrintReport()"
+              accesskey="a"
+            >
+              <i class="fa fa-print"></i>
+              Print
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="row" id="print-section">
+      <div class="col-md-12">
+        <app-dynamic-table
+          [Settings]="setting"
+          [Data]="data"
+          (ClickAction)="Clicked($event)"
+        ></app-dynamic-table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6"></div>
+      <div class="col-md-3">
+        <button class="btn btn-primary btn-block">
+          <i class="fa fa-print"> </i>
+          Save and Print
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-primary btn-block" (click)="SaveAndEdit()">
+          <i class="fa fa-pencil"></i>
+          Save and Editt
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

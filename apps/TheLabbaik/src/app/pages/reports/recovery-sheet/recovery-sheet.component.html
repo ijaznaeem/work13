@@ -1,0 +1,66 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Recovery Sheet</h5>
+  </div>
+  <div class="card-block widget-body">
+    <form #frmFilter="ngForm">
+      <div class="row no-pad">
+        <div class="form-group col-md-3">
+          <label for="cmbCustomer" class="form-label ">
+            Account Type
+          </label>
+
+            <ejs-combobox
+              name="cmbSalesman"
+              id="cmbSalesman"
+              [dataSource]="Salesmans | async"
+              [fields]="{ text: 'SalesmanName', value: 'SalesmanID' }"
+              [(ngModel)]="Filter.SalesmanID"
+              required
+            >
+            </ejs-combobox>
+
+        </div>
+        <div class="form-group col-md-3">
+          <label for="customer">Route</label>
+          <ejs-combobox  #cmbRoute name="routes" id="routes" #cmbRoutes [dataSource]="Routes | async"
+            [fields]="{ text: 'RouteName', value: 'RouteID' }" [(ngModel)]="Filter.RouteID">
+          </ejs-combobox>
+        </div>
+
+        <div class="col-md-2 col-md-offset-4">
+          <div class="form-group">
+            <label>Balance Limit</label>
+            <input class="form-control" name="balance" [(ngModel)]="Filter.Balance"   type="number">
+          </div>
+        </div>
+
+
+        <div class="col-md-2 ">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn btn-success form-control" (click)="FilterData()" accesskey="a">
+              <i class="fa fa-search"></i>
+              Filter
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn-warning form-control" (click)="PrintReport()" accesskey="P">
+              <i class="fa fa-print"></i>
+              Print
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="row no-gutter" id="print-section">
+      <div class="col-md-12">
+        <ft-dynamic-table #RptTable [Settings]="setting" [Data]="data"
+          ></ft-dynamic-table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,120 @@
+<div
+  class="d-flex justify-content-center align-items-center w-100 h-100 login-container"
+>
+  <div class="col-xl-4 col-md-6 col-10">
+    <div class="card border-0 box-shadow rounded-0">
+      <div
+        class="card-header d-flex justify-content-center align-items-center border-0 box-shadow"
+      >
+        <i class="fa fa-sign-in" aria-hidden="true"></i>
+      </div>
+      <div class="card-body text-center pb-1">
+        <h2>Account login</h2>
+
+        <form
+          (ngSubmit)="onSubmit()"
+          #fromLogin="ngForm"
+          class="text-left mt-6"
+        >
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group">
+                <select
+                  id="cmbsites"
+                  class="form-control"
+                  name="cmbsites"
+                  required
+                  [(ngModel)]="businessid"
+                >
+                  <option selected value="">Select Site</option>
+                  <option
+                    *ngFor="let s of businesses"
+                    value="{{ s.BusinessID }}"
+                    >{{ s.BusinessName }}</option
+                  >
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12  form-group">
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="dtedate"
+                  [(ngModel)]="date"
+                  ngbDatepicker
+                  #d1="ngbDatepicker"
+                />
+                <div class="input-group-addon btn" (click)="d1.toggle()">
+                  <i class="fa fa-calendar"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 form-group">
+              <input
+                [(ngModel)]="username"
+                name="username"
+                required
+                class="form-control validation-field"
+                placeholder="User Name"
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 form-group">
+              <input
+                [(ngModel)]="password"
+                name="password"
+                required
+                class="form-control validation-field"
+                placeholder="Password"
+                type="password"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 form-group">
+              <button
+                [disabled]="!fromLogin.form.valid"
+                class="btn btn-block"
+                type="submit"
+              >
+                Sign in
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12"></div>
+          </div>
+        </form>
+      </div>
+      <div class="card-footer text-center bg-transparent">
+        <ul class="list-inline mb-0">
+          <li class="list-inline-item">
+            <span class="fa-stack fa-lg">
+              <i class="fa fa-square-o fa-stack-2x"></i>
+              <i class="fa fa-facebook fa-stack-1x"></i>
+            </span>
+          </li>
+          <li class="list-inline-item">
+            <span class="fa-stack fa-lg">
+              <i class="fa fa-square-o fa-stack-2x"></i>
+              <i class="fa fa-twitter fa-stack-1x"></i>
+            </span>
+          </li>
+          <li class="list-inline-item">
+            <span class="fa-stack fa-lg">
+              <i class="fa fa-square-o fa-stack-2x"></i>
+              <i class="fa fa-google fa-stack-1x"></i>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

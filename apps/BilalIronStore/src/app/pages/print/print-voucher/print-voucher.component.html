@@ -1,0 +1,182 @@
+<section id="print-section">
+  <table style="width: 100%; height: 100%">
+    <tbody style="vertical-align: top">
+      <tr>
+        <td colspan="4" *ngIf="Invoice.Type != 3">
+          <app-print-title [Business]="Business"></app-print-title>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="4" class="text-center" style="font-size: 16px">
+          <strong
+            >{{ Invoice.Credit > 0 ? 'CASH RECEIPT ' : 'CASH PAYMENT' }}
+          </strong>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" class="text-left" style="width: 60%">
+          <table class="">
+            <tr>
+              <td style="width: 40">Voucher No:</td>
+              <td>
+                <strong>{{ Invoice.VoucherID }} </strong>
+              </td>
+            </tr>
+            <tr>
+              <td>Date:</td>
+              <td>
+                {{ FormatDate(Invoice.Date) }}
+              </td>
+            </tr>
+
+            <tr>
+              <td>Customer No:</td>
+              <td>{{ Invoice.CustomerID }}</td>
+            </tr>
+
+            <tr>
+              <td>Account Name:</td>
+              <td style="width: 50%">
+                <strong>{{ Invoice.CustomerName }}</strong>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Address:</td>
+              <td>
+                {{ Invoice.Address }}
+              </td>
+            </tr>
+            <tr *ngIf="Invoice.BankAccountID > 0">
+              <td>Bank Account:</td>
+              <td>{{ Invoice.BankAccountName }}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4">
+          <table class="table-border">
+            <tr class="total">
+              <td class="text-left" style="width: 60%">
+                <strong>Previous Balance </strong>
+              </td>
+              <td class="text-right">
+                <div>
+                  Rs.
+                  {{
+                    Invoice.CBalance * 1 - Invoice.Debit + Invoice.Credit * 1
+                      | number: '1.0-0'
+                  }}
+                </div>
+              </td>
+            </tr>
+            <tr class="total">
+              <td class="text-left">
+                <strong>Cash</strong>
+              </td>
+              <td class="text-right">
+                Rs.
+                {{ Invoice.Cash }}
+              </td>
+            </tr>
+            <tr class="total">
+              <td class="text-left">
+                <strong> Bank ({{ Invoice.BankAccountName }}) </strong>
+              </td>
+              <td class="text-right">
+                Rs.
+                <span *ngIf="Invoice.Bank > 0">
+                  {{ Invoice.Bank | number: '1.0-0' }}</span
+                >
+              </td>
+            </tr>
+            <tr class="total" *ngIf="Invoice.Discount > 0">
+              <td class="text-left">
+                <strong> Discount </strong>
+              </td>
+              <td class="text-right">
+                Rs.
+                <span> {{ Invoice.Discount | number: '1.0-0' }}</span>
+              </td>
+            </tr>
+            <tr class="total">
+              <td class="text-left">
+                <strong> {{ Invoice.Description }}</strong>
+              </td>
+              <td class="text-right">
+                Total Rs.
+                <span *ngIf="Invoice.Credit > 0">
+                  {{ Invoice.Credit | number: '1.0-0' }}</span
+                >
+                <span *ngIf="Invoice.Debit > 0">
+                  {{ Invoice.Debit | number: '1.0-0' }}</span
+                >
+              </td>
+            </tr>
+
+            <tr class="total">
+              <td class="text-left">
+                <strong>New Balance</strong>
+              </td>
+              <td class="text-right">
+                <strong>
+                  Rs.
+                  {{
+                    Invoice.CBalance
+                      | number: '1.0-0'
+                  }}
+                </strong>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div style="height: 50px"></div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" class="text-center">
+          <table>
+            <tr>
+              <td style="width: 40%; border-top: 2px solid">
+                <strong>Received By:</strong>
+              </td>
+              <td></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+<section class="buttonarea">
+  <div class="row no-pad">
+    <div class="col-md-4">
+      <div class="form-group">
+        <button
+          class="btn btn-primary"
+          printSectionId="print-section"
+          type="button"
+          (click)="Print()"
+        >
+          <i class="fa fa-print"></i>
+        </button>
+
+        <button
+          style="margin: 5px"
+          class="btn btn-primary"
+          printSectionId="print-section"
+          type="button"
+          (click)="SendWhatsApp()"
+        >
+          <i class="fab fa whatsapp"></i>
+          Send WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,171 @@
+{
+  "name": "TradingSystem",
+  "projectType": "application",
+  "generators": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    },
+    "@schematics/angular:application": {
+      "strict": true
+    }
+  },
+  "sourceRoot": "apps/TradingSystem/src",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "allowedCommonJsDependencies": [
+          "dragula",
+          "firebase/app",
+          "@mattlewis92/dom-autoscroller",
+          "angular-calendar/date-adapters/date-fns",
+          "prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard",
+          "nouislider",
+          "ngx-quill",
+          "lodash",
+          "css-element-queries",
+          "chart.js"
+        ],
+        "outputPath": "dist/apps/TradingSystem",
+        "index": "apps/TradingSystem/src/index.html",
+        "main": "apps/TradingSystem/src/main.ts",
+        "tsConfig": "apps/TradingSystem/tsconfig.app.json",
+        "polyfills": "apps/TradingSystem/src/polyfills.ts",
+        "assets": [
+          "apps/TradingSystem/src/assets",
+          "apps/TradingSystem/src/favicon.ico",
+          "apps/TradingSystem/src/manifest.webmanifest",
+          "apps/TradingSystem/src/sw-master.js",
+          "apps/TradingSystem/src/sw-sync.js"
+        ],
+        "styles": [
+          "node_modules/sweetalert2/dist/sweetalert2.min.css",
+          "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
+          "node_modules/prismjs/plugins/toolbar/prism-toolbar.css",
+          "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+          "node_modules/@syncfusion/ej2-base/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-buttons/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-dropdowns/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-inputs/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-popups/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-lists/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-angular-dropdowns/styles/bootstrap.css",
+          "apps/TradingSystem/src/assets/css/wizard.css",
+          "apps/TradingSystem/src/assets/css/quill.snow.css",
+          "apps/TradingSystem/src/assets/css/quill.bubble.css",
+          "apps/TradingSystem/src/assets/css/hopscotch.css",
+          "apps/TradingSystem/src/assets/css/animate.min.css",
+          "node_modules/nouislider/distribute/nouislider.min.css",
+          "node_modules/angular-calendar/scss/angular-calendar.scss",
+          "node_modules/dragula/dist/dragula.css",
+          "node_modules/ngx-toastr/toastr.css",
+          "node_modules/@swimlane/ngx-datatable/index.css",
+          "node_modules/@swimlane/ngx-datatable/assets/icons.css",
+          "apps/TradingSystem/src/assets/css/demo.css",
+          "apps/TradingSystem/src/assets/sass/core.scss",
+          "apps/TradingSystem/src/styles.scss",
+          "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css",
+          "node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css",
+          "node_modules/datatables.net-select-dt/css/select.dataTables.css"
+        ],
+        "scripts": [
+          "apps/TradingSystem/src/assets/vendor/pace/pace.min.js",
+          "node_modules/apexcharts/dist/apexcharts.min.js",
+          "node_modules/jquery/dist/jquery.min.js",
+          "node_modules/datatables.net/js/jquery.dataTables.min.js",
+          "node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js",
+          "node_modules/jszip/dist/jszip.js",
+          "node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+          "node_modules/datatables.net-buttons/js/buttons.colVis.js",
+          "node_modules/datatables.net-buttons/js/buttons.flash.js",
+          "node_modules/datatables.net-buttons/js/buttons.html5.js",
+          "node_modules/datatables.net-buttons/js/buttons.print.js",
+          "node_modules/datatables.net-select/js/dataTables.select.js"
+        ],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true,
+        "serviceWorker": true,
+        "ngswConfigPath": "apps/TradingSystem/ngsw-config.json"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "16mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "8kb",
+              "maximumError": "12kb"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/TradingSystem/src/environments/environment.ts",
+              "with": "apps/TradingSystem/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "TradingSystem:build:production"
+        },
+        "development": {
+          "browserTarget": "TradingSystem:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "TradingSystem:build"
+      }
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "apps/TradingSystem/src/test.ts",
+        "polyfills": "apps/TradingSystem/src/polyfills.ts",
+        "tsConfig": "apps/TradingSystem/tsconfig.spec.json",
+        "karmaConfig": "apps/TradingSystem/karma.conf.js",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "apps/TradingSystem/src/favicon.ico",
+          "apps/TradingSystem/src/assets"
+        ],
+        "styles": [
+          "apps/TradingSystem/src/styles.scss"
+        ],
+        "scripts": []
+      }
+    }
+  }
+}

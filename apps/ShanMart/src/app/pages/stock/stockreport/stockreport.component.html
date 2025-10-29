@@ -1,0 +1,82 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">Stcok Report</h5>
+    <div class="widget-controls">
+      <a data-widgster="expand" href="#" class="transition">
+        <i class="fa fa-chevron-down"></i>
+      </a>
+      <a data-widgster="collapse" href="#" class="transition">
+        <i class="fa fa-chevron-up"></i>
+      </a>
+      <a data-widgster="fullscreen" href="#" class="transition">
+        <i class="fa fa-expand"></i>
+      </a>
+      <a data-widgster="restore" href="#" class="transition">
+        <i class="fa fa-compress"></i>
+      </a>
+
+    </div>
+  </div>
+
+<div class = 'row'>
+    <div class="form-group col-lg-3"></div>
+    <div class="col-lg-3">
+        <div class="form-group">
+            <label for="storeid">Select Store</label>
+            <ejs-combobox name="storeid" id="storeid" [dataSource]='Stores' required [fields]='Storefields' [(ngModel)] = "StoreID"
+               >
+            </ejs-combobox>
+          </div>
+    </div>
+    <div class="form-group col-lg-2" >
+    <button type="button" style = 'margin-top:23px;' class="btn btn-success form-control" (click) = "LoadData()">Filter</button>
+  </div>
+</div>
+  <div class="card-block pt-0 widget-body">
+    <div class="table-responsive">
+      <ng2-smart-table  class="table table-hover"
+                        [settings]="settings"
+                        [source]="data"
+                        (delete)="onDeleteConfirm($event)"
+                        (edit)="onEdit($event)"
+
+                       ></ng2-smart-table>
+  </div>
+  </div>
+</div>
+
+
+<div bsModal #stockModel="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Product Detail</h4>
+
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form  (ngSubmit)="SaveData(stocksModel)" #ClassForm="ngForm">
+                <input type="text" class="sr-only" [(ngModel)] = "stocksModel.DesigID" name = "ID" placeholder="ID here">
+              <div class="form-group">
+                <label for="name">Product  Name</label>
+                <input type="text" class="form-control validation-field" readonly required  = "required" [(ngModel)] = "stocksModel.ProductName" name = "name" placeholder="Name here">
+              </div>
+              <div class="form-group">
+                <label for="name"> Purchase Price</label>
+                <input type="text" class="form-control validation-field" required  = "required" [(ngModel)] = "stocksModel.PPrice" name = "PPrice" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="name"> Sale Price</label>
+                <input type="text" class="form-control validation-field" required  = "required" [(ngModel)] = "stocksModel.SPrice" name = "SPrice" placeholder="0">
+              </div>
+            <button type="submit" class="btn btn-success" [disabled]="!ClassForm.form.valid">Save</button>
+            <button type="button" class="btn btn-primary" (click)="closeModal()">Cancel</button>
+
+        </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

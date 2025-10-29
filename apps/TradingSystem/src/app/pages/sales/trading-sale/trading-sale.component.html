@@ -1,0 +1,549 @@
+<form (ngSubmit)="SaveData()" #frmInvoice="ngForm">
+  <div class="row no-gutter">
+    <div class="col-md-12">
+      <div widget class="card border-0 box-shadow">
+        <div class="card-header transparent border-0 text-muted">
+          <h5 class="text-primary">Trading Invoice</h5>
+        </div>
+        <div class="card-block widget-body">
+          <div class="row no-pad">
+            <div class="col-md-2">
+              <label for="dp1">Date:</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="dp1"
+                  [(ngModel)]="invoice.Date"
+                  [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                  bsDatepicker
+                  disabled
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <ft-input-control
+                [label]="'SP No'"
+                [type]="'text'"
+                [name]="'SPrNo'"
+                [(ngModel)]="invoice.SPrNo"
+              >
+              </ft-input-control>
+            </div>
+            <div class="col-md-4">
+              <div *ngIf="isPosted" class="text-center btn btn-danger btn-sm">
+                POSTED ORDER
+              </div>
+            </div>
+            <div class="col-md-4">
+              <form #frmFilter="ngForm">
+                <div class="row">
+                  <div class="col-md-8">
+                    <label for="">Give Invoice No</label>
+                    <input
+                      class="form-control"
+                      name="ino"
+                      [(ngModel)]="Ino"
+                      placeholder="Invoice No"
+                    />
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="">&nbsp;</label>
+                      <button
+                        type="submit"
+                        class="btn btn-primary form-control"
+                        (click)="FindINo()"
+                        accesskey="F"
+                      >
+                        <i class="fa fa-search"></i>
+                        Find Invoice
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row no-pad">
+    <div class="col-md-6">
+      <div widget class="card border-0 box-shadow">
+        <div class="card-header border-0">
+          <h5 class="text-warning">Purchase</h5>
+        </div>
+        <div class="card-block widget-body">
+          <legend>
+            <div class="row no-gutter">
+              <div class="form-group col-md-6">
+                <label for="customer">Account: </label>
+                <ng-select
+                  #cmbCustomers
+                  name="ng2select"
+                  class="custom"
+                  [items]="Accounts"
+                  [virtualScroll]="true"
+                  bindLabel="CustomerName"
+                  bindValue="CustomerID"
+                  placeholder="Select Customer"
+                  (change)="CustomerSelected($event)"
+                  required
+                  [(ngModel)]="invoice.PurchaseAcct"
+                >
+                  <ng-template ng-option-tmp let-item="item">
+                    <div class="row no-gutter">
+                      <div class="col-md-12">
+                        {{ item.CustomerName }}
+                      </div>
+                      <div class="col-md-9 text-italic font-small-2 mt-1">
+                        <small>
+                          {{ item.Address }}, {{ SelectCust.City }}
+                        </small>
+                      </div>
+                      <div class="col-md-3 text-italic font-small-2 mt-1">
+                        <small>
+                          {{ item.Balance }}
+                        </small>
+                      </div>
+                    </div>
+                  </ng-template>
+                </ng-select>
+              </div>
+              <div class="col-md-3">
+                <ft-input-control
+                  [label]="'P Order #'"
+                  [type]="'text'"
+                  [id]="'POrderNo'"
+                  [name]="'POrderNo'"
+                  [(ngModel)]="invoice.POrderNo"
+                >
+                </ft-input-control>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="qty">Purchase Store</label>
+                  <ng-select
+                    #cmbPStore
+                    name="cmbPstore"
+                    class="custom"
+                    [items]="$PStores | async"
+                    bindLabel="PStoreName"
+                    bindValue="PStoreID"
+                    placeholder="Select Store"
+                    required
+                    [(ngModel)]="invoice.PStoreID"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="supplier">Select Product:</label>
+                  <ng-select
+                    #cmbProduct
+                    name="cmbProduct"
+                    id="cmbProduct"
+                    class="custom"
+                    [items]="Prods"
+                    [virtualScroll]="true"
+                    bindLabel="ProductName"
+                    bindValue="ProductID"
+                    placeholder="Select Product"
+                    required
+                    [(ngModel)]="invoice.ProductID"
+                    [searchFn]="ProductSearchFn"
+                  >
+                    <ng-template ng-option-tmp let-item="item">
+                      <div class="row no-gutter">
+                        <div class="col-md-12">
+                          {{ item.ProductName }}
+                        </div>
+                        <div class="col-md-6 text-italic font-small-2 mt-1">
+                          <small> PP:{{ item.PPrice }} </small>
+                        </div>
+                        <div class="col-md-6 text-italic font-small-2 mt-1">
+                          <small> Stock:{{ item.Stock }} </small>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <ft-input-control
+                  [label]="'Quantity'"
+                  [type]="'number'"
+                  [id]="'Qty'"
+                  [name]="'Qty'"
+                  [(ngModel)]="invoice.Qty"
+                >
+                </ft-input-control>
+              </div>
+              <div class="col-md-3">
+                <ft-input-control
+                  [label]="'P Rate'"
+                  [type]="'number'"
+                  [id]="'PRate'"
+                  [name]="'PRate'"
+                  [(ngModel)]="invoice.PRate"
+                >
+                </ft-input-control>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="qty">P Terms</label>
+                  <ng-select
+                    #cmbTerms
+                    name="cmbPTerms"
+                    id="cmbPTerms"
+                    class="custom"
+                    [items]="Terms"
+                    bindLabel="Term"
+                    bindValue="ID"
+                    placeholder="Select Term"
+                    required
+                    [(ngModel)]="invoice.PTerm"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <ft-input-control
+                  [label]="'Frieght'"
+                  [type]="'number'"
+                  [name]="'PFreight'"
+                  [(ngModel)]="invoice.PFreight"
+                >
+                </ft-input-control>
+              </div>
+              <div class="col-md-3">
+                <ft-input-control
+                  [label]="'Amount'"
+                  [type]="'number'"
+                  [name]="'PAmount'"
+                  [value]="invoice.Qty * invoice.PRate"
+                  [(ngModel)]="invoice.PAmount"
+                >
+                </ft-input-control>
+              </div>
+            </div>
+          </legend>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div widget class="card border-0 box-shadow">
+        <div class="card-header transparent border-0">
+          <h5 class="text-success">Sale</h5>
+        </div>
+        <div class="card-block widget-body">
+          <legend>
+            <div class="row no-gutter">
+              <div class="form-group col-md-6">
+                <label for="customer">Account: </label>
+                <ng-select
+                  #cmbCustomers
+                  name="ng2select"
+                  class="custom"
+                  [items]="Accounts"
+                  [virtualScroll]="true"
+                  bindLabel="CustomerName"
+                  bindValue="CustomerID"
+                  placeholder="Select Customer"
+                  (change)="CustomerSelected($event)"
+                  required
+                  [(ngModel)]="invoice.SaleAcct"
+                >
+                  <ng-template ng-option-tmp let-item="item">
+                    <div class="row no-gutter">
+                      <div class="col-md-12">
+                        {{ item.CustomerName }}
+                      </div>
+                      <div class="col-md-9 text-italic font-small-2 mt-1">
+                        <small>
+                          {{ item.Address }}, {{ SelectCust.City }}
+                        </small>
+                      </div>
+                      <div class="col-md-3 text-italic font-small-2 mt-1">
+                        <small>
+                          {{ item.Balance }}
+                        </small>
+                      </div>
+                    </div>
+                  </ng-template>
+                </ng-select>
+              </div>
+              <div class="col-md-3">
+                <ft-input-control
+                  [label]="'Sale Order #'"
+                  [type]="'text'"
+                  [name]="'SOrderNo'"
+                  [(ngModel)]="invoice.SOrderNo"
+                >
+                </ft-input-control>
+              </div>
+              <div class="col-md-3">
+                <ft-input-control
+                  [label]="'Sale Rate'"
+                  [type]="'number'"
+                  [name]="'SRate'"
+                  [(ngModel)]="invoice.SRate"
+                >
+                </ft-input-control>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="qty">SP Terms</label>
+                  <ng-select
+                    #cmbSTerms
+                    name="cmbSTerms"
+                    id="cmbSTerms"
+                    class="custom"
+                    [items]="Terms"
+                    bindLabel="Term"
+                    bindValue="ID"
+                    placeholder="Sale Term"
+                    required
+                    [(ngModel)]="invoice.STerm"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <ft-input-control
+                  [label]="'Frieght'"
+                  [type]="'number'"
+                  [name]="'SFreight'"
+                  [(ngModel)]="invoice.SFreight"
+                >
+                </ft-input-control>
+              </div>
+              <div class="col-md-3">
+                <ft-input-control
+                  [label]="'Amount'"
+                  [type]="'number'"
+                  [name]="'SAmount'"
+                  [value]="invoice.Qty * invoice.SRate"
+                  [(ngModel)]="invoice.SAmount"
+                >
+                </ft-input-control>
+              </div>
+              <div class="col-md-9">
+                <ft-input-control
+                  [label]="'CO'"
+                  [type]="'text'"
+                  [name]="'CO'"
+                  [(ngModel)]="invoice.CO"
+                >
+                </ft-input-control>
+              </div>
+              <div class="col-md-3">
+                <ft-input-control
+                  [label]="'DMA'"
+                  [type]="'number'"
+                  [name]="'DMA'"
+                  [(ngModel)]="invoice.DMA"
+                >
+                </ft-input-control>
+              </div>
+            </div>
+          </legend>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div widget class="card border-0 box-shadow">
+    <div class="card-header transparent border-0 text-muted">
+      <h5 class="text-primary">Transporter</h5>
+    </div>
+    <div class="card-block widget-body">
+      <div class="row no-pad">
+        <div class="form-group col-md-3">
+          <label for="customer">Transporter: </label>
+          <ng-select
+            #cmbCustomers
+            name="ng2select"
+            class="custom"
+            [items]="Transporters"
+            [virtualScroll]="true"
+            bindLabel="CustomerName"
+            bindValue="CustomerID"
+            placeholder="Select Customer"
+            required
+            [(ngModel)]="invoice.TransporterID"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              <div class="row no-gutter">
+                <div class="col-md-12">
+                  {{ item.CustomerName }}
+                </div>
+                <div class="col-md-9 text-italic font-small-2 mt-1">
+                  <small> {{ item.Address }}, {{ SelectCust.City }} </small>
+                </div>
+                <div class="col-md-3 text-italic font-small-2 mt-1">
+                  <small>
+                    {{ item.Balance }}
+                  </small>
+                </div>
+              </div>
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="col-md-2">
+          <ft-input-control
+            [label]="'Vehicle No'"
+            [type]="'text'"
+            [name]="'VehNo'"
+            [(ngModel)]="invoice.VehicleNo"
+          >
+          </ft-input-control>
+        </div>
+        <div class="col-md-2">
+          <ft-input-control
+            [label]="'Builty No'"
+            [type]="'text'"
+            [name]="'BuiltyNo'"
+            [(ngModel)]="invoice.BiltyNo"
+          >
+          </ft-input-control>
+        </div>
+        <div class="col-md-2">
+          <ft-input-control
+            [label]="'Transporter Ammount'"
+            [type]="'number'"
+            [(ngModel)]="invoice.TransporterAmount"
+          >
+          </ft-input-control>
+        </div>
+        <div class="col-md-2">
+          <ft-input-control
+            [label]="'Company Inv No'"
+            [type]="'text'"
+            [(ngModel)]="invoice.CompanyInvNo"
+          >
+          </ft-input-control>
+        </div>
+        <div class="col-md-2">
+          <ft-input-control
+            [label]="'Company Order No'"
+            [type]="'text'"
+            [(ngModel)]="invoice.CompanyOrderNo"
+          >
+          </ft-input-control>
+        </div>
+        <div class="col-md-2">
+          <ft-input-control
+            [label]="'Company Inv date'"
+            [type]="'date'"
+            [(ngModel)]="invoice.CompanyInvDate"
+          >
+          </ft-input-control>
+        </div>
+        <div class="col-md-2">
+          <ft-input-control
+            [label]="'Sale Tax '"
+            [type]="'number'"
+            [(ngModel)]="invoice.SaleTaxValue"
+          >
+          </ft-input-control>
+        </div>
+        <div class="col-md-2">
+          <ft-input-control
+            [label]="'ST Purchase'"
+            [type]="'number'"
+            [(ngModel)]="invoice.STPurchValue"
+          >
+          </ft-input-control>
+        </div>
+        <div class="col-md-4">
+          <ft-input-control
+            [label]="'Notes'"
+            [type]="'text'"
+            [(ngModel)]="invoice.Note"
+          >
+          </ft-input-control>
+        </div>
+        <div class="col-md-2">
+          <ft-input-control
+            [label]="'Mobile No'"
+            [type]="'text'"
+            [(ngModel)]="invoice.MobNo"
+          >
+          </ft-input-control>
+        </div>
+        <div class="col-md-2">
+          <ft-input-control
+            [label]="'PL'"
+            [type]="'number'"
+            [readonly]="true"
+            [(ngModel)]="invoice.PL"
+          >
+          </ft-input-control>
+        </div>
+      </div>
+      <div class="row no-gutter">
+        <div class="col-md-4">
+          <div class="form-group">
+            <ft-navigator (ClickAction)="NavigatorClicked($event)">
+            </ft-navigator>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <button
+              type="button"
+              class="btn btn-primary btn-block"
+              (click)="NewInvoice()"
+              accesskey="n"
+            >
+              New
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <button
+              type="button"
+              class="btn btn-primary btn-block"
+              [disabled]="!frmInvoice.form.valid || isPosted"
+              (click)="SaveData()"
+              accesskey="s"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <button
+              type="button"
+              class="btn btn-primary btn-block"
+              [disabled]="EditID == ''"
+              (click)="PrintInvoice()"
+              accesskey="p"
+            >
+              Print
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <button
+              type="button"
+              class="btn btn-danger btn-block"
+              (click)="Cancel()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

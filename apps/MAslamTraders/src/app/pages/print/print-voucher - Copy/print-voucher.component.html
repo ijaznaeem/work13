@@ -1,0 +1,132 @@
+<section id="print-content" class="thermal-voucher">
+  <!-- Business Title -->
+  <div class="thermal-business" *ngIf="Invoice.Type != 3">
+    <app-print-title [Business]="Business"></app-print-title>
+  </div>
+
+  <!-- Header Section -->
+  <div class="thermal-header">
+    <div class="voucher-title">
+      {{ Invoice.RefType == 1 ? 'CASH RECEIPT' : 'CASH PAYMENT' }}
+    </div>
+    <div class="line"></div>
+  </div>
+
+  <!-- Voucher Info Section -->
+  <div class="thermal-info">
+    <div class="info-row">
+      <span class="label">Voucher No:</span>
+      <span class="value strong">{{ Invoice.VoucherID }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Date:</span>
+      <span class="value">{{ FormatDate(Invoice.Date) }}</span>
+    </div>
+    <div class="info-row" *ngIf="Invoice.CustomerID">
+      <span class="label">Customer No:</span>
+      <span class="value">{{ Invoice.CustomerID }}</span>
+    </div>
+    <div class="info-row">
+      <span class="label">Account Name:</span>
+      <span class="value strong">{{ Invoice.CustomerName }}</span>
+    </div>
+    <div class="info-row" *ngIf="Invoice.PhoneNo1">
+      <span class="label">Contact:</span>
+      <span class="value">{{ Invoice.PhoneNo1 }}</span>
+    </div>
+    <div class="info-row" *ngIf="Invoice.Address">
+      <span class="label">Address:</span>
+      <div class="value address-text">{{ Invoice.Address }}</div>
+    </div>
+    <div class="info-row" *ngIf="Invoice.BankAccountID > 0">
+      <span class="label">Bank Account:</span>
+      <span class="value">{{ Invoice.BankAccountName }}</span>
+    </div>
+    <div class="line"></div>
+  </div>
+      <tr>
+        <td colspan="4">
+          <table class="table-border">
+            <tr class="total">
+              <td class="text-left" style="width: 60%">
+                <strong>Previous Balance </strong>
+              </td>
+              <td class="text-right">
+                <div *ngIf="Invoice.RefType == 1">
+                  Rs.
+                  {{
+                    (Invoice.CBalance * 1 +
+                      (Invoice.Credit * 1 + Invoice.BankCash * 1))
+                      | number: '1.0-0'
+                  }}
+                </div>
+                <div *ngIf="Invoice.RefType == 2">
+                X  Rs.
+                  {{
+                    Invoice.CBalance * 1 -
+                      (Invoice.Debit * 1 + Invoice.BankCash * 1)
+                      | number: '1.0-0'
+                  }}
+                </div>
+              </td>
+            </tr>
+            <tr class="total">
+              <td class="text-left">
+                <strong> {{ Invoice.Description }}</strong>
+              </td>
+              <td class="text-right">
+                Rs.
+                <span *ngIf="Invoice.RefType == 1">
+                  {{ Invoice.Credit | number: '1.0-0' }}</span
+                >
+                <span *ngIf="Invoice.RefType == 2">
+                  {{ Invoice.Debit | number: '1.0-0' }}</span
+                >
+              </td>
+            </tr>
+
+            <tr class="total">
+              <td class="text-left">
+                <strong>Online</strong>
+              </td>
+              <td class="text-right">
+                <strong>
+                  Rs.
+                  {{ Invoice.BankCash | number: '1.0-0' }}
+                </strong>
+              </td>
+            </tr>
+            <tr class="total">
+              <td class="text-left">
+                <strong>New Balance</strong>
+              </td>
+              <td class="text-right">
+                <strong>
+                  Rs.
+                  {{ Invoice.CBalance | number: '1.0-0' }}
+                </strong>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div style="height: 50px"></div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4" class="text-center">
+          <table>
+            <tr>
+              <td style="width: 40%; border-top: 2px solid">
+                <strong>Received By:</strong>
+              </td>
+              <td></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>

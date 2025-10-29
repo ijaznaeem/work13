@@ -1,0 +1,9 @@
+.alert-light-danger {
+  background-color: #FEEFD0 !important;
+  color: #F55252  !important;
+  border-color: #FEEFD0;
+}
+#login{
+  /* background-color: rgb(35, 35, 39); */
+ background-image: url('../../../../assets/img/bg-wallpaper-medhouse.jpg');
+}

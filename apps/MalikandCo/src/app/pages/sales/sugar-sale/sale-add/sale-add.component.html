@@ -1,0 +1,299 @@
+<div class="container">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Sale</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="bsModalRef.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <form (ngSubmit)="AddOrder()" #fromPurchase="ngForm">
+        <div class="row no-gutter">
+          <div class="col-md-2">
+            <label for="dp1">Date:</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dp1"
+                [(ngModel)]="sdetails.Date"
+                ngbDatepicker
+                #d1="ngbDatepicker"
+                required
+                disabled
+              />
+              <div class="input-group-append">
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  (click)="d1.toggle()"
+                >
+                  <i class="fa fa-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <label for="dp1">Select Order</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                type="text"
+                name="OrderNo"
+                placeholder="Order No"
+                aria-label="Order No"
+                aria-describedby="my-addon"
+                (keydown.enter)="Find()"
+                #OrderNo
+                [(ngModel)]="sdetails.OrderID"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-warning"
+                (click)="Search()"
+                type="button">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="qty">Vehicle No</label>
+              <input
+                type="text"
+                class="form-control dation-field"
+                id="VehicleNo"
+                name="VehicleNo"
+                [(ngModel)]="sdetails.VehicleNo"
+                #VehicleNo
+                (focus)="VehicleNo.select()"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="qty">Builty No</label>
+              <input
+                type="text"
+                class="form-control dation-field"
+                id="BuiltyNo"
+                name="BuiltyNo"
+                [(ngModel)]="sdetails.BuiltyNo"
+                #BuiltyNo
+                (focus)="BuiltyNo.select()"
+              />
+            </div>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="customer">Customer </label>
+            <ng-select
+              #cmbCustomers
+              name="ng2select"
+              class="custom"
+              [items]="Accounts"
+              [virtualScroll]="true"
+              bindLabel="CustomerName"
+              bindValue="CustomerID"
+              placeholder="Select Customer"
+              (change)="CustomerSelected($event)"
+              required
+              [(ngModel)]="sdetails.CustomerID"
+              (keydown.enter)="cmbStores.focus()"
+            >
+              <ng-template ng-option-tmp let-item="item">
+                <div class="row no-gutter">
+                  <div class="col-md-12">
+                    {{ item.CustomerName }}
+                  </div>
+                  <div class="col-md-9 text-italic font-small-2 mt-1">
+                    <small>
+                      {{ item.Address }}
+                    </small>
+                  </div>
+                  <div class="col-md-3 text-italic font-small-2 mt-1">
+                    <small>
+                      {{ item.Balance }}
+                    </small>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="row no-gutter">
+          <div class="col-md-2">
+            <label for="stores"> Select Store </label>
+            <ng-select
+              #cmbStores
+              name="stores"
+              id="stores"
+              class="custom"
+              [items]="Stores | async"
+              [virtualScroll]="true"
+              bindLabel="StoreName"
+              bindValue="StoreID"
+              placeholder="Select Store"
+              (change)="StoreSelected($event)"
+              required
+              TabSelectDirective
+              [(ngModel)]="sdetails.StoreID"
+            >
+            </ng-select>
+          </div>
+          <div class="col-md-4">
+            <label for="customer"> Select product </label>
+            <ng-select
+              #cmbProduct
+              name="cmbProduct"
+              id="cmbProduct"
+              class="custom"
+              [items]="Stock"
+              [virtualScroll]="true"
+              bindLabel="ProductName"
+              bindValue="ProductID"
+              placeholder="Select Product"
+              (change)="ProductSelected($event)"
+              required
+              [(ngModel)]="sdetails.ProductID"
+              [searchFn]="ProductSearchFn"
+            >
+              <ng-template ng-option-tmp let-item="item">
+                <div class="row no-gutter">
+                  <div class="col-md-8">
+                    {{ item.ProductName }}
+                  </div>
+                  <div class="col-md-2 text-italic font-small-2 mt-1">
+                    <small>
+                      {{ item.Stock }}
+                    </small>
+                  </div>
+                  <div class="col-md-2 text-italic font-small-2 mt-1">
+                    <small>
+                      {{ item.ProductID }}
+                    </small>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-select>
+          </div>
+          <div class="col-md-6">
+            <div class="row no-gutter">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="qty">Qty</label>
+                  <input
+                    type="number"
+                    class="form-control dation-field"
+                    required="required"
+                    id="qty"
+                    name="qty"
+                    [(ngModel)]="sdetails.Qty"
+                    #qty
+                    (focus)="qty.select()"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="RPrice">Rate:</label>
+                  <input
+                    #txtRate
+                    type="number"
+                    class="form-control"
+                    id="SPrice"
+                    name="SPrice"
+                    [(ngModel)]="sdetails.SPrice"
+                    min="1"
+                    required
+                    (keydown.enter)="AddOrder()"
+                    (focus)="txtRate.select()"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="bonus">Amount:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="pamount"
+                    name="pamount"
+                    readonly
+                    [value]="sdetails.Qty * sdetails.Packing * sdetails.SPrice"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="row no-gutter">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="notes">Notes</label>
+                <input
+                  class="form-control"
+                  [(ngModel)]="sdetails.Notes"
+                  type="text"
+                  name="notes"
+                  id="notes"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="notes">Total Weight </label>
+                <p>
+                  <strong
+                    >{{ GetWeight() }} Kgs
+                    <span>{{ GetWeight() / 1000 }} Tons</span></strong
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  #btnAdd
+                  type="button"
+                  class="btn btn-success form-control"
+                  [disabled]="!fromPurchase.form.valid"
+                  (click)="AddOrder()"
+                  accesskey="a"
+                >
+                  <i class="ft-save"></i>
+                  Save
+                </button>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  #btnAdd
+                  type="button"
+                  class="btn btn-danger form-control"
+                  (click)="Cancel()"
+                  accesskey="a"
+                >
+                  <i class="ft ft-reload"></i>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

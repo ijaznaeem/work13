@@ -1,0 +1,40 @@
+{
+  "name": "IKMF Angular Development",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:18",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "angular.ng-template",
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "github.copilot.enable": {
+          "*": true,
+          "plaintext": false,
+          "markdown": true,
+          "scminput": false
+        },
+        "github.copilot.advanced": {
+          "debug.overrideEngine": "copilot-chat",
+          "debug.useNodeFetcher": true
+        }
+      }
+    }
+  },
+  "mounts": [
+    "source=${localWorkspaceFolder}/.copilot,target=/workspace/.copilot,type=bind"
+  ],
+  "postCreateCommand": "npm install && cd .copilot && npm install && npm run build",
+  "forwardPorts": [
+    4200,
+    9876
+  ]
+}

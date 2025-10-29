@@ -1,0 +1,57 @@
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Item &amp; Description</th>
+      <th class="text-right">Rate</th>
+      <th class="text-right">Qty</th>
+      <th class="text-right">Tax</th>
+      <th class="text-right">Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container
+      *ngIf="Invoice.package == null || Invoice.package == ''; else package"
+    >
+      <tr *ngFor="let item of Invoice.details; index as i">
+        <th scope="row">{{ i + 1 }}</th>
+        <td>
+          <strong> {{ item.product_name }} </strong>
+          <p class="text-muted">{{ item.description }}</p>
+        </td>
+        <td class="text-right">{{ item.price * 1 + item.markup * 1 }}</td>
+        <td class="text-right">{{ item.qty }}</td>
+        <td class="text-right">
+          {{ item.vat_amount }}
+          <p class="text-muted">{{ item.vat }}%</p>
+        </td>
+        <td class="text-right">{{ item.net_amount }}</td>
+      </tr>
+    </ng-container>
+    <ng-template #package>
+      <tr>
+        <th scope="row">1</th>
+        <td>
+          <strong>{{ Invoice.package }}</strong>
+          <ul>
+            <li
+              class="text-muted"
+              *ngFor="let item of Invoice.details; index as i"
+            >
+              {{ item.product_name }} <br>
+              {{ item.description }}
+            </li>
+          </ul>
+        </td>
+        <td class="text-right">
+          {{ Invoice.amount * 1 + Invoice.markup * 1 }}
+        </td>
+        <td class="text-right">{{ 1 }}</td>
+        <td class="text-right">
+          {{ Invoice.vat }}
+        </td>
+        <td class="text-right">{{ Invoice.net_amount }}</td>
+      </tr>
+    </ng-template>
+  </tbody>
+</table>

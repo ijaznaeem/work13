@@ -1,0 +1,70 @@
+<div widget class="card border-0 box-shadow">
+    <div class="card-header transparent border-0 text-muted">
+      <h5 class="mb-3">Customers</h5>
+    </div>
+    <div class="card-block widget-body">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Company</label>
+              <select
+                name="company"
+                id="company"
+                [(ngModel)]="Filter.AcctTypeID"
+                class="form-control"
+              >
+                <option value="" selected>--Select Account Type--</option>
+                <option
+                  *ngFor="let type of acctTypes"
+                  [value]="type.AcctTypeID"
+                >
+                  {{ type.AcctType }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button
+                type="submit"
+                class="btn btn-primary form-control"
+                (click)="LoadData()"
+                accesskey="a"
+              >
+                <i class="fa fa-search"></i>
+                Filter
+              </button>
+            </div>
+          </div>
+          <div class="col-md-4"></div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button
+                type="submit"
+                class="btn btn-warning form-control"
+                (click)="Add()"
+                accesskey="a"
+              >
+                <i class="fa fa-plus"></i>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ft-dynamic-table
+              [Settings]="list"
+              [Data]="data"
+              (ClickAction)="Clicked($event)"
+            ></ft-dynamic-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

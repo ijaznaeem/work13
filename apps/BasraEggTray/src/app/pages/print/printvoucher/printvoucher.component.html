@@ -1,0 +1,81 @@
+<section class="sheet">
+  <table style="width: 100%">
+    <tr>
+      <td colspan="4" style="border: 0px" class="text-center">
+        <h2>{{ company.BusinessName }}</h2>
+        <h4>{{ company.Address }} , <br />{{ company.Phone }}</h4>
+        <h4>{{ company.City }}</h4>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4" style="border: 0px">
+        <h3 class="text-center" *ngIf="Voucher.VoucherType == '1'">
+          Cash Receipt
+        </h3>
+        <h3 class="text-center" *ngIf="Voucher.VoucherType == '2'">
+          Cash Paid
+        </h3>
+      </td>
+    </tr>
+    <tr>
+      <td style="border: 0px">
+        Date: <strong>{{ Voucher.Date }}</strong>
+      </td>
+      <td style="border: 0px">
+        Voucher #: <strong>{{ Voucher.VoucherID }}</strong>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4" style="border: 0px">Customer Name:</td>
+    </tr>
+
+    <tr>
+      <td style="border: 0px">
+        <strong>{{ Voucher.CustomerName }}</strong>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4" style="border: 0px">Address:</td>
+    </tr>
+    <tr>
+      <td colspan="4" style="border: 0px">
+        <strong>{{ Voucher.Address }}, {{ Voucher.City }}</strong>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4" style="border: 0px">
+        <table class="table table-bordered">
+          <tr>
+            <td>Details</td>
+
+            <td>
+              <strong>{{ Voucher.Description }}</strong>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span *ngIf="Voucher.VoucherType == '2'">Paid Amount</span>
+              <span *ngIf="Voucher.VoucherType == '1'">Received Amount</span>
+            </td>
+            <td>
+              <strong>Rs.
+                {{
+                Voucher.Credit > 0 ? Voucher.Credit : Voucher.Debit
+                }}</strong>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <button class="btn btn-primary no-print" printSectionId="print-section" type="button" (click)="Print()">
+          <i class="fa fa-print"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

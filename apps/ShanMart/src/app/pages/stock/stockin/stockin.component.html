@@ -1,0 +1,68 @@
+<div widget class="card border-0 box-shadow mb-20">
+  <div class="card-header  transparent border-0 text-muted">
+    <h5 class="mb-0">Product Defination</h5>
+
+  </div>
+  <div class="card-block widget-body">
+
+    <form (submit)="SaveData(newStock)" #formStock="ngForm">
+      <div class="row">
+
+
+
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="cmbCats">Select Product:</label>
+            <ejs-combobox id='cmbCats' #cmbCats name="cmbCats" class="form-control validation-field" required  = "required" [dataSource]='Productdata' [fields]='Productfields' placeholder="Select Product..."
+              [(ngModel)]="newStock.productid" (change) = "changeselect($event)">
+            </ejs-combobox>
+          </div>
+        </div>
+
+
+
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="pprice">Purchase Price:</label>
+            <input type="text" class="form-control  validation-field" required  = "required" id="pprice" name="pprice" [(ngModel)]="newStock.pprice" placeholder="0">
+          </div>
+        </div>
+
+
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="sprice">Sale Price:</label>
+            <input type="text" class="form-control  validation-field" required  = "required" id="sprice" name="sprice" [(ngModel)]="newStock.sprice" placeholder="0">
+          </div>
+        </div>
+
+
+
+      <div class="col-lg-3">
+        <div class="form-group">
+          <label for="profit">Stock:</label>
+          <input type="text" class="form-control validation-field" required  = "required" id="stock" name="stock" [(ngModel)]="newStock.stock" placeholder="0" >
+        </div>
+      </div>
+    </div>
+      <div class="row">
+        <div class="col-lg-4">
+        </div>
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label for="dp2">&nbsp;</label>
+            <button type="submit" class="btn btn-primary Form-control" [disabled]="!formStock.form.valid" >Save</button>
+          </div>
+        </div>
+
+        <div class="col-lg-2">
+          <div class="form-group">
+            <label for="dp2">&nbsp;</label>
+            <button type="button" class="btn btn-danger Form-control">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>

@@ -1,0 +1,29 @@
+.paymentform{
+ input, label{
+    font-size: large;
+  }
+}
+
+    .table-container {
+      height: 200px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .table-container thead th {
+      position: sticky;
+      top: 0;
+      background-color: #f8f9fa; /* Match table background */
+      z-index: 10;
+    }
+    .table-container td, .table-container th {
+      height: 30px; /* Set the height of each cell */
+      vertical-align: middle; /* Center content vertically */
+      padding: 0;
+      margin: 0;
+      text-align: center;
+    }
+    .table-container input{
+      text-align: center;
+      display: inline-block;     /* Ensure input is treated as inline element */
+    }

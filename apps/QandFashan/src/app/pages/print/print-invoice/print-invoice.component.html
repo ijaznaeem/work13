@@ -1,0 +1,34 @@
+<div id="print-section">
+  <div class="container">
+    <div style="height: auto">
+      <app-warranty-invoice [Invoice]="Invoice"> </app-warranty-invoice>
+    </div>
+  </div>
+</div>
+
+<section class="buttonarea">
+  <div class="row no-pad">
+    <div class="col-md-4">
+      <div class="form-group">
+        <button
+          class="btn btn-primary"
+          printSectionId="print-section"
+          type="button"
+          (click)="Print()"
+        >
+          <i class="fa fa-print"></i>
+        </button>
+
+        <!-- <button
+          style="margin: 5px"
+          class="btn btn-primary"
+          printSectionId="print-section"
+          type="button"
+          (click)="SaveAsPdf()"
+        >
+          Save as PDF
+        </button> -->
+      </div>
+    </div>
+  </div>
+</section>

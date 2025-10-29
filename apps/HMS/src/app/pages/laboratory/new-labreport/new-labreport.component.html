@@ -1,0 +1,187 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">New Lab Report</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="row">
+      <div class="col-md-4">
+        <form #frmFilter="ngForm">
+          <div class="row">
+            <div class="col-md-8">
+              <label for="dtFrom">Patient ID:</label>
+              <div class="form-group">
+                <input
+                  type="text"
+                  name="find"
+                  id="find"
+                  class="form-control"
+                  placeholder=""
+                  [(ngModel)]="invoice_id"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  type="submit"
+                  class="btn btn-primary form-control"
+                  (click)="FindData()"
+                  accesskey="a"
+                >
+                  <i class="fa fa-search"></i>
+                  Find
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-2">
+        <label for="dtFrom">Lab No:</label>
+        <div class="form-group">
+          <input
+            type="text"
+            name="labno"
+            id="lblno"
+            class="form-control"
+            placeholder=""
+            [(ngModel)]="sale.lab_no"
+          />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="dtFrom">Patient Name </label>
+              <input
+                type="text"
+                class="form-control"
+                [value]="sale.fullname"
+                disabled
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="dtFrom">Address </label>
+              <input
+                type="text"
+                class="form-control"
+                [value]="sale.address"
+                disabled
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dtFrom">Gender </label>
+              <input
+                type="text"
+                class="form-control"
+                [value]="sale.gender"
+                disabled
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <h5>Report Details</h5>
+
+        <div>
+          <table style="width: 100%" class="table table-sm table-stripped">
+            <thead>
+              <tr>
+                <th>Test Name</th>
+                <th>Reading</th>
+                <th>Unit</th>
+                <th>Normal Range</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let r of data">
+                <tr>
+                  <td colspan="5" class="text-center text-large">
+                    <strong> {{ r.description }}</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-center text-large">
+                    <strong> {{ r.group_notes }}</strong>
+                  </td>
+                </tr>
+                <tr *ngFor="let v of r.values">
+                  <td>{{ v.obs_name }}</td>
+                  <td>
+                    <input
+                      type="text"
+                      [name]="'v' + v.detailid"
+                      [(ngModel)]="v.reading"
+                    />
+                  </td>
+                  <td>{{ v.unit }}</td>
+                  <td>{{ v.normal_range }}</td>
+                  <td>{{ v.remarks }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="row">
+      <div class="col-md-8"></div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="control-label">Amount:</label>
+
+          <input
+            type="text"
+            class="form-control"
+            id="TNetAmount"
+            name="TNetAmount"
+            [value]="sale.amount"
+            tabindex="-1"
+            readonly
+          />
+        </div>
+      </div>
+    </div> -->
+    <div class="row">
+      <div class="col-md-8"></div>
+
+      <div class="col-md-2">
+        <!-- <div class="form-group">
+          <label for="dp2">&nbsp;</label>
+          <input
+            type="text"
+            class="form-control"
+            id="notes"
+            name="notes"
+            [(ngModel)]="sale.notes"
+          />
+        </div> -->
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="dp2">&nbsp;</label>
+          <button
+            type="button"
+            class="btn btn-success form-control"
+            (click)="SaveData()"
+            [disabled]="sale.lab_no == '' || invoice_id == ''"
+            accesskey="s"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

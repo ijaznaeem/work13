@@ -1,0 +1,168 @@
+/* You can add global styles to this file, and also import other style files */
+/* @import "../../../node_modules/bootstrap/scss/bootstrap"; */
+// @import '~@swimlane/ngx-datatable/index.css';
+// @import '~@swimlane/ngx-datatable/themes/bootstrap.scss';
+// @import '~@swimlane/ngx-datatable/assets/icons.css';
+@import 'assets/sass/core/variables/_variables.scss';
+@import "../../../node_modules/@syncfusion/ej2-angular-navigations/styles/bootstrap.css";
+// @import "assets/sass/core/variables/app-variables";
+// @import "assets/sass/core/colors/palette-variables";
+// @import "assets/sass/libs/datatables.scss";
+
+
+html {
+  font-size: 1rem; /* Increased from 0.875rem (14px) to 1rem (16px) */
+}
+
+body {
+  font-size: 1rem; /* Base font size increased */
+}
+
+.row.no-pad {
+  margin-right: 2px;
+  margin-left: 2px;
+}
+.row.no-pad > [class*='col-'] {
+  padding-right: 2px;
+  padding-left: 2px;
+}
+
+.card-body {
+  padding: 4px;
+}
+.container {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.form-control {
+  height: calc(1.5em + 0.75rem); /* Increased height for larger font */
+  padding: 0.375rem 0.75rem; /* Increased padding */
+  font-size: 1rem; /* Increased from 0.875rem */
+  line-height: 1.5;
+  border-radius: 0.25rem;
+}
+
+.btn {
+  font-size: 1rem; /* Increased from 0.875rem */
+  padding-right: 0.75rem; /* Increased padding */
+  padding-left: 0.75rem; /* Increased padding */
+}
+
+input.e-input,
+.e-input-group input,
+.e-input-group.e-control-wrapper input,
+.e-input-group input.e-input,
+.e-input-group.e-control-wrapper input.e-input {
+  height: 32px; /* Increased from 24px */
+  font-size: 1rem; /* Increased from 0.875rem */
+}
+.e-input-group .e-clear-icon,
+.e-input-group.e-control-wrapper
+  .e-clear-icon
+  .e-input-group
+  .e-input-group-icon,
+.e-input-group.e-control-wrapper .e-input-group-icon {
+  min-height: 32px; /* Increased from 24px */
+}
+.cdk-overlay-container {
+  font-size: 1rem; /* Increased from 0.875rem */
+}
+
+.row.no-gutter {
+  margin-right: 2px;
+  margin-left: 2px;
+}
+.row.no-gutter > [class*='col-'] {
+  padding-right: 2px;
+  padding-left: 2px;
+}
+
+.ng-select.custom {
+  min-height: 0px;
+  font-size: 0.95rem; /* Slightly increased from small */
+  height: 32px; /* Increased from 25px */
+}
+.ng-select.custom .ng-select-container {
+  min-height: 0px;
+  font-size: 0.95rem; /* Slightly increased from small */
+  height: 32px; /* Increased from 25px */
+}
+.ng-select.custom
+  .ng-dropdown-panel
+  .ng-dropdown-panel-items
+  .ng-option.ng-option-marked {
+  background-color: $info;
+  color: $light;
+}
+.ng-select .ng-value {
+  background-color: #d4edda;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-weight: bold;
+  color: #155724;
+}
+
+.ng-select .ng-value-label {
+  color: #155724;
+}
+
+
+
+input.form-control{
+  color: black  !important;
+  font-weight: bold !important;
+  font-size: 1.1rem; /* Increased from 1rem */
+}
+
+// Table font sizes
+table {
+  font-size: 0.95rem;
+}
+
+table th,
+table td {
+  font-size: 0.95rem;
+}
+
+// Card content font size
+.card {
+  font-size: 1rem;
+}
+
+// Navigation and menu font sizes
+.nav-link {
+  font-size: 1rem;
+}
+
+// Label font sizes
+label {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+// Modal font sizes
+.modal-body {
+  font-size: 1rem;
+}
+
+// Dropdown menu font sizes
+.dropdown-menu {
+  font-size: 1rem;
+}
+
+.dropdown-item {
+  font-size: 1rem;
+}
+
+// Alert font sizes
+.alert {
+  font-size: 1rem;
+}
+
+// Badge font sizes
+.badge {
+  font-size: 0.85rem; /* Slightly larger than default */
+}
+
+/* For alternating row colors */
+

@@ -1,0 +1,24 @@
+Two business
+1.  Rice mill
+2. Floor mill
+
+1. Sale Purchase
+2.  production
+Employees
+Salary Sheet
+Income Expense
+Cash / Ledger
+Bardana/    Bardana Out
+Bag Size
+Gate Pass
+
+0300-8053598 
+0306-4253839 adnan
+
+
+
+production  
+Raw Product:    ----------          Bags  (Packing)   Kgs
+
+Output:     Product, Qty 
+

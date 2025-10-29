@@ -1,0 +1,160 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Product Formulation</h5>
+  </div>
+  <div class="card-block widget-body">
+    <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+      <div class="row no-gutter">
+        <div class="form-group col-md-3">
+          <label for="customer">Finish Goods </label>
+          <ng-select
+            name="cmbFinishGoods"
+            class="custom"
+            [items]="FinishGoods"
+            [virtualScroll]="true"
+            bindLabel="ProductName"
+            bindValue="ProductID"
+            placeholder="Select Product"
+            (change)="FinishGoodSelected($event)"
+            required
+            [(ngModel)]="formulation.ProductID"
+          >
+          </ng-select>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="customer">Batch Size </label>
+          <input
+            type="number"
+            class="form-control dation-field"
+            id="Qty"
+            name="Qty"
+            [(ngModel)]="formulation.Qty"
+          />
+        </div>
+        <div class="form-group col-md-2">
+          <label for="customer">Unit </label>
+          <select
+            id="cmnUnit"
+            class="form-control"
+            name="cmbUnitID"
+            [(ngModel)]="formulation.UnitID"
+          >
+            <option [value]="unit.UnitID" *ngFor="let unit of Units">
+              {{ unit.Unit }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <form #formqty="ngForm">
+        <div class="row no-gutter">
+          <div class="form-group col-md-3">
+            <label for="customer">Raw Material </label>
+            <ng-select
+              #cmbProducts
+              name="cmbRawItems"
+              class="custom"
+              [items]="RawMaterial"
+              [virtualScroll]="true"
+              bindLabel="ProductName"
+              bindValue="ProductID"
+              placeholder="Select Product"
+              (change)="ProductSelected($event)"
+              required
+              [(ngModel)]="formDetails.RawID"
+            >
+            </ng-select>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="qty">Qty:</label>
+              <input
+                type="number"
+                #qty
+                class="form-control dation-field"
+                required="required"
+                id="qty"
+                name="qty"
+                [(ngModel)]="formDetails.Qty"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="qty">Unit:</label>
+              <select
+                id="cmbUnitdet"
+                class="form-control"
+                name="cmbUnitdet"
+                [(ngModel)]="formDetails.UnitID"
+              >
+                <option [value]="unit.UnitID" *ngFor="let unit of Units">
+                  {{ unit.Unit }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button
+                #btnAdd
+                type="submit"
+                class="btn btn-primary form-control"
+                [disabled]="!formqty.form.valid"
+                (click)="AddOrder()"
+                accesskey="a"
+              >
+                <i class="fa fa-plus"></i>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div>
+        <h5 class="mb-3">Details</h5>
+        <div class="table-responsive table-bordered table-condensed">
+          <ng2-smart-table
+            class="table table-hover"
+            [settings]="Settings"
+            [source]="data"
+            (deleteConfirm)="onDeleteConfirm($event)"
+            (editConfirm)="onEdit($event)"
+          >
+          </ng2-smart-table>
+        </div>
+        <div class="row no-gutter">
+          <div class="col-md-8"></div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-primary form-control"
+                [disabled]="
+                  !fromPurchase.form.valid || data.count() == 0 || isPosted
+                "
+                (click)="SaveData()"
+                accesskey="s"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-danger form-control"
+                (click)="Cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

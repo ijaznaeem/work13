@@ -1,0 +1,53 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <div class="row">
+      <div class="col-md-4">
+        <h5 class="mb-3">Cash Receipt</h5>
+      </div>
+      <div class="col-md-4">
+        <div *ngIf="isPosted" class="text-center btn btn-danger btn-sm">
+          POSTED ORDER
+        </div>
+      </div>
+      <div class="col-md-4">
+        <form #frmFilter="ngForm">
+          <div class="row">
+            <div class="col-md-8">
+              <input
+                class="form-control"
+                name="ino"
+                [(ngModel)]="Ino"
+                placeholder="Invoice No"
+              />
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <button
+                  type="submit"
+                  class="btn btn-primary form-control"
+                  (click)="FindINo()"
+                  accesskey="F"
+                >
+                  <i class="fa fa-search"></i>
+                  Find Invoice
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="card-block widget-body">
+    <ft-crud-form
+      [form]="CashreceiptForm"
+      [formdata]="orderData"
+      [CrudButtons]="false"
+      (Cancelled)="Cancel()"
+      (ItemChanged)="Changed($event)"
+      (ButtonClicked)="ButtonClicked($event)"
+    >
+    </ft-crud-form>
+
+  </div>
+</div>

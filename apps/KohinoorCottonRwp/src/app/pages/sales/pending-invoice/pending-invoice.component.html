@@ -1,0 +1,330 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-2">Pending Invoice</h5>
+  </div>
+
+  <div class="card-block pt-0 widget-body">
+    <div class="row">
+      <div class="col-md-4">
+      </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-4">
+        <form #frmFilter="ngForm">
+          <div class="row">
+            <div class="col-md-6">
+              <input
+                class="form-control"
+                name="ino"
+                [(ngModel)]="Ino"
+                placeholder="Invoice No"
+              />
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <button
+                  type="submit"
+                  class="btn btn-primary form-control"
+                  (click)="FindINo()"
+                  accesskey="F"
+                >
+                  <i class="fa fa-search"></i>
+                  Find Invoice
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card-block widget-body">
+      <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+        <div class="row no-gutter">
+          <div class="col-md-2">
+            <label for="dp1">Date:</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dp1"
+                [(ngModel)]="pending.Date"
+                ngbDatepicker
+                #d1="ngbDatepicker"
+                required
+                disabled
+              />
+              <div class="input-group-addon">
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  (click)="d1.toggle()"
+                >
+                  <i class="fa fa-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group col-md-4">
+            <label for="customer"
+              >Customer
+              <span class="text-right"
+                ><strong> {{ SelectCust.Address }}</strong></span
+              >
+              <span>
+                / <strong>{{ pending.PrevBalance }}</strong>
+              </span></label
+            >
+            <ng-select
+              #cmbCustomers
+              name="ng2select"
+              class="custom"
+              [items]="Accounts"
+              [virtualScroll]="true"
+              bindLabel="CustomerName"
+              bindValue="CustomerID"
+              placeholder="Select Customer"
+              (change)="CustomerSelected($event)"
+              required
+              [(ngModel)]="pending.CustomerID"
+              (keydown.enter)="txtDesc.focus()"
+            >
+              <ng-template ng-option-tmp let-item="item">
+                <div class="row no-gutter">
+                  <div class="col-md-12">
+                    {{ item.CustomerName }}
+                  </div>
+                  <div class="col-md-9 text-italic font-small-2 mt-1">
+                    <small>
+                      {{ item.Address }}
+                    </small>
+                  </div>
+                  <div class="col-md-3 text-italic font-small-2 mt-1">
+                    <small>
+                      {{ item.Balance }}
+                    </small>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-select>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="qty">Description</label>
+              <input
+              #txtDesc
+                type="text"
+                class="form-control dation-field"
+                required="required"
+                id="qty"
+                name="qty"
+                [(ngModel)]="pending.Notes"
+
+                (keydown.enter)="cmbStores.focus()"
+              />
+            </div>
+          </div>
+        </div>
+        <form #formqty="ngForm">
+          <div class="row no-gutter">
+            <div class="col-md-2">
+              <label for="stores"> Select Store </label>
+              <ng-select
+                #cmbStores
+                name="stores"
+                id="stores"
+                class="custom"
+                [items]="Stores | async"
+                [virtualScroll]="true"
+                bindLabel="StoreName"
+                bindValue="StoreID"
+                placeholder="Select Store"
+                (change)="StoreSelected($event)"
+                required
+                [(ngModel)]="sdetails.StoreID"
+                (keydown.enter)="cmbProduct.focus()"
+              >
+              </ng-select>
+            </div>
+            <div class="col-md-4">
+              <label for="customer"> Select product </label>
+              <ng-select
+                #cmbProduct
+                name="cmbProduct"
+                id="cmbProduct"
+                class="custom"
+                [items]="Stock"
+                [virtualScroll]="true"
+                bindLabel="ProductName"
+                bindValue="ProductID"
+                placeholder="Select Product"
+                (change)="ProductSelected($event)"
+                required
+                [(ngModel)]="sdetails.ProductID"
+                (keydown.enter)="qty.focus()"
+                [searchFn]="ProductSearchFn"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <div class="row no-gutter">
+                    <div class="col-md-9">
+                      {{ item.ProductName }}
+                    </div>
+                    <div class="col-md-3 text-italic font-small-2 mt-1">
+                      <small>
+                        {{ item.ProductID }}
+                      </small>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="qty">Qty</label>
+                <input
+                  type="number"
+                  class="form-control dation-field"
+                  required="required"
+                  id="qty"
+                  name="qty"
+                  [(ngModel)]="sdetails.Qty"
+                  #qty
+                  (keydown.enter)="KGs.focus()"
+                  (focus)="qty.select()"
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="Packing">Packing</label>
+                <input
+                  type="number"
+                  class="form-control dation-field"
+                  required="required"
+                  id="Packing"
+                  name="Packing"
+                  [(ngModel)]="sdetails.Packing"
+                  disabled
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="Kgs">Kgs</label>
+                <input
+                  type="number"
+                  class="form-control dation-field"
+                  required="required"
+                  id="Kgs"
+                  name="Kgs"
+                  [(ngModel)]="sdetails.KGs"
+                  #KGs
+                  (keydown.enter)="btnAdd.focus()"
+                  (focus)="KGs.select()"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  #btnAdd
+                  type="button"
+                  class="btn btn-primary form-control"
+                  [disabled]="!formqty.form.valid || isPosted"
+                  (click)="AddOrder()"
+                  accesskey="a"
+                >
+                  <i class="ft-plus"></i>
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div>
+          <h5 class="mb-3">Pending Details</h5>
+          <div class="table-responsive table-bordered table-condensed">
+            <ng2-smart-table
+              class="table table-hover"
+              [settings]="settings"
+              [source]="data"
+              (deleteConfirm)="onDeleteConfirm($event)"
+              (editConfirm)="onEdit($event)"
+            >
+            </ng2-smart-table>
+          </div>
+
+          <div class="row no-gutter">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="notes">&nbsp;</label>
+                <ft-navigator (ClickAction)="NavigatorClicked($event)">
+                </ft-navigator>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="dp2">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-block btn-primary"
+                  (click)="NewInvoice()"
+                  accesskey="s"
+                >
+                  New
+                </button>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="dp2">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-block"
+                  [disabled]="
+                    !fromPurchase.form.valid || data.count() == 0 || isPosted
+                  "
+                  (click)="SaveData()"
+                  accesskey="s"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="dp2">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-danger btn-block"
+                  (click)="Cancel()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="dp2">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-block"
+                  [disabled]="!fromPurchase.form.valid || data.count() == 0"
+                  (click)="PrintInvoice()"
+                  accesskey="p"
+                >
+                  Print
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

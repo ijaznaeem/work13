@@ -1,0 +1,38 @@
+.modal-lg {
+  height: 100%;
+  width: 80%;
+  
+  color: red;
+  overflow-y: auto;
+}
+.modal-content{
+  height: 100%;
+  overflow-y: auto;
+}
+.modal-dialog {
+  top:0;
+  position: fixed;
+  margin: auto;
+  width: 320px;
+  height: 100%;
+  color: red;
+  overflow-y: auto;
+
+}
+
+
+
+.modal.fade.show .modal-dialog {
+  right: 0;
+}
+.modal.fade .modal-dialog {
+  right: -420px;
+  -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+     -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+       -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+          transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+
+input{
+  text-transform: capitalize;
+}

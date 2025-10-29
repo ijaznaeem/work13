@@ -1,0 +1,41 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Categories List</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          <div class="row no-pad">
+          <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Search" [(ngModel)]="Filter.search">
+          </div>
+          <div class="col-md-6"></div>
+          <div class="col-md-2">
+            <button class="btn btn-primary form-control" (click)="AddCategory()">
+              <i class="fa fa-plus"></i>
+
+              Add</button>
+          </div>
+          </div>
+
+          <!-- <ft-datatable #dataList [CRUD]="false" [Settings]="Settings" (ClickAction)="Clicked($event)"></ft-datatable> -->
+          <div class="row no-pad">
+            <div class="col-md-12">
+              <ft-dynamic-table
+                #rptTable
+                [Settings]="Settings"
+                [Data]="data"
+                [Search]="Filter.search"
+                (ClickAction)="Clicked($event)"
+              ></ft-dynamic-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

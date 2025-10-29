@@ -1,0 +1,253 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Bank Reconcilliation</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="row no-pad">
+      <div class="form-group col-md-2">
+        <div class="form-group">
+          <label for="cmbacctType">Type</label>
+          <select
+            id="cmbacctType"
+            class="form-control"
+            name="cmbacctType"
+            [(ngModel)]="Reconcile.acct_type_id"
+            (click)="loadAccount($event.target.value)"
+          >
+            <option value="1">Suppliers</option>
+            <option value="2" selected>Banks and Cash</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="account">Account</label>
+        <ejs-dropdownlist
+          #cmbAccount
+          name="account"
+          id="account"
+          [dataSource]="Accounts"
+          [fields]="{ text: 'account_name', value: 'account_id' }"
+          [(ngModel)]="Reconcile.account_id"
+          (change)="AccountSelected($event)"
+          required
+          [allowFiltering]="true"
+          [sortOrder]="'Ascending'"
+        >
+        </ejs-dropdownlist>
+      </div>
+
+      <div class="col-md-2">
+        <label for="dtFrom">From Date:</label>
+        <div class="input-group">
+          <input
+            class="form-control"
+            placeholder="yyyy-mm-dd"
+            name="dtFrom"
+            [(ngModel)]="Reconcile.start_date"
+            ngbDatepicker
+            #dtFrom="ngbDatepicker"
+          />
+          <div class="input-group-addon">
+            <button
+              type="button"
+              class="btn btn-warning"
+              (click)="dtFrom.toggle()"
+            >
+              <i class="fa fa-calendar"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <label for="dtTo">To Date:</label>
+        <div class="input-group">
+          <input
+            class="form-control"
+            placeholder="yyyy-mm-dd"
+            name="dtTo"
+            [(ngModel)]="Reconcile.end_date"
+            ngbDatepicker
+            #dtTo="ngbDatepicker"
+          />
+          <div class="input-group-addon">
+            <button
+              type="button"
+              class="btn btn-warning"
+              (click)="dtTo.toggle()"
+            >
+              <i class="fa fa-calendar"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-1">
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button
+            type="submit"
+            class="btn btn-primary form-control"
+            (click)="ApplyFilter()"
+            accesskey="a"
+          >
+            <i class="fa fa-search"></i>
+            Filter
+          </button>
+        </div>
+      </div>
+
+      <div class="col-md-1">
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button
+            type="button"
+            class="btn btn-primary form-control"
+            accesskey="p"
+            (click)="PrintReport()"
+          >
+            <i class="fa fa-print"></i>
+            Print
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row no-pad">
+      <div class="col-md-2">
+        <div class="form-group">
+          <button
+            type="button"
+            class="btn btn-warning form-control"
+            accesskey="p"
+            (click)="AddPayment()"
+          >
+            <i class="fa fa-dollar"></i>
+            Add Payment
+          </button>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <button
+            type="button"
+            class="btn btn-primary form-control"
+            accesskey="p"
+            (click)="AddReceipt()"
+          >
+            <i class="fa fa-dollar"></i>
+            Add Receipt
+          </button>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <button
+            type="button"
+            class="btn btn-success form-control"
+            accesskey="p"
+            (click)="AddJournalVoucher()"
+          >
+            <i class="fa fa-dollar"></i>
+            Add JV
+          </button>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <button
+            type="button"
+            class="btn btn-danger form-control"
+            accesskey="p"
+            (click)="AddExpense()"
+          >
+            <i class="fa fa-dollar"></i>
+            Add Expense
+          </button>
+        </div>
+      </div>
+      <div class="col-md-2"></div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <button
+            type="button"
+            class="btn btn-success form-control"
+            (click)="SaveReconcilliation()"
+            accesskey="a"
+          >
+            <i class="fa fa-save"></i>
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="print-section">
+      <div class="row no-pad">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="bblanance"> Opening Balance of Books </label>
+            <input
+              type="number"
+              name="bbalance"
+              id="bbalance"
+              class="form-control"
+              [(ngModel)]="Reconcile.opening_balance"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="cbalance"> Endinging Balance of Bank </label>
+            <input
+              type="number"
+              name="cbalance"
+              id="cbalance"
+              class="form-control"
+              [(ngModel)]="Reconcile.closing_balance"
+              (change)="CalculateDiffirence()"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="cbalance"> Clearred Balance </label>
+            <p>
+              <strong>{{ Reconcile.clearred_balace }}</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card">
+            <div class="card-content">
+              <div class="card-body py-0">
+                <div class="media pb-1">
+                  <div class="media-body text-center">
+                    <h4 class="font-large-1">
+                      {{ Reconcile.diffirence | number }}
+                    </h4>
+                    <h6 class="grey">
+                      {{ 'Diffirence' }}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row no-pad">
+        <div class="col-md-12">
+          <ft-dynamic-table
+            #rptTable
+            [Settings]="setting"
+            [Data]="data"
+            (RowChecked)="RowChecked($event)"
+          ></ft-dynamic-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

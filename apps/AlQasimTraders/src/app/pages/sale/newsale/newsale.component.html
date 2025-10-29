@@ -1,0 +1,358 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Sales</h5>
+
+  </div>
+  <div class="card-block widget-body">
+    <form (ngSubmit)="SaveData()" #fromSale="ngForm">
+      <div class="row">
+        <div class="form-group col-md-2">
+          <label for="type">Select Type</label>
+          <ejs-combobox
+            name="type"
+            #type
+            id="type"
+            (change)="TypeSelect($event)"
+            [dataSource]="Typeinfo"
+            [fields]="Typefields"
+          >
+          </ejs-combobox>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="customer">Select Account</label>
+            <ejs-combobox
+              name="customer"
+              id="customer"
+              (change)="CustomerSelected($event)"
+              [dataSource]="customerinfo"
+              [fields]="customerfields"
+              [(ngModel)]="Sale.CustomerID"
+              required
+            >
+            </ejs-combobox>
+          </div>
+        </div>
+        <div class="form-group col-md-2">
+          <div class="custom-control mt-3 custom-radio">
+            <input
+              class="custom-control-input radio-inline"
+              id="radioDefault"
+              name="radio"
+              type="radio"
+              value="1"
+              [(ngModel)]="nWhat"
+            /><label
+              class="custom-control-label text-primary"
+              for="radioDefault"
+              >Sale</label
+            >
+          </div>
+        </div>
+        <div class="form-group col-md-2">
+          <div class="custom-control mt-3 custom-radio">
+            <input
+              class="custom-control-input radio-inline radio-danger"
+              id="radioPrimary"
+              name="radio"
+              type="radio"
+              value="2"
+              [(ngModel)]="nWhat"
+            /><label class="custom-control-label text-danger" for="radioPrimary"
+              >Return</label
+            >
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="dp1">Stock:</label>
+            <input
+              type="text"
+              readonly
+              class="form-control"
+              id="tqty"
+              name="tqty"
+              [(ngModel)]="tqty"
+              placeholder="0"
+            />
+          </div>
+        </div>
+      </div>
+      <form #formqty="ngForm">
+        <div class="row">
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="storeid">Select Store</label>
+              <ejs-combobox
+                name="storeid"
+                #store
+                id="storeid"
+                (change)="getproducts($event)"
+                [dataSource]="Stores"
+                required
+                [fields]="Storefields"
+                [(ngModel)]="productdetails.StoreID"
+              >
+              </ejs-combobox>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="supplier">Select Product:</label>
+              <ejs-combobox
+                id="prodcat"
+                (filtering)="onFiltering($event)"
+                [allowFiltering]="true"
+                name="prods"
+                #cmbProd
+                [dataSource]="Prods"
+                [fields]="{ text: 'ProductName', value: 'ProductID' }"
+                placeholder="Select Item..."
+                required="required"
+                [(ngModel)]="productdetails.ProductID"
+                (change)="ProductSelected($event)"
+              >
+              </ejs-combobox>
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="supplier">SPrice:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="sprice"
+                name="sprice"
+                [(ngModel)]="productdetails.SPrice"
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="packing">Packing:</label>
+              <input
+                type="text"
+                readonly
+                class="form-control dation-field"
+                required="required"
+                id="packing"
+                name="packing"
+                [(ngModel)]="productdetails.Packing"
+                placeholder="0"
+              />
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="qty">Qty:</label>
+              <input
+                type="text"
+                class="form-control dation-field"
+                required="required"
+                id="qty"
+                name="qty"
+                [(ngModel)]="productdetails.qty"
+                placeholder="0"
+              />
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="kgs">KGs:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="kgs"
+                name="kgs"
+                [(ngModel)]="productdetails.KGs"
+                placeholder="0"
+              />
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="pending">Pending:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="pending"
+                name="pending"
+                [(ngModel)]="productdetails.Pending"
+                placeholder="0"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-block btn-primary Form-control"
+                [disabled]="!formqty.form.valid"
+                (click)="AddOrder()"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="card-block pt-0 widget-body">
+        <h5 class="mb-3">Sale Details</h5>
+        <div class="table-responsive">
+          <ng2-smart-table
+            class="table table-hover"
+            [settings]="settings"
+            [source]="data"
+            (deleteConfirm)="onDeleteConfirm($event)"
+            (rowSelect)="onRowSelect($event)"
+            (userRowSelect)="onUserRowSelect($event)"
+            (editConfirm)="onEdit($event)"
+            (rowHover)="onRowHover($event)"
+          ></ng2-smart-table>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="gtotal">Total Amount:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="gtotal"
+                  name="gtotal"
+                  [(ngModel)]="Sale.totalamount"
+                  readonly
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="gtotal">Paking Charges:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="PackingCharges"
+                  name="PackingCharges"
+                  [(ngModel)]="Sale.PackingCharges"
+                  (change)="changel()"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="gtotal">Delivery Charges:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="DeliveryCharges"
+                  name="DeliveryCharges"
+                  [(ngModel)]="Sale.DeliveryCharges"
+                  (change)="changel()"
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="gtotal">Labour:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Labour"
+                  name="Labour"
+                  [(ngModel)]="Sale.Labour"
+                  (change)="changel()"
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="gtotal">Discount:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Discount"
+                  name="Discount"
+                  [(ngModel)]="Sale.discount"
+                  (change)="changel()"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="gtotal">Cash recieved:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="pad"
+                  name="pad"
+                  [(ngModel)]="Sale.paidby"
+                  (change)="changel()"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="gtotal">Balance Amount:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="amount"
+                  name="amount"
+                  [(ngModel)]="Sale.netamount"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="notes">Notes:</label>
+            <input
+              type="text"
+              class="form-control "
+              id="notes"
+              name="notes"
+              [(ngModel)]="Sale.Notes"
+              placeholder="x"
+            />
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="dp2">&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-block btn-primary Form-control"
+              [disabled]="!fromSale.form.valid || !btnsave"
+              (click)="SaveData()"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="dp2">&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-block btn-danger Form-control"
+              (click)="Cancel()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

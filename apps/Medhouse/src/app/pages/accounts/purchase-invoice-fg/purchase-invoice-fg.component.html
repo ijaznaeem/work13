@@ -1,0 +1,412 @@
+<div class="purchase-invoice-fg-container">
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title">Purchase Invoice FG</h1>
+  </div>
+
+  <form [formGroup]="invoiceForm" class="invoice-form">
+    <!-- Customer Selection Section -->
+    <div class="customer-frame">
+      <div class="customer-row">
+        <div class="customer-section">
+          <label class="customer-label">Please select customer account:</label>
+          <div class="position-relative customer-search-container">
+            <input
+              type="text"
+              class="form-control customer-search"
+              formControlName="customerSearch"
+              placeholder="Search customer..."
+              (input)="onCustomerSearch($event)"
+              [disabled]="!isInvoiceMode"
+            />
+            
+            <!-- Customer dropdown list -->
+            <div class="customer-dropdown" *ngIf="showCustomerList">
+              <div class="customer-list">
+                <div
+                  class="customer-item"
+                  *ngFor="let customer of customers"
+                  (click)="selectCustomer(customer)"
+                >
+                  {{ customer.customerName }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="customer-details" *ngIf="selectedCustomer">
+          <div class="detail-item">
+            <label class="detail-label">Address:</label>
+            <div class="detail-value">{{ selectedCustomer.address }}</div>
+          </div>
+          
+          <div class="detail-item">
+            <label class="detail-label">City:</label>
+            <div class="detail-value">{{ selectedCustomer.city }}</div>
+          </div>
+          
+          <div class="detail-item">
+            <label class="detail-label">Balance:</label>
+            <div class="detail-value balance-value">
+              {{ selectedCustomer.balance | currency:'PKR':'symbol':'1.2-2' }}
+            </div>
+          </div>
+        </div>
+        
+        <div class="new-customer-btn">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="openNewCustomerModal()"
+            [disabled]="!isInvoiceMode"
+          >
+            <i class="fa fa-user-plus"></i><br>New Customer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Selection Section -->
+    <div class="product-frame" *ngIf="selectedCustomer">
+      <form [formGroup]="itemForm">
+        <div class="product-row">
+          <div class="product-search-section">
+            <label class="product-label">Products</label>
+            <div class="position-relative">
+              <input
+                type="text"
+                class="form-control product-search"
+                formControlName="productSearch"
+                placeholder="Search products..."
+                (input)="onProductSearch($event)"
+                [disabled]="!isInvoiceMode"
+              />
+              
+              <!-- Product dropdown list -->
+              <div class="product-dropdown" *ngIf="showProductList">
+                <div class="product-list">
+                  <div
+                    class="product-item"
+                    *ngFor="let product of filteredProducts"
+                    (click)="selectProduct(product)"
+                  >
+                    {{ product.productName }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="product-inputs">
+            <div class="input-group">
+              <label>Qty:</label>
+              <input
+                type="number"
+                class="form-control compact-input"
+                formControlName="qty"
+                step="0.001"
+                min="0"
+                #qtyInput
+                [disabled]="!isInvoiceMode"
+              />
+            </div>
+            
+            <div class="input-group">
+              <label>Packing:</label>
+              <input
+                type="number"
+                class="form-control compact-input"
+                formControlName="packing"
+                readonly
+              />
+            </div>
+            
+            <div class="input-group">
+              <label>Batch No:</label>
+              <input
+                type="text"
+                class="form-control compact-input"
+                formControlName="batchNo"
+                [disabled]="!isInvoiceMode"
+              />
+            </div>
+          </div>
+          
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="btn btn-success add-btn"
+              (click)="addItemToInvoice()"
+              [disabled]="!itemForm.valid || !selectedProduct || !isInvoiceMode"
+            >
+              Add
+            </button>
+            
+            <button
+              type="button"
+              class="btn btn-danger delete-btn"
+              [disabled]="!isInvoiceMode"
+            >
+              <i class="fa fa-trash"></i>&nbsp;Delete
+            </button>
+          </div>
+        </div>
+        
+        <div class="product-row-2">
+          <div class="price-inputs">
+            <div class="input-group">
+              <label>Purchase Price:</label>
+              <input
+                type="number"
+                class="form-control price-input"
+                formControlName="pPrice"
+                step="0.01"
+                min="0"
+                [disabled]="!isInvoiceMode"
+              />
+            </div>
+            
+            <div class="input-group">
+              <label>S.Price:</label>
+              <input
+                type="number"
+                class="form-control price-input"
+                formControlName="sPrice"
+                step="0.01"
+                min="0"
+                [disabled]="!isInvoiceMode"
+              />
+            </div>
+            
+            <div class="input-group">
+              <label>Commission:</label>
+              <input
+                type="number"
+                class="form-control price-input"
+                formControlName="commRatio"
+                step="0.01"
+                min="0"
+                max="100"
+                [disabled]="!isInvoiceMode"
+              />
+            </div>
+            
+            <div class="input-group">
+              <label>Amount:</label>
+              <input
+                type="number"
+                class="form-control amount-input"
+                formControlName="amount"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Invoice Details Grid -->
+    <div class="product-info-frame" *ngIf="selectedCustomer">
+      <div class="frame-header">
+        <span class="frame-title">Product Info:</span>
+      </div>
+      
+      <div class="invoice-grid">
+        <!-- Invoice Items Table -->
+        <table class="invoice-table">
+          <thead>
+            <tr>
+              <th>SNO</th>
+              <th>ProductName</th>
+              <th>Qty</th>
+              <th>Packing</th>
+              <th>PPrice</th>
+              <th>SPrice</th>
+              <th>Amount</th>
+              <th>BatchNo</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of invoiceDetails; let i = index" [class.selected-row]="false">
+              <td>{{ i + 1 }}</td>
+              <td>{{ item.productName }}</td>
+              <td class="text-right">{{ item.qty | number:'1.3-3' }}</td>
+              <td class="text-right">{{ item.packing | number:'1.3-3' }}</td>
+              <td class="text-right">{{ item.pPrice | number:'1.2-2' }}</td>
+              <td class="text-right">{{ item.sPrice | number:'1.2-2' }}</td>
+              <td class="text-right">{{ item.amount | number:'1.2-2' }}</td>
+              <td>{{ item.batchNo }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="removeItem(item.detailID!)"
+                  [disabled]="!isInvoiceMode"
+                >
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="invoiceDetails.length === 0">
+              <td colspan="9" class="text-center no-data">
+                No items added to invoice
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Totals Section -->
+      <div class="totals-section">
+        <div class="totals-row">
+          <div class="total-group">
+            <label>Total Amount:</label>
+            <input type="text" class="total-input" [value]="totalAmount | number:'1.2-2'" readonly>
+          </div>
+          
+          <div class="total-group">
+            <label>Commission:</label>
+            <input type="text" class="total-input" [value]="totalCommission | number:'1.2-2'" readonly>
+          </div>
+          
+          <div class="total-group">
+            <label>Cash Paid:</label>
+            <input
+              type="number"
+              class="total-input"
+              formControlName="amountPaid"
+              step="0.01"
+              min="0"
+              [disabled]="!isInvoiceMode"
+            />
+          </div>
+          
+          <div class="total-group">
+            <label>Balance:</label>
+            <input type="text" class="total-input balance-input" [value]="balanceAmount | number:'1.2-2'" readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons-row">
+    <button
+      type="button"
+      class="btn btn-primary action-btn"
+      (click)="startNewInvoice()"
+      [disabled]="isLoading"
+    >
+      <i class="fa fa-file-o"></i><br>New Bill
+    </button>
+    
+    <button
+      type="button"
+      class="btn btn-secondary action-btn"
+      (click)="cancelInvoice()"
+      [disabled]="!isInvoiceMode || isLoading"
+    >
+      <i class="fa fa-times"></i><br>Cancel
+    </button>
+    
+    <button
+      type="button"
+      class="btn btn-success action-btn"
+      (click)="saveInvoice(true)"
+      [disabled]="!isFormValid() || isLoading"
+    >
+      <i class="fa fa-print"></i><br>Save/Print
+    </button>
+    
+    <button
+      type="button"
+      class="btn btn-info action-btn"
+      (click)="saveInvoice(false)"
+      [disabled]="!isFormValid() || isLoading"
+    >
+      <i class="fa fa-save"></i><br>Save
+    </button>
+    
+    <button
+      type="button"
+      class="btn btn-danger action-btn"
+      (click)="cancelInvoice()"
+      [disabled]="isLoading"
+    >
+      <i class="fa fa-sign-out"></i><br>Exit
+    </button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<!-- New Customer Modal -->
+<ng-template #customerModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Add New Customer</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modalService.dismissAll()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <div class="modal-body">
+    <form [formGroup]="customerForm">
+      <div class="row">
+        <div class="col-12 mb-3">
+          <label class="form-label">Customer Name *</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="customerName"
+            placeholder="Enter customer name"
+          />
+          <div class="invalid-feedback" *ngIf="customerForm.get('customerName')?.errors?.['required'] && customerForm.get('customerName')?.touched">
+            Customer name is required
+          </div>
+        </div>
+        
+        <div class="col-12 mb-3">
+          <label class="form-label">Address</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="address"
+            placeholder="Enter address"
+          />
+        </div>
+        
+        <div class="col-12 mb-3">
+          <label class="form-label">City</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="city"
+            placeholder="Enter city"
+          />
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modalService.dismissAll()">
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="saveNewCustomer()"
+      [disabled]="!customerForm.valid"
+    >
+      Save Customer
+    </button>
+  </div>
+</ng-template>

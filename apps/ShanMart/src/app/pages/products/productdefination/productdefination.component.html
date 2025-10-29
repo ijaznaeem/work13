@@ -1,0 +1,97 @@
+<div widget class="card border-0 box-shadow mb-20">
+  <div class="card-header  transparent border-0 text-muted">
+    <h5 class="mb-0">Product Defination</h5>
+
+  </div>
+  <div class="card-block widget-body">
+
+    <form (submit)="SaveData(newProd)" #formProduct="ngForm">
+      <div class="row">
+
+        <div class="col-lg-4">
+          <div class="form-group">
+            <label for="cmbCats">Select Category:</label>
+            <ejs-combobox id='cmbCats' #cmbCats name="cmbCats"   required="required" [dataSource]='Categorydata'
+              [fields]='Categoryfields' placeholder="Select Category..." [(ngModel)]="newProd.Category">
+            </ejs-combobox>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="units">Select Unit:</label>
+            <ejs-combobox id='units'  name="units"   required="required" [dataSource]='Unitdata'
+              [fields]='Unitfields' placeholder="Select Unit..." [(ngModel)]="newProd.UnitID">
+            </ejs-combobox>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="status">Select Status:</label>
+            <ejs-combobox id='status'  name="status"   required="required" [dataSource]='Statusdata'
+              [fields]='Statusfields' placeholder="Select Status..." [(ngModel)]="newProd.Status">
+            </ejs-combobox>
+          </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group">
+              <label for="packing">Packing:</label>
+              <input type="number" min = 1 class="form-control   validation-field" required="required" id="packing" name="packing" [(ngModel)]="newProd.Packing" placeholder="0">
+            </div>
+          </div>
+
+      </div>
+
+      <div class="row">
+          <div class="col-lg-3">
+              <div class="form-group">
+                <label for="discount">Product Name:</label>
+                <input type="text" class="form-control  validation-field" required="required" id="prodname" name="prodname" [(ngModel)]="newProd.ProductName" placeholder="">
+              </div>
+            </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="PPrice">Purchase Price:</label>
+            <input type="text" class="form-control   validation-field" required="required" (change)="newProd.SPrice = newProd.PPrice*1 + (newProd.PPrice * newProd.profit_ratio/100)" id="PPrice" name="PPrice" [(ngModel)]="newProd.PPrice" placeholder="0">
+          </div>
+        </div>
+
+
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="SPrice">Sale Price:</label>
+            <input type="text" class="form-control  validation-field" required="required" id="SPrice" name="SPrice" (change)="SPricechange()" [(ngModel)]="newProd.SPrice" placeholder="0">
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="profit">Profit Ratio:</label>
+            <input type="text" class="form-control  validation-field" required="required" id="profit" name="profit" [(ngModel)]="newProd.profit_ratio" placeholder="0.0" (change)="newProd.SPrice = newProd.PPrice*1 + (newProd.PPrice * newProd.profit_ratio/100)">
+          </div>
+        </div>
+
+
+      </div>
+
+
+      <div class="row">
+        <div class="col-lg-3">
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="dp2">&nbsp;</label>
+            <button type="submit" class="btn btn-primary btn-block" [disabled]="!formProduct.form.valid">Save</button>
+          </div>
+        </div>
+
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label for="dp2">&nbsp;</label>
+            <button type="button" class="btn btn-danger btn-block" (click) = 'cancel()'>Cancel</button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+</div>

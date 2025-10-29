@@ -1,0 +1,132 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Sale Return</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <form #frmFilter="ngForm">
+          <div class="row no-pad">
+            <div class="col-md-2">
+              <label for="dtFrom">From Date:</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="dtFrom"
+                  [(ngModel)]="Filter.FromDate"
+                  ngbDatepicker
+                  #dtFrom="ngbDatepicker"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="dtFrom.toggle()"
+                  >
+                    <i class="fa fa-calendar"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <label for="dtTo">To Date:</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="dtTo"
+                  [(ngModel)]="Filter.ToDate"
+                  ngbDatepicker
+                  #dtTo="ngbDatepicker"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="dtTo.toggle()"
+                  >
+                    <i class="fa fa-calendar"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Search</label>
+                <input
+                  type="text"
+                  name="txtsearch"
+                  id="txtsearch"
+                  class="form-control"
+                  [(ngModel)]="Filter.Search"
+                />
+              </div>
+            </div>
+            <!-- <div class="col-md-2">
+              <div class="form-group">
+                <label>Status</label>
+                <select
+                  name="cmbStatus"
+                  id="cmbStatus"
+                  class="form-control"
+                  [(ngModel)]="Filter.StatusID"
+                >
+                  <option value="">--Select Status--</option>
+                  <option
+                    *ngFor="let status of Status"
+                    [value]="status.status_id"
+                  >
+                    {{ status.status }}
+                  </option>
+                </select>
+              </div>
+            </div> -->
+
+            <div class="col-md-1">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  type="submit"
+                  class="btn btn-primary form-control"
+                  (click)="FilterData()"
+                  accesskey="f"
+                >
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-2 offset-md-3">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-warning form-control"
+                  (click)="AddReturnInvoice()"
+                  [disabled]="!bAllowAdd"
+                >
+                  <i class="fa fa-plus"></i>
+                  Add Sale Return
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-md-12">
+            <ft-dynamic-table
+              #dataList
+              [Data]="data"
+              [Settings]="Settings"
+              [Search]="Filter.Search"
+              (ClickAction)="Clicked($event)"
+            ></ft-dynamic-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

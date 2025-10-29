@@ -1,0 +1,89 @@
+.table-responsive {
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.table {
+  margin-bottom: 0;
+
+  th {
+    background-color: #343a40;
+    color: white;
+    border-color: #454d55;
+    white-space: nowrap;
+    font-size: 0.875rem;
+    font-weight: 600;
+
+    &.bg-warning {
+      background-color: #ffc107 !important;
+      color: #212529 !important;
+      border-color: #ffb300;
+    }
+  }
+
+  td {
+    vertical-align: middle;
+    font-size: 0.875rem;
+
+    &.bg-light {
+      background-color: #f8f9fa !important;
+      border-color: #dee2e6;
+    }
+  }
+
+  tfoot th {
+    background-color: #495057;
+    color: white;
+    border-color: #6c757d;
+    font-weight: 700;
+
+    &.bg-warning {
+      background-color: #ffc107 !important;
+      color: #212529 !important;
+      border-color: #ffb300;
+      font-weight: 700;
+    }
+  }
+}
+
+.font-weight-bold {
+  font-weight: 600 !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.align-middle {
+  vertical-align: middle !important;
+}
+
+// Print styles
+@media print {
+  .table {
+    font-size: 12px;
+
+    th, td {
+      padding: 0.15rem;
+    }
+  }
+
+  .btn {
+    display: none;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .table {
+    font-size: 0.75rem;
+
+    th, td {
+      padding: 0.25rem 0.15rem;
+    }
+  }
+}

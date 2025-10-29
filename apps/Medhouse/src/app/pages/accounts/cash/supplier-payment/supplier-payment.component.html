@@ -1,0 +1,266 @@
+<div class="supplier-payment-container">
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title">Payment to Suppliers</h1>
+  </div>
+
+  <!-- Main Form -->
+  <div class="main-frame">
+    <form [formGroup]="supplierPaymentForm" (ngSubmit)="saveSupplierPayment()">
+      
+      <!-- Business and Division Selection -->
+      <div class="selection-row">
+        <div class="form-group">
+          <label class="form-label">Business:</label>
+          <ng-select 
+            formControlName="businessID"
+            placeholder="Select Business"
+            [clearable]="false"
+            [searchable]="true"
+            bindLabel="businessName"
+            bindValue="businessID"
+            [items]="businesses"
+            [class.is-invalid]="hasError('businessID')"
+          >
+            <ng-option value="0">Select Business</ng-option>
+          </ng-select>
+          <div class="invalid-feedback" *ngIf="hasError('businessID')">
+            {{ getErrorMessage('businessID') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Division:</label>
+          <ng-select 
+            formControlName="divisionID"
+            placeholder="Select Division"
+            [clearable]="false"
+            [searchable]="true"
+            bindLabel="divisionName"
+            bindValue="divisionID"
+            [items]="divisions"
+            [class.is-invalid]="hasError('divisionID')"
+          >
+            <ng-option value="0">Select Division</ng-option>
+          </ng-select>
+          <div class="invalid-feedback" *ngIf="hasError('divisionID')">
+            {{ getErrorMessage('divisionID') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Date:</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            formControlName="date"
+            [class.is-invalid]="hasError('date')"
+          />
+          <div class="invalid-feedback" *ngIf="hasError('date')">
+            {{ getErrorMessage('date') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Supplier Selection Section -->
+      <div class="supplier-section">
+        <div class="supplier-selection">
+          <label class="supplier-label">Please select Payment From:</label>
+          
+          <div class="supplier-list-container">
+            <!-- Supplier List -->
+            <div class="supplier-list-box">
+              <div 
+                class="supplier-item"
+                *ngFor="let supplier of suppliers"
+                [class.selected]="supplier.customerID === f['supplierID'].value"
+                [class.payable]="isSupplierPayable(supplier)"
+                (click)="selectSupplier(supplier)"
+              >
+                <div class="supplier-name">{{ supplier.customerName }}</div>
+                <div class="supplier-balance" [class.positive]="isSupplierPayable(supplier)">
+                  Balance: {{ formatCurrency(supplier.balance) }}
+                </div>
+              </div>
+              <div class="no-suppliers" *ngIf="suppliers.length === 0">
+                No suppliers available. Please select Business and Division.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supplier Details -->
+        <div class="supplier-details" *ngIf="selectedSupplier">
+          <div class="detail-group">
+            <label class="detail-label">Address:</label>
+            <div class="detail-value">{{ selectedSupplier.address }}</div>
+          </div>
+
+          <div class="detail-group">
+            <label class="detail-label">City:</label>
+            <div class="detail-value">{{ selectedSupplier.city }}</div>
+          </div>
+
+          <div class="detail-group">
+            <label class="detail-label">Balance:</label>
+            <div class="detail-value balance-value">{{ formatCurrency(selectedSupplier.balance) }}</div>
+          </div>
+
+          <div class="detail-group">
+            <label class="detail-label">Limit:</label>
+            <div class="detail-value">{{ formatCurrency(selectedSupplier.limit) }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transaction Details -->
+      <div class="transaction-details">
+        <div class="transaction-row">
+          <div class="form-group">
+            <label class="form-label">Description:</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              formControlName="description"
+              placeholder="Enter payment description"
+              [class.is-invalid]="hasError('description')"
+            />
+            <div class="invalid-feedback" *ngIf="hasError('description')">
+              {{ getErrorMessage('description') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Amount Paid:</label>
+            <input 
+              type="number" 
+              class="form-control amount-input" 
+              formControlName="amountPaid"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              [class.is-invalid]="hasError('amountPaid') || isAmountExceedsBalance()"
+            />
+            <div class="invalid-feedback" *ngIf="hasError('amountPaid')">
+              {{ getErrorMessage('amountPaid') }}
+            </div>
+            <div class="invalid-feedback" *ngIf="isAmountExceedsBalance()">
+              Amount exceeds available balance
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">New Balance:</label>
+            <input 
+              type="text" 
+              class="form-control balance-display" 
+              [value]="formatCurrency(getCurrentBalance())"
+              readonly
+            />
+          </div>
+        </div>
+
+        <div class="transaction-row">
+          <div class="form-group">
+            <label class="form-label">Reference No:</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              formControlName="referenceNo"
+              placeholder="Reference number (optional)"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Session ID:</label>
+            <input 
+              type="number" 
+              class="form-control" 
+              formControlName="sessionID"
+              placeholder="Session ID"
+            />
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Separator -->
+  <div class="separator"></div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button 
+      type="button" 
+      class="btn btn-success action-btn"
+      (click)="saveSupplierPayment()"
+      [disabled]="!isFormValid() || isSubmitting || isAmountExceedsBalance()"
+    >
+      <i class="fa fa-check"></i> OK
+    </button>
+
+    <button 
+      type="button" 
+      class="btn btn-secondary action-btn"
+      (click)="cancel()"
+      [disabled]="isSubmitting"
+    >
+      <i class="fa fa-times"></i> Cancel
+    </button>
+  </div>
+
+  <!-- Budget Warning -->
+  <div class="alert alert-warning" *ngIf="isAmountExceedsBalance() && selectedSupplier">
+    <i class="fa fa-exclamation-triangle"></i>
+    <strong>Warning:</strong> The payment amount exceeds the available balance for this supplier.
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-overlay" *ngIf="isLoading || isSubmitting">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<!-- Supplier List Modal -->
+<ng-template #supplierListModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Select Supplier</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modalService.dismissAll()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <div class="modal-body">
+    <div class="supplier-modal-list">
+      <div 
+        class="supplier-modal-item"
+        *ngFor="let supplier of suppliers"
+        [class.payable]="isSupplierPayable(supplier)"
+        (click)="selectSupplier(supplier)"
+      >
+        <div class="supplier-name">{{ supplier.customerName }}</div>
+        <div class="supplier-info">
+          <span class="address">{{ supplier.address }}</span> | 
+          <span class="city">{{ supplier.city }}</span> | 
+          <span class="balance" [class.positive]="isSupplierPayable(supplier)">
+            Balance: {{ formatCurrency(supplier.balance) }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="no-suppliers-modal" *ngIf="suppliers.length === 0">
+        <p>No suppliers found for the selected Business and Division.</p>
+        <p>Please ensure you have selected both Business and Division.</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modalService.dismissAll()">
+      Close
+    </button>
+  </div>
+</ng-template>

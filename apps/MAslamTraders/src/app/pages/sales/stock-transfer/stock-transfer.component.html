@@ -1,0 +1,382 @@
+<div #scrollTop></div>
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <div class="row">
+      <div class="col-md-4">
+        <h5 class="mb-3">Stock Transfer</h5>
+      </div>
+      <div class="col-md-4">
+        <div *ngIf="isPosted" class="text-center btn btn-danger btn-sm">
+          POSTED INVOICE
+        </div>
+      </div>
+      <div class="col-md-4">
+        <form #frmFilter="ngForm">
+          <div class="row">
+            <div class="col-md-6">
+              <input
+                class="form-control"
+                name="ino"
+                [(ngModel)]="Ino"
+                placeholder="Transfer No"
+              />
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <button
+                  type="submit"
+                  class="btn btn-primary form-control"
+                  (click)="FindINo()"
+                  accesskey="F"
+                >
+                  <i class="fa fa-search"></i>
+                  Find Transfer
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-block widget-body">
+    <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+      <div class="row no-gutter">
+        <div class="col-md-2">
+          <label for="dp1">Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dp1"
+              [(ngModel)]="stocktransfer.Date"
+              ngbDatepicker
+              #d1="ngbDatepicker"
+              required
+              disabled
+            />
+            <div class="input-group-addon">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="d1.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="stores"> Select From Store </label>
+          <ng-select
+            name="cmbFromStore"
+            id="cmbFromStore"
+            class="custom"
+            [items]="Stores | async"
+            [virtualScroll]="true"
+            bindLabel="StoreName"
+            bindValue="StoreID"
+            placeholder="Select Store"
+            (change)="StoreSelected($event)"
+            required
+            [(ngModel)]="stocktransfer.FromStore"
+          >
+          </ng-select>
+        </div>
+        <div class="col-md-3">
+          <label for="stores"> Select To Store </label>
+          <ng-select
+            name="cmbToStore"
+            id="cmbToStore"
+            class="custom"
+            [items]="Stores | async"
+            [virtualScroll]="true"
+            bindLabel="StoreName"
+            bindValue="StoreID"
+            placeholder="Select Store"
+            required
+            [(ngModel)]="stocktransfer.ToStore"
+            (keydown.enter)="Description.focus()"
+          >
+          </ng-select>
+        </div>
+        <div class="col-md-4">
+          <label for="Description"> Description </label>
+          <input
+            #Description
+            type="text"
+            class="form-control"
+            id="Description"
+            name="Description"
+            [(ngModel)]="stocktransfer.Description"
+          />
+        </div>
+      </div>
+      <form #formqty="ngForm">
+        <div class="row no-gutter">
+          <div class="col-md-4">
+            <label for="customer"> Select product </label>
+            <ng-select
+              #cmbProduct
+              name="cmbProduct"
+              id="cmbProduct"
+              class="custom"
+              [items]="Stock"
+              [virtualScroll]="true"
+              bindLabel="ProductName"
+              bindValue="ProductID"
+              placeholder="Select Product"
+              (change)="ProductSelected($event)"
+              [searchFn]="ProductSearchFn"
+              required
+              [(ngModel)]="transferdetails.ProductID"
+              (keydown.enter)="qty.focus()"
+            >
+              <ng-template ng-option-tmp let-item="item">
+                <div class="row no-gutter">
+                  <div class="col-md-9">
+                    {{ item.ProductName }}
+                  </div>
+                  <div class="col-md-3 text-italic font-small-2 mt-1">
+                    <small>
+                      {{ item.Stock }}
+                    </small>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-select>
+          </div>
+
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="qty">Qty</label>
+              <input
+                type="number"
+                class="form-control dation-field"
+                required="required"
+                id="qty"
+                name="qty"
+                [(ngModel)]="transferdetails.Qty"
+                #qty
+                (keydown.enter)="KGs.focus()"
+                (focus)="qty.select()"
+              />
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="Packing">Size</label>
+              <input
+                type="number"
+                class="form-control dation-field"
+                required="required"
+                id="Packing"
+                name="Packing"
+                [(ngModel)]="transferdetails.Packing"
+                disabled
+              />
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="Kgs">Units</label>
+              <input
+                type="number"
+                class="form-control dation-field"
+                required="required"
+                id="Kgs"
+                name="Kgs"
+                [(ngModel)]="transferdetails.KGs"
+                #KGs
+                (keydown.enter)="Labour.focus()"
+                (focus)="KGs.select()"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="Weight"
+                >Weight: (
+                <strong>{{
+                  RoundTo((transferdetails.Qty * 1 + (transferdetails.KGs/transferdetails.UnitValue)) * selectedProduct.Weight, 4)
+                }}</strong>
+                )</label
+              >
+              <input
+                type="number"
+                class="form-control dation-field"
+                required="required"
+                id="Weight"
+                name="Weight"
+                [(ngModel)]="transferdetails.Weight"
+                tabindex="6"
+                (change)="
+                  transferdetails.Qty = RoundTo(
+                    transferdetails.Weight / selectedProduct.Weight,
+                    4
+                  )
+                "
+              />
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="Labour">Labour</label>
+              <input
+                type="number"
+                class="form-control dation-field"
+                required="required"
+                id="Labour"
+                name="Labour"
+                [(ngModel)]="transferdetails.Labour"
+                #Labour
+                (keydown.enter)="btnAdd.focus()"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button
+                #btnAdd
+                type="button"
+                class="btn btn-primary form-control"
+                [disabled]="!formqty.form.valid || isPosted"
+                (click)="AddOrder()"
+                accesskey="a"
+              >
+                <i class="fa fa-plus"></i>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div>
+        <div
+          class="table-responsive custom-table-height table-bordered table-condensed"
+        >
+          <ng2-smart-table
+            class="table table-hover"
+            [settings]="settings"
+            [source]="data"
+            (deleteConfirm)="onDeleteConfirm($event)"
+            (editConfirm)="onEdit($event)"
+          >
+          </ng2-smart-table>
+        </div>
+
+        <div class="row no-gutter">
+          <div class="col-md-7"></div>
+          <div class="col-md-5">
+            <div class="row no-gutter">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="Total">Total Labour</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="LabourAmount"
+                    name="LabourAmount"
+                    [(ngModel)]="stocktransfer.LabourAmount"
+                    disabled
+                  />
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <ng-select
+                    name="cmbTransporter"
+                    id="cmbTransporter"
+                    class="custom"
+                    [items]="Transporters"
+                    [virtualScroll]="true"
+                    bindLabel="CustomerName"
+                    bindValue="CustomerID"
+                    placeholder="Select Transporter"
+                    [(ngModel)]="stocktransfer.TransporterID"
+                  >
+                  </ng-select>
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="DeliveryCharges"
+                    name="DeliveryCharges"
+                    [(ngModel)]="stocktransfer.DeliveryCharges"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row no-gutter">
+          <div class="col-md-3">
+            <div class="form-group">
+              <ft-navigator (ClickAction)="NavigatorClicked($event)">
+              </ft-navigator>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row no-gutter">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block"
+                    (click)="NewInvoice()"
+                    accesskey="s"
+                  >
+                    New
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block"
+                    [disabled]="
+                      !fromPurchase.form.valid || data.count() == 0 || isPosted
+                    "
+                    (click)="SaveData()"
+                    accesskey="s"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block"
+                    [disabled]="!fromPurchase.form.valid || data.count() == 0"
+                    (click)="PrintInvoice()"
+                    accesskey="p"
+                  >
+                    Print
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-block"
+                    (click)="Cancel()"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

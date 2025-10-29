@@ -1,0 +1,50 @@
+
+      <div widget class="card border-0 box-shadow">
+        <div class="card-header transparent border-0 text-muted">
+          <h5 class="mb-0">Last 7 days sale</h5>
+        </div>
+        <div class="card-block widget-body">
+          <div class="w-100 h-300p">
+            <ngx-charts-bar-vertical
+              [scheme]="colorScheme"
+              [gradient]="gradient"
+              [xAxis]="showXAxis"
+              [yAxis]="showYAxis"
+              [legend]="showLegend"
+              [showXAxisLabel]="showXAxisLabel"
+              [showYAxisLabel]="showYAxisLabel"
+              [xAxisLabel]="xAxisLabel"
+              [yAxisLabel]="yAxisLabel"
+              [results]="todaySale"
+            >
+            </ngx-charts-bar-vertical>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-12 mb-4">
+      <div widget class="card border-0 box-shadow">
+        <div class="card-header transparent border-0 text-muted">
+          <h5 class="mb-0">Month Wise Sale</h5>
+        </div>
+        <div class="card-block widget-body">
+          <div class="w-100 h-300p">
+            <ngx-charts-bar-vertical
+              [scheme]="colorScheme"
+              [results]="saleData2"
+              [gradient]="gradient"
+              [xAxis]="showXAxis"
+              [yAxis]="showYAxis"
+              [legend]="showLegend"
+              [showXAxisLabel]="showXAxisLabel"
+              [showYAxisLabel]="showYAxisLabel"
+              [xAxisLabel]="xAxisLabel1"
+              [yAxisLabel]="yAxisLabel"
+            >
+            </ngx-charts-bar-vertical>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

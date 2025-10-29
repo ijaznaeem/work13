@@ -1,0 +1,188 @@
+{
+  "name": "IKMF",
+  "projectType": "application",
+  "generators": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    },
+    "@schematics/angular:application": {
+      "strict": true
+    }
+  },
+  "sourceRoot": "apps/IKMF/src",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "allowedCommonJsDependencies": [
+          "dragula",
+          "firebase/app",
+          "@mattlewis92/dom-autoscroller",
+          "angular-calendar/date-adapters/date-fns",
+          "prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard",
+          "nouislider",
+          "ngx-quill",
+          "lodash",
+          "css-element-queries",
+          "chart.js",
+          "core-js/modules/es.string.match.js",
+          "core-js/modules/web.dom-collections.iterator.js",
+          "core-js/modules/es.string.trim.js",
+          "core-js/modules/es.string.ends-with.js",
+          "canvg",
+          "sweetalert2",
+          "html2canvas",
+          "dompurify",
+          "rgbcolor"
+        ],
+        "outputPath": "dist/apps/IKMF",
+        "index": "apps/IKMF/src/index.html",
+        "main": "apps/IKMF/src/main.ts",
+        "tsConfig": "apps/IKMF/tsconfig.app.json",
+        "polyfills": "apps/IKMF/src/polyfills.ts",
+        "assets": [
+          "apps/IKMF/src/assets",
+          "apps/IKMF/src/favicon.ico",
+          "apps/IKMF/src/manifest.webmanifest",
+          "apps/IKMF/src/sw-master.js",
+          "apps/IKMF/src/sw-sync.js"
+        ],
+        "styles": [
+          "node_modules/sweetalert2/dist/sweetalert2.min.css",
+          "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
+          "node_modules/prismjs/plugins/toolbar/prism-toolbar.css",
+          "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+          "node_modules/@syncfusion/ej2-base/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-buttons/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-dropdowns/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-inputs/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-popups/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-lists/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-angular-dropdowns/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-angular-grids/styles/bootstrap.css",
+          "apps/IKMF/src/assets/css/wizard.css",
+          "apps/IKMF/src/assets/css/quill.snow.css",
+          "apps/IKMF/src/assets/css/quill.bubble.css",
+          "apps/IKMF/src/assets/css/hopscotch.css",
+          "apps/IKMF/src/assets/css/animate.min.css",
+          "node_modules/nouislider/distribute/nouislider.min.css",
+          "node_modules/angular-calendar/scss/angular-calendar.scss",
+          "node_modules/dragula/dist/dragula.css",
+          "node_modules/ngx-toastr/toastr.css",
+          "node_modules/@swimlane/ngx-datatable/index.css",
+          "node_modules/@swimlane/ngx-datatable/assets/icons.css",
+          "apps/IKMF/src/assets/css/demo.css",
+          "apps/IKMF/src/assets/sass/core.scss",
+          "apps/IKMF/src/styles.scss",
+          "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css",
+          "node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css",
+          "node_modules/datatables.net-select-dt/css/select.dataTables.css"
+        ],
+        "scripts": [
+          "apps/IKMF/src/assets/vendor/pace/pace.min.js",
+          "node_modules/apexcharts/dist/apexcharts.min.js",
+          "node_modules/jquery/dist/jquery.min.js",
+          "node_modules/datatables.net/js/jquery.dataTables.min.js",
+          "node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js",
+          "node_modules/jszip/dist/jszip.js",
+          "node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+          "node_modules/datatables.net-buttons/js/buttons.colVis.js",
+          "node_modules/datatables.net-buttons/js/buttons.flash.js",
+          "node_modules/datatables.net-buttons/js/buttons.html5.js",
+          "node_modules/datatables.net-buttons/js/buttons.print.js",
+          "node_modules/datatables.net-select/js/dataTables.select.js"
+        ],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true,
+        "serviceWorker": true,
+        "ngswConfigPath": "apps/IKMF/ngsw-config.json"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "200mb",
+              "maximumError": "20mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "32kb",
+              "maximumError": "64kb"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/IKMF/src/environments/environment.ts",
+              "with": "apps/IKMF/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "IKMF:build:production"
+        },
+        "development": {
+          "browserTarget": "IKMF:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "IKMF:build"
+      }
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "apps/IKMF/src/test.ts",
+        "polyfills": "apps/IKMF/src/polyfills.ts",
+        "tsConfig": "apps/IKMF/tsconfig.spec.json",
+        "karmaConfig": "apps/IKMF/karma.conf.js",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "apps/IKMF/src/logo.png",
+          "apps/IKMF/src/assets",
+          "apps/IKMF/src/manifest.webmanifest",
+          "apps/IKMF/src/android-chrome-48x48.png",
+          "apps/IKMF/src/apple-touch-icon.png",
+          "apps/IKMF/src/favicon-16x16.png",
+          "apps/IKMF/src/favicon-32x32.png",
+          "apps/IKMF/src/mstile-150x150.png",
+          "apps/IKMF/src/safari-pinned-tab.svg"
+        ],
+        "styles": [
+          "apps/IKMF/src/styles.scss"
+        ],
+        "scripts": []
+      }
+    }
+  }
+}

@@ -1,0 +1,265 @@
+<div class="content-wrapper">
+  <div class="content-header row">
+    <div class="content-header-left col-md-8 col-12 mb-2 breadcrumb-new">
+      <h3 class="content-header-title mb-0 d-inline-block">View Intimation Letter</h3>
+      <div class="row breadcrumbs-top d-inline-block">
+        <div class="breadcrumb-wrapper col-12">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a routerLink="/dashboard">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a routerLink="/intimations">Intimation Letters</a>
+            </li>
+            <li class="breadcrumb-item active">View</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-body" *ngIf="intimation">
+    <!-- Intimation Details Section -->
+    <section id="intimation-details">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Intimation Details</h4>
+          <div class="card-header-actions">
+            <button
+              type="button"
+              class="btn btn-info btn-sm mr-1"
+              (click)="editIntimation()">
+              <i class="ft-edit"></i> Edit
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              (click)="goBack()">
+              <i class="ft-arrow-left"></i> Back
+            </button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="detail-group">
+                  <label>Date:</label>
+                  <span class="detail-value">{{ formatDate(intimation.Date) }}</span>
+                </div>
+                <div class="detail-group">
+                  <label>Time:</label>
+                  <span class="detail-value">{{ intimation.Time || 'N/A' }}</span>
+                </div>
+                <div class="detail-group">
+                  <label>Department:</label>
+                  <span class="detail-value">{{ intimation.DeptName || 'N/A' }}</span>
+                </div>
+                <div class="detail-group">
+                  <label>Initiated By:</label>
+                  <span class="detail-value">{{ intimation.InitiatingPerson || 'N/A' }}</span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="detail-group">
+                  <label>Status:</label>
+                  <span class="badge" [ngClass]="intimation.IsClosed ? 'badge-success' : 'badge-warning'">
+                    {{ intimation.IsClosed ? 'Completed' : 'Active' }}
+                  </span>
+                </div>
+                <div class="detail-group">
+                  <label>Forward To:</label>
+                  <span class="detail-value">{{ intimation.ForwardTo || 'N/A' }}</span>
+                </div>
+                <div class="detail-group">
+                  <label>Job Completion Date:</label>
+                  <span class="detail-value">
+                    {{ intimation.jobCompletionDate ? formatDate(intimation.jobCompletionDate) : 'N/A' }}
+                  </span>
+                </div>
+                <div class="detail-group">
+                  <label>Job Completion Time:</label>
+                  <span class="detail-value">{{ intimation.jobCompletionTime || 'N/A' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="detail-group">
+                  <label>Nature of Work:</label>
+                  <div class="detail-box">{{ intimation.NatureOfWork }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row" *ngIf="intimation.Description">
+              <div class="col-12">
+                <div class="detail-group">
+                  <label>Description:</label>
+                  <div class="detail-box">{{ intimation.Description }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row" *ngIf="getLastRemarks()">
+              <div class="col-12">
+                <div class="detail-group">
+                  <label>Last Remarks:</label>
+                  <div class="detail-box">{{ getLastRemarks() }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add Comments Section -->
+    <section id="add-comments" *ngIf="canComment && !intimation.isClosed">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Add Comments</h4>
+        </div>
+        <div class="card-content">
+          <div class="card-body">
+            <form [formGroup]="commentForm" (ngSubmit)="addComment()">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="forwardTo">Forward To:</label>
+                    <select
+                      id="forwardTo"
+                      class="form-control"
+                      formControlName="forwardTo">
+                      <option value="">Select User</option>
+                      <option *ngFor="let user of users" [value]="user.userID">
+                        {{user.userName}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="statusID">Status:</label>
+                    <select
+                      id="statusID"
+                      class="form-control"
+                      formControlName="statusID"
+                      (change)="onStatusChange()">
+                      <option value="">Select Status</option>
+                      <option *ngFor="let status of intimationStatuses" [value]="status.id">
+                        {{status.status}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="remarks" class="required">Remarks:</label>
+                    <textarea
+                      id="remarks"
+                      class="form-control"
+                      formControlName="remarks"
+                      rows="4"
+                      placeholder="Enter your comments/remarks"
+                      [class.is-invalid]="commentForm.get('remarks')?.invalid && commentForm.get('remarks')?.touched">
+                    </textarea>
+                    <div class="invalid-feedback" *ngIf="commentForm.get('remarks')?.invalid && commentForm.get('remarks')?.touched">
+                      Remarks are required
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-actions">
+                    <button
+                      type="submit"
+                      class="btn btn-success mr-2"
+                      [disabled]="isProcessing || commentForm.invalid">
+                      <i class="ft-save"></i>
+                      {{ isProcessing ? 'Saving...' : 'Save Comment' }}
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-primary mr-2"
+                      *ngIf="canComplete"
+                      (click)="completeIntimation()"
+                      [disabled]="isProcessing">
+                      <i class="ft-check"></i> Mark as Completed
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      (click)="commentForm.reset()">
+                      <i class="ft-x"></i> Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Document History Section -->
+    <section id="document-history">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Document History</h4>
+        </div>
+        <div class="card-content">
+          <div class="card-body">
+            <div class="timeline" *ngIf="documentHistory.length > 0; else noHistory">
+              <div class="timeline-item" *ngFor="let history of documentHistory; let i = index">
+                <div class="timeline-marker" [ngClass]="i === 0 ? 'timeline-marker-primary' : 'timeline-marker-secondary'">
+                  <i class="ft-message-circle"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-header">
+                    <span class="timeline-date">{{ formatDateTime(history.Date) }}</span>
+                    <span class="timeline-user">{{ history.UserName }}</span>
+                    <span class="timeline-department">{{ history.DeptName }}</span>
+                  </div>
+                  <div class="timeline-body">
+                    <p>{{ history.Remarks }}</p>
+                    <div class="timeline-meta" *ngIf="history.ForwardToName">
+                      <small class="text-muted">Forwarded to: {{ history.ForwardToName }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <ng-template #noHistory>
+              <div class="text-center text-muted py-4">
+                <i class="ft-file-text fa-2x mb-2"></i>
+                <p>No history available for this intimation</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loading-content">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <p class="mt-2">Loading intimation details...</p>
+  </div>
+</div>

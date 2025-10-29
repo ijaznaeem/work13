@@ -1,0 +1,292 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">New Order</h5>
+
+  </div>
+  <div class="card-block widget-body">
+    <form (ngSubmit)="AddOrder()" #fromPurchase="ngForm">
+      <div class="row no-gutter">
+        <div class="col-md-2">
+          <label for="dp1">Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dp1"
+              [(ngModel)]="sdetails.Date"
+              ngbDatepicker
+              disabled
+              #d1="ngbDatepicker"
+            />
+            <div class="input-group-addon">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="d1.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group col-md-3">
+          <label for="customer">Customer</label>
+          <ft-multi-col-combobox
+            name="customer"
+            id="customer"
+            [dataSource]="Accounts"
+            [fields]="AccountsFlds"
+            [(ngModel)]="sdetails.CustomerID"
+            required
+            [Cols]="[
+              { title: 'Name', fldName: 'CustomerName', size: 6 },
+              { title: 'Name', fldName: 'Amount', size: 3 },
+              { title: 'Code', fldName: 'CustomerID', size: 3 }
+            ]"
+          >
+          </ft-multi-col-combobox>
+        </div>
+
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="tqty">Prev Balance :</label>
+            <input
+              type="number"
+              class="form-control"
+              id="tqty"
+              name="tqty"
+              [value]="tqty"
+              readonly
+              placeholder="0"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row no-gutter">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="supplier">Product:</label>
+            <ft-multi-col-combobox
+              #cmbProd
+              [dataSource]="Prods"
+              [fields]="{ text: 'ProductName', value: 'StockID' }"
+              [Cols]="[
+                { title: 'Product Name', fldName: 'ProductName', size: 7 },
+                { title: 'Code', fldName: 'ProductID', size: 2 },
+                { title: 'Stock', fldName: 'Stock', size: 3 }
+              ]"
+              [(ngModel)]="sdetails.StockID"
+              name="testCombo"
+              (Change)="ProductSelected($event)"
+            >
+            </ft-multi-col-combobox>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="RPrice">Unit Rate:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="RPrice"
+              name="RPrice"
+              [(ngModel)]="sdetails.SPrice"
+              placeholder="0"
+            />
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="qty">Qty:</label>
+            <input
+              type="number"
+              class="form-control dation-field"
+              required="required"
+              id="qty"
+              name="qty"
+              [(ngModel)]="sdetails.Qty"
+              placeholder="0"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="Bonus">Bonus:</label>
+            <input
+              type="number"
+              class="form-control dation-field"
+              required="required"
+              id="Bonus"
+              name="Bonus"
+              [(ngModel)]="sdetails.Bonus"
+            />
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="DiscRatio">% Age:</label>
+            <input
+              type="number"
+              class="form-control dation-field"
+              required="required"
+              id="DiscRatio"
+              name="DiscRatio"
+              [(ngModel)]="sdetails.DiscRatio"
+            />
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="Scheme">Scheme:</label>
+            <input
+              type="number"
+              class="form-control dation-field"
+              required="required"
+              id="SchemeRatio"
+              name="SchemeRatio"
+              [(ngModel)]="sdetails.SchemeRatio"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="bonus">Amount:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="pamount"
+              name="pamount"
+              readonly
+              [value]="
+                sdetails.Qty * sdetails.SPrice -
+                (sdetails.Qty * sdetails.SPrice * sdetails.DiscRatio) / 100 -
+                sdetails.Qty * sdetails.SchemeRatio
+              "
+              tabindex="-1"
+            />
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-primary form-control"
+              [disabled]="!fromPurchase.form.valid"
+              (click)="AddOrder()"
+              accesskey="a"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+      <div style="margin: 5px;">
+        <h5 class="mb-0">Order Details</h5>
+        <div class="table-responsive table-bordered table-condensed">
+          <ng2-smart-table
+            class="table table-hover"
+            [settings]="settings"
+            [source]="data"
+            (deleteConfirm)="onDeleteConfirm($event)"
+            (rowSelect)="onRowSelect($event)"
+            (userRowSelect)="onUserRowSelect($event)"
+            (editConfirm)="onEdit($event)"
+            (rowHover)="onRowHover($event)"
+          >
+          </ng2-smart-table>
+        </div>
+
+        <div class="row no-gutter">
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="gtotal">Total Amount</label>
+              <input
+                type="text"
+                class="form-control"
+                id="gtotal"
+                name="gtotal"
+                [(ngModel)]="sale.Amount"
+                tabindex="-1"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="Scheme">Scheme</label>
+              <input
+                type="text"
+                class="form-control"
+                id="Scheme"
+                name="Scheme"
+                [value]="sale.Scheme"
+                tabindex="-1"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="discount">Discount</label>
+              <input
+                type="text"
+                class="form-control"
+                id="rdisc"
+                name="rdisc"
+                [value]="sale.Discount"
+                tabindex="-1"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="netTotal">Net Amount</label>
+              <input
+                type="text"
+                class="form-control"
+                id="TNetAmount"
+                name="TNetAmount"
+                [value]="sale.Amount - sale.Discount - sale.Scheme"
+                tabindex="-1"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-primary form-control"
+                [disabled]="data.count() == 0"
+                (click)="SaveData()"
+                accesskey="s"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-danger form-control"
+                (click)="Cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

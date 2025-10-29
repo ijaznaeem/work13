@@ -1,0 +1,102 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-4">Today's Appointments</h5>
+
+  </div>
+  <div class="card-block widget-body">
+    <form #frmFilter="ngForm">
+      <div class="row no-gutter">
+        <div class="col-md-2">
+          <label for="dtFrom">Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dtFrom"
+              [(ngModel)]="Filter.Date"
+              ngbDatepicker
+              #dtFrom="ngbDatepicker"
+            />
+            <div class="input-group-addon">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="dtFrom.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="customer">Speciality</label>
+          <ejs-combobox
+            name="status"
+            id="status"
+            [dataSource]="[
+              { status_id: '1', status: 'Confirmed' },
+              { status_id: '0', status: 'Not Confirmed' },
+              { status_id: '2', status: 'Checked' },
+              { status_id: '-1', status: 'Cancelled' }
+            ]"
+            [fields]="{ text: 'status', value: 'status_id' }"
+            [(ngModel)]="Filter.status"
+          >
+          </ejs-combobox>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="dtFrom">Clinic:</label>
+            <select
+              name="cmbClinic"
+              id="cmbClinic"
+              required
+              class="form-control"
+              [(ngModel)] = "Filter.clinic"
+            >
+              <option value="Morning">Morning</option>
+              <option value="Evening">Evening</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              (click)="FilterData()"
+              accesskey="a"
+            >
+              <i class="fa fa-search"></i>
+              Filter
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-danger form-control"
+              (click)="AddAppointment()"
+              accesskey="a"
+            >
+              <i class="fa fa-plus"></i>
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="row" id="print-section">
+      <div class="col-md-12">
+        <ft-dynamic-table
+          [Settings]="setting"
+          [Data]="data"
+          (ClickAction)="ActionClicked($event)"
+        ></ft-dynamic-table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Expenses</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div class="mb-2">
+          <app-crud-form [Form] = "form" [formdata] = "formmodel"
+          (ItemChanged)="ItemChanged($event)"
+          (DataSaved)="Save($event)"
+          (Cancelled)="Cancel($event)"
+          >
+          </app-crud-form>
+
+        </div>
+          <ft-dynamic-table
+            #dataList
+            [Data]="data"
+            [Settings]="Settings"
+          ></ft-dynamic-table>
+
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,155 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-4">Cash Report Session # {{Filter.SessionID}} </h5>
+
+  </div>
+  <div class="card-block widget-body">
+    <form #frmFilter="ngForm">
+      <div class="row no-gutter">
+        <div class="col-md-2">
+          <label for="dtFrom">From Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dtFrom"
+              [(ngModel)]="Filter.FromDate"
+              ngbDatepicker
+              #dtFrom="ngbDatepicker"
+            />
+            <div class="input-group-addon">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="dtFrom.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <label for="dtTo">To Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dtTo"
+              [(ngModel)]="Filter.ToDate"
+              ngbDatepicker
+              #dtTo="ngbDatepicker"
+            />
+            <div class="input-group-addon">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="dtTo.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="dtFrom">Clinic:</label>
+            <select
+              name="cmbClinic"
+              id="cmbClinic"
+              required
+              class="form-control"
+              [(ngModel)] = "Filter.clinic"
+              required
+
+            >
+              <option value="">All</option>
+              <option value="Morning">Morning</option>
+              <option value="Evening">Evening</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <div class="custom-control custom-radio">
+              <input
+                type="radio"
+                name="radio"
+                value="false"
+                [(ngModel)] = "Filter.ByDate"
+                class="custom-control-input"
+                id="radioDefault"
+              />
+              <label class="custom-control-label" for="radioDefault">
+                By Session
+              </label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input
+                type="radio"
+                name="radio1"
+                value="true"
+                [(ngModel)] = "Filter.ByDate"
+                class="custom-control-input radio-primary"
+                id="radioPrimary"
+              />
+              <label class="custom-control-label" for="radioPrimary">
+                By Date
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              (click)="FilterData()"
+              accesskey="a"
+            >
+              <i class="fa fa-search"></i>
+              Filter
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-warning form-control"
+              (click)="PrintReport()"
+              accesskey="p"
+            >
+              <i class="fa fa-printer"></i>
+              Print Report
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-danger form-control"
+              (click)="CloseSession()"
+              accesskey="p"
+            >
+              <i class="fa fa-printer"></i>
+              Close Session
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="row" id="print-section">
+      <div class="col-md-12">
+        <ft-dynamic-table
+          [Settings]="setting"
+          [Data]="data"
+          (ClickAction)="ActionClicked($event)"
+        ></ft-dynamic-table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,88 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Transfer Report</h4>
+  <button type="button" class="btn-close close pull-right" aria-label="Close">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div style="min-height: 250px">
+    <div widget class="card border-0 box-shadow">
+      <div class="card-header transparent border-0 text-muted">
+        <h5 class="mb-0"></h5>
+      </div>
+      <div class="card-block widget-body">
+        <form #frmFilter="ngForm">
+          <div class="row no-gutter">
+            <div class="form-group col-md-2">
+              <label for="CustomerID"> Gate Pass No: </label>
+              <input
+                type="text"
+                class="form-control"
+                name="gpno"
+                [(ngModel)]="Filter.GPNo"
+              />
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="CustomerID"> To Store: </label>
+                <P> <strong> {{ Transfer.ToStore}}</strong> </P>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="CustomerID"> &nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-primary form-control"
+                  (click)="LoadStock()"
+                  accesskey="a"
+                >
+                  <i class="fa fa-print"></i>
+                  Load Stock
+                </button>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="CustomerID"> &nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-primary form-control"
+                  (click)="SaveStock()"
+                  accesskey="a"
+                  [disabled] = "!Transfer.TransferID"
+                >
+                  <i class="fa fa-print"></i>
+                  Save Stock
+                </button>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="CustomerID"> &nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-primary form-control"
+                  (click)="PrintReport()"
+                  accesskey="a"
+                  [disabled] = "!Transfer.TransferID"
+                >
+                  <i class="fa fa-print"></i>
+                  Print
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row" id="print-details">
+          <div class="col-md-12">
+            <ft-dynamic-table
+              [Settings]="setting"
+              [Data]="data"
+            ></ft-dynamic-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

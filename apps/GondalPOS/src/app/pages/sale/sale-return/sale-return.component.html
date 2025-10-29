@@ -1,0 +1,58 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-0">Sale Return</h5>
+    <div class="widget-controls">
+      <a data-widgster="expand" href="#" class="transition">
+        <i class="fa fa-chevron-down"></i>
+      </a>
+      <a data-widgster="collapse" href="#" class="transition">
+        <i class="fa fa-chevron-up"></i>
+      </a>
+      <a data-widgster="fullscreen" href="#" class="transition">
+        <i class="fa fa-expand"></i>
+      </a>
+      <a data-widgster="restore" href="#" class="transition">
+        <i class="fa fa-compress"></i>
+      </a>
+    </div>
+  </div>
+
+
+  <form #frmFilter="ngForm">
+    <div class="row">
+
+      <div class="col-md-4">
+        <label for="dtTo">Give Invoice No to Return</label>
+
+          <input
+            class="form-control"
+
+            name="ino"
+            [(ngModel)]="Filter.INo"
+
+          />
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button
+            type="button"
+            class="btn btn-primary form-control"
+            (click)="FindINo()"
+            accesskey="F"
+          >
+            <i class="fa fa-search"></i>
+            Find Invoice
+          </button>
+        </div>
+      </div>
+
+
+
+    </div>
+  </form>
+  <hr>
+  <div class="card-block widget-body">
+    <app-invoice [Type]="'DT'" [EditID]="EditID"></app-invoice>
+  </div>
+</div>

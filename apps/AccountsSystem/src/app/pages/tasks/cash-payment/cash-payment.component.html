@@ -1,0 +1,207 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Cash Payments</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="container">
+      <form #frmVoucher="ngForm" (submit)="SaveData()">
+        <div class="row no-gutter">
+          <div class="col-md-2">
+            <label for="dtFrom" class="form-label">Date: </label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dtFrom"
+                [(ngModel)]="voucher.Date"
+                ngbDatepicker
+                #dtFrom="ngbDatepicker"
+                required
+              />
+              <div class="input-group-addon">
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  (click)="dtFrom.toggle()"
+                >
+                  <i class="fa fa-calendar"> </i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-2 form-group">
+            <label for="cmbCustomer" class="form-label"> Voucher No: </label>
+            <input
+              type="text"
+              name="VoucherNo"
+              [(ngModel)]="voucher.VoucherNo"
+              class="form-control"
+            />
+          </div>
+          <div class="col-md-6">
+            <label for="dtFrom" class="form-label">Cash Account: </label>
+            <div>
+              <ng-select
+                name="ng2select"
+                class="custom "
+                [items]="getCashAccounts()"
+                [virtualScroll]="true"
+                bindLabel="AccountName"
+                bindValue="AccountID"
+                placeholder="Select Cash Account"
+                required
+                [(ngModel)]="voucher.AccountID"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <div class="row">
+                    <div class="col-md-9">
+                      {{ item.AccountName }}
+                    </div>
+                    <div class="col-md-3 font-small-2">
+                      <small>
+                        {{ item.AccountCode }}
+                      </small>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-info form-control"
+                (click)="Search(1)"
+              >
+                <i class="fa fa-search"> </i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <form #frmvdetail="ngForm" ngNativeValidate (ngSubmit)="Add()">
+          <div class="row no-gutter">
+            <div class="col-md-4">
+              <label for="dtFrom" class="form-label">Select Account: </label>
+
+              <ng-select
+                name="account"
+                class="custom"
+                #vname
+                [items]="Accounts"
+                [virtualScroll]="true"
+                bindLabel="AccountName"
+                bindValue="AccountID"
+                placeholder="Select Account"
+                (change)="SelectedAccount($event)"
+                required
+                [(ngModel)]="vdetails.AccountID"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <div class="row">
+                    <div class="col-md-9">
+                      {{ item.AccountName }}
+                    </div>
+                    <div class="col-md-3 font-small-2">
+                      <small>
+                        {{ item.AccountCode }}
+                      </small>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="">&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-info form-control"
+                  (click)="Search(2)"
+                >
+                  <i class="fa fa-search"> </i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="">Description</label>
+                <input
+                  name="description"
+                  class="form-control"
+                  type="text"
+                  name="description"
+                  [(ngModel)]="vdetails.Description"
+                  id="description"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="">Amount</label>
+                <input
+                  class="form-control"
+                  type="number"
+                  name="amount"
+                  [(ngModel)]="vdetails.Debit"
+                  id="amount"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="">&nbsp;</label>
+                <button
+                  type="submit"
+                  accesskey="a"
+                  [disabled]="!frmvdetail.valid || !vdetails.AccountID"
+                  class="btn btn-success form-control"
+                >
+                  <i class="fa fa-plus"> </i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row no-gutter">
+          <div class="col-md-12">
+            <ft-dynamic-table
+              #rptTable
+              [Settings]="settings"
+              [Data]="VData"
+              (ClickAction)="Clicked($event)"
+            ></ft-dynamic-table>
+          </div>
+        </div>
+        <div class="row no-gutter">
+          <div class="col-md-6"></div>
+          <div class="col md-3">
+            <button
+              class="btn-block btn btn-success"
+              accesskey="s"
+              [disabled]="!frmVoucher.valid || !voucher.AccountID"
+              type="submit"
+            >
+              <i class="fa fa-save"></i>
+              Save
+            </button>
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn-block btn btn-warning"
+            (click) = "Cancel()"
+            >
+              <i class="fa fa-clear"></i>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+</div>

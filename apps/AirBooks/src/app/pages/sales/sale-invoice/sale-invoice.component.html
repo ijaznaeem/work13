@@ -1,0 +1,689 @@
+<!--table starts-->
+
+<div class="container">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Sale Invoice</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="bsModalRef.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <section id="ng-tables">
+      <form #fromPurchase="ngForm">
+        <div class="row no-pad">
+          <div class="col-md-2">
+            <label for="dp1">Date:</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                name="dp1"
+                [(ngModel)]="sale.date"
+                ngbDatepicker
+                #d1="ngbDatepicker"
+                required
+              />
+              <div class="input-group-append">
+                <button
+                  type="button"
+                  class="btn btn-warning"
+                  (click)="d1.toggle()"
+                >
+                  <i class="fa fa-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group col-md-2">
+            <label for="customer">Customer Type</label>
+            <ejs-dropdownlist
+              #cmbCusType
+              name="custType"
+              id="custType"
+              [dataSource]="custTypes"
+              [fields]="{ text: 'type', value: 'id' }"
+              [(ngModel)]="sale.customer_type"
+              required
+              [allowFiltering]="true"
+            [sortOrder]="'Ascending'"
+              (change)="LoadCustomer($event.value)"
+            >
+            </ejs-dropdownlist>
+          </div>
+          <div class="col-md-4 form-group">
+            <label for="customer">Customer</label>
+
+            <div class="">
+              <ejs-dropdownlist
+                name="customer"
+                id="customer"
+                [dataSource]="Customers"
+                [fields]="{
+                  text: 'customer_name',
+                  value: 'customer_id'
+                }"
+                [(ngModel)]="sale.customer_id"
+                required
+                [allowFiltering]="true"
+            [sortOrder]="'Ascending'"
+                (change)="CustomerSelected($event)"
+              >
+                <ng-template #itemTemplate let-data="">
+                  {{ data.customer_name }}
+                  <span
+                    ><small>{{ data.address }}, {{ data.country }}</small></span
+                  >
+                </ng-template>
+              </ejs-dropdownlist>
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button
+                class="form-control btn btn-primary"
+                (click)="AddCustomer()"
+              >
+                <i class="fa fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="supplier">Product:</label>
+            <ejs-dropdownlist
+              name="Product"
+              id="Product"
+              #cmbProd
+              [dataSource]="Products"
+              [sortOrder]="'Ascending'"
+              [fields]="{
+                text: 'product_name',
+                value: 'product_id'
+              }"
+              [allowFiltering]="true"
+            [sortOrder]="'Ascending'"
+              [(ngModel)]="sdetails.product_id"
+              (change)="ProductSelected($event)"
+            >
+            </ejs-dropdownlist>
+          </div>
+        </div>
+
+        <div class="row no-pad">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="billTo">Bill To</label>
+              <textarea
+                id="billTo"
+                class="form-control"
+                name="billTo"
+                rows="3"
+                [(ngModel)]="sale.bill_to"
+              ></textarea>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="row no-pad">
+              <div class="col-md-6">
+                <label for="address"> Contact No </label>
+                <p class="help-block">
+                  <strong>{{ Customer.cell_no }}</strong>
+                </p>
+              </div>
+              <div class="col-md-6">
+                <label for="address">WhatsApp No </label>
+                <p class="help-block">
+                  <strong>{{ Customer.whatsapp_no }}</strong>
+                </p>
+              </div>
+
+              <div class="col-md-6">
+                <label for="address"> Email Address </label>
+                <p class="help-block">
+                  <strong>{{ Customer.email }}</strong>
+                </p>
+              </div>
+              <div class="col-md-6">
+                <label for="country">Nationality </label>
+                <p class="help-block">
+                  <strong>{{ Customer.nationality_name }}</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <form #formqty="ngForm">
+          <div class="row no-pad">
+            <div class="col-md-2">
+              <label for="dptravel">Travel Date:</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="dptravel"
+                  [(ngModel)]="sdetails.travel_date"
+                  ngbDatepicker
+                  #dptravel="ngbDatepicker"
+                  required
+                  (dateSelect)="DateChanged()"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    (click)="dptravel.toggle()"
+                  >
+                    <i class="fa fa-calendar"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <label for="dptravel">Post Date:</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="dptravel"
+                  [value]="
+                    sdetails.travel_date
+                      ? sdetails.travel_date.year +
+                        '-' +
+                        sdetails.travel_date.month.toString().padStart(2, '0') +
+                        '-' +
+                        sdetails.travel_date.day.toString().padStart(2, '0')
+                      : ''
+                  "
+                  [(ngModel)]="sdetails.post_date"
+                  ngbDatepicker
+                  #dppost="ngbDatepicker"
+                  required
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    (click)="dppost.toggle()"
+                  >
+                    <i class="fa fa-calendar"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Passport #</label>
+                <input
+                  type="text"
+                  class="form-control dation-field"
+                  [required]="
+                    Product.product_name
+                      ? Product.product_name.includes('Visa')
+                      : false
+                  "
+                  id="passport_no"
+                  name="passport_no"
+                  [(ngModel)]="sdetails.passport_no"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-check mt-4">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [(ngModel)]="details"
+                  name="showdetails"
+                  id="showdetails"
+                />
+                <label class="form-check-label" for="showdetails">
+                  Show Details
+                </label>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <label for="address"> Item Cost </label>
+              <p class="help-block">
+                <strong>{{ Product.cost }}</strong>
+              </p>
+            </div>
+          </div>
+          <div class="row no-pad" *ngIf="details">
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="book_ref">Book Ref #</label>
+                <input
+                  type="text"
+                  class="form-control dation-field"
+                  id="book_ref"
+                  name="book_ref"
+                  [(ngModel)]="sdetails.book_ref"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Ticket #</label>
+                <input
+                  type="text"
+                  class="form-control dation-field"
+                  id="ticket_no"
+                  name="ticket_no"
+                  [(ngModel)]="sdetails.ticket_no"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Origin</label>
+                <ejs-dropdownlist
+                  name="origin"
+                  id="origin"
+                  [dataSource]="airports"
+                  [sortOrder]="'Ascending'"
+                  [fields]="{
+                    text: 'city',
+                    value: 'code'
+                  }"
+
+                  [(ngModel)]="sdetails.origin"
+                  [allowFiltering]="true"
+                  (filtering)="onFiltering($event)"
+                >
+                </ejs-dropdownlist>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Destination</label>
+                <ejs-dropdownlist
+                  id="destination"
+                  name="destination"
+                  [allowFiltering]="true"
+                  [sortOrder]="'Ascending'"
+                  (filtering)="onFiltering($event)"
+                  placeholder=""
+                  [(ngModel)]="sdetails.destination"
+                  [dataSource]="airports"
+                  [fields]="{
+                    text: 'city',
+                    value: 'code'
+                  }"
+                >
+                </ejs-dropdownlist>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>Airline</label>
+                <ejs-dropdownlist
+                  id="airline"
+                  name="airline"
+                  [dataSource]="AirLines"
+                  [allowfiltering]="true"
+                  (filtering)="onAirlineFiltering($event)"
+                  placeholder=""
+                  [allowFiltering]="true"
+                  [sortOrder]="'Ascending'"
+                  [(ngModel)]="sdetails.airline"
+                  [fields]="{ value: 'code', text: 'airline_name' }"
+                >
+                </ejs-dropdownlist>
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label>Route</label>
+                <select
+                  name="oneway"
+                  id="oneway"
+                  class="form-control"
+                  [(ngModel)]="sdetails.route"
+                >
+                  <option value="One way">One way</option>
+                  <option value="Round Trip">Round Trip</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <label for="dtreturn">Return Date :</label>
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="dtreturn"
+                  [(ngModel)]="sdetails.return_date"
+                  ngbDatepicker
+                  #dtereturn="ngbDatepicker"
+                  [disabled]="sdetails.route != 'Round Trip'"
+                  [required]="sdetails.route == 'Round Trip'"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    (click)="dtereturn.toggle()"
+                  >
+                    <i class="fa fa-calendar"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row no-pad">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="supplier">Description:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="sdetails.description"
+                  name="description"
+                  id="description"
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="qty">Qty:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  required="required"
+                  id="qty"
+                  name="qty"
+                  [(ngModel)]="sdetails.qty"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="RPrice">Price:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="RPrice"
+                  name="RPrice"
+                  [(ngModel)]="sdetails.price"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="RPrice">Markup:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="markup"
+                  name="markup"
+                  [(ngModel)]="sdetails.markup"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="vat">VAT(%): </label>
+                <select
+                  name="vat"
+                  id="vat"
+                  class="form-control"
+                  [(ngModel)]="sdetails.vat"
+                >
+                  <option [value]="0">0%</option>
+                  <option [value]="5">5%</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="bonus">Amount:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="pamount"
+                  name="pamount"
+                  readonly
+                  [value]="
+                    sdetails.qty * sdetails.price +
+                    sdetails.markup * 1 +
+                    ((sdetails.qty * sdetails.price + sdetails.markup * 1) *
+                      sdetails.vat) /
+                      100
+                  "
+                  tabindex="-1"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <button
+                  type="button"
+                  style="margin-top: 20px"
+                  class="btn btn-primary btn-block"
+                  [disabled]="!formqty.form.valid"
+                  (click)="AddOrder()"
+                  accesskey="a"
+                >
+                  <i class="fa fa-plus"></i>
+
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2">Package:</div>
+            <div class="col-md-6">
+              <ejs-dropdownlist
+                name="package"
+                id="package"
+                #cmbPackage
+                [sortOrder]="'Ascending'"
+                [dataSource]="Packages"
+                [fields]="{
+                  text: 'package_name',
+                  value: 'package_name'
+                }"
+                [(ngModel)]="sale.package"
+              >
+              </ejs-dropdownlist>
+            </div>
+          </div>
+        </form>
+        <div class="row no-pad">
+          <div style="margin: 5px">
+            <h5 class="mb-0">Order Details</h5>
+            <div class="table-responsive table-bordered table-condensed">
+              <ng2-smart-table
+                class="table table-hover"
+                [settings]="settings"
+                [source]="data"
+                (deleteConfirm)="onDeleteConfirm($event)"
+                (editConfirm)="onEdit($event)"
+              >
+              </ng2-smart-table>
+            </div>
+          </div>
+        </div>
+        <div class="row no-pad">
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="gtotal">Net Amount</label>
+              <input
+                type="text"
+                class="form-control"
+                id="gtotal"
+                name="gtotal"
+                [(ngModel)]="sale.amount"
+                tabindex="-1"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="col-md-10">
+            <div class="row no-pad">
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="discount">Markup</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="rdisc"
+                    name="rdisc"
+                    [value]="sale.markup"
+                    tabindex="-1"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="discount">VAT</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="rdisc"
+                    name="rdisc"
+                    [value]="sale.vat"
+                    tabindex="-1"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="bank_charges">Bank Charges</label>
+                  <select
+                    #bcharges
+                    id="bank_charges"
+                    class="form-control"
+                    name="banck_charges"
+                    [(ngModel)]="sale.charges_id"
+                    (click)="FindBC($event.target.value)"
+                  >
+                    <option [value]="item.id" *ngFor="let item of BankCharges">
+                      {{ item.payment_mode }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="bank_charges">%age </label>
+                  <input
+                    class="form-control"
+                    type="number"
+                    name="bratio"
+                    [(ngModel)]="bratio"
+                    (change)="calcBC($event.target.value)"
+                  />
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="bank_charges">Charges </label>
+                  <input
+                    class="form-control"
+                    name="bank_charges"
+                    id="bank_charges"
+                    type="number"
+                    [(ngModel)]="sale.bank_charges"
+                  />
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="netTotal">Total Amount</label>
+                  <input
+                    type="text"
+                    #netamount
+                    class="form-control"
+                    id="TNetAmount"
+                    name="TNetAmount"
+                    [value]="
+                      RoundIt(
+                        sale.bank_charges * 1 +
+                          sale.amount * 1 +
+                          sale.vat * 1 +
+                          sale.markup * 1
+                      )
+                    "
+                    tabindex="-1"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row no-pad">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="notes">Notes:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="notes"
+                name="notes"
+                [(ngModel)]="sale.notes"
+                placeholder="x"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-success form-control"
+                [disabled]="!fromPurchase.form.valid"
+                (click)="SaveData(1)"
+                accesskey="p"
+              >
+                Save And Print
+              </button>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-success form-control"
+                [disabled]="!fromPurchase.form.valid"
+                (click)="SaveData(2)"
+                accesskey="s"
+              >
+                Save Only
+              </button>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-danger form-control"
+                (click)="Cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

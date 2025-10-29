@@ -1,0 +1,180 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Cash Book</h5>
+  </div>
+  <div class="card-block widget-body">
+    <form #frmFilter="ngForm">
+      <div class="row no-pad">
+        <div class="col-md-3">
+          <label for="dtFrom">Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dtFrom"
+              [(ngModel)]="Filter.Date"
+              ngbDatepicker
+              #dtFrom="ngbDatepicker"
+            />
+            <div class="input-group-addon">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="dtFrom.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              (click)="FilterData()"
+              accesskey="a"
+            >
+              <i class="fa fa-search"></i>
+              Filter
+            </button>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-primary form-control"
+              (click)="PrintReport()"
+              accesskey="P"
+            >
+              <i class="fa fa-print"></i>
+              Print
+            </button>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-danger form-control"
+              (click)="CloseAccounts()"
+              accesskey="s"
+            >
+              <i class="fa fa-lock"></i>
+              Close Account
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="row no-gutter" id="print-section">
+      <div class="col-md-6">
+        <h4><strong>Cash</strong></h4>
+        <table class="table table-sm table-bordered">
+          <thead>
+            <tr>
+              <th>Ref No</th>
+              <th>Account Name</th>
+              <th>Debit</th>
+              <th>Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let key of cash_keys">
+              <tr>
+                <td class="text-center" colspan="4">
+                  <h6>{{ key }}</h6>
+                </td>
+              </tr>
+              <tr *ngFor="let item of cash_data[key]">
+                <td>{{ item.RefID }}</td>
+                <td>{{ item.Head }}</td>
+                <td class="text-right">{{ item.Recvd | number }}</td>
+                <td class="text-right">{{ item.Paid | number }}</td>
+              </tr>
+            </ng-container>
+            <tr>
+              <th colspan="2" class="text-left">Closing Total</th>
+
+              <th colspan="2" class="text-right">
+                {{ data.cash[data.cash.length - 1].Balance | number }}
+              </th>
+              <th></th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-6">
+        <h4> <strong>Stock</strong></h4>
+        <table class="table table-sm table-bordered">
+          <thead>
+            <tr>
+
+              <th>Description</th>
+              <th>Qty In</th>
+              <th>Qty Out</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let key of stock_keys">
+              <tr>
+                <td class="text-center" colspan="3">
+                  <h6>{{ key }}</h6>
+                </td>
+              </tr>
+
+              <tr *ngFor="let item of stock_data[key]"   >
+               <ng-container  *ngIf="item.QtyIn > 0 || item.QtyOut > 0">
+                <td>{{ item.Description }}</td>
+                <td class="text-right">{{ item.QtyIn | number }}</td>
+                <td class="text-right">{{ item.QtyOut | number }}</td>
+
+                </ng-container>
+              </tr>
+              <tr>
+                <td> <strong>Total {{ key }}</strong>  </td>
+                <td class="text-right"><strong>{{
+                FindTotal(stock_data[key], 'QtyIn') | number
+                }}</strong></td>
+                <td class="text-right"><strong>{{
+                  FindTotal(stock_data[key], 'QtyOut') | number
+                }}</strong></td>
+              </tr>
+              <tr>
+                <td> <strong>Closing</strong></td>
+                <td colspan="2" class="text-right">
+                  <strong>{{
+                (FindTotal(stock_data[key], 'QtyIn') - FindTotal(stock_data[key], 'QtyOut') ) | number
+                }}</strong>
+                </td>
+
+              </tr>
+            </ng-container>
+
+          </tbody>
+        </table>
+      </div>
+
+
+      <!-- <div class="col-md-12">
+        <ft-dynamic-table
+          #RptTable
+          [Settings]="settingCash"
+          [Data]="data.cash"
+        ></ft-dynamic-table>
+      </div> -->
+
+      <div class="col-md-12">
+        <!-- <ft-table-with-group
+          #RptTable
+          [Settings]="settingStock"
+          [Data]="data.stock"
+        ></ft-table-with-group> -->
+      </div>
+    </div>
+  </div>
+</div>

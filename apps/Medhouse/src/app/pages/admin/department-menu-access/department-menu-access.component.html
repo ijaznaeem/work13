@@ -1,0 +1,31 @@
+<div class="department-selector">
+  <label>Select Department:</label>
+  <select (change)="onSelectDepartment($event.target.value)">
+    <option *ngFor="let dept of departments" [value]="dept.DeptID">
+      {{ dept.DeptName }}
+    </option>
+  </select>
+</div>
+
+<div *ngIf="loading">Loading menu items...</div>
+
+<ul *ngIf="!loading && selectedDepartmentId" class="menu-tree">
+  <ng-container *ngFor="let item of getNestedMenuItems(null)">
+    <li>
+      <label>
+        <input type="checkbox" [checked]="item.assigned" (change)="toggleAccess(item)" />
+        {{ item.title }}
+      </label>
+      <ul>
+        <ng-container *ngFor="let child of getNestedMenuItems(item.id)">
+          <li>
+            <label>
+              <input type="checkbox" [checked]="child.assigned" (change)="toggleAccess(child)" />
+              {{ child.title }}
+            </label>
+          </li>
+        </ng-container>
+      </ul>
+    </li>
+  </ng-container>
+</ul>

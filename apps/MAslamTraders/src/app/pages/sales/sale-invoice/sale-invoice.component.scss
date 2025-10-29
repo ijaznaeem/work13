@@ -1,0 +1,25 @@
+.custom-table-height {
+  height: 170px;
+  background-color: #fff;        /* fixed height for scroll */
+  overflow-y: auto;
+  border: 1px solid #6c6969;
+  background-color: #fff;
+}
+
+.table table th,
+.table table td {
+  border: 1px solid #ccc;  /* or any color you want */
+  padding: 4px;            /* optional: cell spacing */
+}
+.table table {
+  border-collapse: collapse; /* make borders neat */
+}
+
+.return-invoice{
+  background-color: #e9d7d9; /* Light red background for return invoices */
+}
+.sale-invoice{
+  background-color: #d6efd4; /* Light green background for sale invoices */
+}
+
+

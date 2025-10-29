@@ -1,0 +1,340 @@
+import { RouteInfo } from '../vertical-menu/vertical-menu.metadata';
+export const HROUTES: RouteInfo[] = [
+
+  {
+    path: '', title: 'Dashboard', icon: 'ft-home', class: 'dropdown nav-item has-sub', isExternalLink: false,
+    submenu: [
+      { path: '/dashboard/dashboard1', title: 'Dashboard 1', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/dashboard/dashboard2', title: 'Dashboard 2', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] }
+    ]
+  },
+  //stores start from here
+  {
+    path: '', title: 'Stores', icon: 'ft-box', class: 'dropdown nav-item has-sub', isExternalLink: false,
+    submenu: [
+      { path: '/inbox', title: 'Raw Stock Dispatch', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/chat', title: 'Raw Stock Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/chat-ngrx', title: 'Finished Stock Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/taskboard', title: 'Stock Ledger', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/taskboard-ngrx', title: 'Dispensed Bacthes Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/calendar', title: 'Delivery Notes & Address', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+	  { path: '/calendar', title: 'GRN Record', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+	  { path: '/calendar', title: 'Raw Meterial Forecasting', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+	  { path: '/calendar', title: 'Tentative Entry Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+
+    ]
+  },
+  //Audit start from here
+  {
+    path: '', title: 'Audit', icon: 'ft-aperture', class: 'dropdown nav-item has-sub', isExternalLink: false,
+    submenu: [
+      { path: '/uikit/grids', title: 'Current Audit', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'Audit History', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+
+    ]
+  },
+
+  //Procurement start from here
+  {
+    path: '', title: 'Procurement', icon: 'ft-aperture', class: 'dropdown nav-item has-sub', isExternalLink: false,
+    submenu: [
+      { path: '/uikit/grids', title: 'Raw Meterial Forecasting', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'Payment Orders', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'Payment Vouchers', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'Stock Ledgers', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'Supplier Ledgers', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'Raw Meterial Rate Analysis', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'Price Varation Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'Low Business Supplier', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'Tentative Entry Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'Purchase Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'Payment Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/uikit/typography', title: 'GRN List', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+
+    ]
+  },
+
+//Production start from here
+
+{
+  path: '', title: 'Production', icon: 'ft-aperture', class: 'dropdown nav-item has-sub', isExternalLink: false,
+  submenu: [
+    { path: '/uikit/grids', title: 'Batch Output', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+    { path: '/uikit/typography', title: 'Master Formulation', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+    { path: '/uikit/typography', title: 'Production Record', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+    { path: '/uikit/typography', title: 'Production Plans', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+    { path: '/uikit/typography', title: 'Production Batches', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+    { path: '/uikit/typography', title: 'BMR List', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+    { path: '/uikit/typography', title: 'Raw Meterial Forecasting', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+    { path: '/uikit/typography', title: 'Raw Meterial V/s Master Forecasting', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+    { path: '/uikit/typography', title: 'Stock Alert', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+
+  ]
+},
+  //QC start from here
+  {
+    path: '', title: 'Quailty Control', icon: 'ft-grid', class: 'dropdown nav-item has-sub', isExternalLink: false,
+    submenu: [
+      {
+        path: '', title: 'Raw Meterial Purchase', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/tables/basic', title: 'Production Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/tables/extended', title: 'GRN Record', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/tables/angular', title: 'BMR List', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] }
+        ]
+      },
+
+    ]
+  },
+
+  //Promotional start from here
+
+    {
+      path: '', title: 'Promotional', icon: 'ft-grid', class: 'dropdown nav-item has-sub', isExternalLink: false,
+      submenu: [
+        {
+          path: '', title: 'Promotional Recovery Claim Report', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+          submenu: [
+            { path: '/tables/basic', title: 'Account Details', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+            { path: '/tables/extended', title: 'Promotional Stock Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          ]
+        },
+      ]
+    },
+
+//Sales/Marketing
+{
+  path: '', title: 'Sales/Marketing', icon: 'ft-grid', class: 'dropdown nav-item has-sub', isExternalLink: false,
+  submenu: [
+    {
+      path: '', title: 'New Quotation', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+      submenu: [
+        { path: '/tables/basic', title: 'Sale Graph', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Monthly Comparison By Qty', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Quotation List', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      ]
+    },
+  ]
+},
+
+
+//acccount start from here
+  {
+    path: '', title: 'Accounts', icon: 'ft-bar-chart-2', class: 'dropdown nav-item has-sub', isExternalLink: false,
+    submenu: [
+      {
+        path: '', title: 'Purchase', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/charts/chartjs', title: 'Purchase/R Invoice', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/charts/chartist', title: 'Purchase/FG Invoice', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/charts/apex', title: 'Purchase Return', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/charts/ngx', title: 'Purchase Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/charts/ngx', title: 'Purchase of Product', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        ]
+      },
+      {
+        path: '', title: 'Sale', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/maps/google', title: 'Sale Invoice', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Sale Return', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Sale Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Sale of Product', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Promotional Recovey Claim Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        ]
+      },
+
+      {
+        path: '', title: 'Cash', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/maps/google', title: 'Recovery', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Payment to Supplier', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Cash Transfer', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Other Income', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Other Income Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Recovery By Division', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Payment Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Trial Balance', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        ]
+      },
+      {
+        path: '', title: 'Claims', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/maps/google', title: 'Add Claims', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Claim Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] }
+        ]
+      },
+
+      {
+        path: '', title: 'Accounts', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/maps/google', title: 'Account List', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Account Details', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Salesman Accounts', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Pending Recovery Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Trial Balance', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        ]
+      },
+
+      {
+        path: '', title: 'Expense', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/maps/google', title: 'New Expense Bill', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Expense Heads', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Expense Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        ]
+      },
+
+      {
+        path: '', title: 'Employee', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/maps/google', title: 'Salary Sheet', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Accounts Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Add Incentives', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Add Incentives', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Add Advance', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        ]
+      },
+      {
+        path: '', title: 'Maps', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/maps/google', title: 'Google Map', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Full Screen Map', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        ]
+      },
+      {
+        path: '', title: 'Cash On Delivery (COD)', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/maps/google', title: 'COD Invoice', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'COD Return', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'COD Recovery', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'COD Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        ]
+      },
+      {
+        path: '', title: 'General Dispensing', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+        ]
+      },
+
+    ]
+  },
+
+//Admin start from here
+{
+  path: '', title: 'Admin', icon: 'ft-grid', class: 'dropdown nav-item has-sub', isExternalLink: false,
+  submenu: [
+    {
+      path: '', title: 'MAster Product & Packing Defination', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+      submenu: [
+        { path: '/tables/basic', title: 'Raw Product Defination', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Product Defination', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Product Catagories', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Price Management', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Regions', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Products Dedication', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Product Dedication Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Vacant Product Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Combine Product Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Raw Meterial Forecasting', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Reminders', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Annual Events', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Product Bonus Slabs', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Customer Discounts By Product', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Product List', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Product List By Status', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Rate Checker', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'New Account', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Account Types', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Unit', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/extended', title: 'Salesman', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      ]
+    },
+    {
+      path: '', title: 'Employees', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+      submenu: [
+        { path: '/maps/google', title: 'Employees', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/maps/fullscreen', title: 'Empolyee Accounts', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/maps/fullscreen', title: 'Designations', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/maps/fullscreen', title: 'Empolyee List', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/maps/fullscreen', title: 'Salary Sheet', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/maps/fullscreen', title: 'Add Deduction', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/maps/fullscreen', title: 'Income Tax Slabs', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      ]
+    }
+  ]
+},
+
+// CEO
+{
+  path: '', title: 'CEO', icon: 'ft-grid', class: 'dropdown nav-item has-sub', isExternalLink: false,
+  submenu: [
+    {
+      path: '', title: 'Daily Report', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+      submenu: [
+        { path: '/tables/basic', title: 'Costing Slabs', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'Monthly Summary Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'Profit Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'Profit & Expense Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'Profit Report By Product', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'Capital Account', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'Balance Sheet', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'Stock Value Ledger', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'User List', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      ]
+    },
+  ]
+},
+
+//Requistion & Intimation
+{
+  path: '', title: 'Intimation and Requisitions', icon: 'ft-grid', class: 'dropdown nav-item has-sub', isExternalLink: false,
+  submenu: [
+    {
+      path: '', title: 'Intimation Documents', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+      submenu: [
+        { path: '/tables/basic', title: 'Requisitions', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      ]
+    },
+  ]
+},
+
+//Approvals
+{
+  path: '', title: 'Approvals', icon: 'ft-grid', class: 'dropdown nav-item has-sub', isExternalLink: false,
+  submenu: [
+    {
+      path: '', title: 'Purcahse Returns Approval', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+      submenu: [
+        { path: '/tables/basic', title: 'Recall Approval', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'Print Dispatch Approval Form', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'Product Amendtment Form', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'Invoice Approvals', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        { path: '/tables/basic', title: 'Invoice Retun Approvals', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      ]
+    },
+  ]
+},
+
+  //Assets
+
+  {
+    path: '', title: 'Assets', icon: 'ft-bar-chart-2', class: 'dropdown nav-item has-sub', isExternalLink: false,
+    submenu: [
+      {
+        path: '', title: 'General Assets', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/charts/chartjs', title: 'Assets List', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/charts/chartist', title: 'Assets Catagory', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        ]
+      },
+      {
+        path: '', title: 'Machinery & Equipments', icon: 'ft-arrow-right submenu-icon', class: 'has-sub', isExternalLink: false,
+        submenu: [
+          { path: '/maps/google', title: 'Machinary List', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Machinary Alerts', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+          { path: '/maps/fullscreen', title: 'Locations', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+        ]
+      }
+    ]
+  },
+];

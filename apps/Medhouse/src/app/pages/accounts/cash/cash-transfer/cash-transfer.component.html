@@ -1,0 +1,229 @@
+<div class="cash-transfer-container">
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title">Cash Transfer</h1>
+  </div>
+
+  <!-- Main Form -->
+  <div class="main-frame">
+    <form [formGroup]="cashTransferForm" (ngSubmit)="saveCashTransfer()">
+      
+      <!-- Date and Transaction Type Row -->
+      <div class="selection-row">
+        <div class="form-group">
+          <label class="form-label">Date:</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            formControlName="date"
+            [class.is-invalid]="hasError('date')"
+          />
+          <div class="invalid-feedback" *ngIf="hasError('date')">
+            {{ getErrorMessage('date') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Transaction Type:</label>
+          <ng-select 
+            formControlName="transactionTypeID"
+            placeholder="Select Transaction Type"
+            [clearable]="false"
+            [searchable]="true"
+            bindLabel="acctTypeName"
+            bindValue="acctTypeID"
+            [items]="transactionTypes"
+            [class.is-invalid]="hasError('transactionTypeID')"
+          >
+            <ng-option value="0">Select Transaction Type</ng-option>
+          </ng-select>
+          <div class="invalid-feedback" *ngIf="hasError('transactionTypeID')">
+            {{ getErrorMessage('transactionTypeID') }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Transfer Form Section -->
+      <div class="transfer-section">
+        <!-- From Account Section -->
+        <div class="account-section">
+          <div class="section-header">
+            <h3>From Account</h3>
+          </div>
+          
+          <div class="account-selection">
+            <label class="form-label">Select From Account:</label>
+            <ng-select 
+              formControlName="fromAccountID"
+              placeholder="Select From Account"
+              [clearable]="false"
+              [searchable]="true"
+              bindLabel="customerName"
+              bindValue="customerID"
+              [items]="getFromAccountOptions()"
+              [class.is-invalid]="hasError('fromAccountID')"
+            >
+              <ng-option value="0">Select From Account</ng-option>
+              <ng-option *ngFor="let account of getFromAccountOptions()" [value]="account.customerID">
+                {{ account.customerName }} - {{ formatCurrency(account.balance) }}
+              </ng-option>
+            </ng-select>
+            <div class="invalid-feedback" *ngIf="hasError('fromAccountID')">
+              {{ getErrorMessage('fromAccountID') }}
+            </div>
+          </div>
+
+          <!-- From Account Details -->
+          <div class="account-details" *ngIf="selectedFromAccount">
+            <div class="detail-row">
+              <div class="detail-group">
+                <label class="detail-label">City:</label>
+                <div class="detail-value">{{ selectedFromAccount.city }}</div>
+              </div>
+              <div class="detail-group">
+                <label class="detail-label">Current Balance:</label>
+                <div class="detail-value balance-value">{{ formatCurrency(selectedFromAccount.balance) }}</div>
+              </div>
+              <div class="detail-group">
+                <label class="detail-label">Balance After Transfer:</label>
+                <div class="detail-value balance-after" [class.negative]="getFromBalanceAfterTransfer() < 0">
+                  {{ formatCurrency(getFromBalanceAfterTransfer()) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- To Account Section -->
+        <div class="account-section">
+          <div class="section-header">
+            <h3>To Account</h3>
+          </div>
+          
+          <div class="account-selection">
+            <label class="form-label">Select To Account:</label>
+            <ng-select 
+              formControlName="toAccountID"
+              placeholder="Select To Account"
+              [clearable]="false"
+              [searchable]="true"
+              bindLabel="customerName"
+              bindValue="customerID"
+              [items]="getToAccountOptions()"
+              [class.is-invalid]="hasError('toAccountID')"
+            >
+              <ng-option value="0">Select To Account</ng-option>
+              <ng-option *ngFor="let account of getToAccountOptions()" [value]="account.customerID">
+                {{ account.customerName }} - {{ formatCurrency(account.balance) }}
+              </ng-option>
+            </ng-select>
+            <div class="invalid-feedback" *ngIf="hasError('toAccountID')">
+              {{ getErrorMessage('toAccountID') }}
+            </div>
+          </div>
+
+          <!-- To Account Details -->
+          <div class="account-details" *ngIf="selectedToAccount">
+            <div class="detail-row">
+              <div class="detail-group">
+                <label class="detail-label">City:</label>
+                <div class="detail-value">{{ selectedToAccount.city }}</div>
+              </div>
+              <div class="detail-group">
+                <label class="detail-label">Current Balance:</label>
+                <div class="detail-value balance-value">{{ formatCurrency(selectedToAccount.balance) }}</div>
+              </div>
+              <div class="detail-group">
+                <label class="detail-label">Balance After Transfer:</label>
+                <div class="detail-value balance-after positive">
+                  {{ formatCurrency(getToBalanceAfterTransfer()) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transaction Details -->
+      <div class="transaction-details">
+        <div class="transaction-row">
+          <div class="form-group">
+            <label class="form-label">Description:</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              formControlName="description"
+              placeholder="Enter transfer description"
+              [class.is-invalid]="hasError('description')"
+            />
+            <div class="invalid-feedback" *ngIf="hasError('description')">
+              {{ getErrorMessage('description') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Transfer Amount:</label>
+            <input 
+              type="number" 
+              class="form-control amount-input" 
+              formControlName="amount"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              [class.is-invalid]="hasError('amount') || isInsufficientBalance()"
+            />
+            <div class="invalid-feedback" *ngIf="hasError('amount')">
+              {{ getErrorMessage('amount') }}
+            </div>
+            <div class="invalid-feedback" *ngIf="isInsufficientBalance()">
+              Insufficient balance in the From Account
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Validation Alerts -->
+  <div class="alert alert-warning" *ngIf="isSameAccountSelected()">
+    <i class="fa fa-exclamation-triangle"></i>
+    <strong>Warning:</strong> From Account and To Account cannot be the same.
+  </div>
+
+  <div class="alert alert-danger" *ngIf="isInsufficientBalance() && selectedFromAccount">
+    <i class="fa fa-exclamation-triangle"></i>
+    <strong>Error:</strong> Insufficient balance in the From Account. Available balance: {{ formatCurrency(selectedFromAccount.balance) }}
+  </div>
+
+  <!-- Separator -->
+  <div class="separator"></div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button 
+      type="button" 
+      class="btn btn-primary action-btn"
+      (click)="saveCashTransfer()"
+      [disabled]="!isFormValid() || isSubmitting || isSameAccountSelected() || isInsufficientBalance()"
+    >
+      <i class="fa fa-check"></i> OK
+    </button>
+
+    <button 
+      type="button" 
+      class="btn btn-secondary action-btn"
+      (click)="cancel()"
+      [disabled]="isSubmitting"
+    >
+      <i class="fa fa-times"></i> Cancel
+    </button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading-overlay" *ngIf="isLoading || isSubmitting">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,234 @@
+<div class="recovery-container">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h2 class="page-title">
+          <i class="fas fa-chart-bar me-2"></i>
+          Recovery by Division
+        </h2>
+        <p class="page-description text-muted">
+          Track and manage cash recovery operations across business divisions
+        </p>
+      </div>
+      <div class="col-md-6 text-end">
+        <div class="total-amount-display">
+          <h4 class="mb-0">
+            Total Recovered: {{ totalRecovered | currency:'USD':'symbol':'1.2-2' }}
+          </h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-card">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-filter me-2"></i>
+          Filter Options
+        </h5>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="filterForm" class="row g-3">
+          <div class="col-md-3">
+            <label for="fromDate" class="form-label">
+              <i class="fas fa-calendar-alt me-1"></i>
+              From Date
+            </label>
+            <input
+              type="date"
+              id="fromDate"
+              class="form-control"
+              formControlName="fromDate"
+              [class.is-invalid]="isFieldInvalid('fromDate')">
+            <div *ngIf="isFieldInvalid('fromDate')" class="invalid-feedback">
+              {{ getFieldError('fromDate') }}
+            </div>
+          </div>
+          
+          <div class="col-md-3">
+            <label for="toDate" class="form-label">
+              <i class="fas fa-calendar-alt me-1"></i>
+              To Date
+            </label>
+            <input
+              type="date"
+              id="toDate"
+              class="form-control"
+              formControlName="toDate"
+              [class.is-invalid]="isFieldInvalid('toDate')">
+            <div *ngIf="isFieldInvalid('toDate')" class="invalid-feedback">
+              {{ getFieldError('toDate') }}
+            </div>
+          </div>
+          
+          <div class="col-md-3">
+            <label for="businessID" class="form-label">
+              <i class="fas fa-building me-1"></i>
+              Business
+            </label>
+            <ng-select
+              id="businessID"
+              formControlName="businessID"
+              [items]="businesses"
+              bindLabel="businessName"
+              bindValue="businessID"
+              placeholder="Select Business"
+              [clearable]="false"
+              class="custom-ng-select">
+            </ng-select>
+          </div>
+          
+          <div class="col-md-3">
+            <label for="divisionID" class="form-label">
+              <i class="fas fa-sitemap me-1"></i>
+              Division
+            </label>
+            <ng-select
+              id="divisionID"
+              formControlName="divisionID"
+              [items]="filteredDivisions"
+              bindLabel="divisionName"
+              bindValue="divisionID"
+              placeholder="Select Division"
+              [clearable]="false"
+              class="custom-ng-select">
+            </ng-select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <div class="row">
+      <div class="col-12">
+        <div class="btn-group" role="group">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="refreshData()"
+            [disabled]="!filterForm.valid || isLoading">
+            <i class="fas fa-sync-alt me-2"></i>
+            {{ isLoading ? 'Loading...' : 'Refresh Data' }}
+          </button>
+          
+          <button
+            type="button"
+            class="btn btn-warning"
+            (click)="openExcludeConfirmModal()"
+            [disabled]="!selectedRecoveryEntry">
+            <i class="fas fa-minus-circle me-2"></i>
+            Exclude from Recovery
+          </button>
+          
+          <button
+            type="button"
+            class="btn btn-info"
+            (click)="printReport()"
+            [disabled]="!filterForm.valid">
+            <i class="fas fa-print me-2"></i>
+            Print Report
+          </button>
+          
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="exportToCSV()"
+            [disabled]="!filterForm.valid">
+            <i class="fas fa-file-csv me-2"></i>
+            Export CSV
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Grid Section -->
+  <div class="data-grid-card">
+    <div class="card">
+      <div class="card-header bg-light">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-table me-2"></i>
+              Recovery Entries
+            </h5>
+          </div>
+          <div class="col-md-6 text-end">
+            <span class="badge bg-secondary">
+              Total Entries: {{ recoveryData.count() || 0 }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <ng2-smart-table
+            [settings]="tableSettings"
+            [source]="recoveryData"
+            (rowSelect)="onRowSelect($event)"
+            class="recovery-table">
+          </ng2-smart-table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
+
+<!-- Exclude from Recovery Confirmation Modal -->
+<ng-template #confirmExcludeModal let-modal>
+  <div class="modal-header bg-warning text-dark">
+    <h4 class="modal-title">
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      Exclude from Recovery
+    </h4>
+    <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+  </div>
+  
+  <div class="modal-body">
+    <div class="text-center">
+      <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+      <h5 class="mt-3">Are you sure you want to exclude this entry from recovery?</h5>
+      <p class="text-muted">This action will remove the entry from active recovery tracking.</p>
+      
+      <div *ngIf="selectedRecoveryEntry" class="alert alert-info">
+        <strong>Entry Details:</strong><br>
+        Date: {{ selectedRecoveryEntry.Date | date:'shortDate' }}<br>
+        Customer: {{ selectedRecoveryEntry.CustomerName }}<br>
+        Amount: {{ selectedRecoveryEntry.AmountReceived | currency:'USD':'symbol':'1.2-2' }}<br>
+        Description: {{ selectedRecoveryEntry.Description }}
+      </div>
+      
+      <div class="alert alert-warning">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Note:</strong> This action will change the status and exclude the entry from future recovery reports.
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+      <i class="fas fa-times me-2"></i>
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="btn btn-warning"
+      (click)="confirmExcludeFromRecovery()"
+      [disabled]="isLoading">
+      <i class="fas fa-minus-circle me-2"></i>
+      {{ isLoading ? 'Excluding...' : 'Exclude from Recovery' }}
+    </button>
+  </div>
+</ng-template>

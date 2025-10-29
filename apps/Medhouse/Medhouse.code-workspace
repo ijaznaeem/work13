@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../../Work/MianRohail/MedHouse/Source-SQL"
+		}
+	],
+	"settings": {
+		"nxConsole.generateAiAgentRules": true,
+		"powershell.cwd": "Medhouse"
+	}
+}

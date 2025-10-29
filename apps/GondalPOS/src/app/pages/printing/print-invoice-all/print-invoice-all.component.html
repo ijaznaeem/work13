@@ -1,0 +1,53 @@
+<div id="print-section">
+  <div class="container">
+    <div [ngClass]="{'invoice': i < Invoices.length}" *ngFor="let Invoice of Invoices; let i=index">
+      <div>
+        <app-warranty-invoice [Invoice]="Invoice" *ngIf="prtType === '1'">
+        </app-warranty-invoice>
+      </div>
+      <div>
+        <app-pvrintcashinoice
+          [Invoice]="Invoice"
+          *ngIf="prtType === '2'"
+        ></app-pvrintcashinoice>
+      </div>
+    </div>
+  </div>
+</div>
+<section class="buttonarea">
+  <div>
+    <label class="radio-inline">
+      <input
+        type="radio"
+        name="optradio"
+        checked
+        value="1"
+        [(ngModel)]="prtType"
+      />
+      Laser Printer
+    </label>
+    <label class="radio-inline">
+      <input
+        type="radio"
+        name="optradio"
+        value="2"
+        [(ngModel)]="prtType"
+      />Thermal
+    </label>
+    <input type="button" value="Print" (click)="Print()" />
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <button
+          class="btn btn-primary"
+          printSectionId="print-section"
+          type="button"
+          (click)="Print()"
+        >
+          <i class="fa fa-print"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

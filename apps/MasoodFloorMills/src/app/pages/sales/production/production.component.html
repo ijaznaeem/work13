@@ -1,0 +1,288 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Grinding of Wheat</h5>
+  </div>
+  <div class="card-block widget-body">
+    <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+      <div class="row no-pad">
+        <div class="col-md-2">
+          <label for="dp1">Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dp1"
+              [(ngModel)]="production.Date"
+              ngbDatepicker
+              disabled
+              #d1="ngbDatepicker"
+            />
+
+            <div class="input-group-append">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="d1.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="rawprodutc"
+            >Raw Stock <span class="text-right"><strong> </strong> </span
+          ></label>
+
+          <ejs-combobox
+            name="rawprodutc"
+            id="rawprodutc"
+            [dataSource]="RawStock"
+            [fields]="{ value: 'ProductID', text: 'ProductName' }"
+            [allowFiltering]="true"
+            (filtering)="onFiltering($event, 'RawProducts')"
+            [(ngModel)]="production.ProductID"
+            (change)="RawStockSelected($event)"
+            required
+          >
+            <ng-template #itemTemplate="" let-data="">
+              <div class="row no-gutter">
+                <div class="col-md-9">
+                  {{ data.ProductName }}
+                </div>
+
+                <div class="col-md-3">
+                  <small>
+                    {{ data.Stock }}
+                  </small>
+                </div>
+              </div>
+            </ng-template>
+          </ejs-combobox>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="rawpacking">Packing:</label>
+            <input
+              type="number"
+              class="form-control dation-field"
+              required="required"
+              id="rawpacking"
+              name="rawpacking"
+              [(ngModel)]="production.Packing"
+            />
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="qty">Qty (Bags):</label>
+            <input
+              type="number"
+              class="form-control dation-field"
+              required="required"
+              id="rawqty"
+              name="rawqty"
+              [(ngModel)]="production.Qty"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="totkgs">Total Kgs:</label>
+            <input
+              type="number"
+              class="form-control dation-field"
+              required="required"
+              id="totkgs"
+              name="totkgs"
+              disabled
+              [value]="production.Qty * production.Packing"
+            />
+          </div>
+        </div>
+      </div>
+      <form #formqty="ngForm">
+        <div class="row no-gutter">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="supplier">Select Output Product:</label>
+              <ejs-combobox
+                [allowFiltering]="true"
+                name="prods"
+                id="prods"
+                #cmbProd
+                [dataSource]="Prods"
+                (filtering)="onFiltering($event, 'ProductName')"
+                [fields]="{ text: 'ProductName', value: 'ProductID' }"
+                placeholder="Select Item..."
+                required="required"
+                [(ngModel)]="pdetails.ProductID"
+                (change)="ProductSelected($event)"
+              >
+              </ejs-combobox>
+            </div>
+          </div>
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="qty">Bags:</label>
+              <input
+                type="number"
+                class="form-control dation-field"
+                required="required"
+                id="qty"
+                name="qty"
+                [(ngModel)]="pdetails.Qty"
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="supplier">Weight:</label>
+              <input
+                type="number"
+                class="form-control"
+                id="packing"
+                name="packing"
+                [(ngModel)]="pdetails.Packing"
+                placeholder="0"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-primary form-control"
+                [disabled]="!formqty.form.valid"
+                (click)="AddOrder()"
+                accesskey="a"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div style="margin: 5px">
+        <div class="row no-gutter">
+          <div class="col-md-6">
+            <h5 class="mb-3">Production Details</h5>
+            <div class="table-responsive table-bordered table-condensed">
+              <ng2-smart-table
+                class="table table-hover"
+                [settings]="settings"
+                [source]="data"
+                (deleteConfirm)="onDeleteConfirm($event)"
+                (editConfirm)="onEdit($event)"
+              >
+              </ng2-smart-table>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row no-gutter">
+              <div class="col-md-12">
+                <h5 class="mb-3">Output Total and Percentage</h5>
+                <table class="table table-sm table-light">
+                  <tbody>
+                    <tr>
+                      <th>Item</th>
+                      <th>Weight</th>
+                      <th>%Age</th>
+                    </tr>
+                    <tr *ngFor="let item of OutputByCategoy">
+                      <td>{{ item.CategoryName }}</td>
+                      <td>{{ item.TotalWeight }}</td>
+                      <td>
+                        {{
+                          Round2(
+                            (item.TotalWeight /
+                              (production.Qty * production.Packing)) *
+                              100
+                          )
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Total Output</th>
+                      <th>{{ Sum(OutputByCategoy, 'TotalWeight') }}</th>
+                      <th>{{ SumP(OutputByCategoy, 'TotalWeight') }}</th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <h5 class="mb-3">Grand Totals</h5>
+
+            <div class="row no-gutter">
+              <div class="col-md-4">
+                <label for="">Total Grinding Weight</label>
+                <input
+                  class="form-control"
+                  type="number"
+                  name="totalweight"
+                  [value]="production.Qty * production.Packing"
+                  readonly
+                />
+              </div>
+              <div class="col-md-4">
+                <label for="">Total Output Weight</label>
+                <input
+                  class="form-control"
+                  type="number"
+                  name="totalweight"
+                  [value]="production.TotalWeight"
+                  readonly
+                />
+              </div>
+              <!-- <div class="col-md-4">
+                <label for="">Gain Percentage</label>
+                <input
+                  class="form-control"
+                  type="number"
+                  name="totalweight"
+                  [value]="Round2(production.TotalWeight/(production.Qty * production.Packing) * 100)"
+                  readonly
+                />
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row no-gutter">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="dp2">&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-primary form-control"
+              [disabled]="!fromPurchase.form.valid || data.count() == 0"
+              (click)="SaveData()"
+              accesskey="s"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="dp2">&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-danger form-control"
+              (click)="Cancel()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

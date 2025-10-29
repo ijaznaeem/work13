@@ -1,0 +1,191 @@
+<div class="modal-header">
+  <h4 class="modal-title">Upload Recall Images</h4>
+</div>
+
+<div class="modal-body">
+  <div class="container-fluid">
+    <!-- Upload Area -->
+    <div class="row">
+      <div class="col-12">
+        <div class="upload-area"
+             (dragover)="onDragOver($event)"
+             (drop)="onDrop($event)"
+             (click)="openFileBrowser()">
+          <div class="upload-content">
+            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+            <h5>Drag & Drop Images Here</h5>
+            <p>or <strong>click to browse</strong></p>
+            <small class="text-muted">
+              Supported formats: JPEG, PNG, GIF, BMP (Max 5MB each)
+            </small>
+          </div>
+          <input
+            #fileInput
+            type="file"
+            multiple
+            accept="image/*"
+            (change)="onFileSelect($event)"
+            style="display: none;"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Global Description -->
+    <div class="row" *ngIf="uploadedImages.length > 0">
+      <div class="col-12">
+        <form [formGroup]="imageForm">
+          <div class="form-group">
+            <label for="description">Global Description (applies to all selected images):</label>
+            <input
+              type="text"
+              id="description"
+              class="form-control form-control-sm"
+              formControlName="description"
+              placeholder="Enter description for images..."
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Images Preview -->
+    <div class="row" *ngIf="uploadedImages.length > 0">
+      <div class="col-12">
+        <div class="images-header">
+          <h5>
+            <i class="fas fa-images"></i> 
+            Uploaded Images ({{ uploadedImages.length }})
+            <small class="text-muted">- {{ getSelectedCount() }} selected</small>
+          </h5>
+          <div class="selection-controls">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary"
+              (click)="selectAllImages()"
+            >
+              Select All
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary"
+              (click)="deselectAllImages()"
+            >
+              Deselect All
+            </button>
+          </div>
+        </div>
+
+        <div class="images-grid">
+          <div
+            *ngFor="let image of uploadedImages; let i = index"
+            class="image-item"
+            [class.selected]="image.selected"
+            [class.invalid]="!isImageValid(image)"
+          >
+            <!-- Selection Checkbox -->
+            <div class="image-checkbox">
+              <input
+                type="checkbox"
+                [checked]="image.selected"
+                (change)="toggleImageSelection(i)"
+                [disabled]="!isImageValid(image)"
+              />
+            </div>
+
+            <!-- Image Preview -->
+            <div class="image-preview">
+              <img [src]="image.preview" [alt]="image.file.name" />
+              <div class="image-overlay">
+                <button
+                  type="button"
+                  class="btn btn-danger btn-sm"
+                  (click)="removeImage(i)"
+                  title="Remove Image"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Image Info -->
+            <div class="image-info">
+              <div class="image-name" [title]="image.file.name">
+                {{ image.file.name }}
+              </div>
+              <div class="image-meta">
+                <span class="image-size">{{ image.size }}</span>
+                <span class="image-type">{{ image.type.split('/')[1].toUpperCase() }}</span>
+              </div>
+              
+              <!-- Validation Error -->
+              <div *ngIf="!isImageValid(image)" class="image-error">
+                <small class="text-danger">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  {{ getImageValidationError(image) }}
+                </small>
+              </div>
+
+              <!-- Individual Description -->
+              <div class="image-description">
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  placeholder="Individual description..."
+                  [value]="image.description"
+                  (input)="updateImageDescription(i, $any($event.target).value)"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Images Message -->
+    <div *ngIf="uploadedImages.length === 0" class="row">
+      <div class="col-12">
+        <div class="alert alert-info text-center">
+          <i class="fas fa-info-circle"></i>
+          No images selected yet. Please upload images using the area above.
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Guidelines -->
+    <div class="row">
+      <div class="col-12">
+        <div class="alert alert-light guidelines">
+          <h6><i class="fas fa-info-circle"></i> Upload Guidelines:</h6>
+          <ul>
+            <li>Maximum file size: 5MB per image</li>
+            <li>Supported formats: JPEG, PNG, GIF, BMP</li>
+            <li>You can upload multiple images at once</li>
+            <li>Each image can have its own description</li>
+            <li>Only selected images will be uploaded</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="onCancel()"
+    [disabled]="uploadingImages"
+  >
+    Cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="onSave()"
+    [disabled]="getSelectedCount() === 0 || uploadingImages"
+  >
+    <span *ngIf="uploadingImages" class="spinner-border spinner-border-sm" role="status"></span>
+    {{ uploadingImages ? 'Uploading...' : 'Upload ' + getSelectedCount() + ' Image(s)' }}
+  </button>
+</div>

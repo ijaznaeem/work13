@@ -1,0 +1,26 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Add Donation</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div class="row no-pad" id="print-section">
+          <div class="col-md-12">
+            <app-crud-form
+              [Form]="form"
+              [formdata]="data"
+              (BeforeSave)="onBeforeSave($event)"
+              (DataSaved)="onDataSaved($event)"
+              (ItemChanged)="onChanged($event)"
+            >
+            </app-crud-form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

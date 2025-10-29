@@ -1,0 +1,222 @@
+<!-- Invoice Approvals Component - Cloned from VB6 frmInvoiceApprovals -->
+<div class="invoice-approvals-container">
+  
+  <!-- Header Section with Title and Filters -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h4 class="text-success mb-2">Invoice Approvals</h4>
+          <small class="text-danger">Double click to add remarks</small>
+        </div>
+        <div class="col-md-6">
+          <form [formGroup]="filterForm" class="row g-2">
+            <div class="col-md-4">
+              <label class="form-label text-success">From Date:</label>
+              <input 
+                type="date" 
+                class="form-control form-control-sm"
+                formControlName="dateFrom"
+                (change)="loadInvoiceApprovals()">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-success">To Date:</label>
+              <input 
+                type="date" 
+                class="form-control form-control-sm"
+                formControlName="dateTo"
+                (change)="loadInvoiceApprovals()">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-primary">Select Status:</label>
+              <select 
+                class="form-select form-select-sm"
+                formControlName="status"
+                (change)="onStatusChange()">
+                <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="row">
+    
+    <!-- Left Panel - Data Grids -->
+    <div class="col-md-8">
+      
+      <!-- Main Invoice Approvals Grid -->
+      <div class="card mb-3">
+        <div class="card-header">
+          <h6 class="mb-0">Invoice Approvals</h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+            <table class="table table-sm table-hover mb-0">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th>Date</th>
+                  <th>Customer Name</th>
+                  <th>Address</th>
+                  <th>Amount</th>
+                  <th>Discount</th>
+                  <th>Net Amount</th>
+                  <th>Forwarded To</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr 
+                  *ngFor="let approval of invoiceApprovals; trackBy: trackByApprovalId"
+                  [class.table-active]="selectedApproval?.InvoiceApprovalID === approval.InvoiceApprovalID"
+                  (click)="onApprovalSelectionChange(approval)"
+                  style="cursor: pointer;">
+                  <td>{{ formatDate(approval.Date) }}</td>
+                  <td>{{ approval.CustomerName }}</td>
+                  <td>{{ approval.Address }}</td>
+                  <td class="text-end">{{ formatCurrency(approval.Amount) }}</td>
+                  <td class="text-end">{{ formatCurrency(approval.Discount) }}</td>
+                  <td class="text-end">{{ formatCurrency(approval.NetAmount) }}</td>
+                  <td>{{ approval.ForwardedDept || '-' }}</td>
+                  <td>
+                    <span [class]="getStatusBadgeClass(approval.Status)">
+                      {{ approval.Status }}
+                    </span>
+                  </td>
+                </tr>
+                <tr *ngIf="invoiceApprovals.length === 0">
+                  <td colspan="8" class="text-center text-muted py-3">
+                    <div *ngIf="loading">
+                      <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                      Loading invoice approvals...
+                    </div>
+                    <div *ngIf="!loading">No invoice approvals found</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoice Approval Details Grid -->
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">Invoice Details</h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+            <table class="table table-sm mb-0">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th>Product Name</th>
+                  <th>Qty</th>
+                  <th>Bonus</th>
+                  <th>Sale Price</th>
+                  <th>Amount</th>
+                  <th>Discount</th>
+                  <th>Net Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detail of invoiceApprovalDetails; trackBy: trackByDetailId">
+                  <td>{{ detail.ProductName }}</td>
+                  <td class="text-end">{{ detail.Qty }}</td>
+                  <td class="text-end">{{ detail.Bonus }}</td>
+                  <td class="text-end">{{ formatCurrency(detail.SPrice) }}</td>
+                  <td class="text-end">{{ formatCurrency(detail.Amount) }}</td>
+                  <td class="text-end">{{ formatCurrency(detail.Discount) }}</td>
+                  <td class="text-end">{{ formatCurrency(detail.NetAmount) }}</td>
+                </tr>
+                <tr *ngIf="invoiceApprovalDetails.length === 0">
+                  <td colspan="7" class="text-center text-muted py-3">
+                    {{ selectedApproval ? 'No details found for selected approval' : 'Select an approval to view details' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel - Remarks -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">Remarks</h6>
+        </div>
+        <div class="card-body">
+          <textarea 
+            class="form-control" 
+            rows="20"
+            [value]="selectedRemarks"
+            readonly
+            placeholder="Select an approval to view remarks...">
+          </textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="card mt-3">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-12 d-flex flex-wrap gap-2">
+          
+          <!-- Add Approval Button -->
+          <button 
+            type="button" 
+            class="btn btn-primary btn-sm"
+            (click)="addApproval()">
+            <i class="fas fa-plus me-1"></i>
+            Add Approval
+          </button>
+
+          <!-- Forward Button -->
+          <button 
+            type="button" 
+            class="btn btn-info btn-sm"
+            [disabled]="!selectedApproval || !canForward"
+            (click)="forwardApproval()">
+            <i class="fas fa-share me-1"></i>
+            Forward
+          </button>
+
+          <!-- Reject Button -->
+          <button 
+            type="button" 
+            class="btn btn-danger btn-sm"
+            [disabled]="!selectedApproval || !canReject"
+            (click)="rejectApproval()">
+            <i class="fas fa-times me-1"></i>
+            Reject
+          </button>
+
+          <!-- Print Button -->
+          <button 
+            type="button" 
+            class="btn btn-secondary btn-sm"
+            [disabled]="!selectedApproval"
+            (click)="printApproval()">
+            <i class="fas fa-print me-1"></i>
+            Print
+          </button>
+
+          <!-- Exit/Close Button -->
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary btn-sm ms-auto">
+            <i class="fas fa-times me-1"></i>
+            Exit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

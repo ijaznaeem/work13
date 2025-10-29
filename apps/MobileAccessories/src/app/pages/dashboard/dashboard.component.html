@@ -1,0 +1,176 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h2 class="dashboard-title">Mobile Accessories Dashboard</h2>
+    <p class="dashboard-subtitle">Manage your business operations with quick access to essential functions</p>
+  </div>
+
+  <!-- Quick Actions Grid -->
+  <div class="action-cards-grid">
+    <!-- Orders Section -->
+    <div class="card action-card orders-section" routerLink="/tasks/add-order">
+      <div class="card-body">
+        <div class="icon-wrapper orders-icon">
+          <i class="fas fa-plus-circle"></i>
+        </div>
+        <h4 class="card-title">Add New Order</h4>
+        <p class="card-text">Create a new customer order quickly</p>
+        <div class="card-badge">Orders</div>
+      </div>
+      <div class="card-footer">
+        <span class="action-text">Click to add order</span>
+        <i class="fas fa-arrow-right"></i>
+      </div>
+    </div>
+
+    <div class="card action-card orders-list" routerLink="/tasks/orders-list">
+      <div class="card-body">
+        <div class="icon-wrapper orders-list-icon">
+          <i class="fas fa-list-alt"></i>
+        </div>
+        <h4 class="card-title">Orders List</h4>
+        <p class="card-text">View and manage all customer orders</p>
+        <div class="card-badge">Management</div>
+      </div>
+      <div class="card-footer">
+        <span class="action-text">View orders</span>
+        <i class="fas fa-arrow-right"></i>
+      </div>
+    </div>
+
+    <!-- Invoices Section -->
+    <div class="card action-card invoices" routerLink="/tasks/invoices-list">
+      <div class="card-body">
+        <div class="icon-wrapper invoices-icon">
+          <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <h4 class="card-title">Invoices List</h4>
+        <p class="card-text">Manage customer invoices and billing</p>
+        <div class="card-badge">Finance</div>
+      </div>
+      <div class="card-footer">
+        <span class="action-text">Manage invoices</span>
+        <i class="fas fa-arrow-right"></i>
+      </div>
+    </div>
+
+    <div class="card action-card vouchers" routerLink="/cash/cashpayment">
+      <div class="card-body">
+        <div class="icon-wrapper vouchers-icon">
+          <i class="fas fa-receipt"></i>
+        </div>
+        <h4 class="card-title">Cash Paid</h4>
+        <p class="card-text">Handle payment vouchers</p>
+        <div class="card-badge">Payments</div>
+      </div>
+      <div class="card-footer">
+        <span class="action-text">Add Payments</span>
+        <i class="fas fa-arrow-right"></i>
+      </div>
+    </div>
+    <div class="card action-card vouchers" routerLink="/cash/cashreceipt">
+      <div class="card-body">
+        <div class="icon-wrapper vouchers-icon">
+          <i class="fas fa-receipt"></i>
+        </div>
+        <h4 class="card-title">Cash Receipt</h4>
+        <p class="card-text">Handle receipt vouchers</p>
+        <div class="card-badge">Receipt</div>
+      </div>
+      <div class="card-footer">
+        <span class="action-text">Add Receipt</span>
+        <i class="fas fa-arrow-right"></i>
+      </div>
+    </div>
+
+    <!-- Customers Section -->
+
+
+    <div class="card action-card customers-list" routerLink="/tasks/customers">
+      <div class="card-body">
+        <div class="icon-wrapper customers-list-icon">
+          <i class="fas fa-address-book"></i>
+        </div>
+        <h4 class="card-title">Customer List</h4>
+        <p class="card-text">Browse and manage customer database</p>
+        <div class="card-badge">Customers</div>
+      </div>
+      <div class="card-footer">
+        <span class="action-text">View customers</span>
+        <i class="fas fa-arrow-right"></i>
+      </div>
+    </div>
+
+    <div class="card action-card customer-accounts" routerLink="/tasks/customer-accts">
+      <div class="card-body">
+        <div class="icon-wrapper accounts-icon">
+          <i class="fas fa-credit-card"></i>
+        </div>
+        <h4 class="card-title">Customer Accounts</h4>
+        <p class="card-text">Manage customer account balances</p>
+        <div class="card-badge">Accounts</div>
+      </div>
+      <div class="card-footer">
+        <span class="action-text"> accounts statement</span>
+        <i class="fas fa-arrow-right"></i>
+      </div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="card action-card products" routerLink="/tasks/products">
+      <div class="card-body">
+        <div class="icon-wrapper products-icon">
+          <i class="fas fa-mobile-alt"></i>
+        </div>
+        <h4 class="card-title">Products Catalog</h4>
+        <p class="card-text">Manage mobile accessories inventory</p>
+        <div class="card-badge">Inventory</div>
+      </div>
+      <div class="card-footer">
+        <span class="action-text">View products</span>
+        <i class="fas fa-arrow-right"></i>
+      </div>
+    </div>
+
+
+
+    <!-- Admin Section -->
+
+  </div>
+
+  <!-- Recent Activities -->
+  <div class="recent-activities-section">
+    <div class="card recent-activities-card">
+      <div class="card-header">
+        <h3 class="section-title">
+          <i class="fas fa-clock text-info"></i>
+          Recent Activities
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="activity-list" *ngIf="recentActivities.length > 0">
+          <div class="activity-item" *ngFor="let activity of recentActivities">
+            <div class="activity-icon" [ngClass]="activity.type">
+              <i class="fas" [ngClass]="'fa-' + activity.icon"></i>
+            </div>
+            <div class="activity-content">
+              <div class="activity-text">{{ activity.message }}</div>
+              <div class="activity-meta">
+                <span class="activity-time">{{ activity.timeAgo }}</span>
+                <span class="activity-amount" *ngIf="activity.amount">
+                  €{{ activity.amount | number:'1.2-2' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="activity-loading" *ngIf="recentActivities.length === 0">
+          <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin text-primary"></i>
+            <p class="loading-text">Loading recent activities...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

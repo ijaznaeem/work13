@@ -1,0 +1,11 @@
+@media print {
+  .buttonarea {
+    visibility: hidden;
+  }
+
+  .invoice {
+    page-break-after: always;
+  }
+
+
+}

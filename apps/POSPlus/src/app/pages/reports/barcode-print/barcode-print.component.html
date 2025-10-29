@@ -1,0 +1,193 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Print Barcodes</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="row no-gutter p-3">
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>&nbsp; </label>
+          <div class="checkbox checkbox-danger">
+            <input
+              type="checkbox"
+              id="CompanyName"
+              name="CompanyName"
+              [(ngModel)]="Options.CompanyName"
+            />
+            <label for="CompanyName"><span>Print Company Name</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>&nbsp; </label>
+          <div class="checkbox checkbox-danger">
+            <input
+              type="checkbox"
+              id="ProductName"
+              name="ProductName"
+              [(ngModel)]="Options.ProductName"
+            />
+            <label for="ProductName"><span>Print Product Name</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>&nbsp; </label>
+          <div class="checkbox checkbox-danger">
+            <input
+              type="checkbox"
+              id="PrintPrice"
+              name="PrintPrice"
+              [(ngModel)]="Options.Price"
+            />
+            <label for="PrintPrice"><span>Print Price</span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <form #frmFilter="ngForm">
+      <div class="row no-gutter p-3">
+        <div class="col-md-2">
+          <label for="dp2">Barcode:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="00000000"
+              name="pcode"
+              [(ngModel)]="selectedProduct.PCode"
+              (keydown.f2)="Search()"
+
+              (keydown.enter)="Find()"
+              #Barcode
+            />
+
+            <div class="input-group-append">
+              <button type="button" class="btn btn-primary" (click)="Search()">
+                <i class="fa fa-search"></i>
+                F2
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="supplier">Product:</label>
+            <p>
+              <strong>{{ selectedProduct.ProductName }}</strong>
+            </p>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="supplier">Stock:</label>
+            <p>
+              <strong>{{ selectedProduct.Stock }}</strong>
+            </p>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="supplier">Stock:</label>
+            <p>
+              <strong>{{ selectedProduct.SPrice }}</strong>
+            </p>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="qty">Qty:</label>
+            <input
+              type="number"
+              #qty
+              class="form-control validation-field"
+
+              id="qty"
+              name="qty"
+              [(ngModel)]="selectedProduct.Qty"
+              placeholder="0"
+              required
+            />
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="qty">Weight:</label>
+            <input
+              type="text"
+              #weight
+              class="form-control"
+
+              id="weight"
+              name="weight"
+              [(ngModel)]="selectedProduct.Weight"
+              placeholder="0"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submitt"
+              class="btn btn-primary form-control"
+              [disabled]="!frmFilter.form.valid"
+              (click)="AddData()"
+              accesskey="a"
+            ><i class="fa fa-plus"></i>
+              Add
+            </button>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submitt"
+              class="btn btn-warning form-control"
+              [disabled]="data.length==0"
+              (click)="PrintBarcode()"
+              accesskey="a"
+            ><i class="fa fa-print"></i>
+              Print
+            </button>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submitt"
+              class="btn btn-danger form-control"
+              [disabled]="data.length==0"
+              (click)="DeleteAll()"
+              accesskey="a"
+            ><i class="fa fa-trash"></i>
+              Delete All
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="row">
+      <div class="col-md-12">
+        <div id="elemEmb"></div>
+      </div>
+    </div>
+    <div class="row" id="print-section">
+
+      <div class="col-md-12">
+        <ft-dynamic-table
+          [Settings]="setting"
+          [Data]="data"
+          (ClickAction)="Clicked($event)"
+
+        ></ft-dynamic-table>
+      </div>
+    </div>
+  </div>
+</div>

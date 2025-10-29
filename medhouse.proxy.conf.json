@@ -1,0 +1,11 @@
+{
+  "/apis/*": {
+    "target": "http://localhost/medhouse/",
+    "secure": false,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/apis": ""
+    },
+    "changeOrigin": true
+  }
+}

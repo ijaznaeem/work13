@@ -1,0 +1,135 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Add Stock Audit</h5>
+  </div>
+  <div class="card-block widget-body">
+    <form #frmFilter="ngForm">
+      <div class="row no-pad">
+        <div class="col-md-2">
+          <label for="dp1">Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dp1"
+              [(ngModel)]="Audit.Date"
+              ngbDatepicker
+              disabled
+              #d1="ngbDatepicker"
+            />
+
+            <div class="input-group-append">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="d1.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-1">
+          <ft-stores
+            name="Stores"
+            [caption]="'Select Store'"
+            [(ngModel)]="Audit.StoreID"
+            [addlabel]="true"
+            (change)="StoreSelected()"
+          ></ft-stores>
+        </div>
+
+        <div class="form-group col-md-2">
+          <label for="customer">Select Product</label>
+          <ng-select
+            #cmbItem
+            name="cmbItem"
+            id="cmbItem"
+            class="custom"
+            [items]="Stock"
+            [virtualScroll]="true"
+            bindLabel="ProductName"
+            bindValue="ProductID"
+            [clearable]="true"
+            placeholder="Select Item..."
+            [(ngModel)]="Audit.ProductID"
+            (change)="RawSelected($event)"
+            required
+          >
+          </ng-select>
+        </div>
+        <div class="form-group col-md-1">
+          <label for="customer">Old Qty</label>
+          <input
+            class="form-control"
+            name="oldqty"
+            type="number"
+            disabled
+            [(ngModel)]="Audit.OldQty"
+          />
+        </div>
+        <div class="form-group col-md-1">
+          <label for="customer">New Qty</label>
+          <input
+            class="form-control"
+            name="newQty"
+            type="number"
+            [(ngModel)]="Audit.NewQty"
+            required
+          />
+        </div>
+
+        <div class="form-group col-md-2">
+          <label for="Remarks">Remarks</label>
+          <input
+            class="form-control"
+            name="Remarks"
+            type="text"
+            [(ngModel)]="Audit.Remarks"
+          />
+        </div>
+
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              (click)="AddData()"
+              [disabled]="!frmFilter.valid"
+              accesskey="a"
+            >
+              <i class="fa fa-plus"></i>
+              Add
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-warning form-control"
+              (click)="PostAudit()"
+              accesskey="P"
+              [disabled]="!Audit.StoreID"
+            >
+              <i class="fa fa-check"></i>
+              Post Audit
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="row no-gutter" id="print-section">
+      <div class="col-md-12">
+        <ft-dynamic-table
+          [Settings]="setting"
+          [Data]="data"
+          (ClickAction)="Clicked($event)"
+        ></ft-dynamic-table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,92 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Process Product</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          <form #frmFilter="ngForm">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Nationality</label>
+                  <strong><p>{{Nationality.nationality_name}}</p></strong>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Region</label>
+                  <strong><p>{{Nationality.region}}</p></strong>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Product</label>
+                  <strong><p>{{Detail.product_name}}</p></strong>
+                </div>
+              </div>
+            </div>
+            <div class="row no-pad">
+
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="vat">Vendor</label>
+                  <ejs-combobox
+                    id="vendor"
+                    name="vendor"
+                    [dataSource]="Vendors"
+                    placeholder=""
+                    required
+                    [(ngModel)]="Detail.supplier_id"
+                    [fields]="{ value: 'account_id', text: 'account_name' }"
+                    (change)="VendoromerSelected($event)"
+                  >
+                  </ejs-combobox>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>Rate:</label>
+                  <input type="number" name = "rate" id="rate" class="form-control"   [(ngModel)]="Detail.rate">
+                </div>
+              </div>
+
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>Security:</label>
+                  <input type="number" name = "secuirty" id="secuirty" class="form-control"   [(ngModel)]="Detail.security">
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>Total Cost:</label>
+                  <input type="number" name = "cost" id="cost" class="form-control"   [(ngModel)]="Detail.cost">
+                </div>
+              </div>
+
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-primary form-control"
+                    (click)="SaveData()"
+                    accesskey="a"
+                  >
+                    <i class="fa fa-save"></i>
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,42 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:100,300,400,900,700,500,300,100);
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-section * {
+    visibility: visible;
+    font-family: Raleway, Roboto /* Replace with your custom font */, sans-serif !important;
+    /* Add !important to overwrite all elements */
+    color: #000 !important;
+    font-weight: 700 !important;
+    // font-size: 10px !important;
+  }
+}
+
+@page {
+  margin: 0;
+}
+body {
+  margin: 0;
+  background: #ffffff;
+  font-family: "Roboto", sans-serif;
+}
+
+.invoice {
+  table,
+  td,
+  th {
+    border: 1px solid;
+    padding: 2px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+}
+
+.page-footer,
+.page-footer-space {
+  height: 1.5in;
+}

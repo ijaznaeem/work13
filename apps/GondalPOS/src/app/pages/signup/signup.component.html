@@ -1,0 +1,71 @@
+<div style="background-color: #7ac1f1; height:100%">
+  <div class="row" style="margin-bottom: 0.5% ">
+
+  </div>
+  <div class="row" style=" background-color: #7ac1f1">
+    <div class="col-md-4 ">
+    </div>
+    <div class="col-md-4" style=" background-color: #7ac1f1">
+      <div style="background-color:#005AA1  "
+        class="d-flex justify-content-center align-items-center w-100 h-100 login-container">
+        <div class="card  border-60 overflow-hidden" style="margin-bottom: 3px;">
+          <div style="background-color: #005AA1;" class="col-md-12">
+            <img class="card-img img-fluid img-circle" src="../../../assets/img/profile/shopImage.jpeg" alt="image">
+          </div>
+          <div class="card border-0 box-shadow rounded-0">
+            <div class="card-body text-center pb-1" style="background-color:#005AA1">
+              <h2>Sign up for PPC Point of Sale </h2>
+            
+              <form (ngSubmit)="onSubmit()" #fromLogin="ngForm" class="text-left mt-6">
+            
+               
+                <div class="row">
+                  <div class="col-md-12 form-group">
+                    <input [(ngModel)]="signupmodal.BusinessName" name="companyname" required class="form-control validation-field"
+                      placeholder="Company Name" type="text" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12 form-group">
+                    <input [(ngModel)]="signupmodal.address" name="address" required class="form-control validation-field"
+                      placeholder="Complete address" type="text" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12 form-group">
+                    <input [(ngModel)]="signupmodal.Phone" name="Phone" required class="form-control validation-field"
+                      placeholder="Mobile No" type="text" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12 form-group">
+                    <input [(ngModel)]="signupmodal.city" name="city" required class="form-control validation-field"
+                      placeholder="City" type="text" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12 form-group">
+                    <input [(ngModel)]="signupmodal.email" name="email" required class="form-control validation-field"
+                      placeholder="Email" type="text" />
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-12 form-group">
+                    <button [disabled]="!fromLogin.form.valid" class="btn btn-block" type="submit">
+                      Sign up
+                    </button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12"></div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+    </div>
+  </div>

@@ -1,0 +1,415 @@
+<div  #scrollTop >
+
+</div>
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Whole Sale</h5>
+  </div>
+  <!-- <form #frmFilter="ngForm">
+    <div class="row no-pad">
+      <div class="col-md-4">
+        <label for="dtTo">Give Invoice No to Find</label>
+
+        <input class="form-control" name="ino" [(ngModel)]="Ino" />
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button
+            type="submit"
+            class="btn btn-primary form-control"
+            (click)="FindINo()"
+            accesskey="F"
+          >
+            <i class="fa fa-search"></i>
+            Find Invoice
+          </button>
+        </div>
+      </div>
+    </div>
+  </form> -->
+  <!-- <hr /> -->
+  <div class="card-block widget-body">
+    <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+      <div class="row no-gutter">
+        <div class="col-md-2">
+          <label for="dp1">Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dp1"
+              [(ngModel)]="sale.Date"
+              ngbDatepicker
+              #d1="ngbDatepicker"
+              required
+              disabled
+            />
+            <div class="input-group-addon">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="d1.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-2">
+          <label for="customer">ِInvoice Type</label>
+          <select
+            id="InvtType"
+            class="form-control"
+            name="InvType"
+            [(ngModel)]="sale.DtCr"
+          >
+            <option value="CR">Sale</option>
+            <option value="DT">Sale Raturn</option>
+          </select>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label for="customer"
+            >Customer
+            <span class="text-right"
+              ><strong> {{ SelectCust.Address }}</strong></span
+            >
+            <span>
+              / <strong>{{ sale.PrevBalance }}</strong>
+            </span></label
+          >
+          <ng-select
+            #cmbCustomers
+            name="ng2select"
+            class="custom"
+            [items]="Accounts"
+            [virtualScroll]="true"
+            bindLabel="CustomerName"
+            bindValue="CustomerID"
+            placeholder="Select Customer"
+            (change)="CustomerSelected($event)"
+            required
+            [(ngModel)]="sale.CustomerID"
+            [searchFn]="customSearchFn"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              <div class="row no-gutter">
+                <div class="col-md-12">
+                  {{ item.CustomerName }}
+                </div>
+                <div class="col-md-9 text-italic font-small-2 mt-1">
+                  <small>
+                    {{ item.Address }}
+                  </small>
+                </div>
+                <div class="col-md-3 text-italic font-small-2 mt-1">
+                  <small>
+                    {{ item.Balance }}
+                  </small>
+                </div>
+              </div>
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="col-md-2">
+          <label for="">
+            Date:
+            <span class="text-warning">
+              {{ LastPrice.Date }}
+            </span>
+          </label>
+        </div>
+        <div class="col-md-2">
+          <label for="">
+            Last Rate:
+            <span class="text-warning">
+              {{ LastPrice.SPrice }}
+            </span>
+          </label>
+
+          <label for="">
+            Qty:
+            <span class="text-warning">
+              {{ LastPrice.TotPcs }}
+            </span>
+          </label>
+        </div>
+      </div>
+      <form #formqty="ngForm">
+        <ngb-alert
+          type="light-primary"
+          [ngClass]="{ 'bg-warning': isPosted }"
+          [dismissible]="false"
+        >
+          <div class="row no-gutter">
+            <div class="col-md-4">
+              <label for="customer"> Select product </label>
+              <ng-select
+                #cmbProduct
+                name="cmbProduct"
+                id="cmbProduct"
+                class="custom"
+                [items]="Stock | async"
+                [virtualScroll]="true"
+                bindLabel="ProductName"
+                bindValue="StockID"
+                placeholder="Select Product"
+                (change)="ProductSelected($event)"
+                required
+                [(ngModel)]="sdetails.StockID"
+                (keydown.enter)="qty.focus()"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <div class="row no-gutter">
+                    <div class="col-md-9">
+                      {{ item.ProductName }}
+                    </div>
+                    <div class="col-md-3 text-italic font-small-2 mt-1">
+                      <small>
+                        {{ item.Stock }}
+                      </small>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+
+
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="qty">Qty</label>
+                <input
+                  type="number"
+                  class="form-control dation-field"
+                  required="required"
+                  id="pcs"
+                  name="pcs"
+                  [(ngModel)]="sdetails.Pcs"
+                  #qty
+                  (keydown.enter)="txtRemarks.focus()"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="Remarks">Remarks:</label>
+                <input
+                  #txtRemarks
+                  type="text"
+                  class="form-control"
+                  id="Remarks"
+                  name="Remarks"
+                  [(ngModel)]="sdetails.Remarks"
+                  (keydown.enter)="SubmitOrder()"
+                />
+              </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <label for="RPrice">Rate:</label>
+                <input
+                  #txtRate
+                  type="number"
+                  class="form-control"
+                  id="SPrice"
+                  name="SPrice"
+                  [(ngModel)]="sdetails.SPrice"
+                  min="1"
+                  required
+                  (keydown.enter)="btnAdd.focus()"
+                  (focus)="onFocus($event)"
+                  (click)="onFocus($event)"
+                  (mouseup)="onFocus($event)"
+                />
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="bonus">Amount:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="pamount"
+                  name="pamount"
+                  readonly
+                  [value]="sdetails.Pcs * sdetails.SPrice"
+                  tabindex="-1"
+                />
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  #btnAdd
+                  type="button"
+                  class="btn btn-primary form-control"
+                  [disabled]="!formqty.form.valid || isPosted"
+                  (click)="AddOrder()"
+                  accesskey="a"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="alert alert-danger" role="alert" *ngIf="isPosted">
+                <div class="text-center">POSTED INVOICE</div>
+              </div>
+            </div>
+          </div>
+        </ngb-alert>
+      </form>
+
+      <div>
+        <h5 class="mb-3">Sale Details</h5>
+        <div class="table-responsive table-bordered table-condensed">
+          <ng2-smart-table
+            class="table table-hover"
+            [settings]="settings"
+            [source]="data"
+            (deleteConfirm)="onDeleteConfirm($event)"
+            (editConfirm)="onEdit($event)"
+          >
+          </ng2-smart-table>
+        </div>
+
+        <div class="row no-gutter">
+          <div class="col-md-2"></div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="gtotal">Total Amount</label>
+              <input
+                type="text"
+                class="form-control"
+                id="gtotal"
+                name="gtotal"
+                [(ngModel)]="sale.Amount"
+                tabindex="-1"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="gtotal">Extra Disc</label>
+              <input
+                type="number"
+                class="form-control"
+                id="ExtraDisc"
+                name="ExtraDisc"
+                [(ngModel)]="sale.ExtraDisc"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="netTotal">Net Amount</label>
+              <input
+                type="text"
+                class="form-control"
+                id="TNetAmount"
+                name="TNetAmount"
+                [value]="sale.Amount - sale.ExtraDisc"
+                tabindex="-1"
+                readonly
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="netTotal">Amount Receieved</label>
+
+              <input
+                type="text"
+                class="form-control"
+                id="AmountRecvd"
+                name="AmountRecvd"
+                [(ngModel)]="sale.AmountRecvd"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="netTotal">Balance</label>
+              <input
+                type="text"
+                class="form-control"
+                id="BalanceAmount"
+                name="BalanceAmount"
+                [value]="sale.Amount - sale.ExtraDisc - sale.AmountRecvd"
+                tabindex="-1"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row no-gutter">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="notes">Notes:</label>
+
+              <input
+                type="text"
+                class="form-control"
+                id="notes"
+                name="notes"
+                [(ngModel)]="sale.Notes"
+                placeholder="x"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-primary form-control"
+                [disabled]="
+                  !fromPurchase.form.valid || data.count() == 0 || isPosted
+                "
+                (click)="SaveData()"
+                accesskey="s"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-primary form-control"
+                [disabled]="
+                  !fromPurchase.form.valid || data.count() == 0 || isPosted
+                "
+                (click)="SaveData(1)"
+                accesskey="p"
+              >
+                Save and Print
+              </button>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-danger form-control"
+                (click)="Cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

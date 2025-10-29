@@ -1,0 +1,103 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Salary Sheet</h5>
+  </div>
+  <div class="card-block widget-body">
+    <form #frmFilter="ngForm">
+      <div class="row no-pad">
+        <div class="col-md-2">
+          <label for="dtTo">Month:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dtTo"
+              [(ngModel)]="Filter.Month"
+              ngbDatepicker
+              #dtTo="ngbDatepicker"
+            />
+            <div class="input-group-addon">
+              <button
+                type="button"
+                class="btn btn-warning"
+                (click)="dtTo.toggle()"
+              >
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6"></div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              (click)="FilterData()"
+              accesskey="a"
+            >
+              <i class="fa fa-search"></i>
+              Filter
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              accesskey="p"
+              (click)="PrintReport()"
+            >
+              <i class="fa fa-print"></i>
+              Print
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div id="print-section">
+      <div class="row no-pad">
+        <div class="col-md-12">
+          <table class="table table-bordered table-striped table-sm">
+            <thead>
+              <tr>
+                <th *ngFor="let col of columns">{{ col.label }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of data">
+                <td *ngFor="let col of columns">
+                  <ng-container *ngIf="col.editable; else readOnlyCell">
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      [(ngModel)]="row[col.fldName]"
+                      [name]="col.fldName + '_' + i"
+                    />
+                  </ng-container>
+                  <ng-template #readOnlyCell>
+                    {{ row[col.fldName] }}
+                  </ng-template>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th *ngFor="let col of columns">
+                  <ng-container *ngIf="col.sum; else emptyCell">
+                    {{ getColumnSum(col.fldName) }}
+                  </ng-container>
+                  <ng-template #emptyCell></ng-template>
+                </th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

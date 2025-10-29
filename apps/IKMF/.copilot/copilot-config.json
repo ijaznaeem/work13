@@ -1,0 +1,39 @@
+{
+  "mcpServers": {
+    "ikmf-context": {
+      "command": "node",
+      "args": [
+        ".copilot/dist/mcp-server.js"
+      ],
+      "env": {
+        "PROJECT_ROOT": "."
+      }
+    }
+  },
+  "rules": [
+    {
+      "includes": [
+        "**/*.ts",
+        "**/*.js",
+        "**/*.html",
+        "**/*.scss"
+      ],
+      "excludes": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "description": "Angular TypeScript, HTML, and SCSS files in IKMF project"
+    }
+  ],
+  "context": {
+    "conventions": ".copilot/conventions.md",
+    "architecture": "Feature-based Angular application with Nx-like structure",
+    "patterns": [
+      "Smart/Dumb component pattern",
+      "Service-based state management",
+      "Lazy loading feature modules",
+      "JWT-based authentication",
+      "Reactive programming with RxJS"
+    ]
+  }
+}

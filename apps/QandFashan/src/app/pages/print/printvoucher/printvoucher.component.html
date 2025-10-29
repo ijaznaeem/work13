@@ -1,0 +1,98 @@
+<div class="print-section">
+  <div class="container">
+    <section class="sheet">
+      <table style="width: 100%" >
+        <tr>
+          <td colspan="4" style="border: 0px" class="text-center">
+            <h2>{{ company.BusinessName }}</h2>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" style="border: 0px">
+            <h3 class="text-center" *ngIf="Voucher.VoucherType == '1'">
+              Cash Receipt
+            </h3>
+            <h3 class="text-center" *ngIf="Voucher.VoucherType == '2'">
+              Cash Paid
+            </h3>
+          </td>
+        </tr>
+        <tr>
+          <td style="border: 0px">
+            Date: <strong>{{ Voucher.Date }}</strong> &nbsp; &nbsp; <strong>{{ Voucher.Time }}</strong>
+          </td>
+          <td style="border: 0px; text-align: left"></td>
+          <td style="border: 0px">
+            Voucher #: <strong>{{ Voucher.VoucherID }}</strong>
+          </td>
+          <td style="border: 0px"></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="border: 0px">
+            Customer Name: <strong>{{ Voucher.CustomerName }}</strong>
+          </td>
+          <td colspan="2" style="border: 0px"></td>
+        </tr>
+  
+        <tr>
+          <td colspan="4" style="border: 0px">
+            Address: <strong>{{ Voucher.Address }}, {{ Voucher.City }}</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="4" style="border: 0px"></td>
+        </tr>
+        <tr>
+          <td colspan="4" style="border: 0px">
+            <table class="table-border" border-collapse="collapse">
+              <thead class="">
+              <tr>
+                <th ><strong>
+                  Details </strong></th>
+                <th >
+                  <strong>Amount</strong></th>
+  
+              </tr>
+            </thead>
+              <tr>
+                <td >
+                  {{ Voucher.Description }}
+                </td>
+                <td >
+                  {{
+                    (Voucher.Credit > 0 ? Voucher.Credit : Voucher.Debit)
+                      | number: '1.2-2'
+                  }}
+                </td>
+              </tr>
+              <!-- <tr>
+                <td>Prev Balance</td>
+                <td>
+                  {{ Voucher.PrevBalance }}
+                </td>
+              </tr> -->
+              <!-- <tr>
+                <td>Closing Balance</td>
+                <td>
+                  {{
+                    Voucher.VoucherType == '1'
+                      ? Voucher.PrevBalance * 1 - Voucher.Credit * 1
+                      : Voucher.PrevBalance * 1 - Voucher.Debit
+                  }}
+                </td>
+              </tr> -->
+            </table>
+          </td>
+        </tr>
+      </table> <button
+              class="btn btn-primary no-print"
+              printSectionId="print-section"
+              type="button"
+              (click)="Print()"
+            >
+              <i class="fa fa-print"> </i>
+            </button>
+      
+    </section>
+  </div>
+</div>

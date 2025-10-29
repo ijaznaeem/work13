@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">{{ 'Parteners' }}</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="bsModal.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <button class="btn btn-primary pull-right" (click)="Add()">
+        <i class="fa fa-plus"></i>
+        Add
+      </button>
+      <div class="row">
+        <div class="col-md-12">
+          <ft-dynamic-table
+            [Settings]="Parteners.list"
+            [Data]="data"
+            (ClickAction)="ActionClicked($event)"
+          >
+          </ft-dynamic-table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary pull-right"(click)="bsModal.hide()">
+      Close
+    </button>
+  </div>
+</div>

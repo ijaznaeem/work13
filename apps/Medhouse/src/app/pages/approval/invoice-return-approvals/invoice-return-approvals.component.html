@@ -1,0 +1,274 @@
+<!-- Invoice Return Approvals Component -->
+<div class="invoice-return-approvals">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="row">
+      <div class="col-md-7">
+        <h3 class="page-title">Invoice Return Approvals</h3>
+        <p class="instruction-text text-info">
+          Double click to add remarks • Click "Load Data" to refresh • {{ getDateRangeDescription() }}
+        </p>
+      </div>
+      <div class="col-md-5 text-right">
+        <!-- Filter Controls -->
+        <form [formGroup]="filterForm" class="filter-form">
+          <div class="form-row">
+            <div class="form-group col-md-3">
+              <label for="fromDate" class="form-label">From Date:</label>
+              <input
+                type="date"
+                id="fromDate"
+                class="form-control form-control-sm"
+                formControlName="fromDate"
+              />
+            </div>
+            <div class="form-group col-md-3">
+              <label for="toDate" class="form-label">To Date:</label>
+              <input
+                type="date"
+                id="toDate"
+                class="form-control form-control-sm"
+                formControlName="toDate"
+              />
+            </div>
+            <div class="form-group col-md-3">
+              <label for="status" class="form-label">Status:</label>
+              <select
+                id="status"
+                class="form-control form-control-sm"
+                formControlName="status"
+              >
+                <option *ngFor="let status of statusOptions" [value]="status">
+                  {{ status }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label class="form-label d-block">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm w-100"
+                (click)="loadApprovals()"
+                title="Load invoice return approvals with current filters"
+              >
+                <i class="fas fa-search"></i>
+                Load Data
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Section -->
+  <div class="content-section">
+    <div class="row">
+      <!-- Left Panel - Data Grids -->
+      <div class="col-md-8">
+        <!-- Main Approvals Grid -->
+        <div class="grid-container">
+          <div class="grid-header">
+            <h5>Invoice Return Approvals</h5>
+          </div>
+          <div class="grid-content">
+            <ft-data-grid
+              #grdData
+              [columns]="approvalColumns"
+              [data]="approvals"
+              [loading]="state.loading"
+              [selectionMode]="'Single'"
+              [allowSorting]="true"
+              [allowFiltering]="false"
+              [pageSize]="15"
+              [height]="400"
+              [ShowSearch]="false"
+              (selectionChange)="onApprovalSelectionChange($event)"
+              (rowDoubleClick)="onRowDoubleClick()"
+              class="approval-grid"
+            >
+            </ft-data-grid>
+          </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="grid-container mt-3">
+          <div class="grid-header">
+            <h5>Approval Details</h5>
+          </div>
+          <div class="grid-content">
+            <ft-data-grid
+              #grdDetails
+              [columns]="detailColumns"
+              [data]="approvalDetails"
+              [loading]="false"
+              [selectionMode]="'None'"
+              [allowSorting]="false"
+              [allowFiltering]="false"
+              [allowPaging]="false"
+              [height]="250"
+              [ShowSearch]="false"
+              class="details-grid"
+            >
+            </ft-data-grid>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel - Remarks -->
+      <div class="col-md-4">
+        <div class="remarks-container">
+          <div class="remarks-header">
+            <h5>Remarks</h5>
+          </div>
+          <div class="remarks-content">
+            <textarea
+              class="form-control"
+              rows="20"
+              [value]="selectedRemarks"
+              readonly
+              placeholder="Select an approval to view remarks..."
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <div class="row">
+      <div class="col-12">
+        <div class="button-group">
+          <!-- Add Approval Button -->
+          <button
+            type="button"
+            class="btn btn-primary btn-action"
+            (click)="addApproval()"
+          >
+            <i class="fas fa-plus"></i>
+            Add Approval
+          </button>
+
+          <!-- Forward Button -->
+          <button
+            type="button"
+            class="btn btn-info btn-action"
+            [disabled]="!state.selectedApproval || !canPerformAction('forward')"
+            (click)="forwardApproval()"
+          >
+            <i class="fas fa-arrow-right"></i>
+            Forward
+          </button>
+
+          <!-- Reject Button -->
+          <button
+            type="button"
+            class="btn btn-danger btn-action"
+            [disabled]="!state.selectedApproval || !canPerformAction('reject')"
+            (click)="rejectApproval()"
+          >
+            <i class="fas fa-times"></i>
+            Reject
+          </button>
+
+          <!-- Print Button -->
+          <button
+            type="button"
+            class="btn btn-success btn-action"
+            [disabled]="!state.selectedApproval"
+            (click)="printApproval()"
+          >
+            <i class="fas fa-print"></i>
+            Print
+          </button>
+
+          <!-- Add Remarks Button -->
+          <button
+            type="button"
+            class="btn btn-secondary btn-action"
+            [disabled]="!state.selectedApproval"
+            (click)="addRemarks()"
+          >
+            <i class="fas fa-comment-alt"></i>
+            Add Remarks
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="state.loading" class="loading-overlay">
+    <div class="loading-content">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <p class="loading-text">Loading approvals...</p>
+    </div>
+  </div>
+
+  <!-- Status Info Panel -->
+  <div class="status-info-panel" *ngIf="state.selectedApproval">
+    <div class="row">
+      <div class="col-md-3">
+        <strong>Selected Approval:</strong> #{{ state.selectedApproval.InvoiceApprovalID }}
+      </div>
+      <div class="col-md-3">
+        <strong>Customer:</strong> {{ state.selectedApproval.CustomerName }}
+      </div>
+      <div class="col-md-3">
+        <strong>Status:</strong> 
+        <span [class]="getStatusClass(state.selectedApproval.Status)">
+          {{ state.selectedApproval.Status }}
+        </span>
+      </div>
+      <div class="col-md-3">
+        <strong>Amount:</strong> {{ formatCurrency(state.selectedApproval.NetAmount) }}
+      </div>
+    </div>
+  </div>
+
+  <!-- User Permissions Info -->
+  <div class="permissions-info" *ngIf="!state.canReject && !state.canForward">
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle"></i>
+      You have limited permissions. Some actions may not be available.
+    </div>
+  </div>
+</div>
+
+<!-- Custom Templates for Grid Cells -->
+<ng-template #statusTemplate let-value="value">
+  <span [class]="getStatusClass(value)">{{ value }}</span>
+</ng-template>
+
+<ng-template #currencyTemplate let-value="value">
+  {{ formatCurrency(value) }}
+</ng-template>
+
+<ng-template #dateTemplate let-value="value">
+  {{ formatDate(value) }}
+</ng-template>
+
+<ng-template #actionTemplate let-row="row">
+  <div class="btn-group btn-group-sm">
+    <button
+      type="button"
+      class="btn btn-outline-primary btn-sm"
+      (click)="addRemarks()"
+      title="Add Remarks"
+    >
+      <i class="fas fa-comment"></i>
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-success btn-sm"
+      (click)="printApproval()"
+      title="Print"
+      [disabled]="!state.selectedApproval"
+    >
+      <i class="fas fa-print"></i>
+    </button>
+  </div>
+</ng-template>

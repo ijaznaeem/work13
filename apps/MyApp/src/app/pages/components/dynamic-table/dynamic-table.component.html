@@ -1,0 +1,113 @@
+<div *ngIf="ShowSearch">
+  <div class="form-group col-md-4">
+    <label for="customer">Search</label>
+    <input class="form-control" type="text" name="searchproduct" />
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="thead-light">
+      <tr>
+        <th *ngIf="hasSubTable" class="screenOnly"></th>
+        <th *ngFor="let c of Settings.Columns">{{ c.label }}</th>
+        <th class="screenOnly"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template
+        ngFor
+        let-r
+        [ngForOf]="Data"
+        let-i="index"
+        |
+        filter:searchproduct
+      >
+        <tr (click)="ExandRow($event, i)">
+          <td *ngIf="hasSubTable" class="screenOnly">
+            <i class="fa fa-plus" id="icon{{ i }}"></i>
+          </td>
+          <td *ngFor="let c of Settings.Columns">
+            {{ r[c.fldName] }}
+            <!-- <ng-template *ngIf="c.Type==='link'; else ElseTemplate">
+              <a [routerLink]="['print/printinvoice/']" >
+                r[c.fldName]
+              </a>
+               [routerLink]="['print/printinvoice/']"
+             </ng-template>
+             <ng-template #ElseTemplate>
+              {{ c.valueFormatter? c.valueFormatter(r):  r[c.fldName] }}
+             </ng-template> -->
+
+          </td>
+          <td class="screenOnly">
+            <div class="dropdown" *ngIf="Settings.Actions.length > 0">
+              <button
+                class="btn btn-warning dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Action
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  *ngFor="let act of Settings.Actions"
+                  (click)="ClickActionEv(r, act.action)"
+                >
+                  <i
+                    class="fa fa-{{ act.icon }} text-{{
+                      act.class || 'primary'
+                    }}"
+                    *ngIf="act.icon"
+                  >
+                  </i>
+                  {{ act.title }}
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr
+          *ngIf="hasSubTable"
+          [hidden]="!r.expanded"
+          class="screenOnly"
+          style="visibility: hidden;"
+          id="rsub{{ i }}"
+        >
+          <td [attr.colspan]="GetFldCounts() + 1" style="height: auto;">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th *ngFor="let col of SubTable.Columns">
+                    {{ col.label }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let rsub of r[SubTable.table]">
+                  <td *ngFor="let col of SubTable.Columns">
+                    {{ rsub[col.fldName] }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+    <tfoot class="thead-light">
+      <tr>
+        <th *ngIf="hasSubTable" class="screenOnly"></th>
+        <th *ngFor="let c of Settings.Columns">
+          {{ c.sum ? FindTotal(c.fldName) : "" }}
+        </th>
+        <th></th>
+      </tr>
+    </tfoot>
+  </table>
+</div>

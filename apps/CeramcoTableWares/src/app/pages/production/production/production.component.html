@@ -1,0 +1,143 @@
+<div #scrollTop></div>
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Production Invoice</h5>
+  </div>
+  <div class="card-block widget-body">
+    <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+      <div class="row no-gutter">
+        <div class="col-md-2">
+          <label for="dp1">Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dp1"
+              [(ngModel)]="production.Date"
+              ngbDatepicker
+
+              #d1="ngbDatepicker"
+            />
+
+            <div class="input-group-append">
+              <button type="button" class="btn btn-warning" (click)="d1.toggle()">
+                <i class="fa fa-calendar"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label for="customer">Description </label>
+          <input
+            type="text"
+            class="form-control dation-field"
+
+            id="description"
+            name="description"
+            [(ngModel)]="production.Description"
+          />
+        </div>
+      </div>
+      <form #formqty="ngForm">
+        <div class="row no-gutter">
+          <div class="form-group col-md-3">
+            <label for="customer">Products </label>
+            <ng-select
+              #cmbProducts
+              name="ng2select"
+              class="custom"
+              [items]="Prods"
+              [virtualScroll]="true"
+              bindLabel="ProductName"
+              bindValue="ProductID"
+              placeholder="Select Product"
+              (change)="ProductSelected($event)"
+              required
+              [(ngModel)]="pdetails.ProductID"
+            >
+            </ng-select>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="qty">Qty:</label>
+              <input
+                type="number"
+                #qty
+                class="form-control dation-field"
+                required="required"
+                id="qty"
+                name="qty"
+                [(ngModel)]="pdetails.Qty"
+              />
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button
+                #btnAdd
+                type="submit"
+                class="btn btn-primary form-control"
+                [disabled]="!formqty.form.valid"
+                (click)="AddOrder()"
+                accesskey="a"
+              >
+                <i class="fa fa-plus"></i>
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div>
+        <h5 class="mb-3">Details</h5>
+        <div class="table-responsive table-bordered table-condensed">
+          <ng2-smart-table
+            class="table table-hover"
+            [settings]="Settings"
+            [source]="data"
+            (deleteConfirm)="onDeleteConfirm($event)"
+            (editConfirm)="onEdit($event)"
+          >
+          </ng2-smart-table>
+        </div>
+
+        <div class="row no-gutter">
+          <div class="col-md-8"></div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-primary form-control"
+                [disabled]="
+                  !fromPurchase.form.valid || data.count() == 0 || isPosted
+                "
+                (click)="SaveData()"
+                accesskey="s"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-danger form-control"
+                (click)="Cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

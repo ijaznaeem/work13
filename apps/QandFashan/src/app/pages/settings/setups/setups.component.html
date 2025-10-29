@@ -1,0 +1,49 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Branches List</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          
+          <ft-dynamic-table
+          #RptTable
+          [Settings]="settings"
+          [Data]="data"
+          (ClickAction)="Clicked($event)"
+        ></ft-dynamic-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<ng-template #prodmodal>
+  <div class="container">
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">{{ form.title }}</h4>
+      <button
+        type="button"
+        class="btn-close close pull-right"
+        aria-label="Close"
+        (click)="modalRef.hide()"
+      >
+        <span aria-hidden="true" class="visually-hidden">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <ft-crud-form #formAdd
+        [form]="form"
+        [formdata]="formdata"
+        [CrudButtons]="true"
+
+      >
+      </ft-crud-form>
+    </div>
+  </div>
+</ng-template>

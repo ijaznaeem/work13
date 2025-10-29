@@ -1,0 +1,71 @@
+<div class="container">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Upload and Cropping</h4>
+    <button
+      type="button"
+      class="btn-close close pull-right"
+      aria-label="Close"
+      (click)="bsModal.hide()"
+    >
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row text-left">
+      <div class="col-12">
+        <div class="file-upload mb-3">
+          <span class="text">Upload File : </span>
+          <input
+            id="custom-input"
+            type="file"
+            (change)="fileChangeEvent($event)"
+            accept="image/*"
+            class="form-control-file"
+            [ngClass]="{
+              'is-invalid':
+                imageChangedEvent && !imageChangedEvent.target.files[0]
+            }"
+          />
+        </div>
+        <image-cropper
+          [imageChangedEvent]="imageChangedEvent"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="1"
+          format="png"
+          (imageCropped)="imageCropped($event)"
+          (imageLoaded)="imageLoaded()"
+          (cropperReady)="cropperReady()"
+          (loadImageFailed)="loadImageFailed()"
+          class="float-left mr-4 w-50 img-fluid"
+        ></image-cropper>
+
+        <br />
+        <div class="row justify-content-center">
+          <span class="result">
+            <img [src]="croppedImage" class="rounded-circle w-75" />
+          </span>
+        </div>
+        <div class="row mt-4 justify-content-center">
+          <div class="col-sm-12">
+            <button
+              type="button"
+              class="btn btn-success mt-2 mr-1"
+              (click)="save()"
+            >
+              <i class="fa fa-check mr-1" aria-hidden="true"></i>
+              Select
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning mt-2"
+              (click)="reset()"
+            >
+              <i class="fa fa-times mr-1" aria-hidden="true"></i>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

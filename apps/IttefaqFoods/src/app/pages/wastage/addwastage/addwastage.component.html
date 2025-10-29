@@ -1,0 +1,27 @@
+
+
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">Add Wastage</h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="container m-4">
+      <app-crud-form
+      [Form]="form"
+      [formdata]="formData"
+      (DataSaved) = "DataSaved($event)"
+      (ItemChanged) = "ItemChanged($event)"
+
+      > </app-crud-form>
+    </div>
+    <div class="row no-gutter" id="print-section">
+      <div class="col-md-12">
+        <ft-dynamic-table
+          [Settings]="setting"
+          [Data]="data"
+          (ClickAction)="Clicked($event)"
+        ></ft-dynamic-table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,335 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ isEditMode ? 'Edit' : 'Add' }} Recall</h4>
+</div>
+
+<div class="modal-body">
+  <div class="container-fluid">
+    <!-- Recall Information Section -->
+    <div class="row">
+      <div class="col-12">
+        <h5 class="section-title">Recall Information</h5>
+        <form [formGroup]="recallForm" class="recall-form">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="date" class="required">Date:</label>
+                <input
+                  type="date"
+                  id="date"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(recallForm, 'date')"
+                  formControlName="date"
+                />
+                <div class="invalid-feedback">
+                  {{ getFieldError(recallForm, 'date') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-9">
+              <div class="form-group">
+                <label for="customerId" class="required">Customer:</label>
+                <select
+                  id="customerId"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(recallForm, 'customerId')"
+                  formControlName="customerId"
+                  [disabled]="loadingCustomers"
+                >
+                  <option value="">{{ loadingCustomers ? 'Loading...' : 'Select Customer' }}</option>
+                  <option *ngFor="let customer of customers" [value]="customer.CustomerID">
+                    {{ customer.CustomerName }}
+                  </option>
+                </select>
+                <div class="invalid-feedback">
+                  {{ getFieldError(recallForm, 'customerId') }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="handedOverBy" class="required">Handed Over By:</label>
+                <input
+                  type="text"
+                  id="handedOverBy"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(recallForm, 'handedOverBy')"
+                  formControlName="handedOverBy"
+                  placeholder="Enter name"
+                />
+                <div class="invalid-feedback">
+                  {{ getFieldError(recallForm, 'handedOverBy') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="designation" class="required">Designation:</label>
+                <input
+                  type="text"
+                  id="designation"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(recallForm, 'designation')"
+                  formControlName="designation"
+                  placeholder="Enter designation"
+                />
+                <div class="invalid-feedback">
+                  {{ getFieldError(recallForm, 'designation') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="receivedById" class="required">Received By:</label>
+                <select
+                  id="receivedById"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(recallForm, 'receivedById')"
+                  formControlName="receivedById"
+                  [disabled]="loadingEmployees"
+                >
+                  <option value="">{{ loadingEmployees ? 'Loading...' : 'Select Employee' }}</option>
+                  <option *ngFor="let employee of employees" [value]="employee.EmployeeID">
+                    {{ employee.EmployeeName }}
+                  </option>
+                </select>
+                <div class="invalid-feedback">
+                  {{ getFieldError(recallForm, 'receivedById') }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="remarks">Remarks:</label>
+                <textarea
+                  id="remarks"
+                  class="form-control form-control-sm"
+                  formControlName="remarks"
+                  rows="3"
+                  placeholder="Enter any additional remarks..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Products Section -->
+    <div class="row">
+      <div class="col-12">
+        <h5 class="section-title">Products to Recall</h5>
+        
+        <!-- Add Product Form -->
+        <form [formGroup]="productForm" class="product-form">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="productId" class="required">Product:</label>
+                <select
+                  id="productId"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(productForm, 'productId')"
+                  formControlName="productId"
+                  [disabled]="loadingProducts"
+                >
+                  <option value="">{{ loadingProducts ? 'Loading...' : 'Select Product' }}</option>
+                  <option *ngFor="let product of products" [value]="product.ProductID">
+                    {{ product.ProductName }}
+                  </option>
+                </select>
+                <div class="invalid-feedback">
+                  {{ getFieldError(productForm, 'productId') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="packingSize" class="required">Packing Size:</label>
+                <input
+                  type="number"
+                  id="packingSize"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(productForm, 'packingSize')"
+                  formControlName="packingSize"
+                  min="0"
+                  step="1"
+                />
+                <div class="invalid-feedback">
+                  {{ getFieldError(productForm, 'packingSize') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="qty" class="required">Quantity:</label>
+                <input
+                  type="number"
+                  id="qty"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(productForm, 'qty')"
+                  formControlName="qty"
+                  min="1"
+                  step="1"
+                />
+                <div class="invalid-feedback">
+                  {{ getFieldError(productForm, 'qty') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="batchNo" class="required">Batch No:</label>
+                <input
+                  type="text"
+                  id="batchNo"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(productForm, 'batchNo')"
+                  formControlName="batchNo"
+                  placeholder="Batch No"
+                />
+                <div class="invalid-feedback">
+                  {{ getFieldError(productForm, 'batchNo') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm btn-block add-product-btn"
+                  (click)="addProduct()"
+                  [disabled]="productForm.invalid"
+                >
+                  <i class="fas fa-plus"></i> Add
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="mfgDate">Mfg Date:</label>
+                <input
+                  type="date"
+                  id="mfgDate"
+                  class="form-control form-control-sm"
+                  formControlName="mfgDate"
+                />
+              </div>
+            </div>
+            
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="expDate">Exp Date:</label>
+                <input
+                  type="date"
+                  id="expDate"
+                  class="form-control form-control-sm"
+                  formControlName="expDate"
+                />
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="reason" class="required">Reason for Recall:</label>
+                <input
+                  type="text"
+                  id="reason"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(productForm, 'reason')"
+                  formControlName="reason"
+                  placeholder="Enter reason for recall"
+                />
+                <div class="invalid-feedback">
+                  {{ getFieldError(productForm, 'reason') }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Products Table -->
+        <div class="products-table-container" *ngIf="recallProducts.length > 0">
+          <table class="table table-sm table-striped table-hover products-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Packing Size</th>
+                <th>Quantity</th>
+                <th>Batch No</th>
+                <th>Mfg Date</th>
+                <th>Exp Date</th>
+                <th>Reason</th>
+                <th width="80">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of recallProducts; let i = index">
+                <td>{{ getProductName(product.productId) }}</td>
+                <td>{{ product.packingSize }}</td>
+                <td>{{ product.qty }}</td>
+                <td>{{ product.batchNo }}</td>
+                <td>{{ product.mfgDate ? (product.mfgDate | date:'dd/MM/yyyy') : '-' }}</td>
+                <td>{{ product.expDate ? (product.expDate | date:'dd/MM/yyyy') : '-' }}</td>
+                <td>{{ product.reason }}</td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="removeProduct(i)"
+                    title="Remove Product"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- No Products Message -->
+        <div *ngIf="recallProducts.length === 0" class="alert alert-info">
+          <i class="fas fa-info-circle"></i> No products added yet. Please add products to recall.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="onCancel()"
+    [disabled]="savingRecall"
+  >
+    Cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="onSave()"
+    [disabled]="recallForm.invalid || recallProducts.length === 0 || savingRecall"
+  >
+    <span *ngIf="savingRecall" class="spinner-border spinner-border-sm" role="status"></span>
+    {{ savingRecall ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }} Recall
+  </button>
+</div>

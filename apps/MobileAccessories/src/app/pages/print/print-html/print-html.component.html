@@ -1,0 +1,82 @@
+<div class="container buttonarea">
+  <div
+    class="btn-toolbar"
+    role="toolbar"
+    aria-label="Toolbar with button groups"
+  >
+    <div
+      class="btn-group btn-group-lg mr-2"
+      role="group"
+      aria-label="First group"
+    >
+      <button type="button" class="btn btn-primary" (click)="Print()">
+        <i class="fa fa-print"></i>
+      </button>
+      <button type="button" class="btn btn-warning" (click)="Export()">
+        <i i class="fa fa-file-pdf" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Info Block -->
+<div
+  *ngIf="printdata.Customer"
+  class="customer-info mb-3 p-3 border rounded bg-light"
+>
+  <div class="row">
+    <div class="col-12 col-md-6">
+      <strong>Customer Name:</strong> {{ printdata.Customer.CustomerName }}
+    </div>
+    <div class="col-12 col-md-6">
+      <strong>Address:</strong> {{ printdata.Customer.Address }}
+    </div>
+    <div class="col-12 col-md-6 mt-1">
+      <strong>City:</strong> {{ printdata.Customer.City }}
+    </div>
+  </div>
+</div>
+
+<section class="sheet">
+  <table class="table table-light">
+    <thead>
+      <tr>
+        <th>
+          <div class="Header">
+            <div>
+
+            </div>
+            <h3
+              class="text-center"
+              style="font-weight: 600; font-size: 1.5rem"
+              *ngIf="printdata.CustomerName"
+            >
+              {{ printdata.CustomerName }}
+            </h3>
+            <h3
+              class="text-center"
+              style="font-weight: 600; font-size: 1.25rem"
+              *ngIf="printdata.Title"
+            >
+              {{ printdata.Title }}
+            </h3>
+            <h5
+              class="text-center"
+              style="font-weight: 600; font-size: 1rem"
+              *ngIf="printdata.SubTitle"
+            >
+              {{ printdata.SubTitle }}
+            </h5>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div id="main" style="margin-right: 80px"></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>

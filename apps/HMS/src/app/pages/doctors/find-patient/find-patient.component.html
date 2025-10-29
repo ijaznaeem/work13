@@ -1,0 +1,77 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Find a Patient</h4>
+  <button
+    type="button"
+    class="close pull-right"
+    aria-label="Close"
+    (click)="bsModalRef.hide()"
+  >
+    <span aria-hidden="true">×</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form #frmFilter="ngForm">
+    <div class="row no-gutter">
+      <div class="form-group col-md-8">
+        <label for="customer">Find by Mobile No or Registration No </label>
+        <input
+          type="text"
+          class="form-control"
+          name="find"
+          id="find"
+          [(ngModel)]="Filter.regno"
+        />
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button
+            type="submit"
+            class="btn btn-primary form-control"
+            (click)="FilterData()"
+            accesskey="a"
+          >
+            <i class="fa fa-search"></i>
+            Find
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row no-gutter">
+    <div class="col-md-12">
+      <table class="table table-stripped">
+        <thead>
+          <tr>
+            <th *ngFor="let col of setting.Columns">
+              {{ col.label }}
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of data">
+            <td *ngFor="let col of setting.Columns">
+              {{ row[col.fldName] }}
+            </td>
+            <td>
+              <button class="btn btn-success" (click)="Selected(row)">
+                <i class="fa fa-plus"></i>
+                Select
+              </button>
+              <button class="btn btn-success" (click)="Edit(row)">
+                <i class="fa fa-pencil"></i>
+                Edit
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">
+    Close
+  </button>
+</div>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebAuthn Windows Hello Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-700 to-purple-900 min-h-screen flex items-center justify-center p-4">
+    <div class="container bg-white p-8 rounded-xl shadow-2xl text-center max-w-lg w-full">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">WebAuthn Windows Hello Test</h1>
+        <p class="text-gray-600 mb-6">
+            Test WebAuthn registration and authentication using your device's platform authenticator (e.g., Windows Hello).
+            <br><strong class="text-red-500">Requires Windows Hello configured on your PC.</strong>
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
+            <button id="registerBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
+                Register New Credential
+            </button>
+            <button id="authenticateBtn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-md">
+                Authenticate Existing Credential
+            </button>
+        </div>
+
+        <div id="status" class="bg-gray-100 p-4 rounded-lg text-left text-gray-800 border border-gray-200 overflow-auto max-h-60">
+            <p class="font-semibold text-lg mb-2">Console Output:</p>
+            <div id="message" class="text-gray-700 text-sm"></div>
+            <pre id="output" class="bg-gray-800 text-white p-3 rounded-md text-sm whitespace-pre-wrap break-words mt-2 hidden"></pre>
+        </div>
+    </div>
+
+    <script>
+        const registerBtn = document.getElementById('registerBtn');
+        const authenticateBtn = document.getElementById('authenticateBtn');
+        const messageElement = document.getElementById('message');
+        const outputElement = document.getElementById('output');
+        let registeredCredentialId = null;
+
+        function arrayBufferToBase64Url(buffer) {
+            return btoa(String.fromCharCode(...new Uint8Array(buffer)))
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+
+        function base64UrlToArrayBuffer(base64url) {
+            const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+            const padded = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
+            const binary = atob(padded);
+            const buffer = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                buffer[i] = binary.charCodeAt(i);
+            }
+            return buffer.buffer;
+        }
+
+        function stringToArrayBuffer(str) {
+            return new TextEncoder().encode(str);
+        }
+
+        function generateRandomChallenge() {
+            const challenge = new Uint8Array(32);
+            crypto.getRandomValues(challenge);
+            return challenge.buffer;
+        }
+
+        function updateStatus(msg, type = 'info', data = null) {
+            messageElement.classList.remove('text-green-600', 'text-red-600', 'font-bold');
+            if (type === 'success') {
+                messageElement.classList.add('text-green-600', 'font-bold');
+            } else if (type === 'error') {
+                messageElement.classList.add('text-red-600', 'font-bold');
+            }
+            messageElement.textContent = msg;
+            if (data) {
+                outputElement.textContent = JSON.stringify(data, null, 2);
+                outputElement.classList.remove('hidden');
+            } else {
+                outputElement.textContent = '';
+                outputElement.classList.add('hidden');
+            }
+        }
+
+        registerBtn.addEventListener('click', async () => {
+            if (!window.PublicKeyCredential) {
+                updateStatus('WebAuthn API not supported by this browser.', 'error');
+                return;
+            }
+
+            updateStatus('Attempting to register a new credential via WebAuthn...');
+            outputElement.classList.add('hidden');
+
+            const challenge = generateRandomChallenge();
+            const userId = 'user_id_123';
+            const userName = 'testuser@example.com';
+
+            const publicKeyCredentialCreationOptions = {
+                challenge: challenge,
+                rp: {
+                    name: "My Awesome App",
+                    id: 'localhost' // Use your actual RP ID here
+                },
+                user: {
+                    id: stringToArrayBuffer(userId),
+                    name: userName,
+                    displayName: "Test User"
+                },
+                pubKeyCredParams: [
+                    { alg: -7, type: "public-key" },
+                    { alg: -257, type: "public-key" }
+                ],
+                authenticatorSelection: {
+                    authenticatorAttachment: "platform",
+                    userVerification: "required",
+                    residentKey: "required"
+                },
+                timeout: 60000,
+                attestation: "direct"
+            };
+
+            try {
+                const credential = await navigator.credentials.create({ publicKey: publicKeyCredentialCreationOptions });
+                const response = {
+                    id: credential.id,
+                    rawId: arrayBufferToBase64Url(credential.rawId),
+                    type: credential.type,
+                    response: {
+                        clientDataJSON: arrayBufferToBase64Url(credential.response.clientDataJSON),
+                        attestationObject: arrayBufferToBase64Url(credential.response.attestationObject),
+                    }
+                };
+                registeredCredentialId = response.rawId;
+                updateStatus('Credential registered successfully!', 'success', response);
+                console.log('Registration Success:', credential);
+            } catch (error) {
+                let msg = `Registration failed: ${error.message || error}`;
+                if (error.name === 'NotAllowedError') msg = 'Registration cancelled by user.';
+                updateStatus(msg, 'error', error);
+                console.error('Registration Error:', error);
+            }
+        });
+
+        authenticateBtn.addEventListener('click', async () => {
+            if (!window.PublicKeyCredential) {
+                updateStatus('WebAuthn API not supported by this browser.', 'error');
+                return;
+            }
+
+            if (!registeredCredentialId) {
+                updateStatus('Please register a credential first.');
+                return;
+            }
+
+            updateStatus('Attempting to authenticate...');
+            outputElement.classList.add('hidden');
+
+            const challenge = generateRandomChallenge();
+
+            const publicKeyCredentialRequestOptions = {
+                challenge: challenge,
+                rpId: window.location.hostname,
+                allowCredentials: [{
+                    id: base64UrlToArrayBuffer(registeredCredentialId),
+                    type: 'public-key',
+                    transports: ['internal']
+                }],
+                userVerification: "required",
+                timeout: 60000
+            };
+
+            try {
+                const credential = await navigator.credentials.get({ publicKey: publicKeyCredentialRequestOptions });
+                const response = {
+                    id: credential.id,
+                    rawId: arrayBufferToBase64Url(credential.rawId),
+                    type: credential.type,
+                    response: {
+                        clientDataJSON: arrayBufferToBase64Url(credential.response.clientDataJSON),
+                        authenticatorData: arrayBufferToBase64Url(credential.response.authenticatorData),
+                        signature: arrayBufferToBase64Url(credential.response.signature),
+                        userHandle: arrayBufferToBase64Url(credential.response.userHandle),
+                    }
+                };
+                updateStatus('Authentication successful!', 'success', response);
+                console.log('Authentication Success:', credential);
+            } catch (error) {
+                let msg = `Authentication failed: ${error.message || error}`;
+                if (error.name === 'NotAllowedError') msg = 'Authentication cancelled by user.';
+                else if (error.name === 'NotFoundError') msg = 'No credential found. Did you register first?';
+                updateStatus(msg, 'error', error);
+                console.error('Authentication Error:', error);
+            }
+        });
+
+        if (!window.PublicKeyCredential) {
+            updateStatus('WebAuthn API is NOT supported by this browser.', 'error');
+            registerBtn.disabled = true;
+            authenticateBtn.disabled = true;
+        } else {
+            updateStatus('WebAuthn API is supported. Click "Register" to start.');
+        }
+    </script>
+</body>
+</html>

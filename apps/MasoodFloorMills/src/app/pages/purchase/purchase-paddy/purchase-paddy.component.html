@@ -1,0 +1,409 @@
+<form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+  <div class="row no-pad">
+    <div class="col-md-2">
+      <label for="dp1">Date:</label>
+      <div class="input-group">
+        <input
+          class="form-control"
+          placeholder="yyyy-mm-dd"
+          name="dp1"
+          [(ngModel)]="purchase.Date"
+          ngbDatepicker
+          disabled
+          #d1="ngbDatepicker"
+        />
+
+        <div class="input-group-append">
+          <button type="button" class="btn btn-warning" (click)="d1.toggle()">
+            <i class="fa fa-calendar"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group col-md-2">
+      <label for="customer">Acct Type</label>
+      <ejs-combobox
+        name="accttype"
+        id="accttype"
+        #acctType
+        [dataSource]="AcctTypes | async"
+        [fields]="{ text: 'AcctType', value: 'AcctTypeID' }"
+        (change)="getAccounts($event.value)"
+      >
+      </ejs-combobox>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="customer"
+        >Account
+        <span class="text-right"
+          ><strong> {{ SelectCust.Address }}</strong>
+        </span></label
+      >
+      <ejs-combobox
+        name="customer"
+        id="customer"
+        [dataSource]="Accounts"
+        [fields]="{ text: 'CustomerName', value: 'CustomerID' }"
+        [allowFiltering]="true"
+        (filtering)="onFiltering($event, 'CustomerName')"
+        [(ngModel)]="purchase.CustomerID"
+        required
+        (change)="CustomerSelected($event)"
+      >
+        <ng-template #itemTemplate="" let-data="">
+          <div class="row no-gutter">
+            <div class="col-md-12">
+              {{ data.CustomerName }}
+            </div>
+            <div class="col-md-9">
+              <small>
+                {{ data.Address }}
+              </small>
+            </div>
+            <div class="col-md-3">
+              <small>
+                {{ data.Balance }}
+              </small>
+            </div>
+          </div>
+        </ng-template>
+      </ejs-combobox>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="cmbProduct">Product</label>
+      <ejs-combobox
+        name="cmbProduct"
+        id="cmbProduct"
+        #cmbProduct
+        [dataSource]="Products"
+        [fields]="{ text: 'ProductName', value: 'ProductID' }"
+        [(ngModel)]="purchase.ProductID"
+      >
+      </ejs-combobox>
+    </div>
+  </div>
+  <form #formqty="ngForm">
+    <div class="row no-gutter">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="supplier">Select Bardana:</label>
+          <ejs-combobox
+            [allowFiltering]="true"
+            name="bardana"
+            id="bardana"
+            #cmbProd
+            [dataSource]="Bardana"
+            (filtering)="onFiltering($event, 'ProductName')"
+            [fields]="{ text: 'ProductName', value: 'ProductID' }"
+            placeholder="Select Item..."
+            required="required"
+            [(ngModel)]="pdetails.ProductID"
+            (change)="ProductSelected($event)"
+          >
+          </ejs-combobox>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="qty">No of Bags:</label>
+          <input
+            type="number"
+            class="form-control dation-field"
+            required="required"
+            id="qty"
+            name="qty"
+            [(ngModel)]="pdetails.Qty"
+            placeholder="0"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-1">
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button
+            type="button"
+            class="btn btn-primary form-control"
+            [disabled]="!formqty.form.valid"
+            (click)="AddOrder()"
+            accesskey="a"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div style="margin: 5px">
+    <div class="row no-gutter">
+      <div class="col-md-6">
+        <h5 class="mb-3">Bardana Details</h5>
+        <div class="table-responsive table-bordered table-condensed">
+          <ng2-smart-table
+            class="table table-hover"
+            [settings]="settings"
+            [source]="data"
+            (deleteConfirm)="onDeleteConfirm($event)"
+            (rowSelect)="onRowSelect($event)"
+            (userRowSelect)="onUserRowSelect($event)"
+            (editConfirm)="onEdit($event)"
+            (rowHover)="onRowHover($event)"
+          >
+          </ng2-smart-table>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h5 class="mb-3">Weight Details</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="">Loaded Weight of Truck</label>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input
+                class="form-control"
+                type="number"
+                name="loadedweight"
+                [(ngModel)]="purchase.LoadedWeight"
+                aria-label="load truck weight"
+                (change)="CalculateIt()"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="">Empty Weight of Truck</label>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input
+                class="form-control"
+                type="number"
+                name="emptyweight"
+                [(ngModel)]="purchase.EmptyWeight"
+                aria-label="empty truck weight"
+                (change)="CalculateIt()"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="">Gross Weight of Truck</label>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input
+                class="form-control"
+                type="number"
+                name="GrossWeight"
+                [value]="purchase.GrossWeight"
+                aria-label="empty truck weight"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h5 class="mb-3">Amount Details</h5>
+      </div>
+      
+      
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="">Net Weight</label>
+          <input
+            class="form-control"
+            type="number"
+            name="NetWeight"
+            [value]="purchase.NetWeight"
+            readonly
+          />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="">Weight in 40Kg</label>
+          <input
+            class="form-control"
+            type="number"
+            name="MonWeight"
+            [value]="purchase.NetWeight / 40"
+            readonly
+          />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="">Rate/40Kg </label>
+          <input
+            class="form-control"
+            type="number"
+            name="RateOfMon"
+            [(ngModel)]="purchase.RateOfMon"
+            (change)="CalculateIt()"
+          />
+        </div>
+      </div>
+      
+    
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="">Net Amount of Wheat</label>
+          <input
+            class="form-control"
+            type="number"
+            name="GrossAmount"
+            [value]="purchase.Amount"
+          />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="">Net Amount To Be Paid</label>
+          <input
+            class="form-control"
+            type="number"
+            name="NetAmount"
+            [value]="purchase.NetAmount"
+          />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for=""
+            >Previous Balance of Account
+            {{ purchase.PrevBalance >= 0 ? 'Dr' : 'Cr' }}
+          </label>
+          <input
+            class="form-control"
+            type="number"
+            name="NetAmount"
+            [value]="purchase.PrevBalance"
+          />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for=""
+            >Net Balance of Account
+            {{ purchase.PrevBalance - purchase.NetAmount >= 0 ? 'Dr' : 'Cr' }}
+          </label>
+          <input
+            class="form-control"
+            type="number"
+            name="NetAmount"
+            [value]="purchase.PrevBalance - purchase.NetAmount"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row no-gutter">
+      <div class="col-md-8">
+        <div class="row no-gutter">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="notes">Notes:</label>
+              <input
+                type="text"
+                class="form-control"
+                id="notes"
+                name="notes"
+                [(ngModel)]="purchase.Notes"
+                placeholder="x"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row no-gutter">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-primary form-control"
+                [disabled]="!fromPurchase.form.valid || data.count() == 0"
+                (click)="SaveData()"
+                accesskey="s"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="dp2">&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-danger form-control"
+                (click)="Cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="row no-gutter">
+          <div class="col-md-6">
+            <label for="gtotal" style="padding-top: 5px">Total Amount:</label>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                id="gtotal"
+                name="gtotal"
+                [(ngModel)]="purchase.Amount"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="row no-gutter">
+          <div class="col-md-6">
+            <label for="rdisc" style="padding-top: 5px">Dsicount:</label>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                id="rdisc"
+                name="rdisc"
+                [(ngModel)]="purchase.Discount"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="row no-gutter">
+          <div class="col-md-6">
+            <label for="amount" style="padding-top: 5px">Net Amount:</label>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input
+                type="text"
+                class="form-control"
+                id="amount"
+                name="amount"
+                [value]="purchase.Amount - purchase.Discount"
+                readonly
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

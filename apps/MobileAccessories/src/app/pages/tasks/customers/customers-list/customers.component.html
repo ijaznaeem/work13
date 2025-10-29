@@ -1,0 +1,120 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Customers List</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          <form #frmFilter="ngForm">
+            <div class="row no-pad">
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>City</label>
+                  <select
+                    name="company"
+                    id="company"
+                    [(ngModel)]="Filter.City"
+                    class="form-control"
+                    (change)="FilterData()"
+                  >
+                    <option value="" selected>--Select City--</option>
+                    <option *ngFor="let comp of Cities" [value]="comp.City">
+                      {{ comp.City }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-2 form-group">
+                <label for="">Search</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="search"
+                  [(ngModel)]="Filter.Search"
+                />
+              </div>
+              <div class="col-md-2">
+                <div
+                  class="custom-switch custom-switch-primary custom-control-inline mt-3 mb-xl-0"
+                >
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="color-switch-1"
+                    [(ngModel)]="Filter.ShowAll"
+                    name="ShowAll"
+                    (change)="FilterData()"
+                  />
+
+                  <label class="custom-control-label mr-1" for="color-switch-1">
+                    <span>Show All</span>
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-primary form-control"
+                    (click)="FilterData()"
+                    accesskey="a"
+                  >
+                    <i class="fa fa-search"></i>
+                    Filter
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-warning form-control"
+                    (click)="PrintReport()"
+                    accesskey="p"
+                  >
+                    <i class="fa fa-print"></i>
+                    Print
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label>&nbsp;</label>
+                  <button
+                    type="submit"
+                    class="btn btn-success form-control"
+                    (click)="AddCustomer()"
+                    accesskey="a"
+                  >
+                    <i class="fa fa-plus"></i>
+                    Add Customer
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="pt-3"></div>
+          <div class="row no-pad">
+            <div class="col-md-12">
+              <ft-dynamic-table
+                #rptTable
+                [Settings]="Settings"
+                [Data]="data"
+                [Search]="Filter.search"
+                (ClickAction)="Clicked($event)"
+              ></ft-dynamic-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

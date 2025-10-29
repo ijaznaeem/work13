@@ -1,0 +1,219 @@
+<div class="amendment-approvals-container">
+  <!-- Header Section -->
+  <div class="card border-0 box-shadow mb-3">
+    <div class="card-header transparent border-0 text-muted">
+      <h4 class="mb-0 text-success fw-bold">Master Formulation Amendment Approvals</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="filterForm" class="row align-items-end">
+        <div class="col-md-2">
+          <label for="fromDate" class="form-label text-success fw-bold">From Date:</label>
+          <input
+            type="date"
+            id="fromDate"
+            class="form-control"
+            formControlName="fromDate"
+            (change)="onFilterChange()"
+          />
+        </div>
+        <div class="col-md-2">
+          <label for="toDate" class="form-label text-success fw-bold">To Date:</label>
+          <input
+            type="date"
+            id="toDate"
+            class="form-control"
+            formControlName="toDate"
+            (change)="onFilterChange()"
+          />
+        </div>
+        <div class="col-md-3">
+          <label for="status" class="form-label text-primary fw-bold">Select Status:</label>
+          <select
+            id="status"
+            class="form-control"
+            formControlName="status"
+            (change)="onFilterChange()"
+          >
+            <option *ngFor="let status of statusOptions" [value]="status.value">
+              {{ status.label }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-5">
+          <p class="text-danger mb-0 small">
+            <i class="fa fa-info-circle me-1"></i>
+            Double click to add remarks
+          </p>
+        </div>
+      </form>
+      
+      <!-- Action Buttons -->
+      <div class="action-buttons mt-3">
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          (click)="AddAmendment()"
+          [disabled]="!canAdd"
+        >
+          <i class="fas fa-plus"></i> Add Amendment
+        </button>
+        <button
+          type="button"
+          class="btn btn-success btn-sm"
+          (click)="PostAmendment()"
+          [disabled]="!selectedAmendment || !canPost"
+        >
+          <i class="fas fa-check"></i> Post
+        </button>
+        <button
+          type="button"
+          class="btn btn-info btn-sm"
+          (click)="AddRemarks()"
+          [disabled]="!selectedAmendment"
+        >
+          <i class="fas fa-comment"></i> Add Remarks
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="row">
+    <!-- Left Section: Amendment Data and Details -->
+    <div class="col-md-8">
+      <!-- Amendment Data Table -->
+      <div class="card mb-3">
+        <div class="card-header bg-primary text-white">
+          <h6 class="mb-0 fw-bold">Amendment Approvals</h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive" style="height: 350px; overflow-y: auto;">
+            <table class="table table-sm table-hover mb-0 amendment-table">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th>ID</th>
+                  <th>Date</th>
+                  <th>Product Name</th>
+                  <th>Status</th>
+                  <th>Forwarded To</th>
+                  <th>Created By</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="loadingAmendments">
+                  <td colspan="6" class="text-center py-4">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                    Loading amendments...
+                  </td>
+                </tr>
+                <tr *ngIf="!loadingAmendments && amendmentData.length === 0">
+                  <td colspan="6" class="text-center py-4 text-muted">
+                    <i class="fas fa-inbox fa-2x mb-2"></i>
+                    <br>No amendments found
+                  </td>
+                </tr>
+                <tr
+                  *ngFor="let amendment of amendmentData"
+                  (click)="onAmendmentSelect(amendment)"
+                  (dblclick)="AddRemarks()"
+                  [class.table-active]="isRowSelected(amendment, 'amendment')"
+                  class="selectable-row"
+                >
+                  <td>{{ amendment.AmendmentID }}</td>
+                  <td>{{ formatDate(amendment.Date) }}</td>
+                  <td>{{ amendment.ProductName }}</td>
+                  <td>
+                    <span class="badge" [class]="getStatusBadgeClass(amendment.Status)">
+                      {{ amendment.Status }}
+                    </span>
+                  </td>
+                  <td>{{ amendment.ForwardedTo }}</td>
+                  <td>{{ amendment.CreatedBy }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Amendment Details Table -->
+      <div class="card">
+        <div class="card-header bg-info text-white">
+          <h6 class="mb-0 fw-bold">Amendment Details</h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive" style="height: 200px; overflow-y: auto;">
+            <table class="table table-sm table-hover mb-0 details-table">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th>Product Name</th>
+                  <th>Type</th>
+                  <th>Old Qty</th>
+                  <th>New Qty</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="loadingDetails">
+                  <td colspan="6" class="text-center py-3">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                    Loading details...
+                  </td>
+                </tr>
+                <tr *ngIf="!loadingDetails && !selectedAmendment">
+                  <td colspan="6" class="text-center py-3 text-muted">
+                    <i class="fas fa-hand-pointer"></i>
+                    Select an amendment to view details
+                  </td>
+                </tr>
+                <tr *ngIf="!loadingDetails && selectedAmendment && amendmentDetails.length === 0">
+                  <td colspan="6" class="text-center py-3 text-muted">
+                    <i class="fas fa-inbox"></i>
+                    No details found for selected amendment
+                  </td>
+                </tr>
+                <tr
+                  *ngFor="let detail of amendmentDetails"
+                  (click)="selectedDetail = detail"
+                  [class.table-active]="isRowSelected(detail, 'detail')"
+                  class="selectable-row"
+                >
+                  <td>{{ detail.ProductName }}</td>
+                  <td>
+                    <span class="badge" [class]="getTypeBadgeClass(detail.Type)">
+                      {{ detail.Type }}
+                    </span>
+                  </td>
+                  <td>{{ detail.OldQty | number:'1.2-2' }}</td>
+                  <td>{{ detail.NewQty | number:'1.2-2' }}</td>
+                  <td>{{ detail.Category }}</td>
+                  <td>{{ detail.Price | currency:'USD':'symbol':'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section: Remarks Panel -->
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-header bg-secondary text-white">
+          <h6 class="mb-0 fw-bold">Remarks</h6>
+        </div>
+        <div class="card-body p-2">
+          <div class="remarks-container">
+            <textarea
+              class="form-control remarks-textarea"
+              readonly
+              [value]="currentRemarks"
+              placeholder="Select an amendment to view remarks..."
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

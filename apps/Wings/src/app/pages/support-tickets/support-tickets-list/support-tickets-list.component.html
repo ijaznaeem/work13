@@ -1,0 +1,43 @@
+<!--table starts-->
+
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Support Tickets</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div class="row no-pad">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button
+                type="button"
+                class="btn btn-primary form-control"
+                (click)="AddTicket()"
+                accesskey="P"
+              >
+                <i class="fa fa-plus"></i>
+                Add Ticket
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row" id="print-section">
+          <div class="col-md-12">
+            <ft-datatable
+              #dataList
+              [CRUD]="false"
+              [Settings]="Settings"
+              [Filter]="filterList"
+              (ClickAction)="Clicked($event)"
+            ></ft-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

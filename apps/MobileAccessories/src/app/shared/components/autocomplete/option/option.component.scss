@@ -1,0 +1,66 @@
+:host {
+  display: block;
+}
+
+:host.no-result {
+  pointer-events: none;
+}
+
+.option {
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  display: block;
+  background-color: transparent;
+  color: inherit;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:host:first-child .option {
+  border-top-left-radius: 0.35rem;
+  border-top-right-radius: 0.35rem;
+}
+
+:host:last-child .option {
+  border-bottom-left-radius: 0.35rem;
+  border-bottom-right-radius: 0.35rem;
+}
+
+.option:hover {
+  background-color: #F5F5F5 !important;
+  transform: translateX(4px);
+}
+
+:host.first-active-item {
+  .option {
+    background-color: #e3f2fd !important;
+    border-left: 3px solid #2196f3;
+  }
+}
+
+:host:last-child .option {
+  border-bottom-left-radius: 0.35rem;
+  border-bottom-right-radius: 0.35rem;
+  border-bottom: none;
+}
+
+// Dark theme support
+:host-context(.layout-dark) {
+  .option {
+    color: #ffffff;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      background-color: #34495e !important;
+    }
+  }
+
+  &.first-active-item .option {
+    background-color: #3498db !important;
+    color: #ffffff;
+  }
+
+  &.no-result {
+    color: #bdc3c7;
+  }
+}

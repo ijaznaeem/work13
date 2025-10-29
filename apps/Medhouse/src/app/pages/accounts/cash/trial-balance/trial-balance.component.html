@@ -1,0 +1,300 @@
+<div class="container-fluid p-4">
+  <!-- Header Section -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">
+        <i class="fas fa-balance-scale text-primary me-2"></i>
+        Trial Balance
+      </h2>
+      <p class="text-muted mb-0">Financial Statement - Debits and Credits Summary</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button 
+        type="button" 
+        class="btn btn-outline-primary"
+        [disabled]="isLoading"
+        (click)="refreshData()"
+        title="Refresh Data">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isLoading"></i>
+        Refresh
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-success"
+        [disabled]="isLoading || !filterForm.valid"
+        (click)="exportToCSV()"
+        title="Export to CSV">
+        <i class="fas fa-file-csv"></i>
+        Export CSV
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-primary"
+        [disabled]="isLoading || !filterForm.valid"
+        (click)="printTrialBalance()"
+        title="Print Trial Balance">
+        <i class="fas fa-print"></i>
+        Print
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="card mb-4 border-primary">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        <i class="fas fa-filter me-2"></i>
+        Date Range Filter
+      </h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="filterForm" class="row g-3">
+        <div class="col-md-5">
+          <label for="fromDate" class="form-label">
+            <i class="fas fa-calendar-alt me-1"></i>
+            From Date
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="date"
+            id="fromDate"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('fromDate')"
+            formControlName="fromDate">
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('fromDate')">
+            {{ getFieldError('fromDate') }}
+          </div>
+        </div>
+
+        <div class="col-md-5">
+          <label for="toDate" class="form-label">
+            <i class="fas fa-calendar-alt me-1"></i>
+            To Date
+            <span class="text-danger">*</span>
+          </label>
+          <input
+            type="date"
+            id="toDate"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('toDate')"
+            formControlName="toDate">
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('toDate')">
+            {{ getFieldError('toDate') }}
+          </div>
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+          <button 
+            type="button"
+            class="btn btn-info w-100"
+            [disabled]="isLoading"
+            (click)="getAccountSummary()"
+            title="Show Account Summary">
+            <i class="fas fa-chart-pie"></i>
+            Summary
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Trial Balance Summary Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card text-white bg-success">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6 class="card-title mb-1">Total Debits</h6>
+              <h4 class="mb-0">{{ totalDebits | currency:'USD':'symbol':'1.2-2' }}</h4>
+            </div>
+            <i class="fas fa-plus-circle fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card text-white bg-info">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6 class="card-title mb-1">Total Credits</h6>
+              <h4 class="mb-0">{{ totalCredits | currency:'USD':'symbol':'1.2-2' }}</h4>
+            </div>
+            <i class="fas fa-minus-circle fa-2x opacity-75"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card text-white" 
+           [ngClass]="isTrialBalanceBalanced() ? 'bg-success' : 'bg-warning'">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6 class="card-title mb-1">Difference</h6>
+              <h4 class="mb-0">{{ balanceDifference | currency:'USD':'symbol':'1.2-2' }}</h4>
+            </div>
+            <i [class]="getBalanceStatusIcon() + ' fa-2x opacity-75'"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card" 
+           [ngClass]="isTrialBalanceBalanced() ? 'text-white bg-success' : 'text-white bg-warning'">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h6 class="card-title mb-1">Status</h6>
+              <h5 class="mb-0">{{ isTrialBalanceBalanced() ? 'BALANCED' : 'UNBALANCED' }}</h5>
+            </div>
+            <i [class]="getBalanceStatusIcon() + ' fa-2x opacity-75'"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons Row -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group" role="group">
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary btn-sm"
+            (click)="filterByAccountType('Cash')"
+            title="Filter Cash Accounts">
+            <i class="fas fa-money-bill-wave"></i>
+            Cash
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary btn-sm"
+            (click)="filterByAccountType('Sale')"
+            title="Filter Sale Accounts">
+            <i class="fas fa-shopping-cart"></i>
+            Sales
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary btn-sm"
+            (click)="filterByAccountType('Purchase')"
+            title="Filter Purchase Accounts">
+            <i class="fas fa-shopping-bag"></i>
+            Purchases
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary btn-sm"
+            (click)="filterByAccountType('Production')"
+            title="Filter Production Accounts">
+            <i class="fas fa-industry"></i>
+            Production
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-outline-danger btn-sm"
+            (click)="clearFilters()"
+            title="Clear All Filters">
+            <i class="fas fa-times"></i>
+            Clear
+          </button>
+        </div>
+
+        <div>
+          <button 
+            type="button" 
+            class="btn btn-outline-info btn-sm"
+            [disabled]="!selectedEntry"
+            (click)="viewAccountDetails()"
+            title="View Selected Account Details">
+            <i class="fas fa-eye"></i>
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trial Balance Data Table -->
+  <div class="card">
+    <div class="card-header bg-light">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="fas fa-table me-2"></i>
+          Trial Balance Data
+        </h5>
+        <div class="text-muted">
+          <small>
+            <i class="fas fa-info-circle"></i>
+            Click on a row to select account
+          </small>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <!-- Loading Overlay -->
+      <div *ngIf="isLoading" class="text-center p-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading trial balance data...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading trial balance data...</p>
+      </div>
+
+      <!-- Trial Balance Table -->
+      <div *ngIf="!isLoading" class="table-responsive">
+        <ng2-smart-table
+          [settings]="tableSettings"
+          [source]="trialBalanceData"
+          (userRowSelect)="onRowSelect($event)"
+          class="trial-balance-table">
+        </ng2-smart-table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trial Balance Validation -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card" 
+           [ngClass]="isTrialBalanceBalanced() ? 'border-success' : 'border-warning'">
+        <div class="card-body text-center">
+          <h5 [ngClass]="getBalanceStatusClass()">
+            <i [class]="getBalanceStatusIcon() + ' me-2'"></i>
+            Trial Balance Validation
+          </h5>
+          <p class="mb-0" [ngClass]="getBalanceStatusClass()">
+            <ng-container *ngIf="isTrialBalanceBalanced()">
+              ✓ Your trial balance is properly balanced. All debits equal credits.
+            </ng-container>
+            <ng-container *ngIf="!isTrialBalanceBalanced()">
+              ⚠ Your trial balance is not balanced. Please review the entries for discrepancies.
+              <br>
+              <small>Difference: {{ balanceDifference | currency:'USD':'symbol':'1.2-2' }}</small>
+            </ng-container>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Date Range Display -->
+  <div class="row mt-3">
+    <div class="col-12">
+      <div class="text-center text-muted">
+        <small>
+          <i class="fas fa-calendar me-1"></i>
+          Showing trial balance for period: 
+          <strong>{{ filterForm.value.fromDate | date:'MMM dd, yyyy' }}</strong> 
+          to 
+          <strong>{{ filterForm.value.toDate | date:'MMM dd, yyyy' }}</strong>
+        </small>
+      </div>
+    </div>
+  </div>
+</div>

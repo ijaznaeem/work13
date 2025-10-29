@@ -1,0 +1,353 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-block pt-0 widget-body">
+    <tabset #searchTab>
+      <tab id="order" heading="Order">
+        <div class="row no-gutter">
+          <div class="col-md-4">
+            <h5 class="mb-3">Order {{ EditID }}</h5>
+          </div>
+          <div class="col-md-4">
+            <div *ngIf="isPosted" class="text-center btn btn-danger btn-sm">
+              POSTED ORDER
+            </div>
+          </div>
+          <div class="col-md-4">
+            <form #frmFilter="ngForm">
+              <div class="row no-gutter">
+                <div class="col-md-6">
+                  <input
+                    class="form-control"
+                    name="ino"
+                    [(ngModel)]="Ino"
+                    placeholder="Order No"
+                  />
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <button
+                      type="submit"
+                      class="btn btn-primary form-control"
+                      (click)="FindINo()"
+                      accesskey="F"
+                    >
+                      <i class="fa fa-search"></i>
+                      Find Order
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card-block widget-body">
+          <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
+            <div class="row no-gutter">
+              <div class="col-md-2">
+                <label for="dp1">Date:</label>
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    placeholder="yyyy-mm-dd"
+                    name="dp1"
+                    [(ngModel)]="order.Date"
+                    ngbDatepicker
+                    #d1="ngbDatepicker"
+                    required
+                    disabled
+                  />
+                  <div class="input-group-addon">
+                    <button
+                      type="button"
+                      class="btn btn-warning"
+                      (click)="d1.toggle()"
+                    >
+                      <i class="fa fa-calendar"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group col-md-4">
+                <label for="customer">Customer </label>
+                <ng-select
+                  #cmbCustomers
+                  name="ng2select"
+                  class="custom"
+                  [items]="Accounts"
+                  [virtualScroll]="true"
+                  bindLabel="CustomerName"
+                  bindValue="CustomerID"
+                  placeholder="Select Customer"
+                  (change)="CustomerSelected($event)"
+                  required
+                  [disabled]="!btnLocked"
+                  [(ngModel)]="order.CustomerID"
+                >
+                  <ng-template ng-option-tmp let-item="item">
+                    <div class="row no-gutter">
+                      <div class="col-md-12">
+                        {{ item.CustomerName }}
+                      </div>
+                      <div class="col-md-9 text-italic font-small-2 mt-1">
+                        <small>
+                          {{ item.Address }}
+                        </small>
+                      </div>
+                      <div class="col-md-3 text-italic font-small-2 mt-1">
+                        <small>
+                          {{ item.Balance }}
+                        </small>
+                      </div>
+                    </div>
+                  </ng-template>
+                </ng-select>
+              </div>
+
+              <div class="col-md-4 form-group">
+                <label for="">Adress</label>
+                <p>
+                  <Strong>
+                    {{ SelectCust.Address }}, {{ SelectCust.City }}
+                  </Strong>
+                </p>
+              </div>
+              <div class="col-md-2 form-group">
+                <label for="">Balance</label>
+                <p>
+                  <Strong> {{ SelectCust.Balance }} </Strong>
+                </p>
+              </div>
+            </div>
+            <form #formqty="ngForm">
+              <div class="row no-gutter">
+                <div class="col-md-4">
+                  <label for="customer"> Select product </label>
+                  <ng-select
+                    #cmbProduct
+                    name="cmbProduct"
+                    id="cmbProduct"
+                    class="custom"
+                    [items]="Products | async"
+                    [virtualScroll]="true"
+                    bindLabel="ProductName"
+                    bindValue="ProductID"
+                    placeholder="Select Product"
+                    (change)="ProductSelected($event)"
+                    required
+                    [(ngModel)]="orderdetails.ProductID"
+                    [searchFn]="ProductSearchFn"
+                  >
+                    <ng-template ng-option-tmp let-item="item">
+                      <div class="row no-gutter">
+                        <div class="col-md-10">
+                          {{ item.ProductName }}
+                        </div>
+
+                        <div class="col-md-2 text-italic font-small-2 mt-1">
+                          <small>
+                            {{ item.ProductID }}
+                          </small>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </ng-select>
+                </div>
+                <div class="col-md-7">
+                  <div class="row no-gutter">
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label for="qty">Qty</label>
+                        <input
+                          type="number"
+                          class="form-control dation-field"
+                          required="required"
+                          id="qty"
+                          name="qty"
+                          [(ngModel)]="orderdetails.Qty"
+                          #qty
+                          (focus)="qty.select()"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label for="RPrice">Rate:</label>
+                        <input
+                          #txtRate
+                          type="number"
+                          class="form-control"
+                          id="SPrice"
+                          name="SPrice"
+                          [(ngModel)]="orderdetails.SPrice"
+                          min="1"
+                          required
+                          (keydown.enter)="AddOrder()"
+                          (focus)="txtRate.select()"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label for="bonus">Amount:</label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="pamount"
+                          name="pamount"
+                          readonly
+                          [value]="
+                            (orderdetails.Qty * orderdetails.Packing +
+                              orderdetails.KGs * 1) *
+                            orderdetails.SPrice
+                          "
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button
+                          #btnAdd
+                          type="button"
+                          class="btn btn-primary form-control"
+                          [disabled]="!formqty.form.valid || isPosted"
+                          (click)="AddOrder()"
+                          accesskey="a"
+                        >
+                          <i class="ft-plus"></i>
+                          Add
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <div>
+              <div
+                class="table-responsive custom-table-height table-bordered table-condensed"
+              >
+                <div>
+                  <ng2-smart-table
+                    class="table table-hover"
+                    [settings]="settings"
+                    [source]="data"
+                    (edit)="ConfirmEdit($event)"
+                    (deleteConfirm)="onDeleteConfirm($event)"
+                    (editConfirm)="onEdit($event)"
+                  >
+                  </ng2-smart-table>
+                </div>
+              </div>
+              <div class="row no-gutter">
+                <div class="col-md-8">
+                  <div class="row no-gutter">
+                    <div class="col-md-1">
+                      <div class="form-group">
+                        <label for="notes">Notes</label>
+                      </div>
+                    </div>
+                    <div class="col-md-5">
+                      <div class="form-group">
+                        <input
+                          class="form-control"
+                          [(ngModel)]="order.Notes"
+                          type="text"
+                          name="notes"
+                          id="notes"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label for="notes">Total Weight </label>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <p>
+                          <strong
+                            >{{ GetWight() }} Kgs
+                            <span>{{ GetWight() / 1000 }} Tons</span></strong
+                          >
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row no-gutter">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <ft-navigator
+                          (ClickAction)="NavigatorClicked($event)"
+                          [disabled]="btnLocked"
+                        >
+                        </ft-navigator>
+                      </div>
+                    </div>
+                    <div class="col-md-9">
+                      <ft-buttons-bar
+                        #btnBar
+                        [buttons]="buttonConfigs"
+                        [disabled]="btnLocked"
+                      ></ft-buttons-bar>
+                      &nbsp;
+                      <ft-buttons-bar
+                        [buttons]="btnSave"
+                        [disabled]="!btnLocked"
+                      ></ft-buttons-bar>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="row no-gutter">
+                    <div class="col-md-6">
+                      <label for="gtotal">Total Amount</label>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                          <input
+                            type="text"
+                            style="font-weight: 800;"
+                            class="form-control"
+                            id="gtotal"
+                            name="gtotal"
+                            [(ngModel)]="order.Amount"
+                            readonly
+                          />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </tab>
+      <tab id="search" heading="search" (selectTab)="onTabSelect()">
+        <h3 class="mb-3">Search</h3>
+        <div class="container">
+          <ft-crud-form
+            [form]="SrchForm"
+            [formdata]="searchData"
+            [submitbutton]="'Search...'"
+            (BeforeSave)="BeforeSave($event)"
+          >
+          </ft-crud-form>
+          <h5>Search Result</h5>
+          <ft-dynamic-table
+            #RptTable
+            [Settings]="SrchSttings"
+            [Data]="srchResult"
+            (ClickAction)="Clicked($event)"
+          >
+          </ft-dynamic-table>
+        </div>
+      </tab>
+    </tabset>
+  </div>
+</div>

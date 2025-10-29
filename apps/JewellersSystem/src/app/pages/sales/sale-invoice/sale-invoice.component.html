@@ -1,0 +1,801 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <div class="row">
+      <div class="col-md-3">
+        <h5 class="mb-3">Sale Invoice</h5>
+      </div>
+      <div class="col-md-3">
+        <div *ngIf="isPosted" class="text-center btn btn-danger btn-sm">
+          POSTED ORDER
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="row">
+          <div class="col-md-8">
+            <input
+              class="form-control"
+              name="OrderNo"
+              [(ngModel)]="invoice.OrderNo"
+              placeholder="Order No"
+              (keyup.enter)="FindOrderNo()"
+              accesskey="o"
+            />
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <button
+                type="button"
+                class="btn btn-primary form-control"
+                (click)="FindOrderNo()"
+                accesskey="O"
+              >
+                <i class="fa fa-search"></i>
+                Find Order
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <form #frmFilter="ngForm">
+          <div class="row">
+            <div class="col-md-8">
+              <input
+                class="form-control"
+                name="ino"
+                [(ngModel)]="Ino"
+                placeholder="Invoice No"
+              />
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <button
+                  type="submit"
+                  class="btn btn-primary form-control"
+                  (click)="FindINo()"
+                  accesskey="F"
+                >
+                  <i class="fa fa-search"></i>
+                  Find Invoice
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="card-block widget-body">
+    <form (ngSubmit)="SaveData()" #frmInvoice="ngForm">
+      <div class="row no-pad">
+        <div class="col-md-2">
+          <label for="dp1">Date:</label>
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="dp1"
+              [(ngModel)]="invoice.Date"
+              [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+              bsDatepicker
+              disabled
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label for="customer">Account: </label>
+          <ng-select
+            #cmbCustomers
+            name="ng2select"
+            class="custom"
+            [items]="$Accounts | async"
+            [virtualScroll]="true"
+            bindLabel="CustomerName"
+            bindValue="CustomerID"
+            placeholder="Select Customer"
+            (change)="CustomerSelected($event)"
+            required
+            [(ngModel)]="invoice.CustomerID"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              <div class="row no-pad">
+                <div class="col-md-12">
+                  {{ item.CustomerName }}
+                </div>
+                <div class="col-md-9 text-italic font-small-2 mt-1">
+                  <small> {{ item.Address }} </small>
+                </div>
+                <div class="col-md-3 text-italic font-small-2 mt-1">
+                  <small>
+                    {{ item.PhoneNo }}
+                  </small>
+                </div>
+              </div>
+            </ng-template>
+          </ng-select>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="qty">Customer Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="CustomerName"
+              name="CustomerName"
+              [(ngModel)]="invoice.CustomerName"
+            />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="Address">Address</label>
+            <input
+              type="text"
+              class="form-control"
+              id="Address"
+              name="Address"
+              [(ngModel)]="invoice.Address"
+            />
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="PhoneNo">Phone No</label>
+            <input
+              type="text"
+              class="form-control"
+              id="PhoneNo"
+              name="PhoneNo"
+              [(ngModel)]="invoice.PhoneNo"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-1">
+          <div class="form-group">
+            <label for="supplier">Gold Type:</label>
+            <select
+              #cmbGoldType
+              name="cmbGoldType"
+              id="cmbGoldType"
+              class="form-control"
+              [(ngModel)]="invoice.GoldType"
+              required
+            >
+              <option value="" selected>Gold Type</option>
+              <option *ngFor="let type of $GoldTypes | async" [value]="type.ID">
+                {{ type.GoldType }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <ft-input-control
+          [label]="'Cash'"
+          name="Cash"
+          [placeholder]="'Cash'"
+          [required]="false"
+          [readonly]="true"
+          [ngModel]="invoice.PrevBalance.Cash"
+        >
+        </ft-input-control>
+        <ft-input-control
+          [label]="'Gold 24K'"
+          name="Gold24K"
+          [placeholder]="'Gold 24K'"
+          [required]="false"
+          [readonly]="true"
+          [ngModel]="invoice.PrevBalance.Gold24K"
+        >
+        </ft-input-control>
+        <ft-input-control
+          [label]="'Gold 22K'"
+          name="Gold22K"
+          [placeholder]="'Gold 22K'"
+          [required]="false"
+          [readonly]="true"
+          [ngModel]="invoice.PrevBalance.Gold22K"
+        >
+        </ft-input-control>
+        <div class="col-md-3">
+          <div
+            *ngIf="formqty.invalid && (formqty.touched || formqty.dirty)"
+            class="alert alert-danger p-2"
+          >
+            <ul class="mb-0">
+              <li
+                *ngIf="
+                  formqty.controls?.cmbItems?.invalid &&
+                  (formqty.controls?.cmbItems?.touched ||
+                    formqty.controls?.cmbItems?.dirty)
+                "
+              >
+                Item is required.
+              </li>
+              <li
+                *ngIf="
+                  formqty.controls?.Description?.invalid &&
+                  (formqty.controls?.Description?.touched ||
+                    formqty.controls?.Description?.dirty)
+                "
+              >
+                Description is required.
+              </li>
+              <li
+                *ngIf="
+                  formqty.controls?.qty?.invalid &&
+                  (formqty.controls?.qty?.touched ||
+                    formqty.controls?.qty?.dirty)
+                "
+              >
+                Quantity is required.
+              </li>
+              <li
+                *ngIf="
+                  formqty.controls?.Weight?.invalid &&
+                  (formqty.controls?.Weight?.touched ||
+                    formqty.controls?.Weight?.dirty)
+                "
+              >
+                Weight is required.
+              </li>
+              <li
+                *ngIf="
+                  formqty.controls?.Polish?.invalid &&
+                  (formqty.controls?.Polish?.touched ||
+                    formqty.controls?.Polish?.dirty)
+                "
+              >
+                Polish is required.
+              </li>
+              <li
+                *ngIf="
+                  formqty.controls?.Labour?.invalid &&
+                  (formqty.controls?.Labour?.touched ||
+                    formqty.controls?.Labour?.dirty)
+                "
+              >
+                Labour is required.
+              </li>
+              <li
+                *ngIf="
+                  formqty.controls?.CutRatio?.invalid &&
+                  (formqty.controls?.CutRatio?.touched ||
+                    formqty.controls?.CutRatio?.dirty)
+                "
+              >
+                Cut/Ratio is required.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <form #formqty="ngForm">
+        <div class="row no-pad">
+          <div class="col-md-4">
+            <img
+              [src]="ImageUrl + selectedProduct?.Picture"
+              class="img-thumbnail rounded img-responsive"
+              alt=""
+              style="width: 100%; max-height: 150px; object-fit: cover"
+            />
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="supplier">Store Account:</label>
+              <ng-select
+                #cmbStore
+                [items]="$Stores | async"
+                class="custom"
+                bindLabel="StoreName"
+                bindValue="StoreID"
+                placeholder="Select Store"
+                [(ngModel)]="details.StoreID"
+                (change)="StoreSelected($event)"
+                required
+              >
+              </ng-select>
+            </div>
+            <div class="form-group">
+              <label for="supplier">Products:</label>
+              <ng-select
+                #cmbItems
+                name="cmbItems"
+                id="cmbItems"
+                class="custom"
+                [items]="Stock"
+                [virtualScroll]="true"
+                bindLabel="ProductName"
+                bindValue="StockID"
+                placeholder="Select Item"
+                (change)="ItemSelected($event)"
+                required
+                [(ngModel)]="details.StockID"
+                [searchFn]="ProductSearchFn"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <div class="row no-pad">
+                    <div class="col-md-10">
+                      {{ item.ProductName }}
+                    </div>
+
+                    <div class="col-md-2">
+                      <small>
+                        {{ item.BarCode }}
+                      </small>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-md-5">
+            <div class="row no-pad">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="qty">Qty:</label>
+                  <input
+                    #qty
+                    type="number"
+                    class="form-control dation-field"
+                    id="qty"
+                    name="qty"
+                    [(ngModel)]="details.Qty"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="supplier">Weight:</label>
+                  <input
+                    #Weight
+                    type="number"
+                    class="form-control"
+                    id="Weight"
+                    name="Weight"
+                    [(ngModel)]="details.Weight"
+                    placeholder="0"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="PolishRatio">Polish Ratio:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="PolishRatio"
+                    name="PolishRatio"
+                    [(ngModel)]="details.PolishRatio"
+                    placeholder="0"
+                    (change)="
+                      details.Polish = RoundTo(
+                        (details.Weight * details.PolishRatio) / 11.664,
+                        2
+                      )
+                    "
+                  />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="Fare">Polish:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="Polish"
+                    name="Polish"
+                    [(ngModel)]="details.Polish"
+                    placeholder="0"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="Fare">Labour:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="Labour"
+                    name="Labour"
+                    [(ngModel)]="details.Labour"
+                    placeholder="0"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="Fare">Cut/Ratio:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="CutRatio"
+                    name="CutRatio"
+                    [(ngModel)]="details.CutRatio"
+                    placeholder="0"
+                    required
+                    [step]="0.01"
+                    [min]="0"
+                  />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="CutRatio">Cutting:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="CutRatio"
+                    name="CutRatio"
+                    [value]="details.CutRatio / 96 | number: '1.3-3'"
+                  />
+                </div>
+              </div>
+
+              <!-- <div class="col-md-3">
+                <div class="form-group">
+                  <label for="Purity">Purity:</label>
+                  <input
+                    type="number"
+                    class="form-control text-warning"
+                    id="Purity"
+                    name="Purity"
+                    [value]="selectedProduct.Purity "
+                  />
+                </div>
+              </div> -->
+
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="NetWeight">Net Weight:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="NetWeight"
+                    name="NetWeight"
+                    [value]="GetNetWeight(details)"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label for="">&nbsp;</label>
+                <div class="form-group">
+                  <button
+                    #btnAdd
+                    type="button"
+                    class="btn btn-primary form-control"
+                    [disabled]="!formqty.form.valid"
+                    (click)="AddOrder()"
+                    accesskey="a"
+                  >
+                    <i class="fa fa-plus"> </i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div style="margin: 5px; padding-bottom: 10px">
+        <div
+          class="table-responsive custom-table-height table-bordered table-condensed pb-1"
+        >
+          <ng2-smart-table
+            class="table table-hover"
+            [settings]="settings"
+            [source]="data"
+            (deleteConfirm)="onDeleteConfirm($event)"
+            (editConfirm)="onEdit($event)"
+          >
+          </ng2-smart-table>
+        </div>
+        <div class="row no-pad mt-3">
+          <div class="col">
+            <ft-input-control
+              aria-label="Total Weight"
+              [label]="'Total Weight'"
+              [value]="invoice.TotalWeight"
+              [readonly]="true"
+            >
+            </ft-input-control>
+          </div>
+          <div class="col">
+            <ft-input-control
+              [label]="'Advance Gold'"
+              name="AdvanceGold"
+              [(ngModel)]="invoice.AdvanceGold"
+              [type]="'number'"
+              (valueChange)="GrandCalc($event)"
+            >
+            </ft-input-control>
+          </div>
+          <div class="col">
+            <ft-input-control
+              [label]="'Total Cutting'"
+              [value]="invoice.TotalCutting"
+              [readonly]="true"
+              [type]="'number'"
+            >
+            </ft-input-control>
+          </div>
+
+          <div class="col">
+            <ft-input-control
+              [label]="'Bal. Weight'"
+              [value]="invoice.BalanceWeight"
+              [readonly]="true"
+            >
+            </ft-input-control>
+          </div>
+
+          <div class="col">
+            <ft-input-control
+              [label]="'Rate'"
+              name="Rate"
+              [(ngModel)]="invoice.Rate"
+              [readonly]="false"
+              [type]="'number'"
+              (valueChange)="GrandCalc($event)"
+            >
+            </ft-input-control>
+          </div>
+
+          <div class="col">
+            <ft-input-control
+              [label]="'Amount'"
+              [value]="invoice.Amount"
+              [readonly]="true"
+            >
+            </ft-input-control>
+          </div>
+          <div class="col">
+            <ft-input-control
+              [label]="'Total Labour'"
+              [value]="invoice.TotalLabour"
+              [readonly]="true"
+            >
+            </ft-input-control>
+          </div>
+
+          <div class="col">
+            <ft-input-control
+              [label]="'Total Polish'"
+              [value]="invoice.TotalPolish"
+              [readonly]="true"
+            >
+            </ft-input-control>
+          </div>
+        </div>
+        <div class="row no-pad">
+          <div class="col">
+            <ft-input-control
+              [label]="'Total Amount'"
+              [value]="invoice.TotalAmount"
+              [readonly]="true"
+            >
+            </ft-input-control>
+          </div>
+
+          <div class="col">
+            <ft-input-control
+              [label]="'Adv. Amount'"
+              [(ngModel)]="invoice.AdvanceAmount"
+              name="AdvanceAmount"
+              [readonly]="false"
+              [type]="'number'"
+              (valueChange)="GrandCalc($event)"
+            >
+            </ft-input-control>
+          </div>
+          <div class="col">
+            <ft-input-control
+              [label]="'Bill Gold'"
+              [(ngModel)]="invoice.BillGold"
+              name="BillGold"
+              [readonly]="false"
+              [type]="'number'"
+              (valueChange)="GrandCalc($event)"
+            >
+            </ft-input-control>
+          </div>
+          <div class="col">
+            <ft-input-control
+              [label]="'B/Gold Cutting'"
+              [(ngModel)]="invoice.BillGoldCutting"
+              name="BillGoldCutting"
+              [type]="'number'"
+              [readonly]="false"
+              (valueChange)="GrandCalc($event)"
+            >
+            </ft-input-control>
+          </div>
+          <div class="col">
+            <ft-input-control
+              [label]="'Net B/Gold'"
+              [value]="invoice.NetBillGold"
+              [readonly]="true"
+              [type]="'number'"
+            >
+            </ft-input-control>
+          </div>
+
+          <div class="col">
+            <ft-input-control
+              [label]="'B/Gold Rate'"
+              [(ngModel)]="invoice.BillGoldRate"
+              name="BillGoldRate"
+              [readonly]="false"
+              [type]="'number'"
+              (valueChange)="GrandCalc($event)"
+            >
+            </ft-input-control>
+          </div>
+
+          <div class="col">
+            <ft-input-control
+              [label]="'B/Gold Amount'"
+              [(ngModel)]="invoice.BillGoldAmount"
+              name="BillGoldAmount"
+              [readonly]="false"
+              [type]="'number'"
+              (valueChange)="GrandCalc($event)"
+            >
+            </ft-input-control>
+          </div>
+        </div>
+        <div class="row no-pad">
+          <div class="col">
+            <ft-input-control
+              [label]="'Balance Amount'"
+              [value]="invoice.BalanceAmount"
+              [readonly]="true"
+            >
+            </ft-input-control>
+          </div>
+
+          <div class="col">
+            <ft-input-control
+              [label]="'G/Amount Paid'"
+              [(ngModel)]="invoice.GoldAmountPaid"
+              name="GoldAmountPaid"
+              [readonly]="false"
+              [type]="'number'"
+              (valueChange)="GrandCalc($event)"
+            >
+            </ft-input-control>
+          </div>
+
+          <div class="col">
+            <ft-input-control
+              [label]="'Received Amount'"
+              [(ngModel)]="invoice.RecievedAmount"
+              name="RecievedAmount"
+              [readonly]="false"
+              [type]="'number'"
+              (valueChange)="GrandCalc($event)"
+            >
+            </ft-input-control>
+          </div>
+
+          <div class="col">
+            <ft-input-control
+              [label]="'Discount'"
+              [(ngModel)]="invoice.Discount"
+              name="Discount"
+              [readonly]="false"
+              [type]="'number'"
+              (valueChange)="GrandCalc($event)"
+            >
+            </ft-input-control>
+          </div>
+          <div class="col">
+            <ft-input-control
+              [label]="'Advance Returned'"
+              [(ngModel)]="invoice.AdvanceReturned"
+              name="AdvanceReturned"
+              [readonly]="false"
+              [type]="'number'"
+              (valueChange)="GrandCalc($event)"
+            >
+            </ft-input-control>
+          </div>
+          <div class="col">
+            <ft-input-control
+              [label]="'Credit Amount'"
+              [value]="invoice.CreditAmount"
+              [readonly]="true"
+            >
+            </ft-input-control>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="row no-pad mt-3">
+              <div class="col-md-4">
+                <label for="notes">Notes</label>
+              </div>
+              <div class="col-md-8">
+                <div class="form-group">
+                  <input
+                    class="form-control"
+                    [(ngModel)]="invoice.Note"
+                    type="text"
+                    name="notes"
+                    id="notes"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row no-pad">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <ft-navigator (ClickAction)="NavigatorClicked($event)">
+                  </ft-navigator>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block"
+                    (click)="NewInvoice()"
+                    accesskey="n"
+                  >
+                    New
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block"
+                    [disabled]="
+                      !frmInvoice.form.valid || data.count() == 0 || isPosted
+                    "
+                    (click)="SaveData()"
+                    accesskey="s"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block"
+                    [disabled]="EditID == ''"
+                    (click)="PrintInvoice()"
+                    accesskey="p"
+                  >
+                    Print
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-block"
+                    (click)="Cancel()"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
