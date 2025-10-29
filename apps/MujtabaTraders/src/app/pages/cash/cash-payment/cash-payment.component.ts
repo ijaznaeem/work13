@@ -144,4 +144,8 @@ export class CashPaymentComponent implements OnInit {
     this.Voucher = new VoucherModel();
     this.router.navigateByUrl('/cash/cashpayment');
   }
+  print (){
+    this.http.PrintVoucher(this.EditID);
+  }
+
 }

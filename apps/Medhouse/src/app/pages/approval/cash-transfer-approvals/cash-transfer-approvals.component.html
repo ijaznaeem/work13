@@ -1,0 +1,493 @@
+<!-- Cash Transfer Approvals Component -->
+<div class="cash-transfer-approvals">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="row">
+      <div class="col-md-7">
+        <h3 class="page-title">Cash Transfer Approvals</h3>
+        <p class="instruction-text text-info">
+          {{ getStatusDescription() }} • {{ getDateRangeText() }}
+        </p>
+      </div>
+      <div class="col-md-5 text-right">
+        <!-- Filter Controls -->
+        <form [formGroup]="filterForm" class="filter-form">
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="fromDate" class="form-label">From Date:</label>
+              <input
+                type="date"
+                id="fromDate"
+                class="form-control form-control-sm"
+                formControlName="fromDate"
+              />
+            </div>
+            <div class="form-group col-md-4">
+              <label for="toDate" class="form-label">To Date:</label>
+              <input
+                type="date"
+                id="toDate"
+                class="form-control form-control-sm"
+                formControlName="toDate"
+              />
+            </div>
+            <div class="form-group col-md-4">
+              <label for="status" class="form-label">Status:</label>
+              <select
+                id="status"
+                class="form-control form-control-sm"
+                formControlName="status"
+              >
+                <option *ngFor="let status of statusOptions" [value]="status">
+                  {{ status }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-12 text-center">
+              <button
+                type="button"
+                class="btn btn-primary btn-sm mx-1"
+                (click)="loadApprovals()"
+                title="Load cash transfer approvals with current filters"
+              >
+                <i class="fas fa-search"></i>
+                Load Data
+              </button>
+              <button
+                type="button"
+                class="btn btn-success btn-sm mx-1"
+                (click)="exportToExcel()"
+                title="Export current data to Excel"
+              >
+                <i class="fas fa-file-excel"></i>
+                Export
+              </button>
+              <button
+                type="button"
+                class="btn btn-info btn-sm mx-1"
+                (click)="showCashTransferForm()"
+                title="Create new cash transfer approval"
+                *ngIf="state.canAdd"
+              >
+                <i class="fas fa-plus"></i>
+                Add New
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Section -->
+  <div class="content-section">
+    <div class="row">
+      <!-- Main Grid -->
+      <div class="col-12">
+        <div class="grid-container">
+          <div class="grid-header">
+            <h5>Cash Transfer Approvals</h5>
+            <div class="grid-tools">
+              <span class="record-count" *ngIf="approvals.length > 0">
+                {{ approvals.length }} record(s) found
+              </span>
+            </div>
+          </div>
+          <div class="grid-content">
+            <ft-data-grid
+              #grdData
+              [columns]="approvalColumns"
+              [data]="approvals"
+              [loading]="state.loading"
+              [selectionMode]="'Single'"
+              [allowSorting]="true"
+              [allowFiltering]="false"
+              [pageSize]="20"
+              [height]="500"
+              [ShowSearch]="false"
+              (selectionChange)="onApprovalSelectionChange($event)"
+              (rowDoubleClick)="onRowDoubleClick()"
+              class="approval-grid"
+            >
+            </ft-data-grid>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <div class="row">
+      <div class="col-12">
+        <div class="button-group">
+          <!-- Add Approval Button -->
+          <button
+            type="button"
+            class="btn btn-primary btn-action"
+            [disabled]="!canPerformAction('add')"
+            (click)="addApproval()"
+          >
+            <i class="fas fa-plus"></i>
+            Add Approval
+          </button>
+
+          <!-- Forward Button -->
+          <button
+            type="button"
+            class="btn btn-info btn-action"
+            [disabled]="!state.selectedApproval || !canPerformAction('forward')"
+            (click)="forwardApproval()"
+          >
+            <i class="fas fa-arrow-right"></i>
+            Forward
+          </button>
+
+          <!-- Reject Button -->
+          <button
+            type="button"
+            class="btn btn-danger btn-action"
+            [disabled]="!state.selectedApproval || !canPerformAction('reject')"
+            (click)="rejectApproval()"
+          >
+            <i class="fas fa-times"></i>
+            Reject
+          </button>
+
+          <!-- Post Button (For Accounts) -->
+          <button
+            type="button"
+            class="btn btn-success btn-action"
+            [disabled]="!state.selectedApproval || !canPerformAction('post') || state.selectedApproval?.Status !== 'Approved'"
+            (click)="postApproval()"
+            *ngIf="isAccountsDepartment()"
+          >
+            <i class="fas fa-check-circle"></i>
+            Post Transfer
+          </button>
+
+          <!-- Print Button -->
+          <button
+            type="button"
+            class="btn btn-secondary btn-action"
+            [disabled]="!state.selectedApproval"
+            (click)="printApproval()"
+          >
+            <i class="fas fa-print"></i>
+            Print
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="state.loading" class="loading-overlay">
+    <div class="loading-content">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <p class="loading-text">Loading cash transfer approvals...</p>
+    </div>
+  </div>
+
+  <!-- Selection Info Panel -->
+  <div class="selection-info-panel" *ngIf="state.selectedApproval">
+    <div class="row">
+      <div class="col-md-2">
+        <strong>Selected ID:</strong> #{{ state.selectedApproval.ApprovalID }}
+      </div>
+      <div class="col-md-3">
+        <strong>From:</strong> {{ state.selectedApproval.TransferredFrom }}
+      </div>
+      <div class="col-md-3">
+        <strong>To:</strong> {{ state.selectedApproval.TransferredTo }}
+      </div>
+      <div class="col-md-2">
+        <strong>Amount:</strong> {{ formatCurrency(state.selectedApproval.Amount) }}
+      </div>
+      <div class="col-md-2">
+        <strong>Status:</strong> 
+        <span [class]="getStatusClass(state.selectedApproval.Status)">
+          {{ state.selectedApproval.Status }}
+        </span>
+      </div>
+    </div>
+    <div class="row mt-2" *ngIf="state.selectedApproval.Description">
+      <div class="col-12">
+        <strong>Description:</strong> {{ state.selectedApproval.Description }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Balance Summary Panel -->
+  <div class="balance-summary-panel" *ngIf="state.selectedApproval">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="balance-card from-balance">
+          <h6>{{ state.selectedApproval.TransferredFrom }} Balance</h6>
+          <div class="balance-info">
+            <span class="label">Before Transfer:</span>
+            <span class="amount">{{ formatCurrency(state.selectedApproval.FromBalance) }}</span>
+          </div>
+          <div class="balance-info">
+            <span class="label">After Transfer:</span>
+            <span class="amount" [class.text-danger]="state.selectedApproval.FromBalAfterTrans < 0">
+              {{ formatCurrency(state.selectedApproval.FromBalAfterTrans) }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="balance-card to-balance">
+          <h6>{{ state.selectedApproval.TransferredTo }} Balance</h6>
+          <div class="balance-info">
+            <span class="label">Before Transfer:</span>
+            <span class="amount">{{ formatCurrency(state.selectedApproval.ToBalance) }}</span>
+          </div>
+          <div class="balance-info">
+            <span class="label">After Transfer:</span>
+            <span class="amount text-success">
+              {{ formatCurrency(state.selectedApproval.ToBalAfterTrans) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Permissions Info -->
+  <div class="permissions-info" *ngIf="!state.canAdd && !state.canForward && !state.canReject && !state.canPost">
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle"></i>
+      You have limited permissions. Some actions may not be available based on your department role.
+    </div>
+  </div>
+
+  <!-- Department Specific Instructions -->
+  <div class="department-instructions" *ngIf="isAccountsDepartment()">
+    <div class="alert alert-success">
+      <i class="fas fa-info-circle"></i>
+      <strong>Accounts Department:</strong> Double-click on approved transfers to post them to the accounting system.
+    </div>
+  </div>
+
+  <div class="department-instructions" *ngIf="isSalesDepartment()">
+    <div class="alert alert-primary">
+      <i class="fas fa-info-circle"></i>
+      <strong>Sales Department:</strong> You can create new transfer approvals. They will need approval from management.
+    </div>
+  </div>
+</div>
+
+<!-- Custom Templates for Grid Cells -->
+<ng-template #statusTemplate let-value="value">
+  <span [class]="getStatusClass(value)">{{ value }}</span>
+</ng-template>
+
+<ng-template #currencyTemplate let-value="value">
+  {{ formatCurrency(value) }}
+</ng-template>
+
+<ng-template #dateTemplate let-value="value">
+  {{ formatDate(value) }}
+</ng-template>
+
+<ng-template #actionTemplate let-row="row">
+  <div class="btn-group btn-group-sm">
+    <button
+      type="button"
+      class="btn btn-outline-primary btn-sm"
+      (click)="printApproval()"
+      title="Print Approval"
+      [disabled]="!state.selectedApproval"
+    >
+      <i class="fas fa-print"></i>
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-success btn-sm"
+      (click)="postApproval()"
+      title="Post Transfer"
+      [disabled]="!state.selectedApproval || !canPerformAction('post') || row.Status !== 'Approved'"
+      *ngIf="isAccountsDepartment()"
+    >
+      <i class="fas fa-check-circle"></i>
+    </button>
+  </div>
+</ng-template>
+
+<!-- Cash Transfer Form Modal -->
+<div class="modal fade" [class.show]="showForm" [style.display]="showForm ? 'block' : 'none'" 
+     tabindex="-1" role="dialog" *ngIf="showForm">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-exchange-alt text-primary mr-2"></i>
+          Create Cash Transfer Approval
+        </h5>
+        <button type="button" class="close" (click)="hideCashTransferForm()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <form [formGroup]="cashTransferForm" (ngSubmit)="submitCashTransfer()">
+        <div class="modal-body">
+          <div class="row">
+            <!-- Date -->
+            <div class="col-md-6 mb-3">
+              <label for="transferDate" class="form-label">
+                Date <span class="text-danger">*</span>
+              </label>
+              <input
+                type="date"
+                id="transferDate"
+                class="form-control"
+                formControlName="date"
+                [class.is-invalid]="hasFieldError('date')"
+              />
+              <div class="invalid-feedback" *ngIf="hasFieldError('date')">
+                {{ getFieldError('date') }}
+              </div>
+            </div>
+
+            <!-- Amount -->
+            <div class="col-md-6 mb-3">
+              <label for="amount" class="form-label">
+                Amount <span class="text-danger">*</span>
+              </label>
+              <input
+                type="number"
+                id="amount"
+                class="form-control"
+                formControlName="amount"
+                placeholder="0.00"
+                step="0.01"
+                min="0.01"
+                [class.is-invalid]="hasFieldError('amount')"
+              />
+              <div class="invalid-feedback" *ngIf="hasFieldError('amount')">
+                {{ getFieldError('amount') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Transfer From -->
+            <div class="col-md-6 mb-3">
+              <label for="transferFrom" class="form-label">
+                Transfer From <span class="text-danger">*</span>
+              </label>
+              <ng-select
+                [items]="customers"
+                bindLabel="CustomerName"
+                bindValue="CustomerID"
+                placeholder="Select Customer"
+                formControlName="transferFromId"
+                [searchable]="true"
+                [clearable]="true"
+                [class.is-invalid]="hasFieldError('transferFromId')"
+                (change)="getCustomerBalance($event)"
+              >
+                <ng-option *ngFor="let customer of customers" [value]="customer.CustomerID">
+                  {{ customer.CustomerName }} (ID: {{ customer.CustomerID }})
+                </ng-option>
+              </ng-select>
+              <div class="invalid-feedback" *ngIf="hasFieldError('transferFromId')">
+                {{ getFieldError('transferFromId') }}
+              </div>
+            </div>
+
+            <!-- Transfer To -->
+            <div class="col-md-6 mb-3">
+              <label for="transferTo" class="form-label">
+                Transfer To <span class="text-danger">*</span>
+              </label>
+              <ng-select
+                [items]="customers"
+                bindLabel="CustomerName"
+                bindValue="CustomerID"
+                placeholder="Select Customer"
+                formControlName="transferToId"
+                [searchable]="true"
+                [clearable]="true"
+                [class.is-invalid]="hasFieldError('transferToId')"
+                (change)="getCustomerBalance($event)"
+              >
+                <ng-option *ngFor="let customer of customers" [value]="customer.CustomerID">
+                  {{ customer.CustomerName }} (ID: {{ customer.CustomerID }})
+                </ng-option>
+              </ng-select>
+              <div class="invalid-feedback" *ngIf="hasFieldError('transferToId')">
+                {{ getFieldError('transferToId') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="row">
+            <div class="col-12 mb-3">
+              <label for="description" class="form-label">
+                Description <span class="text-danger">*</span>
+              </label>
+              <textarea
+                id="description"
+                class="form-control"
+                formControlName="description"
+                rows="3"
+                placeholder="Enter transfer description or reason..."
+                maxlength="500"
+                [class.is-invalid]="hasFieldError('description')"
+              ></textarea>
+              <div class="invalid-feedback" *ngIf="hasFieldError('description')">
+                {{ getFieldError('description') }}
+              </div>
+              <small class="form-text text-muted">
+                {{ cashTransferForm.get('description')?.value?.length || 0 }}/500 characters
+              </small>
+            </div>
+          </div>
+
+          <!-- Validation Summary -->
+          <div class="alert alert-warning" *ngIf="cashTransferForm.invalid && cashTransferForm.touched">
+            <h6><i class="fas fa-exclamation-triangle"></i> Please correct the following errors:</h6>
+            <ul class="mb-0">
+              <li *ngIf="hasFieldError('date')">{{ getFieldError('date') }}</li>
+              <li *ngIf="hasFieldError('transferFromId')">{{ getFieldError('transferFromId') }}</li>
+              <li *ngIf="hasFieldError('transferToId')">{{ getFieldError('transferToId') }}</li>
+              <li *ngIf="hasFieldError('amount')">{{ getFieldError('amount') }}</li>
+              <li *ngIf="hasFieldError('description')">{{ getFieldError('description') }}</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="hideCashTransferForm()"
+            [disabled]="formSubmitting"
+          >
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="cashTransferForm.invalid || formSubmitting"
+          >
+            <i class="fas fa-spinner fa-spin" *ngIf="formSubmitting"></i>
+            <i class="fas fa-save" *ngIf="!formSubmitting"></i>
+            {{ formSubmitting ? 'Creating...' : 'Create Transfer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Form Modal Backdrop -->
+<div class="modal-backdrop fade show" *ngIf="showForm" (click)="hideCashTransferForm()"></div>

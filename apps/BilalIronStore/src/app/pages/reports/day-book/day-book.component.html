@@ -52,18 +52,27 @@
 
         <div class="form-group col-md-5">
           <label for="customer">Account</label>
-          <ft-multi-col-combobox
+          <ng-select
             name="customer"
             id="customer"
-            [dataSource]="Customers | async"
-            [fields]="{ text: 'CustomerName', value: 'CustomerID' }"
-            [Cols]="[
-              { title: 'Customer', fldName: 'CustomerName', size: 6 },
-              { title: 'Address', fldName: 'Address', size: 6 }
-            ]"
+            class="custom"
+            [items]="Customers | async"
+            bindLabel="CustomerName"
+            bindValue="CustomerID"
+            placeholder="Select Customer"
             [(ngModel)]="Filter.CustomerID"
+            [clearable]="true"
+            [searchable]="true"
           >
-          </ft-multi-col-combobox>
+            <ng-template ng-option-tmp let-item="item">
+              <div>
+                {{ item.CustomerName }}
+                <small class="text-muted" *ngIf="item.Address">
+                  - {{ item.Address }}
+                </small>
+              </div>
+            </ng-template>
+          </ng-select>
         </div>
       </div>
       <div class="row no-pad">
@@ -76,9 +85,11 @@
               type="radio"
               value="1"
               [(ngModel)]="nWhat"
-            /><label class="custom-control-label" for="radioDefault"
-              >Sale</label
-            >
+              (change)="TypeChange($event)"
+            />
+            <label class="custom-control-label" for="radioDefault">
+              Sale
+            </label>
           </div>
         </div>
         <div class="form-group col-md-2">
@@ -90,6 +101,7 @@
               type="radio"
               value="2"
               [(ngModel)]="nWhat"
+              (change)="TypeChange($event)"
             /><label class="custom-control-label" for="radioPrimary"
               >Purchase</label
             >
@@ -109,6 +121,40 @@
             />
             <label class="custom-control-label" for="radioSuccess">
               Vouchers
+            </label>
+          </div>
+        </div>
+        <div class="form-group col-md-2">
+          <div class="custom-control custom-radio">
+            <input
+              checked=""
+              class="custom-control-input radio-inline radio-inline radio-success"
+              id="radioTransfer"
+              name="radio"
+              type="radio"
+              value="4"
+              [(ngModel)]="nWhat"
+              (change)="TypeChange($event)"
+            />
+            <label class="custom-control-label" for="radioTransfer">
+              Stock Transfer
+            </label>
+          </div>
+        </div>
+        <div class="form-group col-md-2">
+          <div class="custom-control custom-radio">
+            <input
+              checked=""
+              class="custom-control-input radio-inline radio-inline radio-success"
+              id="radioOrders"
+              name="radio"
+              type="radio"
+              value="5"
+              [(ngModel)]="nWhat"
+              (change)="TypeChange($event)"
+            />
+            <label class="custom-control-label" for="radioOrders">
+              Orders
             </label>
           </div>
         </div>

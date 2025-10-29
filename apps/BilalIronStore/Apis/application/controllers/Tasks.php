@@ -80,19 +80,23 @@ class Tasks extends REST_Controller
         $pinvoice['Date']           = $post_data['Date'];
         $pinvoice['CustomerID']     = $post_data['CustomerID'];
         $pinvoice['FrieghtCharges'] = $post_data['FrieghtCharges'];
-        $pinvoice['PackingCharges'] = $post_data['PackingCharges'];
         $pinvoice['Labour']         = $post_data['Labour'];
         $pinvoice['Discount']       = $post_data['Discount'];
         $pinvoice['AmountPaid']     = $post_data['AmountPaid'];
+        $pinvoice['Cash']           = $post_data['Cash'];
+        $pinvoice['Bank']           = $post_data['Bank'];
+        $pinvoice['BankID']         = isset($post_data['BankID']) ? $post_data['BankID'] : 0;
         $pinvoice['Amount']         = $post_data['Amount'];
-        $pinvoice['ClosingID']      = $post_data['ClosingID'];
-        $pinvoice['IsPosted']       = $post_data['IsPosted'];
-        $pinvoice['Notes']          = $post_data['Notes'];
-        $pinvoice['DtCr']           = $post_data['DtCr'];
-        $pinvoice['FinYearID']      = $post_data['FinYearID'];
-        $pinvoice['BusinessID']     = $post_data['BusinessID'];
-        $pinvoice['Pending']        = 0;
-        $pinvoice['UserID']         = $post_data['UserID'];
+        // $pinvoice['ClosingID']      = $post_data['ClosingID'];
+        $pinvoice['IsPosted'] = $post_data['IsPosted'];
+        // $pinvoice['Notes']    = isset($post_data['Notes']) ? $post_data['Notes'] : '';
+        $pinvoice['DtCr'] = $post_data['DtCr'];
+        // $pinvoice['FinYearID']      = $post_data['FinYearID'];
+        $pinvoice['BusinessID']  = $post_data['BusinessID'];
+        $pinvoice['UserID']      = $post_data['UserID'];
+        $pinvoice['VehicleNo']   = $post_data['VehicleNo'];
+        $pinvoice['InvoiceNo']   = $post_data['InvoiceNo'];
+        $pinvoice['InvoiceDate'] = $post_data['InvoiceDate'];
 
         unset($pinvoice['details']);
         unset($pinvoice['NetAmount']);
@@ -121,14 +125,14 @@ class Tasks extends REST_Controller
         $details = $post_data['details'];
 
         foreach ($details as $value) {
-            $pdetails['ProductID']  = $value['ProductID'];
-            $pdetails['Packing']    = $value['Packing'];
-            $pdetails['Qty']        = $value['Qty'];
-            $pdetails['KGs']        = $value['KGs'];
-            $pdetails['Packing']    = $value['Packing'];
-            $pdetails['PPrice']     = $value['PPrice'];
-            $pdetails['SPrice']     = $value['SPrice'];
-            $pdetails['RateUnit']   = $value['RateUnit'];
+            $pdetails['ProductID'] = $value['ProductID'];
+            $pdetails['Packing']   = $value['Packing'];
+            $pdetails['Qty']       = $value['Qty'];
+            $pdetails['KGs']       = $value['KGs'];
+            $pdetails['Packing']   = $value['Packing'];
+            $pdetails['PPrice']    = $value['PPrice'];
+            $pdetails['SPrice']    = $value['SPrice'];
+            // $pdetails['RateUnit']   = $value['RateUnit'];
             $pdetails['StoreID']    = $value['StoreID'];
             $pdetails['BusinessID'] = $post_data['BusinessID'];
 
@@ -214,7 +218,6 @@ class Tasks extends REST_Controller
                     4,
                     $InvoiceValue['Date'],
                     $InvoiceValue['FromStore'],
-                    $InvoiceDetailsvalue['UnitID'],
                     $InvoiceValue['BusinessID']
                 );
                 // var_dump('in return ');
@@ -230,7 +233,6 @@ class Tasks extends REST_Controller
                     4,
                     $InvoiceValue['Date'],
                     $InvoiceValue['ToStore'],
-                    $InvoiceDetailsvalue['UnitID'],
                     $InvoiceValue['BusinessID']
                 );
             }
@@ -244,39 +246,6 @@ class Tasks extends REST_Controller
     {
         $this->PostStockTranfer($id);
         $this->response(['Transfer Posted' => $id], REST_Controller::HTTP_OK);
-    }
-
-    public function order_post($id = null)
-    {
-        $post_data = $this->post();
-
-        $this->db->trans_begin();
-
-        foreach ($post_data as $value) {
-            $data['CustomerID'] = $value['CustomerID'];
-            $data['SalesmanID'] = $value['SalesmanID'];
-            $data['RouteID']    = $value['RouteID'];
-            $data['ProductID']  = $value['ProductID'];
-            $data['Qty']        = $value['Qty'];
-            $data['Packing']    = $value['Packing'];
-            $data['Pcs']        = $value['Pcs'];
-            $data['Bonus']      = $value['Bonus'];
-            $data['SPrice']     = $value['SPrice'];
-            $data['PPrice']     = $value['PPrice'];
-            $data['StockID']    = $value['StockID'];
-            $data['DiscRatio']  = $value['DiscRatio'];
-            $data['BusinessID'] = $value['BusinessID'];
-            // $data['GSTRatio']       = $value['GSTRatio']         ;
-            $data['SchemeRatio'] = $value['SchemeRatio'];
-            // $data['RateDisc']       = $value['RateDisc']         ;
-            // $data['Remarks'] = $value['Remarks']  ;
-            $data['Date'] = $value['Date'];
-
-            $this->db->insert('orders', $data);
-        }
-
-        $this->db->trans_commit();
-        $this->response(['id' => $this->db->insert_id()], REST_Controller::HTTP_OK);
     }
 
     public function validateDate($date, $format = 'Y-m-d')
@@ -340,7 +309,7 @@ class Tasks extends REST_Controller
 
         // $this->PostSales();
     }
-    public function sale_post($id = null)
+    public function order_post($id = null)
     {
         $post_data = $this->post();
 
@@ -351,8 +320,10 @@ class Tasks extends REST_Controller
         $invoice['Amount']          = $post_data['Amount'];
         $invoice['Discount']        = $post_data['Discount'];
         $invoice['DeliveryCharges'] = $post_data['DeliveryCharges'];
-        $invoice['PackingCharges']  = $post_data['PackingCharges'];
         $invoice['Labour']          = $post_data['Labour'];
+        $invoice['Cash']            = $post_data['Cash'];
+        $invoice['Bank']            = $post_data['Bank'];
+        $invoice['BankID']          = $post_data['BankID'];
         $invoice['AmntRecvd']       = $post_data['AmntRecvd'];
         $invoice['Type']            = $post_data['Type'];
         $invoice['IsPosted']        = $post_data['IsPosted'];
@@ -360,9 +331,8 @@ class Tasks extends REST_Controller
         $invoice['UserID']          = $post_data['UserID'];
         $invoice['Notes']           = $post_data['Notes'];
         $invoice['BusinessID']      = $post_data['BusinessID'];
-        $invoice['ClosingID']       = $post_data['ClosingID'];
-        $invoice['CustName']        = $post_data['CustName'];
         $invoice['PrevBalance']     = $post_data['PrevBalance'];
+        $invoice['Refrence']        = $post_data['Refrence'];
 
         if (! $this->validateDate($invoice['Date'], 'Y-m-d')) {
             $this->response([
@@ -374,36 +344,31 @@ class Tasks extends REST_Controller
         $this->db->trans_begin();
         if ($id == null) {
 
-            $maxInvoiceID         = $this->utilities->getBillNo($this->db, $invoice['BusinessID'], 1, $invoice['Date']) + 1;
-            $invoice['InvoiceID'] = $maxInvoiceID;
+            $maxInvoiceID       = $this->utilities->getBillNo($this->db, $invoice['BusinessID'], 4) + 1;
+            $invoice['OrderID'] = $maxInvoiceID;
 
-            $this->db->insert('invoices', $invoice);
+            $this->db->insert('orders', $invoice);
 
             $invID   = $maxInvoiceID;
             $details = $post_data['details'];
         } else {
-            $this->db->where('InvoiceID', $id);
-            $this->db->update('invoices', $invoice);
+            $this->db->where('OrderID', $id);
+            $this->db->update('orders', $invoice);
             $invID   = $id;
             $details = $post_data['details'];
-            $this->db->query("DELETE FROM `invoicedetails` WHERE `InvoiceID`=" . $id);
+            $this->db->query("DELETE FROM `orderdetails` WHERE `OrderID`=" . $id);
         }
         foreach ($details as $value) {
             $dData = [
-                'InvoiceID'  => $invID,
+                'OrderID'    => $invID,
                 'ProductID'  => $value['ProductID'],
-                'StoreID'    => $value['StoreID'],
-                'Packing'    => $value['Packing'],
                 'Qty'        => $value['Qty'],
-                'KGs'        => $value['KGs'],
-                'Labour'     => $value['Labour'],
-                'Pending'    => $value['Pending'],
-                'UnitValue'  => $value['UnitValue'],
+                'Discount'   => 0,
                 'SPrice'     => $value['SPrice'],
                 'PPrice'     => $value['PPrice'],
                 'BusinessID' => $value['BusinessID'],
             ];
-            $this->db->insert('invoicedetails', $dData);
+            $this->db->insert('orderdetails', $dData);
         }
 
         $this->db->trans_commit();
@@ -414,22 +379,119 @@ class Tasks extends REST_Controller
 
         // $this->PostSales();
     }
+    public function sale_post($id = null)
+    {
+        $post_data = $this->post();
+
+        // pinvoice table data
+        $invoice['CustomerID']      = $post_data['CustomerID'];
+        $invoice['Date']            = $post_data['Date'];
+        $invoice['Time']            = $post_data['Time'];
+        $invoice['Discount']        = $post_data['Discount'];
+        $invoice['Amount']          = $post_data['Amount'];
+        $invoice['DeliveryCharges'] = $post_data['DeliveryCharges'];
+        $invoice['Labour']          = $post_data['Labour'];
+        // $invoice['PackingCharges']  = $post_data['PackingCharges'];
+        $invoice['AmntRecvd']   = $post_data['AmntRecvd'];
+        $invoice['Cash']        = $post_data['Cash'];
+        $invoice['Bank']        = $post_data['Bank'];
+        $invoice['BankID']      = $post_data['BankID'];
+        $invoice['ClosingID']   = $post_data['ClosingID'];
+        $invoice['DtCr']        = isset($post_data['DtCr']) ? $post_data['DtCr'] : 'CR';
+        $invoice['Type']        = $post_data['Type'];
+        $invoice['Notes']       = $post_data['Notes'];
+        $invoice['IsPosted']    = $post_data['IsPosted'];
+        $invoice['UserID']      = $post_data['UserID'];
+        $invoice['PrevBalance'] = $post_data['PrevBalance'];
+        $invoice['BusinessID']  = $post_data['BusinessID'];
+        $invoice['CustCatID']   = $post_data['CustCatID'];
+        $invoice['Reference']   = $post_data['Reference'];
+
+        if (! $this->validateDate($invoice['Date'], 'Y-m-d')) {
+            $this->response([
+                'status'  => false,
+                'message' => 'Invalid Date Format'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            return;
+        }
+
+        // print_r($post_data);
+
+        $TransporterIDs = $post_data['TransporterIDs'];
+        if ($invoice['DeliveryCharges'] > 0 && count($TransporterIDs) == 0) {
+            $this->response([
+                'status'  => false,
+                'message' => 'Please select Transporter'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            return;
+        }
+
+        unset($invoice['TransporterIDs']);
+
+        $this->db->trans_begin();
+        if ($id == null) {
+
+            $this->db->insert('invoices', $invoice);
+
+            $invID   = $this->db->insert_id();
+            $details = $post_data['details'];
+        } else {
+            $this->db->where('InvoiceID', $id);
+            $this->db->update('invoices', $invoice);
+            $invID   = $id;
+            $details = $post_data['details'];
+            $this->db->query("DELETE FROM `invoicedetails` WHERE `InvoiceID`=" . $invID);
+        }
+        foreach ($details as $value) {
+            $dData = [
+                'InvoiceID'  => $invID,
+                'ProductID'  => $value['ProductID'],
+                'StoreID'    => $value['StoreID'],
+                'Packing'    => $value['Packing'],
+                'Qty'        => $value['Qty'],
+                'KGs'        => $value['KGs'],
+                'SPrice'     => $value['SPrice'],
+                'PPrice'     => $value['PPrice'],
+                'BusinessID' => $value['BusinessID'],
+            ];
+            $this->db->insert('invoicedetails', $dData);
+        }
+
+        $this->db->query("DELETE FROM `invoicetransporters` WHERE `InvoiceID`=" . $invID);
+
+        if (! empty($TransporterIDs)) {
+            foreach ($TransporterIDs as $tid) {
+                $this->db->insert('invoicetransporters', [
+                    'InvoiceID'     => $invID,
+                    'TransporterID' => $tid,
+                    'BusinessID'    => $invoice['BusinessID'],
+                ]);
+            }
+        }
+
+        $this->db->trans_commit();
+
+        $this->response(['id' => $invID], REST_Controller::HTTP_OK);
+    }
     public function vouchers_post($id = 0)
     {
         $data = $this->post();
         // $date['Date'] = date('Y-m-d');
         $vouch = [
-            'Date'        => $data['Date'],
-            'CustomerID'  => $data['CustomerID'],
-            'Description' => $data['Description'],
-            'Debit'       => $data['Debit'],
-            'Credit'      => $data['Credit'],
-            'RefID'       => $data['RefID'],
-            'IsPosted'    => $data['IsPosted'],
-            'FinYearID'   => $data['FinYearID'],
-            'RefType'     => $data['RefType'],
-
-            'BusinessID'  => $data['BusinessID'],
+            'Date'          => $data['Date'],
+            'CustomerID'    => $data['CustomerID'],
+            'Description'   => $data['Description'],
+            'Debit'         => $data['Debit'],
+            'Credit'        => $data['Credit'],
+            'Bank'          => $data['Bank'],
+            'Cash'          => $data['Cash'],
+            'RefID'         => $data['RefID'],
+            'IsPosted'      => $data['IsPosted'],
+            'FinYearID'     => $data['FinYearID'],
+            'RefType'       => $data['RefType'],
+            'BankID'        => $data['BankID'],
+            'Discount'      => $data['Discount'],
+            'ExpenseHeadID' => $data['ExpenseHeadID'],
+            'VoucherType'   => $data['VoucherType'],
+            'BusinessID'    => $data['BusinessID'],
         ];
         if (! $this->validateDate($vouch['Date'], 'Y-m-d')) {
             $this->response([
@@ -525,11 +587,6 @@ class Tasks extends REST_Controller
         $this->response(['id' => $ID], REST_Controller::HTTP_OK);
     }
 
-    public function postvouchers_post($id)
-    {
-        $this->PostVouchers($id);
-    }
-
     private function PostVouchers($id = 0, $bid = 0)
     {
         if ($id > 0) {
@@ -550,11 +607,42 @@ class Tasks extends REST_Controller
             $data['Debit']       = $InvoiceValue['Debit'];
             $data['Description'] = $InvoiceValue['Description'];
             $data['RefID']       = $InvoiceValue['VoucherID'];
-            $data['RefType']     = 2;
+            $data['RefType']     = $InvoiceValue['RefType'];
 
             $data['BusinessID'] = $InvoiceValue['BusinessID'];
 
             $this->AddToAccount($data);
+
+            if ($InvoiceValue['VoucherType'] == 1 && $InvoiceValue['Bank'] > 0) {
+                $data['CustomerID']  = $InvoiceValue['BankID'];
+                $data['Date']        = $InvoiceValue['Date'];
+                $data['Debit']      = $InvoiceValue['Bank'];
+                $data['Credit']       = 0;
+                $data['Description'] = $InvoiceValue['Description'];
+                $data['RefID']       = $InvoiceValue['VoucherID'];
+                $data['RefType']     = $InvoiceValue['RefType'];
+                $this->AddToAccount($data);
+
+            } else if ($InvoiceValue['VoucherType'] == 2 && $InvoiceValue['Bank'] > 0) {
+                $data['CustomerID']  = $InvoiceValue['BankID'];
+                $data['Date']        = $InvoiceValue['Date'];
+                $data['Credit']       = $InvoiceValue['Bank'];
+                $data['Debit']      = 0;
+                $data['Description'] = $InvoiceValue['Description'] . ' ' . $InvoiceValue['CustomerName'];
+                $data['RefID']       = $InvoiceValue['VoucherID'];
+                $data['RefType']     = $InvoiceValue['RefType'];
+                $this->AddToAccount($data);
+            }
+
+            if ($InvoiceValue['Discount'] > 0 && $InvoiceValue['ExpenseHeadID'] > 0) {
+                $this->AddToExpense([
+                    'Date'        => $InvoiceValue['Date'],
+                    'Description' => $InvoiceValue['Description'],
+                    'Amount'      => $InvoiceValue['Discount'],
+                    'HeadID'      => $InvoiceValue['ExpenseHeadID'],
+                    'BusinessID'  => $InvoiceValue['BusinessID'],
+                ]);
+            }
 
             $posted['IsPosted'] = '1';
             $this->db->where('VoucherID', $InvoiceValue['VoucherID']);
@@ -562,7 +650,16 @@ class Tasks extends REST_Controller
         }
         $this->db->trans_commit();
     }
+    public function postvouchers_post($id)
+    {
+        $this->PostVouchers($id);
+        $this->response(['msg' => 'Voucher Posted'], REST_Controller::HTTP_OK);
+    }
+    private function AddToExpense($data)
+    {
 
+        $this->db->insert('expenses', $data);
+    }
     public function UpdateStock(
         $a,
         $desc,
@@ -574,8 +671,8 @@ class Tasks extends REST_Controller
         $bType,
         $invDate,
         $storeID,
-        $unitID,
-        $bid = 1
+        $bid = 1,
+        $SPrice = 0
     ) {
         try {
             if ($a == 1) {
@@ -586,14 +683,24 @@ class Tasks extends REST_Controller
                 $stock1 = $this->db->get('stock')->result_array();
                 if (count($stock1) > 0) {
                     $stock['Stock'] = $stock1[0]['Stock'] - $qtyout + $qtyin;
+                    if ($SPrice > 0) {
+                        $stock['SPrice'] = $SPrice;
+                    }
+                    $stock['PPrice'] = $pprice;
                     $this->db->where('StockID', $stock1[0]['StockID']);
                     $this->db->update('stock', $stock);
+                    $this->db->where('ProductID', $stock1[0]['ProductID']);
+                    $this->db->update('products', [
+                        'PPrice' => $pprice,
+                        'SPrice' => $SPrice,
+                    ]);
+
                 } else {
                     $stock['ProductID']  = $pid;
                     $stock['PPrice']     = $pprice;
+                    $stock['SPrice']     = $SPrice;
                     $stock['StoreID']    = $storeID;
                     $stock['BusinessID'] = $bid;
-                    $stock['UnitID']     = $unitID;
                     $stock['Stock']      = $qtyin - $qtyout;
                     $this->db->insert('stock', $stock);
                 }
@@ -661,17 +768,10 @@ class Tasks extends REST_Controller
     public function CloseAccount_post($bid)
     {
         $post_data = $this->post();
+
+        $closingID = $post_data['ClosingID'];
+
         try {
-            $this->PostSales(0, $bid);
-            // echo 'sale posted';
-            $this->PostPurchases(0, $bid);
-            //echo 'purchase posted';
-            $this->PostVouchers(0, $bid);
-            $this->PostStockTranfer(0, $bid);
-
-            $this->db->query("CALL InsertMissingGatePasses();");
-
-            // echo 'vouchers posted';
 
             $this->db->trans_begin();
             $this->db->query("delete from invoicedetails where InvoiceID in (Select InvoiceID from invoices where Date = '0000-00-00')");
@@ -681,18 +781,29 @@ class Tasks extends REST_Controller
             $this->db->query("delete from  vouchers where Date = '0000-00-00'");
             $this->db->trans_commit();
 
-            $data1['Status']        = '1';
-            $data1['ClosingAmount'] = $post_data['ClosingAmount'];
-            $this->db->where('ClosingID', $post_data['ClosingID']);
-            $this->db->update('closing', $data1);
+            $this->PostSales(0, $bid);
+            // echo 'sale posted';
+            $this->PostPurchases(0, $bid);
+            //echo 'purchase posted';
+            $this->PostVouchers(0, $bid);
+            $this->PostStockTranfer(0, $bid);
+            $this->PostOrders(0, $bid);
 
-            $this->response(['msg' => 'Account Closed'], REST_Controller::HTTP_OK);
+            if ($closingID > 0) {
+                $data1['Status']        = '1';
+                $data1['ClosingAmount'] = $post_data['ClosingAmount'];
+                $this->db->where('ClosingID', $post_data['ClosingID']);
+                $this->db->update('closing', $data1);
+
+                $this->response(['msg' => 'All Vouchers are Posted'], REST_Controller::HTTP_OK);
+            } else {
+                $this->response(['msg' => 'Account Closed'], REST_Controller::HTTP_OK);
+            }
+
         } catch (\Exception $e) {
             die($e->getMessage());
         }
-        // $this->db->trans_begin();
-        // Sale
-        // $this->db->trans_commit();
+
     }
     private function PostSales($id = 0, $bid = 0)
     {
@@ -719,10 +830,10 @@ class Tasks extends REST_Controller
                     $data['Credit']      = 0;
                     $data['Debit']       = $InvoiceValue['NetAmount'];
                     $data['Description'] = 'Bill No ' . $InvoiceValue['InvoiceID'];
-                    $data['Notes']       = $InvoiceValue['Notes'];
-                    $data['RefID']       = $InvoiceValue['InvoiceID'];
-                    $data['RefType']     = 1;
-                    $data['BusinessID']  = $InvoiceValue['BusinessID'];
+                    //$data['Notes']       = $InvoiceValue['Notes'];
+                    $data['RefID']      = $InvoiceValue['InvoiceID'];
+                    $data['RefType']    = 1;
+                    $data['BusinessID'] = $InvoiceValue['BusinessID'];
 
                     $this->AddToAccount($data);
                     if ($InvoiceValue['AmntRecvd'] > 0) {
@@ -731,6 +842,17 @@ class Tasks extends REST_Controller
                         $data['Credit']      = $InvoiceValue['AmntRecvd'];
                         $data['Debit']       = 0;
                         $data['Description'] = 'Cash Recvd Bill No ' . $InvoiceValue['InvoiceID'];
+                        $data['RefID']       = $InvoiceValue['InvoiceID'];
+                        $data['RefType']     = 1;
+                        $data['BusinessID']  = $InvoiceValue['BusinessID'];
+                        $this->AddToAccount($data);
+                    }
+                    if ($InvoiceValue['Bank'] > 0) {
+                        $data['CustomerID']  = $InvoiceValue['BankID'];
+                        $data['Date']        = $InvoiceValue['Date'];
+                        $data['Debit']       = $InvoiceValue['Bank'];
+                        $data['Credit']      = 0;
+                        $data['Description'] = 'Bill No ' . $InvoiceValue['InvoiceID'] . ' ' . $InvoiceValue['CustomerName'];
                         $data['RefID']       = $InvoiceValue['InvoiceID'];
                         $data['RefType']     = 1;
                         $data['BusinessID']  = $InvoiceValue['BusinessID'];
@@ -750,7 +872,6 @@ class Tasks extends REST_Controller
                             '2',
                             $InvoiceValue['Date'],
                             $InvoiceDetailsvalue['StoreID'],
-                            $InvoiceDetailsvalue['UnitID'],
                             $InvoiceValue['BusinessID']
                         );
                     }
@@ -789,14 +910,102 @@ class Tasks extends REST_Controller
                             '2',
                             $InvoiceValue['Date'],
                             $InvoiceDetailsvalue['StoreID'],
-                            $InvoiceDetailsvalue['UnitID'],
                             $InvoiceValue['BusinessID']
                         );
                     }
+
+                }
+                if ($InvoiceValue['DeliveryCharges'] > 0) {
+                    $this->AddDeliveryCharges(
+                        $InvoiceValue['InvoiceID'],
+                        $InvoiceValue['Date'],
+                        $InvoiceValue['DeliveryCharges'],
+                        $InvoiceValue['DtCr'],
+                        $InvoiceValue['BusinessID']
+                    );
                 }
                 $posted['IsPosted'] = '1';
                 $this->db->where('InvoiceID', $InvoiceValue['InvoiceID']);
                 $this->db->update('invoices', $posted);
+            }
+        }
+        $this->db->trans_commit();
+    }
+    private function AddDeliveryCharges($invoiceID, $date, $Charges, $type = 'CR', $bid = 1)
+    {
+        $this->db->where('InvoiceID', $invoiceID);
+        $transports = $this->db->get('invoicetransporters')->result_array();
+
+        foreach ($transports as $trans) {
+            $data['CustomerID']  = $trans['TransporterID'];
+            $data['Date']        = $date;
+            $data['Credit']      = $Charges / count($transports);
+            $data['Debit']       = 0;
+            $data['Description'] = 'Delivery Charges Bill No ' . $invoiceID;
+            $data['RefID']       = $invoiceID;
+            $data['RefType']     = 1;
+            $data['BusinessID']  = $bid;
+            $this->AddToAccount($data);
+        }
+    }
+    public function postorders_post($id = 0, $bid = 0)
+    {
+        $this->PostOrders($id, $bid);
+        $this->response(['msg' => 'Order Posted'], REST_Controller::HTTP_OK);
+    }
+
+    private function PostOrders($id = 0, $bid = 0)
+    {
+        if ($id > 0) {
+            $this->db->where('OrderID', $id);
+        } else {
+            $this->db->where('BusinessID', $bid);
+        }
+        $this->db->where('IsPosted', 0);
+        $this->db->where("Date <> '0000-00-00'");
+
+        $InvoiceRes = $this->db->get('qryorders')->result_array();
+        $this->db->trans_begin();
+        if (count($InvoiceRes) > 0) {
+            foreach ($InvoiceRes as $InvoiceValue) {
+
+                // $data['CustomerID']  = $InvoiceValue['CustomerID'];
+                // $data['Date']        = $InvoiceValue['Date'];
+                // $data['Credit']      = 0;
+                // $data['Debit']       = $InvoiceValue['NetAmount'];
+                // $data['Description'] = 'Order No ' . $InvoiceValue['OrderID'];
+                // //$data['Notes']       = $InvoiceValue['Notes'];
+                // $data['RefID']      = $InvoiceValue['OrderID'];
+                // $data['RefType']    = 1;
+                // $data['BusinessID'] = $InvoiceValue['BusinessID'];
+
+                // $this->AddToAccount($data);
+                if ($InvoiceValue['AmntRecvd'] > 0) {
+                    $data['CustomerID']  = $InvoiceValue['CustomerID'];
+                    $data['Date']        = $InvoiceValue['Date'];
+                    $data['Credit']      = $InvoiceValue['AmntRecvd'];
+                    $data['Debit']       = 0;
+                    $data['Description'] = 'Cash Recvd Order No ' . $InvoiceValue['OrderID'];
+                    $data['RefID']       = $InvoiceValue['OrderID'];
+                    $data['RefType']     = 5;
+                    $data['BusinessID']  = $InvoiceValue['BusinessID'];
+                    $this->AddToAccount($data);
+                }
+                if ($InvoiceValue['Bank'] > 0) {
+                    $data['CustomerID']  = $InvoiceValue['BankID'];
+                    $data['Date']        = $InvoiceValue['Date'];
+                    $data['Debit']       = $InvoiceValue['Bank'];
+                    $data['Credit']      = 0;
+                    $data['Description'] = 'Order No ' . $InvoiceValue['OrderID'] . ' ' . $InvoiceValue['CustomerName'];
+                    $data['RefID']       = $InvoiceValue['OrderID'];
+                    $data['RefType']     = 5;
+                    $data['BusinessID']  = $InvoiceValue['BusinessID'];
+                    $this->AddToAccount($data);
+                }
+
+                $posted['IsPosted'] = '1';
+                $this->db->where('OrderID', $InvoiceValue['OrderID']);
+                $this->db->update('orders', $posted);
             }
         }
         $this->db->trans_commit();
@@ -813,80 +1022,155 @@ class Tasks extends REST_Controller
         $this->db->where("Date <> '0000-00-00'");
         $PInvoiceRes = $this->db->get('qrypinvoices')->result_array();
         $this->db->trans_begin();
-        if (count($PInvoiceRes) > 0) {
-            foreach ($PInvoiceRes as $PInvoiceValue) {
-                if ($PInvoiceValue['DtCr'] == 'CR') {
-                    $data['CustomerID']  = $PInvoiceValue['CustomerID'];
-                    $data['Date']        = $PInvoiceValue['Date'];
-                    $data['Credit']      = $PInvoiceValue['NetAmount'];
-                    $data['Description'] = 'Purchase No ' . $PInvoiceValue['InvoiceID'];
-                    $data['RefID']       = $PInvoiceValue['InvoiceID'];
-                    $data['RefType']     = 2;
-                    $data['Notes']       = $PInvoiceValue['Notes'];
+        foreach ($PInvoiceRes as $PInvoiceValue) {
 
-                    $data['BusinessID'] = $PInvoiceValue['BusinessID'];
-                    $data['Debit']      = 0;
-                    $this->AddToAccount($data);
+            if ($PInvoiceValue['DtCr'] == 'CR') {
+                $data['CustomerID']  = $PInvoiceValue['CustomerID'];
+                $data['Date']        = $PInvoiceValue['Date'];
+                $data['Credit']      = $PInvoiceValue['NetAmount'];
+                $data['Description'] = 'Purchase No ' . $PInvoiceValue['InvoiceID'];
+                $data['RefID']       = $PInvoiceValue['InvoiceID'];
+                $data['RefType']     = 2;
+                $data['BusinessID']  = $PInvoiceValue['BusinessID'];
+                $data['Debit']       = 0;
+                $this->AddToAccount($data);
 
-                    $this->db->where('InvoiceID', $PInvoiceValue['InvoiceID']);
-                    $PInvoiceDetailsRes = $this->db->get('qrypinvoicedetails')->result_array();
+                if ($PInvoiceValue['Cash'] > 0) {
 
-                    foreach ($PInvoiceDetailsRes as $PInvoiceDetailsvalue) {
-                        $this->UpdateStock(
-                            1,
-                            'Purchase',
-                            $PInvoiceDetailsvalue['ProductID'],
-                            $PInvoiceDetailsvalue['PPrice'],
-                            0,
-                            ($PInvoiceDetailsvalue['Qty'] * $PInvoiceDetailsvalue['Packing'] +
-                                $PInvoiceDetailsvalue['KGs']),
-                            $PInvoiceValue['InvoiceID'],
-                            1,
-                            $PInvoiceValue['Date'],
-                            $PInvoiceDetailsvalue['StoreID'],
-                            $PInvoiceDetailsvalue['UnitID'],
-                            $PInvoiceValue['BusinessID']
-                        );
-                    }
-                } else {
                     $data['CustomerID']  = $PInvoiceValue['CustomerID'];
                     $data['Date']        = $PInvoiceValue['Date'];
                     $data['Credit']      = 0;
-                    $data['Description'] = 'P/Return Bill No ' . $PInvoiceValue['InvoiceID'];
+                    $data['Debit']       = $PInvoiceValue['Cash'];
+                    $data['Description'] = 'Cash Paid Purchase No ' . $PInvoiceValue['InvoiceID'];
                     $data['RefID']       = $PInvoiceValue['InvoiceID'];
                     $data['RefType']     = 2;
+                    $data['BusinessID']  = $PInvoiceValue['BusinessID'];
 
-                    $data['BusinessID'] = 0;
-                    $data['Debit']      = $PInvoiceValue['NetAmount'];
                     $this->AddToAccount($data);
 
-                    $this->db->where('InvoiceID', $PInvoiceValue['InvoiceID']);
-                    $PInvoiceDetailsRes = $this->db->get('pinvoicedetails')->result_array();
-
-                    foreach ($PInvoiceDetailsRes as $PInvoiceDetailsvalue) {
-                        $this->UpdateStock(
-                            2,
-                            'Purchase',
-                            $PInvoiceDetailsvalue['ProductID'],
-                            $PInvoiceDetailsvalue['PPrice'],
-
-                            ($PInvoiceDetailsvalue['Qty'] * $PInvoiceDetailsvalue['Packing'] +
-                                $PInvoiceDetailsvalue['KGs']),
-                            0,
-                            $PInvoiceValue['InvoiceID'],
-                            1,
-                            $PInvoiceValue['Date'],
-                            $PInvoiceDetailsvalue['StoreID'],
-                            $PInvoiceDetailsvalue['UnitID'],
-                            $PInvoiceValue['BusinessID']
-                        );
-                    }
                 }
 
-                $posted['IsPosted'] = '1';
-                $this->db->where($this->getpkey('pinvoices'), $PInvoiceValue['InvoiceID']);
-                $this->db->update('pinvoices', $posted);
+                if ($PInvoiceValue['Bank'] > 0) {
+                    $data['CustomerID']  = $PInvoiceValue['CustomerID'];
+                    $data['Date']        = $PInvoiceValue['Date'];
+                    $data['Credit']      = 0;
+                    $data['Debit']       = $PInvoiceValue['Bank'];
+                    $data['Description'] = 'Purchase No ' . $PInvoiceValue['InvoiceID'] ;
+                    $data['RefID']       = $PInvoiceValue['InvoiceID'];
+                    $data['RefType']     = 2;
+                    $data['BusinessID']  = $PInvoiceValue['BusinessID'];
+
+                    $this->AddToAccount($data);
+
+                    $data['CustomerID']  = $PInvoiceValue['BankID'];
+                    $data['Date']        = $PInvoiceValue['Date'];
+                    $data['Credit']      = $PInvoiceValue['Bank'];
+                    $data['Debit']       = 0;
+                    $data['Description'] = 'Paid Purchase No ' . $PInvoiceValue['InvoiceID'] . ' ' . $PInvoiceValue['CustomerName'];
+                    $data['RefID']       = $PInvoiceValue['InvoiceID'];
+                    $data['RefType']     = 2;
+                    $data['BusinessID']  = $PInvoiceValue['BusinessID'];
+
+                    $this->AddToAccount($data);
+
+                }
+
+                $this->db->where('InvoiceID', $PInvoiceValue['InvoiceID']);
+                $PInvoiceDetailsRes = $this->db->get('qrypinvoicedetails')->result_array();
+
+                foreach ($PInvoiceDetailsRes as $PInvoiceDetailsvalue) {
+                    $this->UpdateStock(
+                        1,
+                        'Purchase',
+                        $PInvoiceDetailsvalue['ProductID'],
+                        $PInvoiceDetailsvalue['PPrice'],
+                        0,
+                        ($PInvoiceDetailsvalue['Qty'] * $PInvoiceDetailsvalue['Packing'] +
+                            $PInvoiceDetailsvalue['KGs']),
+                        $PInvoiceValue['InvoiceID'],
+                        1,
+                        $PInvoiceValue['Date'],
+                        $PInvoiceDetailsvalue['StoreID'],
+                        $PInvoiceValue['BusinessID'],
+                        $PInvoiceDetailsvalue['SPrice'],
+                    );
+                }
+            } else {
+                $data['CustomerID']  = $PInvoiceValue['CustomerID'];
+                $data['Date']        = $PInvoiceValue['Date'];
+                $data['Credit']      = 0;
+                $data['Description'] = 'P/Return Bill No ' . $PInvoiceValue['InvoiceID'];
+                $data['RefID']       = $PInvoiceValue['InvoiceID'];
+                $data['RefType']     = 2;
+
+                $data['BusinessID'] = $PInvoiceValue['BusinessID'];
+                $data['Debit']      = $PInvoiceValue['NetAmount'];
+                $this->AddToAccount($data);
+
+                if ($PInvoiceValue['Cash'] > 0) {
+                  // cash and customer accts
+                    $data['CustomerID']  = $PInvoiceValue['CustomerID'];
+                    $data['Date']        = $PInvoiceValue['Date'];
+                    $data['Credit']      = 0;
+                    $data['Debit']       = $PInvoiceValue['Cash'];
+                    $data['Description'] = 'Cash Paid P/Return Bill No ' . $PInvoiceValue['InvoiceID'];
+                    $data['RefID']       = $PInvoiceValue['InvoiceID'];
+                    $data['RefType']     = 2;
+                    $data['BusinessID']  = $PInvoiceValue['BusinessID'];
+
+                    $this->AddToAccount($data);
+
+                }
+
+                if ($PInvoiceValue['Bank'] > 0) {
+                  //---bank account
+                    $data['CustomerID']  = $PInvoiceValue['CustomerID'];
+                    $data['Date']        = $PInvoiceValue['Date'];
+                    $data['Debit']      = 0;
+                    $data['Credit']       = $PInvoiceValue['Bank'];
+                    $data['Description'] = 'Return Bill No ' . $PInvoiceValue['InvoiceID'] . ' ' . $PInvoiceValue['CustomerName'];
+                    $data['RefID']       = $PInvoiceValue['InvoiceID'];
+                    $data['RefType']     = 2;
+                    $data['BusinessID']  = $PInvoiceValue['BusinessID'];
+                    $this->AddToAccount($data);
+
+                   //---customer account
+                    $data['CustomerID']  = $PInvoiceValue['BankID'];
+                    $data['Date']        = $PInvoiceValue['Date'];
+                    $data['Debit']      = $PInvoiceValue['Bank'];
+                    $data['Credit']       = 0;
+                    $data['Description'] = 'Bank Payment P/Return Bill No ' . $PInvoiceValue['InvoiceID'];
+                    $data['RefID']       = $PInvoiceValue['InvoiceID'];
+                    $data['RefType']     = 2;
+                    $data['BusinessID']  = $PInvoiceValue['BusinessID'];
+                    $this->AddToAccount($data);
+
+                }
+                $this->db->where('InvoiceID', $PInvoiceValue['InvoiceID']);
+                $PInvoiceDetailsRes = $this->db->get('pinvoicedetails')->result_array();
+
+                foreach ($PInvoiceDetailsRes as $PInvoiceDetailsvalue) {
+                    $this->UpdateStock(
+                        2,
+                        'Purchase',
+                        $PInvoiceDetailsvalue['ProductID'],
+                        $PInvoiceDetailsvalue['PPrice'],
+                        ($PInvoiceDetailsvalue['Qty'] * $PInvoiceDetailsvalue['Packing'] +
+                            $PInvoiceDetailsvalue['KGs']),
+                        0,
+                        $PInvoiceValue['InvoiceID'],
+                        1,
+                        $PInvoiceValue['Date'],
+                        $PInvoiceDetailsvalue['StoreID'],
+                        $PInvoiceValue['BusinessID'],
+                        $PInvoiceDetailsvalue['SPrice']
+                    );
+                }
             }
+
+            $posted['IsPosted'] = '1';
+            $this->db->where($this->getpkey('pinvoices'), $PInvoiceValue['InvoiceID']);
+            $this->db->update('pinvoices', $posted);
         }
         $this->db->trans_commit();
     }
@@ -967,6 +1251,37 @@ class Tasks extends REST_Controller
             $this->userID = $decode->id;
             return true;
         }
-        return false;
+        return true;
     }
+
+    public function postaudit_post()
+    {
+        $this->db->where('BusinessID', $this->post('BusinessID'));
+        $this->db->where('StoreID', $this->post('StoreID'));
+        $this->db->where('Status', 0);
+        $data = $this->db->get('qryauditreport')->result_array();
+        foreach ($data as $d) {
+
+            $this->UpdateStock(
+                2,
+                'Audit # ' . $d['AuditID'],
+                $d['ProductID'],
+                $d['UnitPrice'],
+                ($d['Diff'] < 0 ? abs($d['Diff']) : 0),
+                ($d['Diff'] > 0 ? abs($d['Diff']) : 0),
+                $d['AuditID'], 5,
+                $d['Date'],
+                $d['StoreID'],
+                $d['BusinessID'],
+                $d['UnitPrice']
+            );
+
+            $this->db->where('AuditID', $d['AuditID']);
+            $this->db->update('audit', [
+                'Status' => 1,
+            ]);
+        }
+        $this->response(['msg' => 'Audit posted updated'], REST_Controller::HTTP_OK);
+    }
+
 }

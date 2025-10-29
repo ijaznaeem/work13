@@ -114,7 +114,7 @@ export class HttpBase {
       filter = 'filter=StoreID =' + StoreID;
     }
     return this.getData(
-      'qrystock?flds=ProductID,ProductName,Stock,SPrice,PPrice,Packing,UnitValue,Weight&' +
+      'qrystock?flds=ProductID,StoreID,ProductName,Stock,SPrice,PPrice,Packing,UnitValue,Weight&' +
         filter +
         '&orderby=ProductName'
     );
@@ -547,5 +547,11 @@ export class HttpBase {
       'toolbar=1, scrollbars=1, resizable=1, width=' + 600 + ', height=' + 800
     );
   }
-
+ PrintVoucher(ID) {
+    window.open(
+      '/#/print/print-voucher/' + ID,
+      '_blank',
+      'toolbar=1, scrollbars=1, resizable=1, width=' + 600 + ', height=' + 800
+    );
+  }
 }

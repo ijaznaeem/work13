@@ -120,8 +120,36 @@
             </div>
           </div>
         </div>
-        <div class="form-group col-md-4"></div>
 
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-warning form-control"
+              (click)="CashPayment()"
+              accesskey="a"
+            >
+                <i class="fa fa-money"></i>
+              Cash Payment
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-success form-control"
+              (click)="CashReceipt()"
+              accesskey="a"
+            >
+              <i class="fa fa-money"></i>
+              Cash Receipt
+            </button>
+          </div>
+        </div>
         <div class="col-md-2">
           <div class="form-group">
             <label>&nbsp;</label>
@@ -198,6 +226,7 @@
             [Data]="data"
             (ClickAction)="Clicked($event)"
           ></ft-dynamic-table>
+          <a #last href="#"></a>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 <div widget class="card border-0 box-shadow">
   <div class="card-header transparent border-0 text-muted">
-    <h5 class="mb-3">Sale Report</h5>
+    <h5 class="mb-3">Labour Report</h5>
   </div>
   <div class="card-block widget-body">
     <form #frmFilter="ngForm">
@@ -49,17 +49,8 @@
             </div>
           </div>
         </div>
+        <div class="col-md-4">
 
-        <div class="form-group col-md-3">
-          <label for="LabourHaeds">Labour Haeds</label>
-          <ejs-combobox
-            name="LabourHaeds"
-            id="LabourHaeds"
-            [dataSource]="LabourHaeds"
-            [fields]="{ text: 'LabourHead', value: 'LabourHeadID' }"
-            [(ngModel)]="Filter.HeadID"
-          >
-          </ejs-combobox>
         </div>
 
         <div class="col-md-1">
@@ -90,20 +81,7 @@
             </button>
           </div>
         </div>
-        <div class="col-md-1">
-          <div class="form-group">
-            <label>&nbsp;</label>
-            <button
-              type="button"
-              class="btn btn-primary form-control"
-              (click)="AddLabour()"
-              accesskey="A"
-            >
-              <i class="fa fa-plus"></i>
-              Add labour
-            </button>
-          </div>
-        </div>
+
       </div>
     </form>
     <div class="row no-gutter" id="print-section">

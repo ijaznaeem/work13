@@ -1,13 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { GetDateJSON, JSON2Date } from '../../../factories/utilities';
-import { HttpBase } from '../../../services/httpbase.service';
-import { MyToastService } from '../../../services/toaster.server';
-import swal from 'sweetalert';
-import { PrintDataService } from '../../../services/print.data.services';
+import { ComboBoxComponent } from '@syncfusion/ej2-angular-dropdowns';
 import { formatNumber } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
-import { ComboBoxComponent } from '@syncfusion/ej2-angular-dropdowns';
+import { HttpBase } from '../../../services/httpbase.service';
+import { PrintDataService } from '../../../services/print.data.services';
+import { MyToastService } from '../../../services/toaster.server';
 
 @Component({
   selector: 'app-credit-list',
@@ -16,11 +14,12 @@ import { ComboBoxComponent } from '@syncfusion/ej2-angular-dropdowns';
 })
 export class CreditlistComponent implements OnInit {
   @ViewChild('RptTable') RptTable;
-  @ViewChild('cmbRoute') cmbRoute : ComboBoxComponent;
+  @ViewChild('cmbRoute') cmbRoute: ComboBoxComponent;
 
   public Filter = {
     RouteID: '',
-    Balance: '10'
+    Balance: 10,
+    Type: 'credit',
   };
   setting = {
     Checkbox: false,
@@ -53,15 +52,11 @@ export class CreditlistComponent implements OnInit {
           return formatNumber(d['Balance']);
         },
       },
-
     ],
-    Actions: [
-
-    ],
+    Actions: [],
     Data: [],
   };
 
-  public Routes = this.cachedData.routes$
   public data: object[];
 
   constructor(
@@ -70,27 +65,32 @@ export class CreditlistComponent implements OnInit {
     private cachedData: CachedDataService,
     private myToaster: MyToastService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.FilterData();
   }
 
   FilterData() {
-    let filter =
-      "1=1";
-    if (this.Filter.RouteID) filter += ' and RouteID=' + this.Filter.RouteID
-    if (this.Filter.Balance) filter += ' and CBalance >=' + this.Filter.Balance
+    let filter = '1=1';
 
-    this.http.getData('qrycustomers?flds=CustomerID,CustomerName, Address, City, CBalance as Balance&filter=' + filter).then((r: any) => {
-      this.data = r;
-    });
+    if (this.Filter.Type == 'credit')
+      filter += ' and CBalance >=' + this.Filter.Balance;
+    else filter += ' and CBalance <=' + this.Filter.Balance * -1;
+
+    this.http
+      .getData(
+        'qrycustomers?flds=CustomerID,CustomerName, Address, City, CBalance as Balance&filter=' +
+          filter
+      )
+      .then((r: any) => {
+        this.data = r;
+      });
   }
   PrintReport() {
     this.ps.PrintData.HTMLData = document.getElementById('print-section');
-    this.ps.PrintData.Title = 'Credit List';
-    this.ps.PrintData.SubTitle =
-      'Route: ' + this.cmbRoute.text;
+    this.ps.PrintData.Title = this.Filter.Type == 'credit' ? 'Credit List' : 'Debit List';
 
     this.router.navigateByUrl('/print/print-html');
   }

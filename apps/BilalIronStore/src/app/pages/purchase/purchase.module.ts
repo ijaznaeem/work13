@@ -8,6 +8,7 @@ import { ComboBoxAllModule } from '@syncfusion/ej2-angular-dropdowns';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { FutureTechLibModule } from '../../../../../../libs/future-tech-lib/src';
+import { AuditComponent } from './purchase-invoice/audit/audit.component';
 import { PurchaseInvoiceComponent } from './purchase-invoice/purchase-invoice.component';
 import { PurchaseReturnComponent } from './purchase-return/purchase-return.component';
 import { PurchaseComponent } from './purchase/purchase.component';
@@ -25,6 +26,11 @@ const routes: any = [
     component: PurchaseInvoiceComponent,
     data: { breadcrumb: 'Purchase Edit' },
   },
+  {
+    path: 'audit',
+    component: AuditComponent,
+    data: { breadcrumb: 'Purchase Audit' },
+  },
 
 ];
 
@@ -33,6 +39,7 @@ const routes: any = [
     PurchaseComponent,
     PurchaseReturnComponent,
     PurchaseInvoiceComponent,
+    AuditComponent
   ],
   imports: [
     CommonModule,

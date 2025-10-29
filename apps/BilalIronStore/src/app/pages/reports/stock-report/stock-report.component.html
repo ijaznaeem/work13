@@ -5,11 +5,11 @@
   <div class="card-block widget-body">
     <form #frmFilter="ngForm">
       <div class="row no-pad">
-        <div class="form-group col-md-3">
-          <label for="customer">Select Store</label>
+        <div class="form-group col-md-2">
+          <label for="cmbStores">Select Store</label>
           <select
-            name="cmbAgents"
-            id="cmbAgents"
+            name="cmbStores"
+            id="cmbStores"
             [(ngModel)]="Filter.StoreID"
             class="form-control"
           >
@@ -20,32 +20,21 @@
           </select>
         </div>
         <div class="form-group col-md-2">
-          <div class="custom-control mt-2 custom-radio">
-            <input
-              class="custom-control-input radio-inline"
-              id="rdByProduct"
-              name="radio"
-              type="radio"
-              value="1"
-              [(ngModel)]="Filter.nWhat"
-            />
-            <label class="custom-control-label" for="rdByProduct">
-              Detail
-            </label>
-          </div>
+          <label for="cmbCategory">Select Category</label>
+          <ng-select
+            [items]="Categories$ | async"
+            bindLabel="CategoryName"
+            bindValue="CategoryID"
+            [(ngModel)]="Filter.CategoryID"
+            name="cmbCategory"
+            id="cmbCategory"
+            placeholder="--Select Category--"
 
-          <div class="custom-control custom-radio">
-            <input
-              class="custom-control-input radio-inline radio-primary"
-              id="rdByUnit"
-              name="radio"
-              type="radio"
-              value="2"
-              [(ngModel)]="Filter.nWhat"
-            />
-            <label class="custom-control-label" for="rdByUnit"> Summary </label>
-          </div>
+            [clearable]="true"
+          >
+          </ng-select>
         </div>
+
         <div class="form-group col-md-2">
           <div class="custom-control custom-check">
             <input
@@ -71,6 +60,20 @@
           />
         </div>
 
+        <div class="col-md-2">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="submit"
+              class="btn btn-danger form-control"
+              (click)="UpdateStock()"
+              accesskey="a"
+            >
+              <i class="fa fa-search"></i>
+              Add Discount
+            </button>
+          </div>
+        </div>
         <div class="col-md-1">
           <div class="form-group">
             <label>&nbsp;</label>

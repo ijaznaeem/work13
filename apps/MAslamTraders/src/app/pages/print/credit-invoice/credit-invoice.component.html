@@ -1,15 +1,15 @@
 <div id="print-section">
-  <section id="savepdf">
+  <section id="savepdf" style="margin-left: 20px; margin-right: 20px">
     <table style="width: 100%; height: 100%">
       <tbody style="vertical-align: top">
         <tr>
-          <td colspan="4" *ngIf="Invoice.Type != 3">
-            <app-print-title [Business]="Business"></app-print-title>
+          <td colspan="4" style="height: 1cm;">
+
           </td>
         </tr>
 
         <tr>
-          <td colspan="4" class="text-center" style="font-size: 16px">
+          <td colspan="4" class="text-center" style="font-size: 24px">
             <strong
               >{{ Invoice.DtCr == 'CR' ? 'SALE INVOICE ' : 'INVOICE RETURN' }}
             </strong>
@@ -17,26 +17,26 @@
         </tr>
         <tr>
           <td colspan="2" class="text-left" style="width: 50%">
-            <table class="">
+            <table class="" style="padding: 0px; border-collapse: collapse">
               <tr>
-                <td style="width: 50%">Customer Name:</td>
-                <td>
+                <td style="width: 50%; padding: 0">Customer Name:</td>
+                <td style="padding: 0">
                   <strong>{{ Invoice.CustomerName }}</strong>
                 </td>
               </tr>
               <tr>
-                <td style="width: 50%">Refrence:</td>
-                <td>
+                <td style="width: 50%; padding: 0">Refrence:</td>
+                <td style="padding: 0">
                   <strong>{{ Invoice.CustName }}</strong>
                 </td>
               </tr>
               <tr>
-                <td>Contact#:</td>
-                <td>{{ Invoice.PhoneNo1 }}</td>
+                <td style="padding: 0">Contact#:</td>
+                <td style="padding: 0">{{ Invoice.PhoneNo1 }}</td>
               </tr>
               <tr>
-                <td>Address:</td>
-                <td>
+                <td style="padding: 0">Address:</td>
+                <td style="padding: 0">
                   {{ Invoice.Address }}
                 </td>
               </tr>
@@ -167,7 +167,6 @@
                     <span> {{ Invoice.Notes }} </span>
                   </div>
 
-
                   <div
                     class="text-center mt-5"
                     style="
@@ -216,22 +215,23 @@
                     <tr>
                       <td>Net Amount:</td>
                       <td class="text-right">
-                        {{
-                          (Invoice.NetAmount < 0
-                            ? Invoice.NetAmount * -1
-                            : Invoice.NetAmount
-                          ) | number: '1.2-2'
-                        }}
+                        {{ Invoice.NetAmount | number: '1.2-2' }}
                       </td>
                     </tr>
                     <tr>
-                      <td>Previouse :</td>
+                      <td>Previous :</td>
                       <td class="text-right">
                         {{ Invoice.PrevBalance * 1 | number: '1.0-0' }}
                       </td>
                     </tr>
                     <tr>
-                      <td>Cash Received:</td>
+                      <td>
+                        <span>
+                          {{
+                            Invoice.DtCr == 'CR' ? 'Cash Received' : 'Payment'
+                          }}
+                        </span>
+                      </td>
                       <td class="text-right">
                         {{ Invoice.AmntRecvd | number: '1.0-0' }}
                       </td>
@@ -240,7 +240,7 @@
                       <td>Total Balance:</td>
                       <td class="text-right">
                         {{
-                          Invoice.PrevBalance * 1 + 1 * Invoice.Balance
+                          Invoice.PrevBalance * 1 + 1 * Invoice.Balance *( Invoice.DtCr=='CR'?1: -1)
                             | number: '1.0-0'
                         }}
                       </td>
@@ -278,6 +278,15 @@
           (click)="SaveAsPdf()"
         >
           Save as PDF
+        </button>
+        <button
+          style="margin: 5px"
+          class="btn btn-primary"
+          printSectionId="print-section"
+          type="button"
+          (click)="ScreenShot()"
+        >
+          Screen Shot
         </button>
       </div>
     </div>

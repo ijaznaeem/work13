@@ -11,8 +11,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FutureTechLibModule } from '../../../../../../libs/future-tech-lib/src';
 import { TabDirective } from '../../services/tab.directive';
-import { PendingInvoiceComponent } from './pending-invoice/pending-invoice.component';
-import { CashSaleComponent } from './sale-invoice/sale-invoice.component';
+import { TestComponent } from './customers/test.component';
+import { SaleInvoiceComponent } from './sale-invoice/sale-invoice.component';
 import { SaleOrderComponent } from './sale-order/sale-order.component';
 import { SearchStockComponent } from './search-stock/search-stock.component';
 import { StockTransferComponent } from './stock-transfer/stock-transfer.component';
@@ -32,35 +32,34 @@ const routes: any = [
   },
   {
     path: 'invoice',
-    component: CashSaleComponent,
+    component: SaleInvoiceComponent,
     data: { breadcrumb: 'Sale' },
   },
   {
     path: 'invoice/:EditID',
-    component: CashSaleComponent,
+    component: SaleInvoiceComponent,
     data: { breadcrumb: 'Sale' },
   },
-
   {
-    path: 'pending',
-    component: PendingInvoiceComponent,
-    data: { breadcrumb: 'Pedning Stock' },
+    path: 'transfer',
+    component: StockTransferComponent,
+    data: { breadcrumb: 'Stock Transfer' },
   },
   {
-    path: 'pending/:EditID',
-    component: PendingInvoiceComponent,
-    data: { breadcrumb: 'Pedning Stock' },
+    path: 'transfer/:EditID',
+    component: StockTransferComponent,
+    data: { breadcrumb: 'Stock Transfer' },
   },
 ];
 
 @NgModule({
   declarations: [
-    CashSaleComponent,
+    SaleInvoiceComponent,
     SearchStockComponent,
     StockTransferComponent,
     TabDirective,
-    PendingInvoiceComponent,
     SaleOrderComponent,
+    TestComponent, // Ensure this is imported if it exists in the sales module
   ],
   imports: [
     CommonModule,

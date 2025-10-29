@@ -88,7 +88,6 @@
                       <th style="width: 5%">S No</th>
                       <th class="text-left">ProductName</th>
                       <th style="width: 10%">Qty</th>
-                      <th style="width: 10%">Packing</th>
                       <th style="width: 10%">Rate</th>
                       <th style="width: 15%">Amount</th>
                     </tr>
@@ -98,7 +97,6 @@
                       <td>{{ i + 1 }}</td>
                       <td class="text-left">{{ item.ProductName }}</td>
                       <td>{{ RoundIt(item.Qty, 2) }}</td>
-                      <td>{{ item.Packing }}</td>
                       <td>{{ item.PPrice | number: '1.0-2' }}</td>
                       <td>
                         <strong>{{
@@ -111,8 +109,7 @@
                     <tr>
                       <th></th>
                       <th class="text-center">Grand Total:</th>
-                      <th></th>
-                      <th></th>
+                      <th>Total Weight: {{ RoundIt(FindTotal('Weight'), 1) }} KG</th>
                       <th></th>
                       <th>{{ RoundIt(FindTotal('Amount'), 0) }}</th>
                     </tr>

@@ -169,9 +169,9 @@ export class TradingSaleComponent implements OnInit, OnChanges {
       this.invoice.FinYearID = this.http.getFinYearID();
       this.invoice.SessionID = this.http.getClosingID();
 
-      this.http.postTask('sale' + InvoiceID, this.invoice).then(
+      this.http.postTask('trsale' + InvoiceID, this.invoice).then(
         (r: any) => {
-          this.myToaster.Sucess('Data Insert successfully', '', 2);
+          this.myToaster.Sucess('Data sasved successfully', '', 2);
           if (this.EditID != '') {
             this.router.navigateByUrl(this.InvoiceUrl + this.EditID);
           } else {

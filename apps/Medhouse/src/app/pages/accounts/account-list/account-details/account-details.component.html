@@ -1,0 +1,389 @@
+<div class="container-fluid p-4">
+  <!-- Header Section -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">
+        <i class="fas fa-users text-primary me-2"></i>
+        Customer's Accounts Report
+      </h2>
+      <p class="text-muted mb-0">Account statements and transaction history</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button 
+        type="button" 
+        class="btn btn-outline-primary"
+        [disabled]="isLoading"
+        (click)="refreshData()"
+        title="Refresh Data">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isLoading"></i>
+        Refresh
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-success"
+        [disabled]="isLoading || !selectedAccount"
+        (click)="exportToCSV()"
+        title="Export to CSV">
+        <i class="fas fa-file-csv"></i>
+        Export
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-primary"
+        [disabled]="isLoading || !selectedAccount"
+        (click)="printAccountStatement()"
+        title="Print Account Statement">
+        <i class="fas fa-print"></i>
+        Print Statement
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Left Panel - Filters and Customer Selection -->
+    <div class="col-lg-4">
+      <!-- Date Range Filter -->
+      <div class="card mb-3 border-primary">
+        <div class="card-header bg-primary text-white">
+          <h6 class="mb-0">
+            <i class="fas fa-calendar-alt me-2"></i>
+            Date Range
+          </h6>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="filterForm">
+            <div class="row g-2">
+              <div class="col-6">
+                <label for="fromDate" class="form-label">
+                  From Date
+                  <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="fromDate"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid('fromDate')"
+                  formControlName="fromDate">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('fromDate')">
+                  {{ getFieldError('fromDate') }}
+                </div>
+              </div>
+              <div class="col-6">
+                <label for="toDate" class="form-label">
+                  To Date
+                  <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="toDate"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid('toDate')"
+                  formControlName="toDate">
+                <div class="invalid-feedback" *ngIf="isFieldInvalid('toDate')">
+                  {{ getFieldError('toDate') }}
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="card mb-3 border-info">
+        <div class="card-header bg-info text-white">
+          <h6 class="mb-0">
+            <i class="fas fa-filter me-2"></i>
+            Filters
+          </h6>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="filterForm" class="row g-3">
+            <!-- Account Type -->
+            <div class="col-12">
+              <label for="accountType" class="form-label">
+                <i class="fas fa-tag me-1"></i>
+                Account Type
+              </label>
+              <ng-select
+                [items]="accountTypes"
+                bindLabel="accountType"
+                bindValue="accountTypeID"
+                placeholder="--ALL--"
+                formControlName="accountType"
+                [clearable]="true"
+                class="custom-ng-select">
+              </ng-select>
+            </div>
+
+            <!-- Business -->
+            <div class="col-12">
+              <label for="business" class="form-label">
+                <i class="fas fa-building me-1"></i>
+                Business
+              </label>
+              <ng-select
+                [items]="businesses"
+                bindLabel="businessName"
+                bindValue="businessID"
+                placeholder="Select Business"
+                formControlName="business"
+                [clearable]="true"
+                class="custom-ng-select">
+              </ng-select>
+            </div>
+
+            <!-- Division -->
+            <div class="col-12">
+              <label for="division" class="form-label">
+                <i class="fas fa-sitemap me-1"></i>
+                Division
+              </label>
+              <ng-select
+                [items]="divisions"
+                bindLabel="divisionName"
+                bindValue="divisionID"
+                placeholder="Select Division"
+                formControlName="division"
+                [clearable]="true"
+                class="custom-ng-select">
+              </ng-select>
+            </div>
+
+            <!-- Quick Filters -->
+            <div class="col-12">
+              <label class="form-label">Quick Filters</label>
+              <div class="btn-group-vertical w-100" role="group">
+                <button 
+                  type="button" 
+                  class="btn btn-outline-secondary btn-sm"
+                  (click)="filterByAccountType(1)"
+                  title="Customer Accounts">
+                  <i class="fas fa-user"></i>
+                  Customers
+                </button>
+                <button 
+                  type="button" 
+                  class="btn btn-outline-secondary btn-sm"
+                  (click)="filterByAccountType(2)"
+                  title="Supplier Accounts">
+                  <i class="fas fa-truck"></i>
+                  Suppliers
+                </button>
+                <button 
+                  type="button" 
+                  class="btn btn-outline-danger btn-sm"
+                  (click)="clearFilters()"
+                  title="Clear All Filters">
+                  <i class="fas fa-times"></i>
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Customer Selection -->
+      <div class="card mb-3 border-success">
+        <div class="card-header bg-success text-white">
+          <h6 class="mb-0">
+            <i class="fas fa-address-book me-2"></i>
+            Select Account
+          </h6>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="filterForm">
+            <div class="mb-3">
+              <label for="customer" class="form-label">
+                Customer/Account
+                <span class="text-danger">*</span>
+              </label>
+              <ng-select
+                [items]="filteredCustomers"
+                bindLabel="customerName"
+                bindValue="customerID"
+                placeholder="Please select an Account"
+                formControlName="customer"
+                [clearable]="false"
+                [searchable]="true"
+                [class.is-invalid]="isFieldInvalid('customer')"
+                class="custom-ng-select">
+                <ng-option *ngFor="let customer of filteredCustomers" [value]="customer.customerID">
+                  {{ customer.customerName }} ({{ customer.city }})
+                </ng-option>
+              </ng-select>
+              <div class="invalid-feedback" *ngIf="isFieldInvalid('customer')">
+                {{ getFieldError('customer') }}
+              </div>
+            </div>
+          </form>
+
+          <!-- Customer Details -->
+          <div *ngIf="selectedAccount" class="mt-3">
+            <div class="alert alert-info">
+              <h6 class="mb-2">
+                <i class="fas fa-info-circle me-1"></i>
+                Account Details
+              </h6>
+              <p class="mb-1">
+                <strong>City:</strong> {{ selectedCustomerDetails.city || 'N/A' }}
+              </p>
+              <p class="mb-1">
+                <strong>Credit Limit:</strong> 
+                {{ selectedCustomerDetails.limit | currency:'USD':'symbol':'1.2-2' }}
+              </p>
+              <p class="mb-0">
+                <strong>Current Balance:</strong> 
+                <span [ngClass]="selectedCustomerDetails.balance >= 0 ? 'text-success' : 'text-danger'">
+                  {{ selectedCustomerDetails.balance | currency:'USD':'symbol':'1.2-2' }}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="card border-warning">
+        <div class="card-header bg-warning text-dark">
+          <h6 class="mb-0">
+            <i class="fas fa-search me-2"></i>
+            Search Transactions
+          </h6>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="filterForm">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-search"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search in descriptions..."
+                formControlName="searchText">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel - Account Data -->
+    <div class="col-lg-8">
+      <!-- Action Buttons -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="btn-group" role="group">
+          <button 
+            type="button" 
+            class="btn btn-outline-info btn-sm"
+            [disabled]="!selectedAccount"
+            (click)="getAccountSummary()"
+            title="Account Summary">
+            <i class="fas fa-chart-pie"></i>
+            Summary
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-outline-primary btn-sm"
+            [disabled]="!selectedTransaction"
+            (click)="viewInvoice()"
+            title="View Invoice">
+            <i class="fas fa-file-invoice"></i>
+            View Invoice
+          </button>
+        </div>
+        
+        <div class="text-muted" *ngIf="selectedAccount">
+          <small>
+            <i class="fas fa-user me-1"></i>
+            {{ selectedAccount.customerName }}
+          </small>
+        </div>
+      </div>
+
+      <!-- Account Transactions Table -->
+      <div class="card">
+        <div class="card-header bg-light">
+          <div class="d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">
+              <i class="fas fa-table me-2"></i>
+              Account Transactions
+            </h6>
+            <div class="text-muted" *ngIf="selectedAccount">
+              <small>
+                <i class="fas fa-info-circle"></i>
+                Double-click row to view invoice
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <!-- Loading Overlay -->
+          <div *ngIf="isLoading" class="text-center p-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading account data...</span>
+            </div>
+            <p class="mt-2 text-muted">Loading account transactions...</p>
+          </div>
+
+          <!-- No Account Selected -->
+          <div *ngIf="!isLoading && !selectedAccount" class="text-center p-4">
+            <i class="fas fa-user-times fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No Account Selected</h5>
+            <p class="text-muted">Please select a customer account to view transactions</p>
+          </div>
+
+          <!-- Account Transactions Table -->
+          <div *ngIf="!isLoading && selectedAccount" class="table-responsive">
+            <ng2-smart-table
+              [settings]="tableSettings"
+              [source]="accountData"
+              (userRowSelect)="onRowSelect($event)"
+              (rowSelect)="onRowDblClick($event)"
+              class="account-table">
+            </ng2-smart-table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transaction Details -->
+      <div *ngIf="selectedTransaction" class="card mt-3 border-primary">
+        <div class="card-header bg-primary text-white">
+          <h6 class="mb-0">
+            <i class="fas fa-receipt me-2"></i>
+            Transaction Details
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong>Date:</strong> {{ selectedTransaction.Date | date:'MMM dd, yyyy' }}</p>
+              <p><strong>Invoice #:</strong> {{ selectedTransaction.InvoiceNo || 'N/A' }}</p>
+              <p><strong>Description:</strong> {{ selectedTransaction.Description }}</p>
+            </div>
+            <div class="col-md-6">
+              <p>
+                <strong>Debit:</strong> 
+                <span class="text-danger">
+                  {{ selectedTransaction.Debit > 0 ? (selectedTransaction.Debit | currency:'USD':'symbol':'1.2-2') : 'N/A' }}
+                </span>
+              </p>
+              <p>
+                <strong>Credit:</strong> 
+                <span class="text-success">
+                  {{ selectedTransaction.Credit > 0 ? (selectedTransaction.Credit | currency:'USD':'symbol':'1.2-2') : 'N/A' }}
+                </span>
+              </p>
+              <p>
+                <strong>Balance:</strong> 
+                <span [ngClass]="selectedTransaction.Balance >= 0 ? 'text-success' : 'text-danger'">
+                  {{ selectedTransaction.Balance | currency:'USD':'symbol':'1.2-2' }}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -67,7 +67,7 @@ export class PrintHtmlComponent implements OnInit, AfterViewInit {
     });
 
     doc.setFontSize(11);
-    doc.text(this.pdata.PrintData.SubTitle, 105, 32, {
+    doc.text(this.pdata.PrintData.SubTitle||"", 105, 32, {
       align: 'center',
     });
     let tableY = 37;

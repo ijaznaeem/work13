@@ -22,6 +22,7 @@ import {
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
 import { MyToastService } from '../../../services/toaster.server';
+import { AddExpenseComponent } from '../../cash/add-expense/add-expense.component';
 import { PInvoice, PInvoiceDetails } from './pinvoicedetails.model';
 
 @Component({
@@ -536,5 +537,10 @@ export class PurchaseInvoiceComponent implements OnInit, OnChanges {
           (this.selectedProduct.Weight == 0 ? 1 : this.selectedProduct.Weight)),
       4
     );
+  }
+  AddExpense() {
+    this.http.openModal(AddExpenseComponent, {
+      PInvoiceID: this.EditID,
+    });
   }
 }

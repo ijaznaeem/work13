@@ -397,7 +397,7 @@ export class CreditSaleComponent implements OnInit, OnChanges {
     event.newData.NetAmount =
       event.newData.Amount +
 
-      event.newData.Discount -
+      event.newData.Discount * 1 -
       (event.newData.Qty * event.newData.Packing + event.newData.Pcs * 1) *
         event.newData.SchemeRatio;
 

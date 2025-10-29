@@ -1,0 +1,166 @@
+{
+  "name": "AccountsSystem",
+  "projectType": "application",
+  "generators": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    },
+    "@schematics/angular:application": {
+      "strict": true
+    }
+  },
+  "sourceRoot": "apps/AccountsSystem/src",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "options": {
+        "allowedCommonJsDependencies": [
+          "dragula",
+          "firebase/app",
+          "@mattlewis92/dom-autoscroller",
+          "angular-calendar/date-adapters/date-fns",
+          "prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard",
+          "nouislider",
+          "ngx-quill",
+          "lodash",
+          "css-element-queries",
+          "chart.js"
+        ],
+        "outputPath": "dist/apps/AccountsSystem",
+        "index": "apps/AccountsSystem/src/index.html",
+        "main": "apps/AccountsSystem/src/main.ts",
+        "tsConfig": "apps/AccountsSystem/tsconfig.app.json",
+        "polyfills": "apps/AccountsSystem/src/polyfills.ts",
+        "assets": [
+          "apps/AccountsSystem/src/assets",
+          "apps/AccountsSystem/src/favicon.ico"
+        ],
+        "styles": [
+          "node_modules/sweetalert2/dist/sweetalert2.min.css",
+          "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
+          "node_modules/prismjs/plugins/toolbar/prism-toolbar.css",
+          "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+          "node_modules/@syncfusion/ej2-base/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-buttons/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-dropdowns/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-inputs/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-popups/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-lists/styles/bootstrap.css",
+          "node_modules/@syncfusion/ej2-angular-dropdowns/styles/bootstrap.css",
+          "apps/AccountsSystem/src/assets/css/wizard.css",
+          "apps/AccountsSystem/src/assets/css/quill.snow.css",
+          "apps/AccountsSystem/src/assets/css/quill.bubble.css",
+          "apps/AccountsSystem/src/assets/css/hopscotch.css",
+          "apps/AccountsSystem/src/assets/css/animate.min.css",
+          "node_modules/nouislider/distribute/nouislider.min.css",
+          "node_modules/angular-calendar/scss/angular-calendar.scss",
+          "node_modules/dragula/dist/dragula.css",
+          "node_modules/ngx-toastr/toastr.css",
+          "node_modules/@swimlane/ngx-datatable/index.css",
+          "node_modules/@swimlane/ngx-datatable/assets/icons.css",
+          "apps/AccountsSystem/src/assets/css/demo.css",
+          "apps/AccountsSystem/src/assets/sass/core.scss",
+          "apps/AccountsSystem/src/styles.scss",
+          "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css",
+          "node_modules/datatables.net-buttons-dt/css/buttons.dataTables.css",
+          "node_modules/datatables.net-select-dt/css/select.dataTables.css"
+        ],
+        "scripts": [
+          "apps/AccountsSystem/src/assets/vendor/pace/pace.min.js",
+          "node_modules/apexcharts/dist/apexcharts.min.js",
+          "node_modules/jquery/dist/jquery.min.js",
+          "node_modules/datatables.net/js/jquery.dataTables.min.js",
+          "node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js",
+          "node_modules/jszip/dist/jszip.js",
+          "node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+          "node_modules/datatables.net-buttons/js/buttons.colVis.js",
+          "node_modules/datatables.net-buttons/js/buttons.flash.js",
+          "node_modules/datatables.net-buttons/js/buttons.html5.js",
+          "node_modules/datatables.net-buttons/js/buttons.print.js",
+          "node_modules/datatables.net-select/js/dataTables.select.js"
+        ],
+        "vendorChunk": true,
+        "extractLicenses": false,
+        "buildOptimizer": false,
+        "sourceMap": true,
+        "optimization": false,
+        "namedChunks": true
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "200mb",
+              "maximumError": "8mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "8kb",
+              "maximumError": "16kb"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/AccountsSystem/src/environments/environment.ts",
+              "with": "apps/AccountsSystem/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "AccountsSystem:build:production"
+        },
+        "development": {
+          "browserTarget": "AccountsSystem:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "AccountsSystem:build"
+      }
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "apps/AccountsSystem/src/test.ts",
+        "polyfills": "apps/AccountsSystem/src/polyfills.ts",
+        "tsConfig": "apps/AccountsSystem/tsconfig.spec.json",
+        "karmaConfig": "apps/AccountsSystem/karma.conf.js",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "apps/AccountsSystem/src/favicon.ico",
+          "apps/AccountsSystem/src/assets"
+        ],
+        "styles": [
+          "apps/AccountsSystem/src/styles.scss"
+        ],
+        "scripts": []
+      }
+    }
+  }
+}

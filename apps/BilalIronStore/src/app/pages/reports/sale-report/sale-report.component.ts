@@ -22,10 +22,11 @@ export class SaleReportComponent implements OnInit {
     FromDate: GetDateJSON(),
     ToDate: GetDateJSON(),
     Balance: '0',
-    RouteID: '',
+    SearchText: '',
+    ShowDeleted: false
   };
-  Salesman = this.cachedData.Salesman$;
-  public Routes = this.cachedData.routes$;
+  Salesman: any;
+  public Routes: any;
   public data: object[];
 
   setting = {
@@ -48,24 +49,31 @@ export class SaleReportComponent implements OnInit {
         fldName: 'Address',
       },
       {
-        label: 'City',
-        fldName: 'City',
+        label: 'Reference',
+        fldName: 'Reference',
+      },
+
+      {
+        label: 'Posted',
+        fldName: 'Status',
       },
       {
         label: 'Amount',
         fldName: 'Amount',
         sum: true,
-        valueFormatter: (d) => {
-          return formatNumber(d['Amount']);
-        },
+
+      },
+      {
+        label: 'Carriage',
+        fldName: 'DeliveryCharges',
+        sum: true,
+
       },
       {
         label: 'Discount',
         fldName: 'Discount',
         sum: true,
-        valueFormatter: (d) => {
-          return formatNumber(d['Discount']);
-        },
+
       },
 
       {
@@ -86,6 +94,11 @@ export class SaleReportComponent implements OnInit {
         fldName: 'Balance',
         sum: true,
       },
+
+      {
+        label: 'Type',
+        fldName: 'DtCr',
+      },
     ],
     Actions: [
       {
@@ -100,6 +113,7 @@ export class SaleReportComponent implements OnInit {
         icon: 'print',
         class: 'primary',
       },
+
     ],
     Data: [],
     SubTable: {
@@ -136,7 +150,6 @@ export class SaleReportComponent implements OnInit {
     },
   };
 
-  public toolbarOptions: object[];
   constructor(
     private http: HttpBase,
     private ps: PrintDataService,
@@ -146,6 +159,8 @@ export class SaleReportComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.Routes = this.cachedData.routes$;
+    this.Salesman = this.cachedData.Salesman$;
     this.FilterData();
   }
   PrintReport() {
@@ -167,9 +182,13 @@ export class SaleReportComponent implements OnInit {
       "' and '" +
       JSON2Date(this.Filter.ToDate) +
       "'";
-    if (this.Filter.RouteID && this.Filter.RouteID != '')
-      filter += ' and RouteID = ' + this.Filter.RouteID;
+
     if (this.Filter.Balance > '0') filter += ' and Balance >= 1000 ';
+    if (this.Filter.ShowDeleted) {
+      filter += ' and IsDeleted = 1 ';
+    } else {
+      filter += ' and IsDeleted = 0 ';
+    }
 
     this.http.getData('qryinvoices?filter=' + filter).then((r: any) => {
       this.data = r.map((obj: any) => {
@@ -184,16 +203,7 @@ export class SaleReportComponent implements OnInit {
   Clicked(e) {
     console.log(e);
     if (e.action === 'print') {
-      // this.http.getData('printbill/' + e.data.InvoiceID).then((d: any) => {
-      //   d.Business = this.http.GetBData();
-      //   console.log(d);
-      //   this.bill.PrintPDFBill_A5(d);
-      // });
       this.router.navigateByUrl('/print/printinvoice/' + e.data.InvoiceID);
-
-      // this.http.openModal(CreditInvoiceComponent, {
-      //   InvoiceID: e.data.InvoiceID,
-      // });
     } else if (e.action === 'printdelivery') {
       console.log(e.action);
       this.http.Printgatepass().then((r: any) => {
@@ -217,8 +227,6 @@ export class SaleReportComponent implements OnInit {
                 this.bill.PrintGatePass_A5(Invoice);
               });
           });
-
-        // this.router.navigateByUrl('print/gatepass/' + e.data.InvoiceID  + "/" + r)
       });
     }
   }

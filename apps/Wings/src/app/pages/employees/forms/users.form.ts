@@ -22,21 +22,21 @@ export const  UserInfo = {
       },
 
 
-      {
-        fldName: 'is_master',
-        control: 'select',
-        type: 'list',
-        label: 'Is Master',
-        listTable: '',
-        listData: [
-          { id: '1', val: 'Yes' },
-          { id: 0, val: 'No' },
-        ],
-        displayFld: 'val',
-        valueFld: 'id',
-        required: true,
-        size: 6,
-      },
+      // {
+      //   fldName: 'is_master',
+      //   control: 'select',
+      //   type: 'list',
+      //   label: 'Is Master',
+      //   listTable: '',
+      //   listData: [
+      //     { id: '1', val: 'Yes' },
+      //     { id: 0, val: 'No' },
+      //   ],
+      //   displayFld: 'val',
+      //   valueFld: 'id',
+      //   required: true,
+      //   size: 6,
+      // },
 
     ],
   };

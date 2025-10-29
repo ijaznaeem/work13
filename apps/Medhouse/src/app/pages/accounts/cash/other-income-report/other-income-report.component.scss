@@ -1,0 +1,552 @@
+// Orange Theme for Other Income Report Component
+.other-income-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+
+  // Orange color scheme
+  --primary-orange: #ff6b35;
+  --primary-orange-light: #ff8c5a;
+  --primary-orange-dark: #e55a2b;
+  --orange-bg-light: #fff4f0;
+  --orange-border: #ffcab0;
+  --orange-text: #d84315;
+}
+
+// Page Header Styling
+.page-header {
+  background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-light));
+  color: white;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+
+  .page-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+
+    .text-orange {
+      color: #fff3e0 !important;
+    }
+  }
+
+  .page-description {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+  }
+
+  .total-amount-display {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 15px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+
+    h4 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #fff3e0 !important;
+    }
+  }
+}
+
+// Filter Card Styling
+.filter-card {
+  margin-bottom: 25px;
+
+  .card {
+    border: 2px solid var(--orange-border);
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(255, 107, 53, 0.1);
+  }
+
+  .card-header {
+    background: linear-gradient(90deg, var(--primary-orange), var(--primary-orange-light)) !important;
+    border-bottom: 2px solid var(--primary-orange-dark);
+    border-radius: 10px 10px 0 0 !important;
+
+    .card-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+  }
+
+  .card-body {
+    background: var(--orange-bg-light);
+    padding: 25px;
+  }
+
+  .form-label {
+    color: var(--orange-text);
+    font-weight: 600;
+    margin-bottom: 8px;
+
+    i {
+      color: var(--primary-orange);
+    }
+  }
+
+  .form-control {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+
+    &:focus {
+      border-color: var(--primary-orange);
+      box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+    }
+
+    &.is-invalid {
+      border-color: #dc3545;
+    }
+  }
+}
+
+// Action Buttons
+.action-buttons {
+  margin-bottom: 25px;
+
+  .btn-group {
+    gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+
+    .btn {
+      border-radius: 8px;
+      font-weight: 600;
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+
+      i {
+        font-size: 1rem;
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+
+    .btn-success {
+      background: linear-gradient(45deg, #28a745, #34ce57);
+      border-color: #28a745;
+
+      &:hover:not(:disabled) {
+        background: linear-gradient(45deg, #218838, #28a745);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+      }
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, #007bff, #0056b3);
+      border-color: #007bff;
+
+      &:hover:not(:disabled) {
+        background: linear-gradient(45deg, #0056b3, #004085);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+      }
+    }
+
+    .btn-danger {
+      background: linear-gradient(45deg, #dc3545, #c82333);
+      border-color: #dc3545;
+
+      &:hover:not(:disabled) {
+        background: linear-gradient(45deg, #c82333, #bd2130);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+      }
+    }
+
+    .btn-info {
+      background: linear-gradient(45deg, #17a2b8, #138496);
+      border-color: #17a2b8;
+
+      &:hover:not(:disabled) {
+        background: linear-gradient(45deg, #138496, #117a8b);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+      }
+    }
+  }
+}
+
+// Orange theme button
+.btn-orange {
+  background: linear-gradient(45deg, var(--primary-orange), var(--primary-orange-light));
+  border-color: var(--primary-orange);
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 12px 20px;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(45deg, var(--primary-orange-dark), var(--primary-orange));
+    border-color: var(--primary-orange-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Data Grid Card
+.data-grid-card {
+  .card {
+    border: 2px solid var(--orange-border);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.1);
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: linear-gradient(90deg, #f8f9fa, #e9ecef);
+    border-bottom: 2px solid var(--orange-border);
+    padding: 20px;
+
+    .card-title {
+      color: var(--orange-text);
+      font-weight: 600;
+      font-size: 1.2rem;
+
+      i {
+        color: var(--primary-orange);
+      }
+    }
+  }
+}
+
+// Smart Table Customization
+::ng-deep .income-table {
+  .ng2-smart-table {
+    font-size: 0.9rem;
+
+    thead {
+      tr {
+        th {
+          background: linear-gradient(90deg, var(--orange-bg-light), #fff8f5);
+          color: var(--orange-text);
+          font-weight: 600;
+          border-bottom: 2px solid var(--orange-border);
+          padding: 15px 12px;
+          text-align: center;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: var(--orange-bg-light);
+        }
+
+        &.selected {
+          background: linear-gradient(90deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05));
+          border-left: 4px solid var(--primary-orange);
+        }
+
+        td {
+          padding: 12px;
+          border-bottom: 1px solid #e9ecef;
+          vertical-align: middle;
+
+          &:first-child {
+            font-weight: 600;
+            color: var(--orange-text);
+          }
+
+          // Amount column styling
+          &:nth-child(3) {
+            text-align: right;
+            font-weight: 600;
+            color: var(--primary-orange);
+          }
+
+          // Status column styling
+          &:last-child {
+            text-align: center;
+            
+            .badge {
+              padding: 5px 10px;
+              border-radius: 15px;
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .ng2-smart-pagination {
+    .pagination {
+      justify-content: center;
+      margin-top: 20px;
+
+      .page-item {
+        .page-link {
+          color: var(--primary-orange);
+          border-color: var(--orange-border);
+          margin: 0 2px;
+          border-radius: 6px;
+
+          &:hover {
+            background-color: var(--orange-bg-light);
+            border-color: var(--primary-orange);
+          }
+        }
+
+        &.active .page-link {
+          background-color: var(--primary-orange);
+          border-color: var(--primary-orange);
+        }
+      }
+    }
+  }
+}
+
+// Modal Customizations
+::ng-deep .modal {
+  .modal-dialog {
+    .modal-content {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--orange-border);
+    }
+
+    .modal-header {
+      &.bg-orange {
+        background: linear-gradient(90deg, var(--primary-orange), var(--primary-orange-light)) !important;
+      }
+
+      .modal-title {
+        font-weight: 600;
+      }
+    }
+
+    .modal-body {
+      padding: 25px;
+
+      .form-label {
+        color: var(--orange-text);
+        font-weight: 600;
+        margin-bottom: 8px;
+
+        i {
+          color: var(--primary-orange);
+        }
+      }
+
+      .form-control,
+      .form-select {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+
+        &:focus {
+          border-color: var(--primary-orange);
+          box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        }
+
+        &.is-invalid {
+          border-color: #dc3545;
+        }
+      }
+
+      .invalid-feedback {
+        font-size: 0.875rem;
+        color: #dc3545;
+        margin-top: 5px;
+      }
+
+      .alert {
+        border-radius: 8px;
+        border: none;
+        
+        &.alert-info {
+          background: linear-gradient(90deg, var(--orange-bg-light), #fff8f5);
+          color: var(--orange-text);
+          border-left: 4px solid var(--primary-orange);
+        }
+      }
+    }
+
+    .modal-footer {
+      background-color: #f8f9fa;
+      border-top: 2px solid var(--orange-border);
+      padding: 20px;
+
+      .btn {
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 10px 20px;
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+// Loading Overlay
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.3em;
+
+    &.text-orange {
+      color: var(--primary-orange) !important;
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .other-income-container {
+    padding: 15px;
+
+    .page-header {
+      padding: 20px;
+      text-align: center;
+
+      .page-title {
+        font-size: 1.5rem;
+        justify-content: center;
+      }
+
+      .total-amount-display {
+        margin-top: 15px;
+      }
+    }
+
+    .action-buttons .btn-group {
+      justify-content: center;
+
+      .btn {
+        flex: 1;
+        min-width: 120px;
+      }
+    }
+
+    .filter-card .card-body {
+      padding: 20px;
+
+      .row {
+        .col-md-4 {
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .other-income-container {
+    padding: 10px;
+
+    .page-header {
+      .page-title {
+        font-size: 1.3rem;
+      }
+
+      .total-amount-display h4 {
+        font-size: 1.2rem;
+      }
+    }
+
+    .action-buttons .btn-group {
+      flex-direction: column;
+
+      .btn {
+        margin-bottom: 10px;
+        margin-right: 0 !important;
+      }
+    }
+  }
+}
+
+// Print Styles
+@media print {
+  .other-income-container {
+    background: white !important;
+    
+    .page-header,
+    .filter-card,
+    .action-buttons {
+      display: none !important;
+    }
+
+    .data-grid-card {
+      box-shadow: none !important;
+      border: 1px solid #ddd !important;
+    }
+  }
+}
+
+// Additional utility classes
+.text-orange {
+  color: var(--primary-orange) !important;
+}
+
+.bg-orange {
+  background-color: var(--primary-orange) !important;
+}
+
+.border-orange {
+  border-color: var(--primary-orange) !important;
+}
+
+// Form validation enhancements
+.form-control.is-valid {
+  border-color: #28a745;
+  
+  &:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  }
+}
+
+// Status badges
+.status-badge {
+  &.draft {
+    background: linear-gradient(45deg, #ffc107, #ffb300);
+    color: #212529;
+  }
+
+  &.posted {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+  }
+}

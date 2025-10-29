@@ -831,16 +831,13 @@ class Apis extends REST_Controller
         $this->output->set_header('Pragma: no-cache');
         $this->output->set_header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 
-
-        $bid = $this->get('bid');
-        $filter= $this->get('filter');
+        $bid    = $this->get('bid');
+        $filter = $this->get('filter');
         $filter = $filter . " And BusinessID = $bid";
 
         $result = $this->dbquery("
               SELECT * from customers where $filter
             ");
-
-
 
         $this->response($result, REST_Controller::HTTP_OK);
     }
@@ -852,9 +849,8 @@ class Apis extends REST_Controller
         $this->output->set_header('Pragma: no-cache');
         $this->output->set_header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 
-
-        $bid = $this->get('bid');
-        $filter= $this->get('filter');
+        $bid    = $this->get('bid');
+        $filter = $this->get('filter');
         $filter = $filter . " And BusinessID = $bid";
 
         $result = $this->dbquery("
@@ -878,32 +874,90 @@ class Apis extends REST_Controller
     {
         $post_data = $this->post();
 
-// echo $post_data['message']; exit(0);
+        // Validate input
+        if (! isset($post_data['message'])) {
+            $this->response([
+                "status" => false,
+                "error"  => "Missing 'message' field in payload",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+            return;
+        }
 
-        $url        = "http://myapi.pk/api/send.php";
-        $parameters = ["api_key" => "923424256584-0242e686-ae95-4ed9-b754-f3ae46f5e964",
-            "mobile"                 => $post_data['mobile'],
-            "message"                => $post_data['message'],
-            "priority"               => "10",
-            "personalized"           => 1,
-
-            "type"                   => 0,
-        ];
-
-        $ch      = curl_init();
+        $url     = "https://etrademanager.com/wa/send.php";
         $timeout = 30;
+        $results = [];
+
+        // Initialize cURL once
+        $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
         curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-        $response = curl_exec($ch);
+
+        $messages = json_decode($post_data['message'], true);
+
+        if (! is_array($messages)) {
+            $this->response([
+                "status" => false,
+                "error"  => "Invalid 'message' JSON format",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+            curl_close($ch);
+            return;
+        }
+
+        foreach ($messages as $item) {
+            if (empty($item['mobile']) || empty($item['message'])) {
+                $results[] = [
+                    "status" => false,
+                    "error"  => "Missing mobile or message",
+                    "data"   => $item,
+                ];
+                continue;
+            }
+
+            $parameters = [
+                "phone"        => $item['mobile'],
+                "message"      => $item['message'],
+                "priority"     => "10",
+                "personalized" => 1,
+                "type"         => 0,
+            ];
+
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $parameters);
+
+            $response = curl_exec($ch);
+
+            if (curl_errno($ch)) {
+                $results[] = [
+                    "status" => false,
+                    "error"  => curl_error($ch),
+                    "data"   => $item,
+                ];
+            } else {
+                $decoded = json_decode($response, true);
+                if (json_last_error() === JSON_ERROR_NONE && isset($decoded['status'])) {
+                    $results[] = [
+                        "status"  => (bool) $decoded['status'],
+                        "message" => $decoded['message'] ?? "Processed",
+                        "data"    => $item,
+                    ];
+                } else {
+                    $results[] = [
+                        "status" => false,
+                        "error"  => "Invalid API response",
+                        "raw"    => $response,
+                        "data"   => $item,
+                    ];
+                }
+            }
+        }
+
         curl_close($ch);
 
-        echo $response;
+        $this->response($results, REST_Controller::HTTP_OK);
     }
     public function makepdf_get()
     {

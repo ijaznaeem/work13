@@ -25,7 +25,7 @@ export class GatepasPendingComponent implements OnInit {
   public details: any = [];
   public setting = GPSetting;
 
-  Stores: Observable<any[]>;
+  Stores: Observable<unknown>;
 
   public toolbarOptions: object[];
   constructor(

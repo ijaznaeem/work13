@@ -16,11 +16,18 @@ class Utilities
         } else if ($type == 3) {
             $table = 'vouchers';
         }
-        $query = $db->query("
+        if ($table == 'vouchers') {
+            $query = $db->query("
+          SELECT MAX(Right(VoucherID,5)) as ID  FROM $table WHERE
+              `BusinessID` = $bid AND Month(Date) = month('$date') and Year(Date) = year('$date')
+          ")->result_array();
+        } else {
+
+            $query = $db->query("
           SELECT MAX(Right(" . ($type == 3 ? 'VoucherID' : 'InvoiceID') . ",5)) as ID  FROM $table WHERE
               `BusinessID` = $bid AND Month(Date) = month('$date') and Year(Date) = year('$date')
           ")->result_array();
-
+        }
         if ($query[0] == null) {
 
             $maxInvoiceID = 0; // Retrieve the maximum InvoiceID
@@ -29,7 +36,13 @@ class Utilities
             $maxInvoiceID = $query[0]['ID'];
 
         }
-        $maxInvoiceID += (date('y', strtotime($date)) . date('m', strtotime($date)) . '00000');
+        if ($table == 'vouchers') {
+            $maxInvoiceID += (date('y', strtotime($date)) .  date('m', strtotime($date)) . '00000');
+
+        } else {
+            $maxInvoiceID += (date('y', strtotime($date)) . date('m', strtotime($date)) . '00000');
+
+        }
 
         return $maxInvoiceID;
     }

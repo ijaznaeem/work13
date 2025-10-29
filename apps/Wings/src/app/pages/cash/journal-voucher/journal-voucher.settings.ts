@@ -14,11 +14,11 @@ export const JournalVoucherSetting = {
     },
     {
       data: 'from_account',
-      label: 'From Account',
+      label: 'Credit Account',
     },
     {
       data: 'to_account',
-      label: 'To Account',
+      label: 'Debit Account',
     },
     {
       data: 'description',
@@ -69,7 +69,7 @@ export const JournalVoucher_Form = {
       fldName: 'account_id',
       control: 'select',
       type: 'lookup',
-      label: 'From Account',
+      label: 'Credit Account',
       listTable: 'accounts',
       listData: [],
       valueFld: 'account_id',
@@ -81,7 +81,7 @@ export const JournalVoucher_Form = {
       fldName: 'supplier_id',
       control: 'select',
       type: 'lookup',
-      label: 'To Account:',
+      label: 'Debit Account:',
       listTable: 'accounts',
       listData: [],
       valueFld: 'account_id',

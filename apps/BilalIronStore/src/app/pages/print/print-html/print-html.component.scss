@@ -7,18 +7,29 @@ div.Header {
 //     border: 1px solid black;
 //     border-collapse: collapse;
 //   }
-h2.sheet{
+h2.sheet {
   font-weight: 600;
-
 }
 .sheet {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
 }
-table, tr, th, td{
-  color: #000 !important;
+table,
+tr,
+th,
+td {
+  /* Legacy content fallback - scoped to print component */
+  :host #legacy-content {
+    margin-top: 20px;
 
+    .no-print,
+    .btn,
+    button,
+    .form-control {
+      display: none !important;
+    }
+  }
 }
 
 .myborder {
@@ -26,7 +37,8 @@ table, tr, th, td{
   width: 100%;
 }
 
-.myborder td, .myborder th {
+.myborder td,
+.myborder th {
   border: 2px solid black !important;
   font-weight: 700 !important;
   background-color: white !important;
@@ -44,8 +56,6 @@ table, tr, th, td{
   body {
     page-break-before: auto;
   }
-
-
 
   div.Footer {
     position: fixed;
@@ -104,17 +114,219 @@ table, tr, th, td{
   }
   @for $i from 1 through 12 {
     .col-md-#{$i} {
-      width: #{percentage( calc(round($i * 8.33) / 100))};
+      width: #{percentage(calc(round($i * 8.33) / 100))};
       float: left;
     }
   }
-
-
-
 }
 
 @media print {
   .buttonarea {
     visibility: hidden;
+  }
+  /* Data-driven table print styles - scoped to print component */
+  :host .report-table {
+    font-size: 9px;
+    page-break-inside: auto;
+
+    &.compact th {
+      font-size: 8px !important;
+      padding: 2px 4px !important;
+      background-color: #f0f0f0 !important;
+      border: 1px solid #000 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    &.compact td {
+      padding: 2px 4px !important;
+      font-size: 8px !important;
+      border: 1px solid #000 !important;
+    }
+
+    &.compact .table-summary td {
+      background-color: #e0e0e0 !important;
+      font-weight: bold !important;
+      border-top: 2px solid #000 !important;
+      border-bottom: 2px solid #000 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+
+  :host .report-table th,
+  :host .report-table td {
+    padding: 2px 3px;
+    border: 1px solid #000;
+  }
+
+  :host .report-table tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  :host .report-table thead {
+    display: table-header-group;
+  }
+
+  :host .report-table tfoot {
+    display: table-footer-group;
+  }
+
+  .sheet {
+    margin: 0;
+    box-shadow: none;
+  }
+  /* Legacy table styling for print - scoped to print component */
+  :host .table-dyna,
+  :host .ft-dynamic-table table {
+    font-size: 8px !important;
+
+    th {
+      background-color: #f0f0f0 !important;
+      border: 1px solid #000 !important;
+      padding: 2px 3px !important;
+      font-size: 7px !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    td {
+      border: 1px solid #000 !important;
+      padding: 1px 3px !important;
+      font-size: 7px !important;
+    }
+  }
+
+  /* Ensure proper page breaks - scoped to print component */
+  :host .report-table-container {
+    page-break-inside: auto;
+  }
+}
+
+/* Data-driven report table styles - scoped to print component */
+:host .report-table-container {
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+.report-table th,
+.report-table td {
+  border: 1px solid #000;
+  padding: 8px;
+  text-align: left;
+}
+
+.report-table thead th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.report-table .table-summary td {
+  font-weight: bold;
+  background-color: #e9ecef;
+}
+
+/* Enhanced compact table styling for reports - scoped to print component */
+:host .report-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 11px;
+  margin-bottom: 15px;
+
+  &.compact {
+    th,
+    td {
+      padding: 4px 6px;
+      border: 1px solid #333;
+      font-size: 10px;
+    }
+
+    thead th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      text-align: center;
+      border: 2px solid #333;
+      padding: 6px 4px;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      vertical-align: middle;
+    }
+
+    // Numeric alignment
+    .numeric {
+      text-align: right;
+    }
+
+    // Summary row
+    .table-summary td {
+      font-weight: 600;
+      background-color: #e9ecef;
+      border-top: 2px solid #333;
+      border-bottom: 2px solid #333;
+    }
+  }
+}
+
+/* Override for better table presentation - scoped to print component */
+:host .table-dyna,
+:host .ft-dynamic-table table {
+  border-collapse: collapse !important;
+
+  th {
+    background-color: #f8f9fa !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    border: 2px solid #6c757d !important;
+    padding: 6px 8px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+
+  td {
+    border: 1px solid #dee2e6 !important;
+    padding: 4px 6px !important;
+    font-size: 11px !important;
+    vertical-align: middle !important;
+  }
+
+  // Right align numeric columns
+  th:last-child,
+  td:last-child,
+  .numeric-column {
+    text-align: right !important;
+  }
+}
+
+// Legacy content fallback
+#legacy-content {
+  margin-top: 20px;
+}
+
+#legacy-content .no-print,
+#legacy-content .btn,
+#legacy-content button,
+#legacy-content .form-control {
+  display: none !important;
+}
+
+/* Responsive design for smaller screens - scoped to print component */
+@media (max-width: 768px) {
+  :host .report-table-container {
+    overflow-x: scroll;
+  }
+
+  :host .report-table {
+    min-width: 600px;
   }
 }

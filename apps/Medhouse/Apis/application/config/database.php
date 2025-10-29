@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'NAEEM-PC\SQL14',
+	'hostname' => 'NAEEM-PC\SQL17',
 	'username' => 'sa',
-	'password' => '',
+	'password' => '123',
 	'database' => 'PharmaSystemWeb',
 	'dbdriver' => 'sqlsrv',
 	'dbprefix' => '',

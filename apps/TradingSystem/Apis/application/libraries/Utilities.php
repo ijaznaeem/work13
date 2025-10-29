@@ -59,7 +59,7 @@ class Utilities
         $query = $db->query("
             SELECT MAX(RIGHT($pkey, 6)) as ID
             FROM $table
-            WHERE YEAR($Date) = YEAR(GETDATE()) and $condition
+            WHERE YEAR($Date) = YEAR(CURDATE()) and $condition
 
             ")->result_array();
 

@@ -408,7 +408,7 @@ class Tasks extends REST_Controller
 
         $this->db->trans_commit();
 
-        $this->PostSales($invID);
+        // $this->PostSales($invID);
 
         $this->response(['id' => $invID], REST_Controller::HTTP_OK);
 
@@ -765,12 +765,12 @@ class Tasks extends REST_Controller
                     $data['BusinessID']  = $InvoiceValue['BusinessID'];
 
                     $this->AddToAccount($data);
-                    if ($InvoiceValue['AmountRecvd'] > 0) {
+                    if ($InvoiceValue['AmntRecvd'] > 0) {
                         $data['CustomerID']  = $InvoiceValue['CustomerID'];
                         $data['Date']        = $InvoiceValue['Date'];
                         $data['Credit']      = 0;
-                        $data['Debit']       = $InvoiceValue['AmountRecvd'];
-                        $data['Description'] = 'Cah Return Bill No ' . $InvoiceValue['InvoiceID'];
+                        $data['Debit']       = $InvoiceValue['AmntRecvd'];
+                        $data['Description'] = 'Cash Return Bill No ' . $InvoiceValue['InvoiceID'];
                         $data['RefID']       = $InvoiceValue['InvoiceID'];
                         $data['RefType']     = 1;
                         $data['BusinessID']  = $InvoiceValue['BusinessID'];
@@ -828,6 +828,23 @@ class Tasks extends REST_Controller
                     $data['Debit']      = 0;
                     $this->AddToAccount($data);
 
+                    if ($PInvoiceRes['AmountPaid'] > 0){
+
+
+                        $data['CustomerID']  = $PInvoiceValue['CustomerID'];
+                        $data['Date']        = $PInvoiceValue['Date'];
+                        $data['Debit']      = $PInvoiceValue['AmountPaid'];
+                        $data['Description'] = 'Cash Paid Purchase No ' . $PInvoiceValue['InvoiceID'];
+                        $data['RefID']       = $PInvoiceValue['InvoiceID'];
+                        $data['RefType']     = 2;
+                        $data['Notes']       = $PInvoiceValue['Notes'];
+
+                        $data['BusinessID'] = $PInvoiceValue['BusinessID'];
+                        $data['Credit']      = 0;
+                        $this->AddToAccount($data);
+
+                    }
+
                     $this->db->where('InvoiceID', $PInvoiceValue['InvoiceID']);
                     $PInvoiceDetailsRes = $this->db->get('qrypinvoicedetails')->result_array();
 
@@ -860,8 +877,28 @@ class Tasks extends REST_Controller
                     $data['Debit']      = $PInvoiceValue['NetAmount'];
                     $this->AddToAccount($data);
 
+                    if ($PInvoiceRes['AmountPaid'] > 0){
+
+
+                        $data['CustomerID']  = $PInvoiceValue['CustomerID'];
+                        $data['Date']        = $PInvoiceValue['Date'];
+                        $data['Credit']      = $PInvoiceValue['AmountPaid'];
+                        $data['Description'] = 'Cash Return Purchase No ' . $PInvoiceValue['InvoiceID'];
+                        $data['RefID']       = $PInvoiceValue['InvoiceID'];
+                        $data['RefType']     = 2;
+                        $data['Notes']       = $PInvoiceValue['Notes'];
+
+                        $data['BusinessID'] = $PInvoiceValue['BusinessID'];
+                        $data['Debit']      = 0;
+                        $this->AddToAccount($data);
+
+                    }
+
+
+
+
                     $this->db->where('InvoiceID', $PInvoiceValue['InvoiceID']);
-                    $PInvoiceDetailsRes = $this->db->get('pinvoicedetails')->result_array();
+                    $PInvoiceDetailsRes = $this->db->get('qrypinvoicedetails')->result_array();
 
                     foreach ($PInvoiceDetailsRes as $PInvoiceDetailsvalue) {
                         $this->UpdateStock(

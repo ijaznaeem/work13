@@ -1,0 +1,30 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Contacts List</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          <span >
+
+
+        </span>
+          <app-crud-form [Form]="FilterForm" [formdata]="Filter" [CrudButtons]="false">
+          </app-crud-form>
+          <!-- <ft-datatable #dataList [CRUD]="false" [Settings]="Settings" (ClickAction)="Clicked($event)"></ft-datatable> -->
+          <ft-dynamic-table
+          #rptTable
+          [Settings]="Settings"
+          [Data]="data"
+          [Search] = "Filter.search"
+          (ClickAction)="Clicked($event)"
+        ></ft-dynamic-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

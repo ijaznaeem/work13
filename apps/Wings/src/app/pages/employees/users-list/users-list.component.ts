@@ -203,7 +203,9 @@ export class UsersListComponent implements OnInit {
   Cancel() {
     this.modalRef?.hide();
   }
-  AddEmployee(data: any = {}) {
+  AddEmployee(data: any = {
+    is_master: '0',
+  }) {
     this.http.openForm(EmployeesInfo, data).then((res: any) => {
       if (res.res == 'save') {
         this.dataList.realoadTable();

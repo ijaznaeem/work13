@@ -10,10 +10,11 @@ export class Details {
   public Qty: number = 0;
   public Weight: number = 0;
   public Polish: number = 0;
+  public PolishRatio: number = 0;
   public Labour: number = 0;
   public CutRatio: number = 0;
   public Cutting: number = 0;
-  public StoreID: number | null = 0;
+  public StoreID: number | null = 1;
 
 }
 
@@ -53,7 +54,11 @@ export class Invoice {
   public BillTime: Date | null = null;
   public DtCr: string = 'CR';
   public GoldType: number = 0;
-  public PrevBalance: number = 0;
+  public PrevBalance: any = {
+    Cash: 0,
+    Gold24K: 0,
+    Gold22K: 0,
+  };
   public details: Details[] = [];
 }
 

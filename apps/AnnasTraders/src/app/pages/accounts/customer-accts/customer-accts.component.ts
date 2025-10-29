@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 import { GetDateJSON, JSON2Date } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
@@ -23,6 +24,7 @@ export class CustomerAcctsComponent implements OnInit {
     ProductID: '',
   };
   setting = {
+    crud: true,
     Columns: [
       {
         label: 'Date',
@@ -56,10 +58,21 @@ export class CustomerAcctsComponent implements OnInit {
         fldName: 'Balance',
       },
     ],
-    Actions: [],
+    Actions: [
+      {
+        action: 'checked',
+        title: 'OK',
+        icon: 'check',
+        class: 'warning',
+      },
+    ],
     Data: [],
   };
 
+  backgroundConfig = {
+    condition: (row, index) => row.Reconciled === '1',
+    color: 'lightgreen',
+  };
   public toolbarOptions: object[];
   customer: any = {};
   Customers: any;
@@ -126,13 +139,12 @@ export class CustomerAcctsComponent implements OnInit {
               if (r.length > 0) {
                 this.customer.OpenBalance = r[0].Balance;
                 this.customer.CloseBalance = r[0].Balance;
-
               } else {
                 this.customer.OpenBalance = 0;
                 this.customer.CloseBalance = 0;
               }
               this.data.unshift({
-                Date: JSON2Date(this.Filter.FromDate) ,
+                Date: JSON2Date(this.Filter.FromDate),
                 Description: 'Opeing Balance ...',
                 Debit: 0,
                 Credit: 0,
@@ -143,7 +155,25 @@ export class CustomerAcctsComponent implements OnInit {
       });
   }
 
-  Clicked(e) {}
+  Clicked(e) {
+    console.log('Clicked', e);
+    if (e.action === 'checked') {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to mark this as Account is Reconciled?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, OK',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.Reconciled(e.data);
+          this.FilterData()
+          Swal.fire('Marked!', 'The entry has been marked as Reconciled.', 'success');
+        }
+      });
+    }
+  }
   PrintReport() {
     this.ps.PrintData.Title = 'Customer Accounts Report';
     this.ps.PrintData.SubTitle = 'From: ' + JSON2Date(this.Filter.FromDate);
@@ -174,5 +204,12 @@ export class CustomerAcctsComponent implements OnInit {
   }
   formatDate(d) {
     return JSON2Date(d);
+  }
+  Reconciled(row) {
+    this.http
+      .postData('customeraccts/' + row.DetailID, { Reconciled: 1 })
+      .then((r) => {
+        console.log('Reconciled', r);
+      });
   }
 }

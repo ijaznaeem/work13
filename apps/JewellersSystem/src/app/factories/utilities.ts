@@ -1,6 +1,6 @@
 
 export function TableSetting(cols: any[]) {
-  const stngs = {
+  const stngs:any = {
     selectMode: 'single', // single|multi
     hideHeader: false,
     hideSubHeader: false,
@@ -36,14 +36,13 @@ export function TableSetting(cols: any[]) {
     }
   };
 
-  // tslint:disable-next-line:prefer-for-of
   for (let i = 0; i < cols.length; i++) {
     stngs.columns[cols[i].fldname] = { title: cols[i].title, type: 'string' };
   }
 
   return stngs;
 }
-export function RoundTo2(num) {
+export function RoundTo2(num:number) {
   return RoundTo(num, 2);
 }
 export function RoundTo(num: number, dgt: number) {
@@ -68,7 +67,7 @@ export function getYMDDate(dte :any = null) {
   if (dte) {
     d = dte;
   }
-  return d.getFullYear() + '-' + pad(d.getMonth() + 1, 2,'0') + '-' +   pad(d.getDate(),2,'0') ;
+  return d.getFullYear() + '-' + pad((d.getMonth() + 1).toString(), 2,'0') + '-' +   pad(d.getDate().toString(),2,'0') ;
 }
 export function getDMYDate(dte: Date | null = null) {
   let d = new Date();
@@ -78,7 +77,7 @@ export function getDMYDate(dte: Date | null = null) {
   return d.getDate() + '-' + (1 + d.getMonth()) + '-' + d.getFullYear();
 }
 
-export function JSON2Date(d) {
+export function JSON2Date(d: { year: number; month: number; day: number }) {
   return d.year + '-' + d.month + '-' + d.day;
 }
 
@@ -87,6 +86,9 @@ export function GetDateJSON(dte: Date|null= null) {
   if (dte) {
     d = dte;
   }
+
+  console.log(dte);
+  
   return {
     year: d.getFullYear(),
     month: d.getMonth() + 1,
@@ -153,7 +155,7 @@ export function getMonthList() {
     }
   ];
 }
-export function FindTotal(data, fld) {
+export function FindTotal(data:Array<any>, fld: string) {
   const sum = data.reduce((a, b) => parseFloat(a) + parseFloat(b[fld]), 0);
   return sum;
 }
@@ -170,14 +172,14 @@ export function getYears() {
   return years;
 }
 
-function pad(n, width, z) {
+function pad(n:string, width:number, z:string) {
   z = z || '0';
   n = n + '';
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
 
-export function formatNumber(price, digits=0, thoSeperator=',', decSeperator='.', bdisplayprice=false) {
+export function formatNumber(price:string, digits=0, thoSeperator=',', decSeperator='.', bdisplayprice=false) {
   var i;
   if (!price) return 0
 

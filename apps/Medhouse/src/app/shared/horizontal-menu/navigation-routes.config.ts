@@ -32,6 +32,37 @@ export const HROUTES: any = [
       ]
   },
   {
+      "path": "#/intimations",
+      "title": "Intimations & Requisitions",
+      "icon": "ft-file-text",
+      "class": "dropdown nav-item has-sub",
+      "isExternalLink": false,
+      "ParentID": null,
+      "MenuID": 100,
+      "submenu": [
+          {
+              "path": "intimations",
+              "title": "Intimation Letters",
+              "icon": "ft-arrow-right submenu-icon",
+              "class": "dropdown-item",
+              "isExternalLink": false,
+              "ParentID": 100,
+              "MenuID": 101,
+              "submenu": []
+          },
+          {
+              "path": "intimations/new",
+              "title": "New Intimation",
+              "icon": "ft-arrow-right submenu-icon",
+              "class": "dropdown-item",
+              "isExternalLink": false,
+              "ParentID": 100,
+              "MenuID": 102,
+              "submenu": []
+          }
+      ]
+  },
+  {
       "path": "#/stores",
       "title": "Stores",
       "icon": "ft-home",
@@ -678,8 +709,8 @@ export const HROUTES: any = [
                       "submenu": []
                   },
                   {
-                      "path": "purchase-finish-goods",
-                      "title": "Purchase Finish Goods",
+                      "path": "accounts/purchase-invoice-fg",
+                      "title": "Purchase Invoice FG",
                       "icon": "ft-arrow-right submenu-icon",
                       "class": "dropdown-item",
                       "isExternalLink": false,

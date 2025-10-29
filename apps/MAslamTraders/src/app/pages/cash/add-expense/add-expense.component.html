@@ -77,7 +77,7 @@
                   class="form-control"
                   type="number"
                   name="amount"
-                  [(ngModel)]="Voucher.Debit"
+                  [(ngModel)]="Voucher.Amount"
                   id="amount"
                   required
                 />
@@ -90,7 +90,7 @@
                   type="submit"
                   class="btn btn-primary form-control"
                   accesskey="s"
-                  [disabled]="!(frmFilter.valid && Voucher.Debit > 0)"
+                  [disabled]="!(frmFilter.valid && Voucher.Amount > 0)"
                 >
                   <i class="fa fa-save"></i>
                 </button>

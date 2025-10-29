@@ -18,8 +18,8 @@ export const SaleSetting = {
       fldName: 'Address',
     },
     {
-      label: 'City',
-      fldName: 'City',
+      label: 'Reference',
+      fldName: 'Reference',
     },
     {
       label: 'Amount',
@@ -70,12 +70,12 @@ export const SaleSetting = {
       icon: 'print',
       class: 'success',
     },
-    {
-      action: 'delete',
-      title: 'Delete',
-      icon: 'trash',
-      class: 'danger',
-    },
+    // {
+    //   action: 'delete',
+    //   title: 'Delete',
+    //   icon: 'trash',
+    //   class: 'danger',
+    // },
   ],
   Data: [],
 };

@@ -55,7 +55,7 @@ export class StockAcctsComponent implements OnInit {
   };
 
   public toolbarOptions: object[];
-  Products: any;
+  Products: any= [];
 
   constructor(
     private http: HttpBase,

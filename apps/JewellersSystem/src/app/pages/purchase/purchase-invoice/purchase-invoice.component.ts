@@ -1,10 +1,10 @@
 import {
-    Component,
-    Input,
-    OnChanges,
-    OnInit,
-    SimpleChanges,
-    ViewChild,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FilteringEventArgs } from '@syncfusion/ej2-angular-dropdowns';
@@ -51,6 +51,7 @@ export class PurchaseInvoiceComponent implements OnInit, OnChanges {
   $Stores: Observable<any[]>;
   AcctTypes: Observable<any[]>;
   SelectCust: any = {};
+  $GoldTypes: Observable<any[]>;
 
   constructor(
     private http: HttpBase,
@@ -61,6 +62,7 @@ export class PurchaseInvoiceComponent implements OnInit, OnChanges {
   ) {
     this.AcctTypes = this.cachedData.acctTypes$;
     this.$Stores = this.cachedData.stores$;
+    this.$GoldTypes = this.cachedData.goldType$;
   }
 
   ngOnInit() {
@@ -90,25 +92,23 @@ export class PurchaseInvoiceComponent implements OnInit, OnChanges {
   LoadInvoice() {
     this.Cancel();
     this.Ino = this.EditID;
-    this.http
-      .getData(`PInvoices/${this.EditID}`)
-      .then((r: any) => {
-        if (r ) {
-          this.isPosted = !(r.IsPosted == '0');
-          this.invoice = GetProps(r, Object.keys(this.invoice));
-          this.http
-            .getData(`qryPInvoiceDetails?filter=InvoiceID='${this.EditID}'`)
-            .then((rdet: any) => {
-              for (const det of rdet) {
-                this.AddToDetails(det);
-              }
-              this.calculation();
-            });
-        } else {
-          this.myToaster.Error('Invoice No not found', 'Edit', 1);
-          this.NavigatorClicked({ Button: Buttons.Last });
-        }
-      });
+    this.http.getData(`PInvoices/${this.EditID}`).then((r: any) => {
+      if (r) {
+        this.isPosted = !(r.IsPosted == '0');
+        this.invoice = GetProps(r, Object.keys(this.invoice));
+        this.http
+          .getData(`qryPInvoiceDetails?filter=InvoiceID='${this.EditID}'`)
+          .then((rdet: any) => {
+            for (const det of rdet) {
+              this.AddToDetails(det);
+            }
+            this.calculation();
+          });
+      } else {
+        this.myToaster.Error('Invoice No not found', 'Edit', 1);
+        this.NavigatorClicked({ Button: Buttons.Last });
+      }
+    });
   }
   ProductSearchFn(term: any, item) {
     if (isNaN(term)) {
@@ -131,17 +131,24 @@ export class PurchaseInvoiceComponent implements OnInit, OnChanges {
       Weight: Number(ord.Weight),
       Cutting: Number(ord.Cutting),
       CutRatio: Number(ord.CutRatio),
+      Purity: Number(ord.Purity),
       ProductID: ord.ProductID,
       SmallStone: Number(ord.SmallStone),
       BigStone: Number(ord.BigStone),
       StoreName: ord.StoreName,
       StoreID: ord.StoreID,
-      Polish: Number(ord.Polish),
-      NetWeight:
-      Number(ord.Weight) -
-      Number(ord.Cutting) +
-      Number(ord.SmallStone) +
-      Number(ord.Polish),
+      Wastage: Number(ord.Wastage),
+      LacerCharges: Number(ord.LacerCharges),
+      MotiCharges: Number(ord.MotiCharges),
+      GoldType: Number(ord.GoldType),
+      Comments: ord.Comments,
+      NetWeight: RoundTo(
+        Number(ord.Weight) -
+          Number(ord.Cutting) -
+          Number(ord.SmallStone) +
+          Number(ord.Wastage),
+        3
+      ),
     };
     this.data.prepend(obj);
   }
@@ -250,12 +257,13 @@ export class PurchaseInvoiceComponent implements OnInit, OnChanges {
     }
   }
   public onEdit(event) {
-
-    event.newData.NetWeight =
+    event.newData.NetWeight = RoundTo(
       Number(event.newData.Weight) -
-      Number(event.newData.Cutting) +
-      Number(event.newData.SmallStone) +
-      Number(event.newData.Polish);
+        Number(event.newData.Cutting) -
+        Number(event.newData.SmallStone) +
+        Number(event.newData.Wastage),
+      4
+    );
 
     event.confirm.resolve(event.newData);
     setTimeout(() => {
@@ -297,8 +305,9 @@ export class PurchaseInvoiceComponent implements OnInit, OnChanges {
     this.invoice.TotalWeight = 0;
     this.invoice.Cutting = 0;
     this.invoice.SmallStone = 0;
-    this.invoice.BigStone= 0;
-    this.invoice.TotalPolish = 0;
+    this.invoice.BigStone = 0;
+    this.invoice.TotalWastage = 0;
+    this.invoice.Labour = 0;
 
     this.data.getAll().then((d) => {
       let i = 0;
@@ -307,17 +316,18 @@ export class PurchaseInvoiceComponent implements OnInit, OnChanges {
         this.invoice.TotalWeight += d[i].Weight * 1;
         this.invoice.Cutting += d[i].Cutting * 1;
         this.invoice.SmallStone += d[i].SmallStone * 1;
+        this.invoice.TotalWastage += d[i].Wastage * 1;
         this.invoice.BigStone += d[i].BigStone * 1;
-        this.invoice.TotalPolish += d[i].Polish * 1;
+        this.invoice.Labour += d[i].MotiCharges * 1 + d[i].LacerCharges * 1;
       }
-      this.invoice.NetWeight =
+      this.invoice.NetWeight = RoundTo(
         this.invoice.TotalWeight -
-        this.invoice.Cutting +
-        this.invoice.SmallStone +
-        this.invoice.TotalPolish;
+          this.invoice.Cutting -
+          this.invoice.SmallStone +
+          this.invoice.TotalWastage,
+        4
+      );
     });
-
-
   }
 
   Cancel() {
@@ -376,10 +386,14 @@ export class PurchaseInvoiceComponent implements OnInit, OnChanges {
   }
   onCutRatioChange(e) {
     console.log(e);
-    this.details.Cutting = RoundTo((e * this.details.Weight) / 96, 4);
+    this.details.Cutting = RoundTo(( this.details.Weight - this.details.SmallStone  +  this.details.Wastage)  * this.details.CutRatio/ 96, 4);
   }
-  toNumber(n){
-    return Number(n) || 0;
+  onWastageRatioChange(e) {
+    console.log(e);
+    this.details.Wastage = RoundTo((this.details.Weight - this.details.SmallStone)  * this.details.WastageRatio/ 96, 4);
   }
 
+  toNumber(n) {
+    return Number(n) || 0;
+  }
 }

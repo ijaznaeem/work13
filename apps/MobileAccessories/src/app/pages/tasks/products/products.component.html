@@ -1,0 +1,57 @@
+<!--table starts-->
+<section id="ng-tables">
+  <div class="row text-left">
+    <div class="col-12">
+      <div class="content-header">Products List</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-content">
+      <div class="card-body">
+        <div>
+          <!-- <div class="row no-pad">
+            <div class="col-md-12">
+              <ft-crud-form
+                [form]="form"
+                [formdata]="formModel"
+                [CrudButtons]="true"
+                (ButtonClicked)="FormButtomClicked($event)"
+              >
+              </ft-crud-form>
+            </div>
+          </div> -->
+          <div class="row no-pad">
+            <div class="col-md-12">
+              <ft-crud-form
+                [form]="FilterForm"
+                [formdata]="Filter"
+                [CrudButtons]="false"
+              >
+              </ft-crud-form>
+            </div>
+          </div>
+          <!-- <ft-datatable #dataList [CRUD]="false" [Settings]="Settings" (ClickAction)="Clicked($event)"></ft-datatable> -->
+          <div class="row no-pad">
+            <div class="col-md-12">
+               <ft-datatable
+            #dataList
+            [CRUD]="false"
+            [Settings]="Settings"
+            [Filter]="filterList"
+
+            (ClickAction)="Clicked($event)"
+          ></ft-datatable>
+              <!-- <ft-dynamic-table
+                #rptTable
+                [Settings]="Settings"
+                [Data]="data"
+                [Search]="Filter.search"
+                (ClickAction)="Clicked($event)"
+              ></ft-dynamic-table> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

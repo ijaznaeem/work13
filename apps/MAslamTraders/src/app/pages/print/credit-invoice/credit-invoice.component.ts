@@ -12,7 +12,6 @@ import * as JSPDF from 'jspdf';
 import * as moment from 'moment';
 import { ToWords } from 'to-words';
 import { environment } from '../../../../environments/environment';
-import { months } from '../../../factories/constants';
 import { FindTotal, RoundTo, getDMYDate } from '../../../factories/utilities';
 import { HttpBase } from '../../../services/httpbase.service';
 
@@ -117,6 +116,36 @@ export class CreditInvoiceComponent
     });
   }
 
+ScreenShot(){
+   const data: any = document.getElementById('print-section');
+    html2canvas(data).then((canvas) => {
+      // Few necessary setting options
+      var imgWidth = 208;
+      var pageHeight = 295;
+      var imgHeight = (canvas.height * imgWidth) / canvas.width;
+      var heightLeft = imgHeight;
+
+      const contentDataURL = canvas.toDataURL('image/png');
+      // Copy image to clipboard
+      fetch(contentDataURL)
+        .then(res => res.blob())
+        .then(blob => {
+          const item = new ClipboardItem({ 'image/png': blob });
+          navigator.clipboard.write([item]);
+          import('sweetalert2').then(Swal => {
+            Swal.default.fire({
+              icon: 'success',
+              title: 'Screenshot copied!',
+              text: 'The screenshot has been copied to your clipboard.',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          });
+        });
+    });
+}
+
+
   getDMYDate(d) {
     return getDMYDate(new Date(d));
   }
@@ -129,7 +158,8 @@ export class CreditInvoiceComponent
   FormatInvNo(inv: string) {
     if (!inv) return;
     const m = inv.substring(2, 4);
-    return inv.slice(0, 2) + months[Number(m) - 1].Month + inv.slice(4);
+    // return inv.slice(0, 2) + months[Number(m) - 1].Month + inv.slice(4);
+    return inv;
   }
   FindWieght(w) {
     let mon = Math.floor(w / 40);

@@ -169,6 +169,7 @@ export class DayBookComponent implements OnInit {
         this.http.postTask(url, {}).then((r) => {
           e.data.IsPosted = '1';
           swal('Post!', 'Your data has been posted!', 'success');
+          this.FilterData();
         });
       } else {
         swal('Oops!', 'Can not post posted data', 'error');

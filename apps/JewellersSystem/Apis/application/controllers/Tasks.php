@@ -78,24 +78,25 @@ class Tasks extends REST_Controller
         // pinvoice table data
 
         $pinvoice['CustomerID'] = $post_data['CustomerID'];
-        $pinvoice['CustName']   = $post_data['CustName'];
-        $pinvoice['Address']    = $post_data['Address'];
+        // $pinvoice['CustName']   = $post_data['CustName'];
+        $pinvoice['Address'] = $post_data['Address'];
         // $pinvoice['PhoneNo']      = $post_data['PhoneNo'];
         $pinvoice['TotalWeight']  = $post_data['TotalWeight'];
         $pinvoice['Cutting']      = $post_data['Cutting'];
         $pinvoice['SmallStone']   = $post_data['SmallStone'];
         $pinvoice['BigStone']     = $post_data['BigStone'];
-        $pinvoice['TotalPolish']  = $post_data['TotalPolish'];
+        $pinvoice['TotalWastage'] = $post_data['TotalWastage'];
         $pinvoice['NetWeight']    = $post_data['NetWeight'];
         $pinvoice['GoldPaid']     = $post_data['GoldPaid'];
+        $pinvoice['GoldType']     = $post_data['GoldType'];
         $pinvoice['GoldBalance']  = $post_data['GoldBalance'];
         $pinvoice['Rate']         = $post_data['Rate'];
-        $pinvoice['Amount']       = $post_data['Amount'];
+        $pinvoice['Labour']       = $post_data['Labour'];
         $pinvoice['AmountPaid']   = $post_data['AmountPaid'];
-        $pinvoice['CreditAmount'] = $post_data['CreditAmount'];
-        $pinvoice['Note']         = $post_data['Note'];
-        $pinvoice['GoldType']     = $post_data['GoldType'];
-        $pinvoice['Date']         = $post_data['Date'];
+        // $pinvoice['CreditAmount'] = $post_data['CreditAmount'];
+        $pinvoice['Note'] = $post_data['Note'];
+
+        $pinvoice['Date'] = $post_data['Date'];
 
         unset($pinvoice['details']);
         unset($pinvoice['NetAmount']);
@@ -136,16 +137,21 @@ class Tasks extends REST_Controller
                 $pdetails['Picture'] = null;
             }
 
-            $pdetails['Qty']        = isset($value['Qty']) ? $value['Qty'] : 0;
-            $pdetails['Weight']     = isset($value['Weight']) ? $value['Weight'] : 0.0;
-            $pdetails['CutRatio']   = isset($value['CutRatio']) ? $value['CutRatio'] : 0.0;
-            $pdetails['Polish']     = isset($value['Polish']) ? $value['Polish'] : 0.0;
-            $pdetails['Cutting']    = isset($value['Cutting']) ? $value['Cutting'] : 0.0;
-            $pdetails['ProductID']  = isset($value['ProductID']) ? $value['ProductID'] : '';
-            $pdetails['BigStone']   = isset($value['BigStone']) ? $value['BigStone'] : 0.0;
-            $pdetails['SmallStone'] = isset($value['SmallStone']) ? $value['SmallStone'] : 0.0;
-            $pdetails['StoreID']    = isset($value['StoreID']) ? $value['StoreID'] : '';
-            $pdetails['InvoiceID']  = $invID;
+            $pdetails['Qty']          = isset($value['Qty']) ? $value['Qty'] : 0;
+            $pdetails['Weight']       = isset($value['Weight']) ? $value['Weight'] : 0.0;
+            $pdetails['CutRatio']     = isset($value['CutRatio']) ? $value['CutRatio'] : 0.0;
+            $pdetails['Wastage']      = isset($value['Wastage']) ? $value['Wastage'] : 0.0;
+            $pdetails['Cutting']      = isset($value['Cutting']) ? $value['Cutting'] : 0.0;
+            $pdetails['MotiCharges']  = isset($value['MotiCharges']) ? $value['MotiCharges'] : 0.0;
+            $pdetails['LacerCharges'] = isset($value['LacerCharges']) ? $value['LacerCharges'] : 0.0;
+            $pdetails['Purity']       = isset($value['Purity']) ? $value['Purity'] : 0.0;
+            $pdetails['ProductID']    = isset($value['ProductID']) ? $value['ProductID'] : '';
+            $pdetails['BigStone']     = isset($value['BigStone']) ? $value['BigStone'] : 0.0;
+            $pdetails['SmallStone']   = isset($value['SmallStone']) ? $value['SmallStone'] : 0.0;
+            $pdetails['StoreID']      = isset($value['StoreID']) ? $value['StoreID'] : '';
+            $pdetails['Comments']     = isset($value['Comments']) ? $value['Comments'] : '';
+            $pdetails['GoldType']     = isset($value['GoldType']) ? $value['GoldType'] : '';
+            $pdetails['InvoiceID']    = $invID;
 
             $this->db->insert('PInvoiceDetails', $pdetails);
         }
@@ -198,8 +204,8 @@ class Tasks extends REST_Controller
         $invoice['Type']            = $post_data['Type'];
         $invoice['BillTime']        = $post_data['BillTime'];
         // $invoice['DTCR']            = $post_data['DTCR'];
-        $invoice['GoldType']    = $post_data['GoldType'];
-        $invoice['PrevBalance'] = $post_data['PrevBalance'];
+        $invoice['GoldType'] = $post_data['GoldType'];
+        // $invoice['PrevBalance'] = $post_data['PrevBalance'];
 
         if (! $this->validateDate($invoice['Date'], 'Y-m-d')) {
             $this->response([
@@ -232,6 +238,7 @@ class Tasks extends REST_Controller
                 'Labour'      => $value['Labour'],
                 'CutRatio'    => $value['CutRatio'],
                 'Cutting'     => $value['Cutting'],
+                'StoreID'     => $value['StoreID'],
             ];
             $this->db->insert('InvoiceDetails', $dData);
         }
@@ -241,32 +248,46 @@ class Tasks extends REST_Controller
 
         // $this->PostSales();
     }
-    public function vouchers_post($id = 0)
+    public function dailycash_post($id = 0)
     {
         $data = $this->post();
         // $date['Date'] = date('Y-m-d');
         $vouch = [
-            'Date'       => $data['Date'],
-            'CashID'     => $data['CashID'],
-            'AcctID'     => $data['AcctID'],
-            'BillNo'     => $data['BillNo'],
-            'Details'    => $data['Details'],
-            'Income'     => $data['Income'],
-            'Expense'    => $data['Expense'],
-            'Type'       => $data['Type'],
-            'RefAcct'    => $data['RefAcct'],
-            'GoldTypeID' => $data['GoldTypeID'],
+            'Date'         => isset($data['Date']) ? $data['Date'] : date('Y-m-d'),
+            'CustomerID'   => isset($data['CustomerID']) ? $data['CustomerID'] : '',
+            'RawGold'      => isset($data['RawGold']) ? $data['RawGold'] : 0,
+            'CutRatio'     => isset($data['CutRatio']) ? $data['CutRatio'] : 0,
+            'GoldCutting'  => isset($data['GoldCutting']) ? $data['GoldCutting'] : 0,
+            'Gold'         => isset($data['Gold']) ? $data['Gold'] : 0,
+            'GoldRate'     => isset($data['GoldRate']) ? $data['GoldRate'] : 0,
+            'RateInGrams'  => isset($data['RateInGrams']) ? $data['RateInGrams'] : 0,
+            // 'AdvanceAmount' => isset($data['AdvanceAmount']) ? $data['AdvanceAmount'] : 0,
+            'GoldAmount'   => isset($data['GoldAmount']) ? $data['GoldAmount'] : 0,
+            'Cash'         => isset($data['Cash']) ? $data['Cash'] : 0,
+            'TotalCash'    => isset($data['TotalCash']) ? $data['TotalCash'] : 0,
+            'Status'       => isset($data['Status']) ? $data['Status'] : 'UnCompleted',
+            'Notes'        => isset($data['Notes']) ? $data['Notes'] : '',
+            'OrderNo'      => isset($data['OrderNo']) ? $data['OrderNo'] : 0,
+            'BillNo'       => isset($data['BillNo']) ? $data['BillNo'] : 0,
+            'OrderRate'    => isset($data['OrderRate']) ? $data['OrderRate'] : 0,
+            'Type'         => isset($data['Type']) ? $data['Type'] : 'SO',
+            'TrType'       => isset($data['TrType']) ? $data['TrType'] : 'CR',
+            'GoldTypeID'   => isset($data['GoldTypeID']) ? $data['GoldTypeID'] : '',
+            'CashReceived' => isset($data['CashReceived']) ? $data['CashReceived'] : 0,
 
         ];
 
-        if ($id != 0) {
-            $this->db->where('CashID', $id);
-            $this->db->update('Cash', $vouch);
+        if ($id != '') {
+            $this->db->where('DailyID', $id);
+            $this->db->update('DailyCash', $vouch);
         } else {
-
-            $this->db->reset_query();
-            $this->db->insert('Cash', $vouch);
-            $id = $data['CashID'];
+            $vouch['DailyID'] = $this->utilities->getBillNo(
+                $this->db,
+                $vouch['Type'],
+                true
+            ); // Generate new DailyID using getBillNo method
+            $this->db->insert('DailyCash', $vouch);
+            $id = $vouch['DailyID'];
         }
         $this->response(['id' => $id], REST_Controller::HTTP_OK);
     }
@@ -491,53 +512,72 @@ class Tasks extends REST_Controller
                 $this->db->where('InvoiceID', $InvoiceValue['InvoiceID']);
                 $InvoiceDetailsRes = $this->db->get('qryInvoiceDetails')->result_array();
 
-                if ($InvoiceValue['DtCr'] == 'CR') { // sale
+                if ($InvoiceValue['Rate'] > 0) { // sale
 
-                    if ($InvoiceValue['CreditAmount'] > 0) {
-                        $data['CustomerID']  = $InvoiceValue['CustomerID'];
-                        $data['Date']        = $InvoiceValue['Date'];
-                        $data['Credit']      = 0;
-                        $data['Debit']       = $InvoiceValue['CreditAmount'];
-                        $data['Description'] = 'Bill No ' . $InvoiceValue['InvoiceID'];
-                        $data['RefID']       = $InvoiceValue['InvoiceID'];
-                        $data['RefType']     = 1;
+                    $data['CustomerID']  = $InvoiceValue['CustomerID'];
+                    $data['Date']        = $InvoiceValue['Date'];
+                    $data['Debit']       = 0;
+                    $data['Credit']      = $InvoiceValue['TotalAmount'];
+                    $data['Description'] = 'Bill No ' . $InvoiceValue['InvoiceID'];
+                    $data['RefID']       = $InvoiceValue['InvoiceID'];
+                    $data['RefType']     = 1;
+                    $data['GoldTypeID']  = 0;
+                    $this->AddToAccount($data);
+                } else {
 
-                        $this->AddToAccount($data);
-                    }
+                    $data['CustomerID']  = $InvoiceValue['CustomerID'];
+                    $data['Date']        = $InvoiceValue['Date'];
+                    $data['Debit']       = 0;
+                    $data['Credit']      = $InvoiceValue['TotalWeight'];
+                    $data['Description'] = 'Gold Sale Bill No ' . $InvoiceValue['InvoiceID'];
+                    $data['RefID']       = $InvoiceValue['InvoiceID'];
+                    $data['RefType']     = 1;
+                    $data['GoldTypeID']  = $InvoiceValue['GoldType'];
+                    $this->AddToAccount($data);
 
-                    // var_dump($InvoiceDetailsRes);
-                    foreach ($InvoiceDetailsRes as $InvoiceDetailsvalue) {
-                        $this->UpdateStock(
-                            $InvoiceDetailsvalue['StockID'],
-                            $InvoiceDetailsvalue['Qty'],
-                            0,
-                            $InvoiceDetailsvalue['Weight'],
-                            0
-                        );
-                    }
-                } else { // sale return
+                }
 
-                    if ($InvoiceValue['CreditAmount'] > 0) {
-                        $data['CustomerID']  = $InvoiceValue['CustomerID'];
-                        $data['Date']        = $InvoiceValue['Date'];
-                        $data['Debit']       = 0;
-                        $data['Credit']      = $InvoiceValue['CreditAmount'];
-                        $data['Description'] = 'Bill No ' . $InvoiceValue['InvoiceID'];
-                        $data['RefID']       = $InvoiceValue['InvoiceID'];
-                        $data['RefType']     = 1;
+                // handle advance amount
+                // if ($InvoiceValue['AdvanceAmount'] > 0) {
+                //     $data['CustomerID']  = $InvoiceValue['CustomerID'];
+                //     $data['Date']        = $InvoiceValue['Date'];
+                //     $data['Credit']      = $InvoiceValue['AdvanceAmount'];
+                //     $data['Debit']       = 0;
+                //     $data['Description'] = 'Advance Received Bill No ' . $InvoiceValue['InvoiceID'];
+                //     $data['RefID']       = $InvoiceValue['InvoiceID'];
+                //     $data['RefType']     = 1;
+                //     $data['GoldTypeID']  = 0;
+                //     $this->AddToAccount($data);
+                // }
+                // handle advance gold
 
-                        $this->AddToAccount($data);
-                    } // sale return
-                    foreach ($InvoiceDetailsRes as $InvoiceDetailsvalue) {
-                        // var_dump('in return ');
-                        $this->UpdateStock(
-                            $InvoiceDetailsvalue['StockID'],
-                            0,
-                            $InvoiceDetailsvalue['Qty'],
-                            0,
-                            $InvoiceDetailsvalue['Weight']
-                        );
-                    }
+                // BillGoldRate  > 0 then Credit BillGoldAmount from accounts
+                if ($InvoiceValue['BillGoldRate'] > 0 && $InvoiceValue['BillGoldAmount'] > 0) {
+                    $data['CustomerID']  = $InvoiceValue['CustomerID'];
+                    $data['Date']        = $InvoiceValue['Date'];
+                    $data['Debit']       = $InvoiceValue['BillGoldAmount'];
+                    $data['Credit']      = 0;
+                    $data['Description'] = 'Bill Gold Amount Bill No ' . $InvoiceValue['InvoiceID'];
+                    $data['RefID']       = $InvoiceValue['InvoiceID'];
+                    $data['RefType']     = 1;
+                    $data['GoldTypeID']  = 0;
+                    $this->AddToAccount($data);
+                }
+
+                //--- GoldAmountPaid is handeled in daily cash  ---
+                //--- Cash Receipt is handel in Daily Cash ---
+                //--- Discount is handeled in daily cash ---
+                //--- BillGold is handeled in daily cash ---
+
+                // var_dump($InvoiceDetailsRes);
+                foreach ($InvoiceDetailsRes as $InvoiceDetailsvalue) {
+                    $this->UpdateStock(
+                        $InvoiceDetailsvalue['StockID'],
+                        $InvoiceDetailsvalue['Qty'],
+                        0,
+                        $InvoiceDetailsvalue['Weight'],
+                        0
+                    );
                 }
                 $posted['IsPosted'] = '1';
                 $this->db->where('InvoiceID', $InvoiceValue['InvoiceID']);
@@ -566,8 +606,9 @@ class Tasks extends REST_Controller
                 $data['Description'] = 'Purchase No ' . $PInvoiceValue['InvoiceID'];
                 $data['RefID']       = $PInvoiceValue['InvoiceID'];
                 $data['RefType']     = 2;
+                $data['Debit']       = 0;
+                $data['GoldTypeID']  = 0;
 
-                $data['Debit'] = 0;
                 $this->AddToAccount($data);
                 if ($PInvoiceValue['AmountPaid'] > 0) {
                     $data['CustomerID']  = $PInvoiceValue['CustomerID'];
@@ -577,6 +618,7 @@ class Tasks extends REST_Controller
                     $data['Description'] = 'Cash Paid Purchase No ' . $PInvoiceValue['InvoiceID'];
                     $data['RefID']       = $PInvoiceValue['InvoiceID'];
                     $data['RefType']     = 2;
+                    $data['GoldTypeID']  = 0;
                     $this->AddToAccount($data);
                 }
 
@@ -587,9 +629,14 @@ class Tasks extends REST_Controller
 
                     $this->insertstock([
                         'ProductID'    => $PInvoiceDetailsvalue['ProductID'],
+                        'Picture'      => $PInvoiceDetailsvalue['Picture'],
                         'Qty'          => $PInvoiceDetailsvalue['Qty'],
                         'Weight'       => $PInvoiceDetailsvalue['Weight'],
-                        'Polish'       => $PInvoiceDetailsvalue['Polish'],
+                        'Polish'       => 0, // Polish is not provided in PInvoiceDetails
+                        'Wastage'      => $PInvoiceDetailsvalue['Wastage'],
+                        'Purity'       => $PInvoiceDetailsvalue['Purity'],
+                        'Comments'     => $PInvoiceDetailsvalue['Comments'],
+                        'GoldType'     => $PInvoiceDetailsvalue['GoldType'],
                         'CutRatio'     => $PInvoiceDetailsvalue['CutRatio'],
                         'Cutting'      => $PInvoiceDetailsvalue['Cutting'],
                         'SmallStone'   => $PInvoiceDetailsvalue['SmallStone'],
@@ -629,9 +676,14 @@ class Tasks extends REST_Controller
 
         $stock = [
             'ProductID'    => isset($data['ProductID']) ? $data['ProductID'] : 0,
+            'Picture'      => isset($data['Picture']) ? $data['Picture'] : null,
             'Qty'          => isset($data['Qty']) ? $data['Qty'] : 0,
             'Weight'       => isset($data['Weight']) ? $data['Weight'] : 0,
             'Polish'       => isset($data['Polish']) ? $data['Polish'] : 0,
+            'Wastage'      => isset($data['Wastage']) ? $data['Wastage'] : 0,
+            'Purity'       => isset($data['Purity']) ? $data['Purity'] : 0,
+            'Comments'     => isset($data['Comments']) ? $data['Comments'] : null,
+            'GoldType'     => isset($data['GoldType']) ? $data['GoldType'] : null,
             'CutRatio'     => isset($data['CutRatio']) ? $data['CutRatio'] : 0,
             'Cutting'      => isset($data['Cutting']) ? $data['Cutting'] : 0,
             'SmallStone'   => isset($data['SmallStone']) ? $data['SmallStone'] : 0,
@@ -651,17 +703,36 @@ class Tasks extends REST_Controller
         $this->AddToAccount($post_data);
     }
 
-    public function AddToAccount($data)
+    private function AddToAccount($data)
     {
+        if (! isset($data['GoldTypeID'])) {
+            throw new Exception('GoldTypeID is required in AddToAccount');
+        }
+        $GoldTypeID = $data['GoldTypeID'];
+
         $this->db->where('CustomerID', $data['CustomerID']);
-        $cust            = $this->db->get('Customers')->result_array()[0];
-        $newBal          = 0.0;
-        $newBal          = $cust['Balance'] + $data['Debit'] - $data['Credit'];
+        $cust   = $this->db->get('Customers')->result_array()[0];
+        $newBal = 0.0;
+        if ($GoldTypeID == 0) {
+            $newBal = $cust['Balance'] - $data['Debit'] + $data['Credit'];
+        } else if ($GoldTypeID == 2) {
+            $newBal = $cust['GoldBalance'] - $data['Debit'] + $data['Credit'];
+        } else {
+            $newBal = $cust['Gold21K'] - $data['Debit'] + $data['Credit'];
+        }
+
         $data['Balance'] = $newBal;
         $this->db->insert('CustomerAccts', $data);
-        $cust['Balance'] = $newBal;
+        // Update the customer's balance
+        if ($GoldTypeID == 0) {
+            $custBalance['Balance'] = $newBal;
+        } else if ($GoldTypeID == 2) {
+            $custBalance['GoldBalance'] = $newBal;
+        } else {
+            $custBalance['Gold21K'] = $newBal;
+        }
         $this->db->where('CustomerID', $cust['CustomerID']);
-        $this->db->update('Customers', ['Balance' => $newBal]);
+        $this->db->update('Customers', $custBalance);
     }
 
     public function updateload_post($loadno)
@@ -764,4 +835,114 @@ class Tasks extends REST_Controller
 
         return $filename;
     }
+
+    public function goldtransfer_post($id = 0, $bid = 0)
+    {
+
+        $post_data = $this->post();
+        $data      = [
+            'Date'       => isset($post_data['Date']) ? $post_data['Date'] : date('Y-m-d'),
+            'CustomerID' => isset($post_data['CustomerID']) ? $post_data['CustomerID'] : '',
+            'Gold'       => isset($post_data['Gold']) ? $post_data['Gold'] : 0,
+            'CutRatio'   => isset($post_data['CutRatio']) ? $post_data['CutRatio'] : 0,
+            'Cutting'    => isset($post_data['Cutting']) ? $post_data['Cutting'] : 0,
+            'NetGold'    => isset($post_data['NetGold']) ? $post_data['NetGold'] : 0,
+            'Rate'       => isset($post_data['Rate']) ? $post_data['Rate'] : 0,
+            'Amount'     => isset($post_data['Amount']) ? $post_data['Amount'] : 0,
+            'Type'       => isset($post_data['Type']) ? $post_data['Type'] : '',
+            'GoldTypeID' => isset($post_data['GoldTypeID']) ? $post_data['GoldTypeID'] : '',
+        ];
+
+        if (! $this->validateDate($data['Date'], 'Y-m-d')) {
+            $this->response([
+                'status'  => false,
+                'message' => 'Invalid Date Format',
+            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            return;
+        }
+
+        try {
+            if ($id > 0) {
+                $this->db->where('TransferID', $id);
+                if (! $this->db->update('GoldTransfers', $data)) {
+                    $db_error = $this->db->error();
+                    $this->response(['status' => false, 'msg' => 'Error in Gold Transfer', 'error' => $db_error], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+                    return;
+                }
+                $transferID = $id;
+            } else {
+                if (! $this->db->insert('GoldTransfers', $data)) {
+                    $db_error = $this->db->error();
+                    $this->response(['status' => false, 'msg' => 'Error in Gold Transfer', 'error' => $db_error], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+                    return;
+                }
+                $transferID = $this->db->insert_id();
+            }
+
+            $this->PostGoldTransfer($transferID);
+            $this->response(['msg' => 'Gold Transfer Successful'], REST_Controller::HTTP_OK);
+        } catch (Exception $e) {
+            $this->response(['status' => false, 'msg' => 'Exception occurred', 'error' => $e->getMessage()], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    private function PostGoldTransfer($id = 0)
+    {
+        if ($id > 0) {
+            $this->db->where('TransferID', $id);
+        }
+
+        $this->db->where('IsPosted', 0);
+
+        $transferRes = $this->db->get('GoldTransfers')->result_array();
+
+        foreach ($transferRes as $transferValue) {
+
+            if ($transferValue['Type'] == 1) {
+                $data['CustomerID']  = $transferValue['CustomerID'];
+                $data['Date']        = $transferValue['Date'];
+                $data['Credit']      = 0;
+                $data['Debit']       = $transferValue['NetGold'];
+                $data['Description'] = 'Gold Transfer ID ' . $transferValue['TransferID'];
+                $data['RefID']       = $transferValue['TransferID'];
+                $data['RefType']     = 3; // Assuming RefType 3 for Gold Transfer
+                $data['GoldTypeID']  = $transferValue['GoldTypeID'];
+                $this->AddToAccount($data);
+
+                $data['CustomerID']  = $transferValue['CustomerID'];
+                $data['Date']        = $transferValue['Date'];
+                $data['Debit']       = 0;
+                $data['Credit']      = $transferValue['Amount'];
+                $data['Description'] = 'Gold Transfer ID ' . $transferValue['TransferID'];
+                $data['RefID']       = $transferValue['TransferID'];
+                $data['RefType']     = 3; // Assuming RefType 3 for Gold Transfer
+                $data['GoldTypeID']  = 0;
+                $this->AddToAccount($data);
+            } else {
+                $data['CustomerID']  = $transferValue['CustomerID'];
+                $data['Date']        = $transferValue['Date'];
+                $data['Credit']      = 0;
+                $data['Debit']       = $transferValue['NetGold'];
+                $data['Description'] = 'Gold Transfer ID ' . $transferValue['TransferID'];
+                $data['RefID']       = $transferValue['TransferID'];
+                $data['RefType']     = 3; // Assuming RefType 3 for Gold Transfer
+                $data['GoldTypeID']  = $transferValue['GoldTypeID'];
+                $this->AddToAccount($data);
+
+                $data['CustomerID']  = $transferValue['CustomerID'];
+                $data['Date']        = $transferValue['Date'];
+                $data['Credit']      = 0;
+                $data['Debit']       = $transferValue['Amount'];
+                $data['Description'] = 'Gold Transfer ID ' . $transferValue['TransferID'];
+                $data['RefID']       = $transferValue['TransferID'];
+                $data['RefType']     = 3; // Assuming RefType 3 for Gold Transfer
+                $data['GoldTypeID']  = 0;
+                $this->AddToAccount($data);
+
+            }
+        }
+
+    }
+
 }

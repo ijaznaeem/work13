@@ -69,6 +69,7 @@
             placeholder="Select Customer"
             (change)="CustomerSelected($event)"
             required
+            [selectOnTab]="true"
             [(ngModel)]="purchase.CustomerID"
             (keydown.enter)="cmbStore.focus()"
           >

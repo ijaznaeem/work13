@@ -3,8 +3,10 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../app/gaurds/auth.gaurd';
 import { ContentLayoutComponent } from './layouts/content/content-layout.component';
 import { FullLayoutComponent } from './layouts/full/full-layout.component';
+import { PageNotFoundComponent } from './pages/not-found/page-not-found.component';
 import { CONTENT_ROUTES } from './shared/routes/content-layout.routes';
 import { Full_ROUTES } from './shared/routes/full-layout.routes';
+
 
 const appRoutes: Routes = [
   {
@@ -27,7 +29,7 @@ const appRoutes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'auth/error',
+    component: PageNotFoundComponent,
   },
 ];
 

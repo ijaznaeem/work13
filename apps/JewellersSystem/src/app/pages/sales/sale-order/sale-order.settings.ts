@@ -1,26 +1,8 @@
-import { AddFormButton } from '../../../../../../../libs/future-tech-lib/src/lib/components/crud-form/crud-form-helper';
-import { getCurDate } from '../../../factories/utilities';
-
-export class Order {
-  public OrderDate = getCurDate();
-  public DueDate = getCurDate();
-  public CustomerID = '';
-  public RawGold = 0;
-  public GoldCutting = 0;
-  public AdvanceGold = 0;
-  public GoldRate = 0;
-  public RateInGrams = 0;
-  public AdvanceAmount = 0;
-  public GoldAmount = 0;
-  public TotalAmount = 0;
-  public Status = 'UnCompleted';
-  public Notes = '';
-  public OrderNo = 0;
-  public OrderRate = 0;
-  public OldOrder = 0;
-  public Type = 'Advance';
-  public GoldTypeID = '';
-}
+import {
+  AddFormButton,
+  AddSpace,
+} from '../../../../../../../libs/future-tech-lib/src/lib/components/crud-form/crud-form-helper';
+import { GoldTypes } from '../../../factories/static.data';
 
 export const SaleOrderForm = {
   title: 'Sale Order',
@@ -103,7 +85,7 @@ export const SaleOrderForm = {
     },
 
     {
-      fldName: 'TotalAmount',
+      fldName: 'TotalCash',
       control: 'input',
       type: 'number',
       label: 'Total Amount',
@@ -115,10 +97,10 @@ export const SaleOrderForm = {
       control: 'select',
       type: 'list',
       label: 'Gold Type',
-      listTable: 'GoldTypes',
-      listData: [],
+      listTable: '',
+      listData: GoldTypes,
       displayFld: 'GoldType',
-      valueFld: 'GoldTypeID',
+      valueFld: 'ID',
       required: true,
       size: 4,
     },
@@ -149,5 +131,9 @@ export const SaleOrderForm = {
     AddFormButton('Prev', null, 1, 'backward', 'primary'),
     AddFormButton('Next', null, 1, 'fast-forward', 'primary'),
     AddFormButton('Last', null, 1, 'step-forward', 'primary'),
+    AddSpace(4),
+    AddFormButton('New', null, 1, 'file', 'primary'),
+    AddFormButton('Save', null, 1, 'save', 'success'),
+    AddFormButton('Cancel', null, 1, 'refresh', 'warning'),
   ],
 };

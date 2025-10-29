@@ -68,25 +68,15 @@ export class ProductsComponent implements OnInit {
         size: 3,
       },
       {
-        fldName: 'UnitID',
-        control: 'select',
-        type: 'lookup',
-        label: 'Unit',
-        listTable: 'units',
-        listdata: [],
-        displayFld: 'UnitName',
-        valueFld: 'ID',
-        required: true,
-        size: 4,
-      },
-      {
-        fldName: 'Weight',
+        fldName: 'BaseRate',
         control: 'input',
         type: 'number',
-        label: 'Weight (Kg)',
-        required: true,
+        label: 'Base Rate',
+        required: false,
         size: 3,
       },
+
+
       {
         fldName: 'Status',
         control: 'select',
@@ -118,7 +108,6 @@ export class ProductsComponent implements OnInit {
     columns: [
       { data: 'ProductID', label: 'ID' },
       { data: 'ProductName', label: 'Product Name' },
-      { data: 'UnitName', label: 'Unit' },
       { data: 'Packing', label: 'Packing' },
       { data: 'SPrice', label: 'Sale Price' },
       { data: 'PPrice', label: 'Purchase' },

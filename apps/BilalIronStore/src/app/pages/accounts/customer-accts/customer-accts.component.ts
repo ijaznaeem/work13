@@ -12,6 +12,8 @@ import { PrintDataService } from '../../../services/print.data.services';
 })
 export class CustomerAcctsComponent implements OnInit {
   @ViewChild('Customer') Customer;
+  @ViewChild('last') last;
+
   public data: any = [];
   public Products: object[];
   public Users: object[];
@@ -148,6 +150,11 @@ this.http.getData('custtypes').then((a) => {
             Credit: 0,
             Balance: this.customer.OpenBalance,
           });
+
+          // Scroll to bottom of document after data is loaded
+          setTimeout(() => {
+            window.scrollTo(0, document.body.scrollHeight);
+          }, 100);
         } else {
           filter = " Date < '" + JSON2Date(this.Filter.FromDate) + "'";
           filter += ' and CustomerID=' + this.Filter.CustomerID;
@@ -174,6 +181,12 @@ this.http.getData('custtypes').then((a) => {
                 Credit: 0,
                 Balance: this.customer.OpenBalance,
               });
+
+              setTimeout(() => {
+                // Scroll to bottom of document after data is loaded
+                window.scrollTo(0, document.body.scrollHeight);
+              }, 500);
+
             });
         }
       });
@@ -189,16 +202,7 @@ this.http.getData('custtypes').then((a) => {
     this.ps.PrintData.HTMLData = document.getElementById('print-section');
     this.router.navigateByUrl('/print/print-html');
   }
-  DetailReport() {
-    this.router.navigateByUrl(
-      '/accounts/accountdetails/' +
-        JSON2Date(this.Filter.FromDate) +
-        '/' +
-        JSON2Date(this.Filter.ToDate) +
-        '/' +
-        this.Filter.CustomerID
-    );
-  }
+
   CustomerSelected(e) {
     if (e.itemData) {
       this.http.getData('customers/' + e.itemData.CustomerID).then((r) => {
@@ -217,7 +221,25 @@ this.http.getData('custtypes').then((a) => {
       this.http.PrintSaleInvoice(e.RefID);
     } else  if (e.RefType == 2){
       this.http.PrintPurchaseInvoice(e.RefID);
+    } else  if (e.RefType == 3 || e.RefType == 4){
+      this.http.PrintVoucher(e.RefID);
+    } else  if (e.RefType == 5){
+      this.http.PrintSaleOrder(e.RefID);
     }
 
+  }
+  CashPayment() {
+    if (this.customer && this.customer.CustomerID) {
+      this.router.navigateByUrl(`/cash/cashpayment/0/${this.customer.CustomerID}`);
+    } else {
+      this.router.navigateByUrl('/cash/cashpayment');
+    }
+  }
+  CashReceipt() {
+    if (this.customer && this.customer.CustomerID) {
+      this.router.navigateByUrl(`/cash/cashreceipt/0/${this.customer.CustomerID}`);
+    } else {
+      this.router.navigateByUrl('/cash/cashreceipt');
+    }
   }
 }

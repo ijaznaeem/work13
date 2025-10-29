@@ -9,6 +9,7 @@ import {
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Observable } from 'rxjs';
+import { Buttons } from '../../../../../../../libs/future-tech-lib/src/lib/components/navigator/navigator.component';
 import { GetProps, RoundTo } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
@@ -35,7 +36,7 @@ export class GoldConvertComponent implements OnInit, OnChanges {
   public btnsave = false;
   public isPosted = false;
 
-  modelData = new GoldConvertModel();
+  modelData :any = new GoldConvertModel();
   orderForm = GolConvertForm;
 
   public selectedProduct: any = {};
@@ -88,9 +89,31 @@ export class GoldConvertComponent implements OnInit, OnChanges {
   }
   public async Save(event) {
 
+    if (this.modelData.CustomerID == '') {
+      this.myToaster.Error('Please select Customer', 'Save', 1);
+      return;
+    }
+
+    if (this.modelData.GoldTypeID == '') {
+      this.myToaster.Error('Please select Gold Type', 'Save', 1);
+      return;
+    }
+    if (this.modelData.Type == '') {
+      this.myToaster.Error('Please select Transaction Type', 'Save', 1);
+      return;
+    }
+    if (this.modelData.Gold <= 0) {
+      this.myToaster.Error('Please enter Gold', 'Save', 1);
+      return;
+    }
+    if (this.modelData.Rate <= 0) {
+      this.myToaster.Error('Please enter Rate', 'Save', 1);
+      return;
+    }
+
     this.http
-      .postData(
-        'GoldTransfers' + (this.EditID == '' ? '' : '/' + this.EditID),
+      .postTask(
+        'goldtransfer' + (this.EditID == '' ? '' : '/' + this.EditID),
         this.modelData
       )
       .then((r: any) => {
@@ -99,7 +122,9 @@ export class GoldConvertComponent implements OnInit, OnChanges {
           this.btnsave = true;
           this.isPosted = false;
           if (this.EditID == '') {
-            this.NavigateTo(r.ID);
+            this.ButtonClicked(Buttons.Last);
+          } else {
+            this.NavigateTo(this.EditID);
           }
         }
       })
@@ -108,7 +133,7 @@ export class GoldConvertComponent implements OnInit, OnChanges {
       });
   }
 
-  public Changed(event) {
+  public async Changed(event) {
     console.log(event);
     if (event.fldName == 'Gold' || event.fldName == 'Cutting') {
           this.modelData.NetGold = RoundTo(
@@ -120,6 +145,18 @@ export class GoldConvertComponent implements OnInit, OnChanges {
         }
     else if (event.fldName == 'Rate') {
       this.CalcGoldAmount();
+     } else if (event.fldName == 'CustomerID') {
+      let cust: any = await this.http.getData('Customers/' + event.value);
+      if (cust) {
+        this.modelData.CBal = RoundTo(cust.Balance, 0);
+        this.modelData.K24 = RoundTo(cust.GoldBalance, 3);
+        this.modelData.K22 = RoundTo(cust.Gold21K, 3);
+      } else {
+        this.SelectCust = {};
+        this.modelData.CBal = '0';
+        this.modelData.K24 = '0';
+        this.modelData.K22 = '0';
+      }
     }
   }
   CalcGoldAmount() {
@@ -185,7 +222,7 @@ export class GoldConvertComponent implements OnInit, OnChanges {
         break;
       case 'Last':
         this.http
-          .getData('getbno/TR')
+          .getData('getbno/3') // Assuming 3 is the type for Gold Convert
           .then((r: any) => {
             billNo = r.billno;
             this.NavigateTo(billNo);

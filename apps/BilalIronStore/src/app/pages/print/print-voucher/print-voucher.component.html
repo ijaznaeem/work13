@@ -10,7 +10,7 @@
       <tr>
         <td colspan="4" class="text-center" style="font-size: 16px">
           <strong
-            >{{ Invoice.Credit >0  ? 'CASH RECEIPT ' : 'CASH PAYMENT' }}
+            >{{ Invoice.Credit > 0 ? 'CASH RECEIPT ' : 'CASH PAYMENT' }}
           </strong>
         </td>
       </tr>
@@ -66,7 +66,7 @@
                 <div>
                   Rs.
                   {{
-                    Invoice.Balance * 1 - Invoice.Debit + Invoice.Credit * 1
+                    Invoice.CBalance * 1 - Invoice.Debit + Invoice.Credit * 1
                       | number: '1.0-0'
                   }}
                 </div>
@@ -74,10 +74,39 @@
             </tr>
             <tr class="total">
               <td class="text-left">
-                <strong> {{ Invoice.Description }}</strong>
+                <strong>Cash</strong>
               </td>
               <td class="text-right">
                 Rs.
+                {{ Invoice.Cash }}
+              </td>
+            </tr>
+            <tr class="total">
+              <td class="text-left">
+                <strong> Bank ({{ Invoice.BankAccountName }}) </strong>
+              </td>
+              <td class="text-right">
+                Rs.
+                <span *ngIf="Invoice.Bank > 0">
+                  {{ Invoice.Bank | number: '1.0-0' }}</span
+                >
+              </td>
+            </tr>
+            <tr class="total" *ngIf="Invoice.Discount > 0">
+              <td class="text-left">
+                <strong> Discount </strong>
+              </td>
+              <td class="text-right">
+                Rs.
+                <span> {{ Invoice.Discount | number: '1.0-0' }}</span>
+              </td>
+            </tr>
+            <tr class="total">
+              <td class="text-left">
+                <strong> {{ Invoice.Description }}</strong>
+              </td>
+              <td class="text-right">
+                Total Rs.
                 <span *ngIf="Invoice.Credit > 0">
                   {{ Invoice.Credit | number: '1.0-0' }}</span
                 >
@@ -94,7 +123,10 @@
               <td class="text-right">
                 <strong>
                   Rs.
-                  {{ Invoice.Balance | number: '1.0-0' }}
+                  {{
+                    Invoice.CBalance
+                      | number: '1.0-0'
+                  }}
                 </strong>
               </td>
             </tr>
@@ -139,9 +171,10 @@
           class="btn btn-primary"
           printSectionId="print-section"
           type="button"
-          (click)="SaveAsPdf()"
+          (click)="SendWhatsApp()"
         >
-          Save as PDF
+          <i class="fab fa whatsapp"></i>
+          Send WhatsApp
         </button>
       </div>
     </div>

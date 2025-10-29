@@ -19,10 +19,14 @@ export class DonationRemindersComponent implements OnInit {
 
   public Filter = {
     Date: new Date(),
+    TypeID: '',
+    DonarID: '',
   };
   setting = {
     Checkbox: true,
     Columns: [
+      { label: 'Sr No', fldName: 'SrNo' },
+      { label: 'Type', fldName: 'MType' },
       { label: 'Donar Name', fldName: 'DonarName' },
       { label: 'Address', fldName: 'Address' },
       { label: 'Whatsapp No', fldName: 'WhatsAppNo' },
@@ -58,6 +62,11 @@ export class DonationRemindersComponent implements OnInit {
   open_balance = 0;
   form: any = DonationForm;
   DonationForm: any = DonationForm;
+  Donars: unknown;
+  DonarsType: any = [
+    { id: '1', label: 'Donar' },
+    { id: '2', label: 'Member' },
+  ];
   constructor(
     private http: HttpBase,
     private ps: PrintDataService,
@@ -76,9 +85,16 @@ export class DonationRemindersComponent implements OnInit {
   }
   FilterData() {
     let filter = 'Balance>0';
+    if (this.Filter.TypeID) {
+      filter += ' and Type=' + this.Filter.TypeID;
+    }
+    if (this.Filter.DonarID) {
+      filter += ' and DonarID=' + this.Filter.DonarID;
+    }
 
     this.http.getData('qrydonars', { filter }).then((r: any) => {
       this.data = r;
+      this.data = this.data.map((item, idx) => ({ ...item, SrNo: idx + 1 }));
     });
   }
 
@@ -118,11 +134,13 @@ export class DonationRemindersComponent implements OnInit {
           voucher.DonarName = e.data.DonarName;
           voucher.WhatsAppNo = e.data.WhatsAppNo;
 
-          this.http.openForm(JSON.parse(JSON.stringify(DonationForm)), voucher).then((r) => {
-            if (r == 'save') {
-              swal('success!', 'Voucher Posted', 'success');
-            }
-          });
+          this.http
+            .openForm(JSON.parse(JSON.stringify(DonationForm)), voucher)
+            .then((r) => {
+              if (r == 'save') {
+                swal('success!', 'Voucher Posted', 'success');
+              }
+            });
         }
       });
     }
@@ -141,14 +159,16 @@ export class DonationRemindersComponent implements OnInit {
     let msg =
       'Dear ' +
       data.DonarName +
-      ',\n\nThis is a reminder from Imtiaz Kausar Memorial Foundation regarding your' + (data.Type == 2 ? " Membership Fee " : " Donation ") + 'of Rs. ' +
+      ',\n\nThis is a reminder from Imtiaz Kausar Memorial Foundation regarding your' +
+      (data.Type == 2 ? ' Membership Fee ' : ' Donation ') +
+      'of Rs. ' +
       data.Balance +
       '.\n\nThank you for your continued support towards our mission at Imtiaz Kausar Memorial Foundation!' +
       '\nFor inquiries, please contact us at +923000645113.\n\nBest regards,\nImtiaz Kausar Memorial Foundation Team';
     let phone = data.WhatsAppNo;
 
     this.http
-      .postData('sendWhatsapp', { phone, message: msg })
+      .postData('sendwhatsapp', { phone, message: msg })
       .then((response: any) => {
         if (response.status === 'success') {
           swal('Success!', 'Message sent successfully.', 'success');
@@ -160,5 +180,16 @@ export class DonationRemindersComponent implements OnInit {
         console.error('Error sending message:', error);
         swal('Error!', 'An unexpected error occurred.', 'error');
       });
+  }
+  TypeSelected(e) {
+    if (e.itemData) {
+      this.http
+        .getData('donars', {
+          filter: 'Type=' + e.itemData.id,
+        })
+        .then((r) => {
+          this.Donars = r;
+        });
+    }
   }
 }

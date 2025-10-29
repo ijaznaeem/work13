@@ -20,6 +20,7 @@ export class CashPaymentComponent implements OnInit {
   public Voucher = new VoucherModel();
   Customers = [];
   AcctTypes = [];
+  Banks: any = [];
   EditID = '';
   public Ino = '';
 
@@ -31,15 +32,25 @@ export class CashPaymentComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+        this.Banks = await this.http.getAccountsByType('Bank');
     this.LoadCustomer('');
+    this.Voucher.RefType = 4; // 4 for Payment
+    this.Voucher.Discount = 0; // Default Discount to 0
 
     this.activatedRoute.params.subscribe((params: Params) => {
-      if (params.EditID) {
-        this.EditID = params.EditID;
-        this.Ino = this.EditID;
+      const customerId = params['CustomerID'];
+      if (customerId) {
+        this.GetCustomer(customerId);
+        this.Voucher.CustomerID = customerId;
+      }
+
+      const editId = params['EditID'];
+      if (editId && editId > 0) {
+        this.EditID = editId;
+        this.Ino = editId;
         this.http
-          .getData('qryvouchers?filter=VoucherID=' + this.EditID)
+          .getData(`qryvouchers?filter=VoucherID=${editId}`)
           .then((r: any) => {
             this.Voucher = r[0];
             this.Voucher.Date = GetDateJSON(new Date(r[0].Date));
@@ -74,18 +85,17 @@ export class CashPaymentComponent implements OnInit {
     if (this.EditID != '') {
       voucherid = '/' + this.EditID;
     }
-
+    this.Voucher.VoucherType = 2; // 2 for Payment
     console.log(this.Voucher);
     this.http
       .postTask('vouchers' + voucherid, this.Voucher)
-      .then((r) => {
+      .then((r: any) => {
         this.alert.Sucess('Payment Saved', 'Save', 1);
-        if (this.EditID != '') {
-          this.router.navigateByUrl('/cash/cashpayment/');
-        } else {
-          this.Voucher = new VoucherModel();
-          this.cmbCustomer.focusIn();
+        if (this.EditID == '') {
+          this.EditID = r.id;
         }
+        this.router.navigateByUrl('/cash/cashreceipt/' + this.EditID);
+        this.http.PrintVoucher(this.EditID);
       })
       .catch((err) => {
         this.Voucher.Date = GetDateJSON(getCurDate());
@@ -142,6 +152,9 @@ export class CashPaymentComponent implements OnInit {
   }
   Cancel() {
     this.Voucher = new VoucherModel();
+    this.Voucher.RefType = 4; // Reset to Payment type
+    this.Voucher.Discount = 0; // Reset Discount to 0
+
     this.router.navigateByUrl('/cash/cashpayment');
   }
   Print() {

@@ -3,7 +3,7 @@
     <tbody style="vertical-align: top">
       <tr>
         <td>
-          <app-print-title [Business]="Business"></app-print-title>
+          <!-- <app-print-title [Business]="Business"></app-print-title> -->
         </td>
       </tr>
 
@@ -77,7 +77,7 @@
                     )
                   </div>
                   <span
-                    style="float: right; text-align: right; font-size: 125% ;"
+                    style="float: right; text-align: right; font-size: 125%"
                   >
                     {{ det.ProductName2 }}
                   </span>
@@ -96,7 +96,8 @@
                       ['kgs', 'inches'].includes(det.UnitName.toLowerCase())
                     "
                   >
-                    {{ RoundIt(det.Weight, 2) }} {{ det.UnitName.toLowerCase() }}</span
+                    {{ RoundIt(det.Weight, 2) }}
+                    {{ det.UnitName.toLowerCase() }}</span
                   >
                 </td>
 
@@ -126,9 +127,7 @@
                         <span> Grand Total: </span>
                       -->
               </th>
-              <th class="text-center">
-                {{ FindTotal('Weight', 2) }} kgs
-              </th>
+              <th class="text-center">{{ FindTotal('Weight', 2) }} kgs</th>
               <th></th>
 
               <th style="font-size: 0.85rem">
@@ -185,7 +184,7 @@
               </td>
             </tr>
             <tr class="total">
-              <td>Cash Received:</td>
+              <td>{{ Invoice.DtCr == 'CR'? 'Cash Received:' : 'Cash Paid:' }}</td>
               <td style="font-size: 0.85rem" class="text-right">
                 {{ Invoice.AmntRecvd | number: '1.0-0' }}
               </td>
@@ -194,7 +193,8 @@
               <td>Total Balance:</td>
               <td style="font-size: 0.85rem" class="text-right">
                 {{
-                  Invoice.PrevBalance * 1 + 1 * Invoice.Balance
+                  Invoice.PrevBalance * 1 +
+                    1 * Invoice.Balance * (Invoice.DtCr == 'CR' ? 1 : -1)
                     | number: '1.0-0'
                 }}
               </td>
@@ -211,7 +211,6 @@
                   Notes:
                   <span>{{ Invoice.Notes }}</span>
                 </div>
-
 
                 <div
                   class="text-center mt-5"

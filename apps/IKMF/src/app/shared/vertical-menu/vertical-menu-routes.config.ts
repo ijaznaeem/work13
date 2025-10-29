@@ -19,7 +19,8 @@ export const ROUTES: RouteInfo[] = [
       { id: 410, path: '/reports/cashbook', title: 'Cash Report', icon: 'ft-info submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [], group: [1, 2] },
       { id: 420, path: '/reports/account-ledger', title: 'Account Ledger', icon: 'ft-arrow-right submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [], group: [1, 2] },
       { id: 430, path: '/reports/donation-reminders', title: 'Donation Reminders', icon: 'ft-arrow-right submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [], group: [1, 2] },
-      { id: 430, path: '/reports/expense-report', title: 'Expense Report', icon: 'ft-arrow-right submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [], group: [1, 2] },
+      { id: 440, path: '/reports/expense-report', title: 'Expense Report', icon: 'ft-arrow-right submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [], group: [1, 2] },
+      { id: 450, path: '/reports/donation-report', title: 'Donation Report', icon: 'ft-arrow-right submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [], group: [1, 2] },
     ]
   },
   {

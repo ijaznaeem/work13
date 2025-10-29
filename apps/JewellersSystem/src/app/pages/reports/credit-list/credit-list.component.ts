@@ -86,8 +86,7 @@ export class CreditlistComponent implements OnInit {
   PrintReport() {
     this.ps.PrintData.HTMLData = document.getElementById('print-section');
     this.ps.PrintData.Title = 'Credit List';
-    this.ps.PrintData.SubTitle =
-      'Route: ' + this.cmbRoute.text;
+    this.ps.PrintData.SubTitle = 'Credit List Report';
 
     this.router.navigateByUrl('/print/print-html');
   }

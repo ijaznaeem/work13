@@ -1,0 +1,1589 @@
+[
+    {
+        "path": "file",
+        "title": "File",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 1,
+        "submenu": [
+            {
+                "path": "file/logout",
+                "title": "Logout",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 1,
+                "MenuID": 2,
+                "submenu": []
+            },
+            {
+                "path": "file/change-password",
+                "title": "Change Password",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 1,
+                "MenuID": 3,
+                "submenu": []
+            },
+            {
+                "path": "file/exit",
+                "title": "E&xit",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 1,
+                "MenuID": 4,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "stores",
+        "title": "Stores",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 5,
+        "submenu": [
+            {
+                "path": "stores/raw-stock-despatch",
+                "title": "Raw Stock Despatch",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 5,
+                "MenuID": 6,
+                "submenu": []
+            },
+            {
+                "path": "stores/raw-stock-report",
+                "title": "Raw Stock Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 5,
+                "MenuID": 7,
+                "submenu": []
+            },
+            {
+                "path": "stores/finished-stock-report",
+                "title": "Finished Stock Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 5,
+                "MenuID": 8,
+                "submenu": []
+            },
+            {
+                "path": "stores/stock-ledger",
+                "title": "Stock Ledger",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 5,
+                "MenuID": 9,
+                "submenu": []
+            },
+            {
+                "path": "stores/dispensed-batches-report",
+                "title": "Dispensed Batches Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 5,
+                "MenuID": 10,
+                "submenu": []
+            },
+            {
+                "path": "stores/product-conversion",
+                "title": "Product Conversion",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 5,
+                "MenuID": 11,
+                "submenu": []
+            },
+            {
+                "path": "stores/short-stock",
+                "title": "Short Stock",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 5,
+                "MenuID": 12,
+                "submenu": []
+            },
+            {
+                "path": "stores/delivery-notes-and-address",
+                "title": "Delivery Notes and Address",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 5,
+                "MenuID": 13,
+                "submenu": []
+            },
+            {
+                "path": "stores/grn-report",
+                "title": "GRN Record",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 5,
+                "MenuID": 14,
+                "submenu": []
+            },
+            {
+                "path": "stores/raw-material-forecasting",
+                "title": "Raw Material ForeCasting",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 5,
+                "MenuID": 15,
+                "submenu": []
+            },
+            {
+                "path": "stores/tentative-entry-report",
+                "title": "Tentative Entry Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 5,
+                "MenuID": 16,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "audit",
+        "title": "Audit",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 17,
+        "submenu": [
+            {
+                "path": "audit/current-audit",
+                "title": "Current Audit",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 17,
+                "MenuID": 18,
+                "submenu": []
+            },
+            {
+                "path": "audit/audit-history",
+                "title": "Audit History",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 17,
+                "MenuID": 19,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "procurement",
+        "title": "Procurement",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 20,
+        "submenu": [
+            {
+                "path": "procurement/raw-material-forecasting",
+                "title": "Raw Material Forecasting",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 21,
+                "submenu": []
+            },
+            {
+                "path": "procurement/purchaseorders",
+                "title": "Purchase Orders",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 22,
+                "submenu": []
+            },
+            {
+                "path": "procurement/payment-vouchers",
+                "title": "Payment Vouchers",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 23,
+                "submenu": []
+            },
+            {
+                "path": "procurement/stock-ledger",
+                "title": "Stock Ledger",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 24,
+                "submenu": []
+            },
+            {
+                "path": "procurement/supplier-ledgers",
+                "title": "Supplier Ledgers",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 25,
+                "submenu": []
+            },
+            {
+                "path": "procurement/raw-material-rate-analysis",
+                "title": "Raw Material Rate Analysis",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 26,
+                "submenu": []
+            },
+            {
+                "path": "procurement/price-variation-report",
+                "title": "Price Variation Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 27,
+                "submenu": []
+            },
+            {
+                "path": "procurement/low-business-suppliers",
+                "title": "Low Business Suppliers",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 28,
+                "submenu": []
+            },
+            {
+                "path": "procurement/tentative-entry-report",
+                "title": "Tentative Entry Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 29,
+                "submenu": []
+            },
+            {
+                "path": "procurement/puchase-report",
+                "title": "Puchase Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 30,
+                "submenu": []
+            },
+            {
+                "path": "procurement/payment-report",
+                "title": "Payment Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 31,
+                "submenu": []
+            },
+            {
+                "path": "procurement/grn-list",
+                "title": "GRN List",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 32,
+                "submenu": []
+            },
+            {
+                "path": "procurement/proc-aproved-pending-amount",
+                "title": "Proc Aproved Pending Amount",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 20,
+                "MenuID": 33,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "production",
+        "title": "Production",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 34,
+        "submenu": [
+            {
+                "path": "production/new-production",
+                "title": "New Production",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 34,
+                "MenuID": 35,
+                "submenu": []
+            },
+            {
+                "path": "production/batch-output",
+                "title": "Batch Output",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 34,
+                "MenuID": 36,
+                "submenu": []
+            },
+            {
+                "path": "production/master-formulation",
+                "title": "Master Formulation",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 34,
+                "MenuID": 37,
+                "submenu": []
+            },
+            {
+                "path": "production/production-record",
+                "title": "Production Record",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 34,
+                "MenuID": 38,
+                "submenu": []
+            },
+            {
+                "path": "production/production-plans",
+                "title": "Production Plans",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 34,
+                "MenuID": 39,
+                "submenu": []
+            },
+            {
+                "path": "production/production-batches",
+                "title": "Production Batches",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 34,
+                "MenuID": 40,
+                "submenu": []
+            },
+            {
+                "path": "production/bmr-list",
+                "title": "BMR List",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 34,
+                "MenuID": 41,
+                "submenu": []
+            },
+            {
+                "path": "production/raw-material-forecasting",
+                "title": "Raw Material ForeCasting",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 34,
+                "MenuID": 42,
+                "submenu": []
+            },
+            {
+                "path": "production/raw-material-vs-master-products",
+                "title": "Raw Material v/s Master Products",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 34,
+                "MenuID": 43,
+                "submenu": []
+            },
+            {
+                "path": "production/stock-alert",
+                "title": "Stock Alert",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 34,
+                "MenuID": 44,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "quality-control",
+        "title": "Quality Control",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 45,
+        "submenu": [
+            {
+                "path": "quality-control/raw-material-purchase",
+                "title": "Raw Material Purchase",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 45,
+                "MenuID": 46,
+                "submenu": []
+            },
+            {
+                "path": "quality-control/production-report",
+                "title": "Production Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 45,
+                "MenuID": 47,
+                "submenu": []
+            },
+            {
+                "path": "quality-control/grn-record",
+                "title": "GRN Record",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 45,
+                "MenuID": 48,
+                "submenu": []
+            },
+            {
+                "path": "quality-control/bmr-list",
+                "title": "BMR List",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 45,
+                "MenuID": 49,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "promotional",
+        "title": "Pomotional",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 50,
+        "submenu": [
+            {
+                "path": "promotional/promotional-recovery-claim-report",
+                "title": "Promotional Recovery Claim Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 50,
+                "MenuID": 51,
+                "submenu": []
+            },
+            {
+                "path": "promotional/account-details",
+                "title": "Account Details",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 50,
+                "MenuID": 52,
+                "submenu": []
+            },
+            {
+                "path": "promotional/promotional-stock-report",
+                "title": "Promotional Stock Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 50,
+                "MenuID": 53,
+                "submenu": []
+            },
+            {
+                "path": "promotional/cod",
+                "title": "COD",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "has-sub",
+                "ParentID": 50,
+                "MenuID": 54,
+                "isExternalLink": false,
+                "submenu": [
+                    {
+                        "path": "promotional/cod/cod-invoice",
+                        "title": "COD Invoice",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 54,
+                        "MenuID": 55,
+                        "submenu": []
+                    },
+                    {
+                        "path": "promotional/cod/cod-return",
+                        "title": "COD Return",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 54,
+                        "MenuID": 56,
+                        "submenu": []
+                    },
+                    {
+                        "path": "promotional/cod/cod-recovery",
+                        "title": "COD Recovery",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 54,
+                        "MenuID": 57,
+                        "submenu": []
+                    },
+                    {
+                        "path": "promotional/cod/cod-report",
+                        "title": "COD Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 54,
+                        "MenuID": 58,
+                        "submenu": []
+                    }
+                ]
+            },
+            {
+                "path": "promotional/deals-management",
+                "title": "Deals Management",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 50,
+                "MenuID": 59,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "sales-marketing",
+        "title": "Sales/Marketing",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 60,
+        "submenu": [
+            {
+                "path": "sales-marketing/new-quotation",
+                "title": "New Quotation",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 60,
+                "MenuID": 61,
+                "submenu": []
+            },
+            {
+                "path": "sales-marketing/sale-graph",
+                "title": "Sale Graph",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 60,
+                "MenuID": 62,
+                "submenu": []
+            },
+            {
+                "path": "sales-marketing/monthly-comparison-by-qty",
+                "title": "Monthly Comparison By Qty",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 60,
+                "MenuID": 63,
+                "submenu": []
+            },
+            {
+                "path": "sales-marketing/quotations-list",
+                "title": "Quotations List",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 60,
+                "MenuID": 64,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "ceo",
+        "title": "CEO",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 65,
+        "submenu": [
+            {
+                "path": "ceo/daily-report",
+                "title": "Daily Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 66,
+                "submenu": []
+            },
+            {
+                "path": "ceo/daily-profit",
+                "title": "Daily Profit",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 67,
+                "submenu": []
+            },
+            {
+                "path": "ceo/costing-slabs",
+                "title": "Costing Slabs",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 68,
+                "submenu": []
+            },
+            {
+                "path": "ceo/monthly-summary-report",
+                "title": "Monthly Summary Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 69,
+                "submenu": []
+            },
+            {
+                "path": "ceo/yearly-summary-report",
+                "title": "Yearly Summary Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 70,
+                "submenu": []
+            },
+            {
+                "path": "ceo/profit-report",
+                "title": "Profit Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 71,
+                "submenu": []
+            },
+            {
+                "path": "ceo/profit-and-expense-report",
+                "title": "Profit and Expense Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 72,
+                "submenu": []
+            },
+            {
+                "path": "ceo/profit-report-by-product",
+                "title": "Profit Report By Product",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 73,
+                "submenu": []
+            },
+            {
+                "path": "ceo/capital-acccount",
+                "title": "Capital Acccount",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 74,
+                "submenu": []
+            },
+            {
+                "path": "ceo/business-sheet",
+                "title": "Business Sheet",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 75,
+                "submenu": []
+            },
+            {
+                "path": "ceo/stock-value-ledger",
+                "title": "Stock Value Ledger",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 76,
+                "submenu": []
+            },
+            {
+                "path": "ceo/users-list",
+                "title": "Users List",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 65,
+                "MenuID": 77,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "accounts",
+        "title": "Accounts",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 78,
+        "submenu": [
+            {
+                "path": "accounts/purchases",
+                "title": "Purchases",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "has-sub",
+                "ParentID": 78,
+                "MenuID": 79,
+                "isExternalLink": false,
+                "submenu": [
+                    {
+                        "path": "accounts/purchases/purchase-r-invoice",
+                        "title": "Purchase/R Invoice",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 79,
+                        "MenuID": 80,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/purchases/purchase-fg-invoice",
+                        "title": "Purchase/FG Invoice",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 79,
+                        "MenuID": 81,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/purchases/purchase-return",
+                        "title": "Purchase Return",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 79,
+                        "MenuID": 82,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/purchases/purchase-report",
+                        "title": "Purchase Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 79,
+                        "MenuID": 83,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/purchases/purchase-of-products",
+                        "title": "Purchase of Products",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 79,
+                        "MenuID": 84,
+                        "submenu": []
+                    }
+                ]
+            },
+            {
+                "path": "accounts/sale",
+                "title": "Sale",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "has-sub",
+                "ParentID": 78,
+                "MenuID": 85,
+                "isExternalLink": false,
+                "submenu": [
+                    {
+                        "path": "accounts/sale/sale-raw-material",
+                        "title": "Sale Raw Material",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 85,
+                        "MenuID": 86,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/sale/sale-report",
+                        "title": "Sale Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 85,
+                        "MenuID": 87,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/sale/sale-of-product",
+                        "title": "Sale of Product",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 85,
+                        "MenuID": 88,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/sale/promotional-recovery-claim-report",
+                        "title": "Promotional Recovery Claim Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 85,
+                        "MenuID": 89,
+                        "submenu": []
+                    }
+                ]
+            },
+            {
+                "path": "accounts/cash",
+                "title": "Cash",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "has-sub",
+                "ParentID": 78,
+                "MenuID": 90,
+                "isExternalLink": false,
+                "submenu": [
+                    {
+                        "path": "accounts/cash/recovery",
+                        "title": "Recovery",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 90,
+                        "MenuID": 91,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/cash/payment-to-suppliers",
+                        "title": "Payment to Suppliers",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 90,
+                        "MenuID": 92,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/cash/cash-transfer",
+                        "title": "Cash Transfer",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 90,
+                        "MenuID": 93,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/cash/bank-cash-transfer",
+                        "title": "Bank Cash Transfer",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 90,
+                        "MenuID": 94,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/cash/other-income-report",
+                        "title": "Other Income Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 90,
+                        "MenuID": 95,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/cash/other-income",
+                        "title": "Other Income",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 90,
+                        "MenuID": 96,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/cash/recovery-by-division",
+                        "title": "Recovery By Division",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 90,
+                        "MenuID": 97,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/cash/payment-report",
+                        "title": "Payment Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 90,
+                        "MenuID": 98,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/cash/trial-balance",
+                        "title": "Trial Balance",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 90,
+                        "MenuID": 99,
+                        "submenu": []
+                    }
+                ]
+            },
+            {
+                "path": "accounts/claims",
+                "title": "Claims",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "has-sub",
+                "ParentID": 78,
+                "MenuID": 100,
+                "isExternalLink": false,
+                "submenu": [
+                    {
+                        "path": "accounts/claims/add-claims",
+                        "title": "Add Claims",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 100,
+                        "MenuID": 101,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/claims/claims-report",
+                        "title": "Claims Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 100,
+                        "MenuID": 102,
+                        "submenu": []
+                    }
+                ]
+            },
+            {
+                "path": "accounts/accounts",
+                "title": "Accounts",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "has-sub",
+                "ParentID": 78,
+                "MenuID": 103,
+                "isExternalLink": false,
+                "submenu": [
+                    {
+                        "path": "accounts/accounts/account-list",
+                        "title": "Account List",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 103,
+                        "MenuID": 104,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/accounts/accounts-details",
+                        "title": "Accounts Details",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 103,
+                        "MenuID": 105,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/accounts/salesman-accounts",
+                        "title": "Salesman Accounts",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 103,
+                        "MenuID": 106,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/accounts/pending-recovery-report",
+                        "title": "Pending Recovery Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 103,
+                        "MenuID": 107,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/accounts/trial-balance",
+                        "title": "Trial Balance",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 103,
+                        "MenuID": 108,
+                        "submenu": []
+                    }
+                ]
+            },
+            {
+                "path": "accounts/expense",
+                "title": "Expense",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "has-sub",
+                "ParentID": 78,
+                "MenuID": 109,
+                "isExternalLink": false,
+                "submenu": [
+                    {
+                        "path": "accounts/expense/new-expense-bill",
+                        "title": "New Expense Bill",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 109,
+                        "MenuID": 110,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/expense/expense-heads",
+                        "title": "Expense Heads",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 109,
+                        "MenuID": 111,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/expense/expense-report",
+                        "title": "Expense Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 109,
+                        "MenuID": 112,
+                        "submenu": []
+                    }
+                ]
+            },
+            {
+                "path": "accounts/employees",
+                "title": "Employees",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "has-sub",
+                "ParentID": 78,
+                "MenuID": 113,
+                "isExternalLink": false,
+                "submenu": [
+                    {
+                        "path": "accounts/employees/salary-sheet",
+                        "title": "Salary Sheet",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 113,
+                        "MenuID": 114,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/employees/accounts-report",
+                        "title": "Accounts Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 113,
+                        "MenuID": 115,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/employees/incentives-report",
+                        "title": "Incentives Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 113,
+                        "MenuID": 116,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/employees/add-advance",
+                        "title": "Add Advance",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 113,
+                        "MenuID": 117,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/employees/add-incentives",
+                        "title": "Add Incentives",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 113,
+                        "MenuID": 118,
+                        "submenu": []
+                    }
+                ]
+            },
+            {
+                "path": "accounts/cod",
+                "title": "COD",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "has-sub",
+                "ParentID": 78,
+                "MenuID": 119,
+                "isExternalLink": false,
+                "submenu": [
+                    {
+                        "path": "accounts/cod/cod-invoice",
+                        "title": "COD Invoice",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 119,
+                        "MenuID": 120,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/cod/cod-return",
+                        "title": "COD Return",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 119,
+                        "MenuID": 121,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/cod/cod-recovery",
+                        "title": "COD Recovery",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 119,
+                        "MenuID": 122,
+                        "submenu": []
+                    },
+                    {
+                        "path": "accounts/cod/cod-report",
+                        "title": "COD Report",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 119,
+                        "MenuID": 123,
+                        "submenu": []
+                    }
+                ]
+            },
+            {
+                "path": "accounts/deals-management",
+                "title": "Deals Management",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 78,
+                "MenuID": 124,
+                "submenu": []
+            },
+            {
+                "path": "accounts/general-despensing",
+                "title": "General Despensing",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 78,
+                "MenuID": 125,
+                "submenu": []
+            },
+            {
+                "path": "accounts/proc-aproved-pending-amount",
+                "title": "Proc Aproved Pending Amount",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 78,
+                "MenuID": 126,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "admin",
+        "title": "Admin",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 127,
+        "submenu": [
+            {
+                "path": "admin/products-master",
+                "title": "Master Product & Packing Definations",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 128,
+                "submenu": []
+            },
+            {
+                "path": "admin/products-raw",
+                "title": "Raw Products Defination",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 129,
+                "submenu": []
+            },
+            {
+                "path": "admin/products",
+                "title": "Products Defination",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 130,
+                "submenu": []
+            },
+            {
+                "path": "admin/products-categories",
+                "title": "Product Categories",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 131,
+                "submenu": []
+            },
+            {
+                "path": "admin/product-types",
+                "title": "Product Types",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 132,
+                "submenu": []
+            },
+            {
+                "path": "admin/price-management",
+                "title": "Price Management",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 133,
+                "submenu": []
+            },
+            {
+                "path": "admin/regions",
+                "title": "Regions",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 134,
+                "submenu": []
+            },
+            {
+                "path": "admin/products-dedication",
+                "title": "Products Dedication",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 135,
+                "submenu": []
+            },
+            {
+                "path": "admin/products-dedication-rpt",
+                "title": "Products Dedication Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 136,
+                "submenu": []
+            },
+            {
+                "path": "admin/vacant-products",
+                "title": "Vacant Products Report",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 137,
+                "submenu": []
+            },
+            {
+                "path": "admin/combine-products",
+                "title": "Combine Products",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 138,
+                "submenu": []
+            },
+            {
+                "path": "admin/raw-material-forecasting",
+                "title": "Raw Material ForeCasting",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 139,
+                "submenu": []
+            },
+            {
+                "path": "admin/reminders",
+                "title": "Reminders",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 140,
+                "submenu": []
+            },
+            {
+                "path": "admin/events",
+                "title": "Annual Events",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 141,
+                "submenu": []
+            },
+            {
+                "path": "admin/products-bonusslabs",
+                "title": "Product Bonus Slabs",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 142,
+                "submenu": []
+            },
+            {
+                "path": "admin/customers-discount-by-product",
+                "title": "Customer's Discount By Product",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 143,
+                "submenu": []
+            },
+            {
+                "path": "admin/products-list",
+                "title": "Products List",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 144,
+                "submenu": []
+            },
+            {
+                "path": "admin/product-list-by-status",
+                "title": "Product List By Status",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 145,
+                "submenu": []
+            },
+            {
+                "path": "admin/rate-checker",
+                "title": "Rate Checker",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 146,
+                "submenu": []
+            },
+            {
+                "path": "admin/accounts",
+                "title": "New Account",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 147,
+                "submenu": []
+            },
+            {
+                "path": "admin/accounts-type",
+                "title": "Account Types",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 148,
+                "submenu": []
+            },
+            {
+                "path": "admin/units",
+                "title": "Units",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 127,
+                "MenuID": 149,
+                "submenu": []
+            },
+            {
+                "path": "admin/employees",
+                "title": "Employees",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "has-sub",
+                "ParentID": 127,
+                "MenuID": 151,
+                "isExternalLink": false,
+                "submenu": [
+                    {
+                        "path": "admin/employees/employees",
+                        "title": "Employees ",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 151,
+                        "MenuID": 152,
+                        "submenu": []
+                    },
+                    {
+                        "path": "admin/employees/employees-accounts",
+                        "title": "Employees Accounts",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 151,
+                        "MenuID": 153,
+                        "submenu": []
+                    },
+                    {
+                        "path": "admin/employees/designations",
+                        "title": "Designations",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 151,
+                        "MenuID": 154,
+                        "submenu": []
+                    },
+                    {
+                        "path": "admin/employees/employee-list",
+                        "title": "Employee List",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 151,
+                        "MenuID": 155,
+                        "submenu": []
+                    },
+                    {
+                        "path": "admin/employees/salary-sheet",
+                        "title": "Salary Sheet",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 151,
+                        "MenuID": 156,
+                        "submenu": []
+                    },
+                    {
+                        "path": "admin/employees/add-deduction",
+                        "title": "Add Deduction",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 151,
+                        "MenuID": 157,
+                        "submenu": []
+                    },
+                    {
+                        "path": "admin/employees/income-tax-slabs",
+                        "title": "Income Tax Slabs",
+                        "icon": "ft-arrow-right submenu-icon",
+                        "class": "dropdown-item",
+                        "ParentID": 151,
+                        "MenuID": 158,
+                        "submenu": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "path": "budget",
+        "title": "Budgeting",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 159,
+        "submenu": [
+            {
+                "path": "budget/budget-management",
+                "title": "Budget Management",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 159,
+                "MenuID": 160,
+                "submenu": []
+            },
+            {
+                "path": "budget/expense-management",
+                "title": "Expense Management",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 159,
+                "MenuID": 161,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "intimations-and-requisitions",
+        "title": "Requisitions",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 162,
+        "submenu": [
+            {
+                "path": "intimations-and-requisitions/intimation-documents",
+                "title": "Intimation Documents",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 162,
+                "MenuID": 163,
+                "submenu": []
+            },
+            {
+                "path": "intimations-and-requisitions/requisitions",
+                "title": "Requisitions",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 162,
+                "MenuID": 164,
+                "submenu": []
+            }
+        ]
+    },
+    {
+        "path": "approvals",
+        "title": "Approvals",
+        "icon": "ft-home",
+        "class": "dropdown nav-item has-sub",
+        "isExternalLink": false,
+        "ParentID": null,
+        "MenuID": 165,
+        "submenu": [
+            {
+                "path": "approvals/purchase-returns-approval",
+                "title": "Purchase Returns Approval",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 165,
+                "MenuID": 166,
+                "submenu": []
+            },
+            {
+                "path": "approvals/recall-approvals",
+                "title": "Recall Approvals",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 165,
+                "MenuID": 167,
+                "submenu": []
+            },
+            {
+                "path": "approvals/print-dispatch-approval-form",
+                "title": "Print Dispatch Approval Form ",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 165,
+                "MenuID": 168,
+                "submenu": []
+            },
+            {
+                "path": "approvals/product-amendtment-form",
+                "title": "Product Amendtment Form",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 165,
+                "MenuID": 169,
+                "submenu": []
+            },
+            {
+                "path": "approvals/invoice-approvals",
+                "title": "Invoice Approvals",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 165,
+                "MenuID": 170,
+                "submenu": []
+            },
+            {
+                "path": "approvals/invoice-return-approvals",
+                "title": "Invoice Return Approvals",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 165,
+                "MenuID": 171,
+                "submenu": []
+            },
+            {
+                "path": "approvals/cash-transfer-approval",
+                "title": "Cash Transfer Approval",
+                "icon": "ft-arrow-right submenu-icon",
+                "class": "dropdown-item",
+                "ParentID": 165,
+                "MenuID": 172,
+                "submenu": []
+            }
+        ]
+    }
+]

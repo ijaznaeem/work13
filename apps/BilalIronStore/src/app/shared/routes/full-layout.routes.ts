@@ -19,14 +19,7 @@ export const Full_ROUTES: Routes = [
         (m) => m.DashboardModule
       ),
   },
-  {
-    canActivateChild: [AuthGuard],
-    path: 'orders',
-    loadChildren: () =>
-      import('../../pages/orders/orders.module').then(
-        (m) => m.OrdersModule
-      ),
-  },
+
   {  canActivateChild: [AuthGuard],
     path: 'sale',
     loadChildren: () =>
@@ -48,6 +41,14 @@ export const Full_ROUTES: Routes = [
     loadChildren: () =>
       import('../../pages/transfer/transfer.module').then(
         (m) => m.TransferModule
+      ),
+  },
+  {
+    canActivateChild: [AuthGuard],
+    path: 'employees',
+    loadChildren: () =>
+      import('../../pages/employees/employees.module').then(
+        (m) => m.EmployeesModule
       ),
   },
   {
@@ -80,6 +81,14 @@ export const Full_ROUTES: Routes = [
     loadChildren: () =>
       import('../../pages/products/products.module').then(
         (m) => m.ProductsModule
+      ),
+  },
+  {
+    canActivateChild: [AuthGuard],
+    path: 'customers',
+    loadChildren: () =>
+      import('../../pages/customers/customers.module').then(
+        (m) => m.CustomersModule
       ),
   },
   {

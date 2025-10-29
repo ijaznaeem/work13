@@ -30,6 +30,40 @@
           </div>
         </div>
 
+        <div class="col-md-2">
+          <label for="type">Type</label>
+          <select
+            name="cmbType"
+            id="cmbType"
+            class="form-control"
+            [(ngModel)]="Filter.Type"
+            (change)="ProductType($event)"
+          >
+            <option value="Finish Goods">Finish Goods</option>
+            <option value="Raw Material">Raw Material</option>
+
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="product">Product</label>
+          <ejs-combobox
+            name="product"
+            id="product"
+            #cmbProduct
+            [dataSource]="Products"
+            [fields]="{ text: 'ProductName', value: 'ProductID' }"
+            [(ngModel)]="Filter.ProductID"
+            (change)="ProductSelected($event)"
+            allowFiltering="true"
+            [placeholder]="'Select Product...'"
+            required
+          >
+          </ejs-combobox>
+        </div>
+
+
+
+
         <div class="col-md-1">
           <div class="form-group">
             <label>&nbsp;</label>

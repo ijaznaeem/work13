@@ -1,24 +1,46 @@
-import { Component, OnInit, Input, EventEmitter, Output } from "@angular/core";
-import { BsModalRef } from "ngx-bootstrap/modal";
-import { HttpBase } from "../../../services/httpbase.service";
-import { MyToastService } from "../../../services/toaster.server";
+import {
+  AfterContentInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ComboBox } from '@syncfusion/ej2-angular-dropdowns';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+import { HttpBase } from '../../../services/httpbase.service';
+import { MyToastService } from '../../../services/toaster.server';
 
 @Component({
-  selector: "app-crud-form",
-  templateUrl: "./crud-form.component.html",
-  styleUrls: ["./crud-form.component.scss"],
+  selector: 'app-crud-form',
+  templateUrl: './crud-form.component.html',
+  styleUrls: ['./crud-form.component.scss'],
 })
-export class CrudFormComponent implements OnInit {
-  // tslint:disable-next-line:no-input-rename
-  @Input() form: any;
+export class CrudFormComponent implements OnInit, AfterContentInit {
+  @ViewChild('userForm') userForm: NgForm;
+  @ViewChildren('inputRef') inputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('combosList') combosList!: QueryList<ComboBox>;
+
+  @Input('form') form: any = {};
   @Input() formdata: any = {};
+  @Input() submitbutton = 'Save';
+  @Input() iscancel = true;
+  @Input() CrudButtons = true;
 
   @Output() ItemChanged: EventEmitter<any> = new EventEmitter<any>();
   @Output() DataSaved: EventEmitter<any> = new EventEmitter<any>();
   @Output() Cancelled: EventEmitter<any> = new EventEmitter<any>();
+  @Output() BeforeSave: EventEmitter<any> = new EventEmitter<any>();
+  @Output() ButtonClicked: EventEmitter<any> = new EventEmitter<any>();
   public event: EventEmitter<any> = new EventEmitter();
   //public formdata: any = {};
   files: File | null;
+  public FormData: any = {};
 
   constructor(
     private http: HttpBase,
@@ -27,48 +49,76 @@ export class CrudFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.formdata);
-   // this.formdata = Object.assign({}, this.FromData);
+    //this.formdata = Object.assign({}, this.formdata);
+    console.log(this.formdata, this.form);
+    this.FormData = this.formdata;
+
     this.form.columns.forEach((col) => {
-      if (col.hasOwnProperty("listTable")) {
-        this.http.getData(col.listTable + "?flds=" + col.valueFld + "," + col.displayFld).then((res: any) => {
-          col.listData = res;
-        });
+      if (col.hasOwnProperty('listTable') && col.listTable.trim() != '') {
+        console.log(col.listTable);
+        this.http
+          .getData(
+            col.listTable +
+              (col.listTable.indexOf('?') >= 0 ? '&' : '?') +
+              'flds=' +
+              col.valueFld +
+              ',' +
+              col.displayFld +
+              '&orderby=' +
+              col.displayFld
+          )
+          .then((res: any) => {
+            if (col.listData && col.listData.length > 0) {
+              col.listData = [...col.listData, ...res];
+            } else {
+              col.listData = res;
+            }
+            // console.log(col.listData);
+          });
       }
     });
   }
+
+  ngAfterContentInit() {}
+
   onSelect(event) {
     this.files = event.addedFiles[0];
   }
-  SaveData() {
-    if (this.files) {
-      let filedata = new FormData();
-      filedata.append("file", this.files);
-      this.http
-        .postData("uploadfile", filedata)
-        .then((r: any) => {
-          let filecolumn = this.form.columns.find((x) => {
-            return x.control === "file";
-          });
-          if (filecolumn) {
-            this.formdata[filecolumn.fldName] = r.msg.file_name;
-          }
-          console.log(filecolumn);
+  public SaveData(): void {
+    let event = { data: this.formdata, cancel: false };
+    this.BeforeSave.emit(event);
 
-          this.SendData();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      this.SendData();
+    if (!event.cancel) {
+      if (this.files) {
+        let filedata = new FormData();
+        filedata.append('file', this.files);
+        this.http
+          .postData('uploadfile', filedata)
+          .then((r: any) => {
+            let filecolumn = this.form.columns.find((x) => {
+              return x.control === 'file';
+            });
+            if (filecolumn) {
+              this.formdata[filecolumn.fldName] = r.msg.file_name;
+            }
+            console.log(filecolumn);
+            this.SendData();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        this.SendData();
+      }
     }
   }
   SendData() {
-    let pk = "";
+    let pk = '';
     if (this.formdata[this.form.pk]) {
-      pk = "/" + this.formdata[this.form.pk];
+      pk = '/' + this.formdata[this.form.pk];
     }
+
+    if (this.formdata[this.form.pk]) delete this.formdata[this.form.pk];
     console.log(this.formdata);
 
     this.http
@@ -77,7 +127,7 @@ export class CrudFormComponent implements OnInit {
         this.DataSaved.emit({ data: r });
       })
       .catch((err) => {
-        this.myToast.Error(err.message, 1);
+        this.myToast.Error(err.error.message, 1);
       });
   }
   onRemove(event) {
@@ -91,7 +141,7 @@ export class CrudFormComponent implements OnInit {
   }
 
   Changed(fld, val) {
-    console.log(fld, val);
+    //console.log(fld, val, this.CrudButtons);
     this.ItemChanged.emit({
       fldName: fld,
       value: val,
@@ -103,14 +153,32 @@ export class CrudFormComponent implements OnInit {
 
   closeModal() {
     this.Cancelled.emit({ data: this.formdata });
-
   }
 
   public setDataSource(idx, data) {
     this.form[idx].listData = [...data];
   }
+  public IsFormValid() {
+    return this.userForm.valid;
+  }
 
-  LogIt(a:any){
+  LogIt(a: any) {
     console.log(a);
+  }
+
+  ButtonClickedEv(e) {
+    console.log(e);
+
+    if (e.col.OnClick) {
+      e.col.OnClick(e);
+    }
+    this.ButtonClicked.emit(e);
+  }
+
+  public getAllInputs() {
+    return this.inputs.toArray();
+  }
+  public getAllCombos() {
+    return this.combosList.toArray();
   }
 }

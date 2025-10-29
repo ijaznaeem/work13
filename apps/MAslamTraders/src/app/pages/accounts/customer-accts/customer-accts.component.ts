@@ -31,6 +31,12 @@ export class CustomerAcctsComponent implements OnInit {
       {
         label: 'Invoice No',
         fldName: 'RefID',
+        button: {
+          style: 'link',
+          callback: (e) => {
+            this.openvoucher(e);
+          }
+        }
       },
       {
         label: 'Notes',
@@ -185,4 +191,44 @@ export class CustomerAcctsComponent implements OnInit {
   formatDate(d) {
     return JSON2Date(d);
   }
+
+NavigateTo(url) {
+  if (url.indexOf('Receipt') === 0) {
+    this.router.navigateByUrl('cash/cashreceipt/0/' + this.Filter.CustomerID);
+  } else if (url.indexOf('Payment') === 0) {
+    this.router.navigateByUrl('cash/cashpayment/0/' + this.Filter.CustomerID);
+  }
+
+}
+
+
+  openvoucher(voucher) {
+    console.log(voucher);
+    if (voucher.Description.indexOf('Bill No') === 0) {
+      this.printInvoice(voucher.RefID);
+    } else if (voucher.Description.indexOf('Purchase No') === 0) {
+      this.PrintPurchase(voucher.RefID);
+
+    }
+
+  }
+
+  printInvoice(InvoiceID) {
+     window.open(
+      '/#/print/printinvoice/' + InvoiceID,
+      '_blank',
+      'toolbar=1, scrollbars=1, resizable=1, width=' + 600 + ', height=' + 800
+    );
+    return;
+  }
+
+  PrintPurchase(PurchaseID) {
+    window.open(
+      '/#/print/printpurchase/' + PurchaseID,
+      '_blank',
+      'toolbar=1, scrollbars=1, resizable=1, width=' + 600 + ', height=' + 800
+    );
+    return;
+  }
+
 }

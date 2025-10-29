@@ -68,7 +68,21 @@
                   </div>
                 </div>
               </div>
-
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="Type">Type:</label>
+                  <select
+                    class="form-control"
+                    id="Type"
+                    name="Type"
+                    [(ngModel)]="sale.DtCr"
+                    required
+                  >
+                    <option value="CR">Sale</option>
+                    <option value="DT">Return</option>
+                  </select>
+                </div>
+              </div>
               <div class="form-group col-md-4">
                 <label for="customer">Customer </label>
                 <ng-select
@@ -107,15 +121,15 @@
                 </ng-select>
               </div>
 
-              <div class="col-md-4 form-group">
-                <label for="">Adress</label>
+              <div class="col-md-3 form-group">
+                <label for="">Address</label>
                 <p>
                   <Strong>
                     {{ SelectCust.Address }}, {{ SelectCust.City }}</Strong
                   >
                 </p>
               </div>
-              <div class="col-md-2 form-group">
+              <div class="col-md-1 form-group">
                 <label for="">Balance</label>
                 <p>
                   <Strong> {{ SelectCust.Balance }} </Strong>
@@ -230,9 +244,9 @@
                           name="pamount"
                           readonly
                           [value]="
-                            ((sdetails.Qty * sdetails.Packing +
+                            (sdetails.Qty * sdetails.Packing +
                               sdetails.KGs * 1) *
-                              sdetails.SPrice)
+                            sdetails.SPrice
                           "
                           tabindex="-1"
                         />
@@ -317,7 +331,6 @@
                       </div>
                     </div>
                     <div class="col-md-9">
-
                       <ft-buttons-bar
                         #btnBar
                         [buttons]="buttonConfigs"

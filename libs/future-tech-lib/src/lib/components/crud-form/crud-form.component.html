@@ -4,8 +4,6 @@
   #userForm="ngForm"
 >
   <div class="row no-gutter">
-
-
     <div [class]="'px-* col-md-' + col.size" *ngFor="let col of form.columns">
       <div class="form-group">
         <label for="col.fldName">
@@ -30,6 +28,7 @@
           [(ngModel)]="formdata[col.fldName]"
           [name]="col.fldName"
           [value]="col.value"
+          [maxlength]="col.maxLength"
           [ngClass]="{
             'is-invalid':
               userForm.submitted && userForm.controls[col.fldName].invalid,
@@ -85,6 +84,40 @@
             Please select a valid item.
           </div>
         </div>
+
+        <div *ngIf="col.control === 'select' && col.type === 'ngselect'">
+
+          <ng-select
+            #ngSelect
+            [name]="col.fldName"
+            class="custom"
+            [items]="col.listData"
+            [bindLabel]="col.displayFld"
+            [bindValue]="col.valueFld"
+            [(ngModel)]="formdata[col.fldName]"
+            [required]="col.required"
+            [disabled]="col.disabled"
+            selectOnTab="true"
+            [ngClass]="{
+
+              'is-invalid':
+                userForm.submitted && userForm.controls[col.fldName].invalid,
+              'is-valid':
+                userForm.submitted && !userForm.controls[col.fldName].invalid
+            }"
+
+
+            typeToSearchText="Please enter {{
+              minLengthTerm
+            }} or more characters"
+            [placeholder]="col.placeHolder"
+            (change)="Changed(col.fldName, $event)"
+            [searchable]="true"
+            [clearable]="true"
+          >
+          </ng-select>
+        </div>
+
         <div *ngIf="col.control === 'select' && col.type === 'dropdown'">
           <ejs-dropdownlist
             #dropdownsList
@@ -112,6 +145,25 @@
           </div>
         </div>
 
+        <ft-multi-col-combobox-ng
+          [name]="col.fldName"
+          [(ngModel)]="formdata[col.fldName]"
+          *ngIf="col.control == 'select' && col.type == 'ng'"
+          [ApiEndPoint]="col.endPoint"
+          [BindLabel]="col.displayFld"
+          [BindVal]="col.valueFld"
+          [Fields]="col.flds"
+          [placeholder]=""
+          [ngClass]="{
+            'is-invalid':
+              userForm.submitted && userForm.controls[col.fldName].invalid,
+            'is-valid':
+              userForm.submitted && !userForm.controls[col.fldName].invalid
+          }"
+          (change)="Changed(col.fldName, $event.value)"
+          [required]="col.required"
+        >
+        </ft-multi-col-combobox-ng>
         <ft-multi-col-combobox
           *ngIf="col.control == 'select' && col.type == 'multi'"
           [name]="col.fldName"

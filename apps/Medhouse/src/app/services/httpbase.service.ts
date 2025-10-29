@@ -394,4 +394,37 @@ export class HttpBase {
   IsDirectorDepartment(){
     return  (DirectorsGroup.includes(this.getUserDept()));
   }
+
+  // Add support for PUT requests (updates)
+  putData(url, data) {
+    let params = new HttpParams();
+    params = this.toHttpParams({ bid: this.getBusinessID() });
+
+    return new Promise((resolve, reject) => {
+      const headers = new HttpHeaders();
+
+      headers.append('Accept', 'application/json');
+      headers.append('Content-Type', 'application/json');
+
+      this.http
+        .put(this.apiUrl + 'apis/' + url, data, { headers: this.jwt() })
+        .subscribe(
+          { next: (v) => resolve(v), error: (e) => reject(e) }
+        );
+    });
+  }
+
+  // Add support for DELETE requests
+  deleteData(url) {
+    let params = new HttpParams();
+    params = this.toHttpParams({ bid: this.getBusinessID() });
+
+    return new Promise((resolve, reject) => {
+      this.http
+        .delete(this.apiUrl + 'apis/' + url, { headers: this.jwt() })
+        .subscribe(
+          { next: (v) => resolve(v), error: (e) => reject(e) }
+        );
+    });
+  }
 }

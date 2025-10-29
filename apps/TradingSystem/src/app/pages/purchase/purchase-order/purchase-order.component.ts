@@ -15,8 +15,7 @@ import { Buttons } from '../../../../../../../libs/future-tech-lib/src/lib/compo
 import { Terms } from '../../../factories/constants';
 import {
   GetDateJSON,
-  GetProps,
-  JSON2Date
+  GetProps
 } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
@@ -218,7 +217,7 @@ export class PurchaseOrderComponent implements OnInit,  OnChanges {
     if (this.EditID) {
       InvoiceID = '/' + this.EditID;
     }
-    this.purchase.OrderDate = JSON2Date(this.purchase.OrderDate);
+    // this.purchase.OrderDate = JSON2Date(this.purchase.OrderDate);
 
     this.data.getAll().then((res1) => {
       this.purchase.details = res1;
@@ -228,10 +227,10 @@ export class PurchaseOrderComponent implements OnInit,  OnChanges {
           this.myToaster.Sucess('Data Insert successfully', '', 2);
           if (this.EditID != '') {
             // this.purchase.OrderDate = GetDateJSON(new Date(this.purchase.OrderDate));
-            this.router.navigateByUrl('/purchase/po/' + this.EditID);
+            this.router.navigateByUrl('/purchase/order/' + this.EditID);
           } else {
 
-            this.router.navigateByUrl('/purchase/po/' + r.id);
+            this.router.navigateByUrl('/purchase/order/' + r.id);
           }
         },
         (err) => {
@@ -329,14 +328,14 @@ export class PurchaseOrderComponent implements OnInit,  OnChanges {
   }
 
   FindINo() {
-    this.router.navigate(['/purchase/po/', this.Ino]);
+    this.router.navigate(['/purchase/order/', this.Ino]);
   }
   NavigatorClicked(e) {
     let dt = GetDateJSON()
     let billNo:any = 'PO'+ '-' +dt.year.toString().slice(2)  + '000001';
     switch (Number(e.Button)) {
       case Buttons.First:
-        this.router.navigateByUrl('/purchase/po/' + billNo);
+        this.router.navigateByUrl('/purchase/order/' + billNo);
         break;
       case Buttons.Previous:
         if (!(this.EditID == '' || this.EditID == null)) {
@@ -344,18 +343,18 @@ export class PurchaseOrderComponent implements OnInit,  OnChanges {
             billNo = Number(this.EditID) - 1;
           }
         }
-        this.router.navigateByUrl('/purchase/po/' + billNo);
+        this.router.navigateByUrl('/purchase/order/' + billNo);
         break;
       case Buttons.Next:
         if (!(this.EditID == '' || this.EditID == null)) {
           billNo = Number(this.EditID) + 1;
         }
-        this.router.navigateByUrl('/purchase/po/' + billNo);
+        this.router.navigateByUrl('/purchase/order/' + billNo);
         break;
       case Buttons.Last:
         this.http.getData('getbno/PO').then((r: any) => {
           billNo = r.billno;
-          this.router.navigateByUrl('/purchase/po/' + billNo);
+          this.router.navigateByUrl('/purchase/order/' + billNo);
         });
         break;
       default:
@@ -365,7 +364,7 @@ export class PurchaseOrderComponent implements OnInit,  OnChanges {
   }
   NewInvoice() {
     this.Cancel();
-    this.router.navigateByUrl('/purchase/po');
+    this.router.navigateByUrl('/purchase/order');
 
   }
   PrintInvoice() {

@@ -153,38 +153,52 @@
             />
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label for="PrevBalance">Balance</label>
-            <input
-              type="text"
-              class="form-control"
-              id="PrevBalance"
-              name="PrevBalance"
-              [(ngModel)]="invoice.PrevBalance"
-            />
-          </div>
-        </div>
 
-        <div class="col-md-2">
+        <div class="col-md-1">
           <div class="form-group">
             <label for="supplier">Gold Type:</label>
-            <ng-select
+            <select
               #cmbGoldType
               name="cmbGoldType"
               id="cmbGoldType"
-              class="custom"
-              [items]="$GoldTypes | async"
+              class="form-control"
               [(ngModel)]="invoice.GoldType"
-              [virtualScroll]="true"
-              bindLabel="GoldType"
-              bindValue="GoldTypeID"
-              placeholder="Select Gold Type"
               required
             >
-            </ng-select>
+              <option value="" selected>Gold Type</option>
+              <option *ngFor="let type of $GoldTypes | async" [value]="type.ID">
+                {{ type.GoldType }}
+              </option>
+            </select>
           </div>
         </div>
+        <ft-input-control
+          [label]="'Cash'"
+          name="Cash"
+          [placeholder]="'Cash'"
+          [required]="false"
+          [readonly]="true"
+          [ngModel]="invoice.PrevBalance.Cash"
+        >
+        </ft-input-control>
+        <ft-input-control
+          [label]="'Gold 24K'"
+          name="Gold24K"
+          [placeholder]="'Gold 24K'"
+          [required]="false"
+          [readonly]="true"
+          [ngModel]="invoice.PrevBalance.Gold24K"
+        >
+        </ft-input-control>
+        <ft-input-control
+          [label]="'Gold 22K'"
+          name="Gold22K"
+          [placeholder]="'Gold 22K'"
+          [required]="false"
+          [readonly]="true"
+          [ngModel]="invoice.PrevBalance.Gold22K"
+        >
+        </ft-input-control>
         <div class="col-md-3">
           <div
             *ngIf="formqty.invalid && (formqty.touched || formqty.dirty)"
@@ -260,12 +274,12 @@
       </div>
       <form #formqty="ngForm">
         <div class="row no-pad">
-          <div class="col-md-2">
+          <div class="col-md-4">
             <img
               [src]="ImageUrl + selectedProduct?.Picture"
-              class="img-thumbnail rounded mx-auto d-block"
+              class="img-thumbnail rounded img-responsive"
               alt=""
-              style="width: 100px; height: 100px; object-fit: cover"
+              style="width: 100%; max-height: 150px; object-fit: cover"
             />
           </div>
           <div class="col-md-3">
@@ -318,7 +332,7 @@
             </div>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-5">
             <div class="row no-pad">
               <div class="col-md-3">
                 <div class="form-group">
@@ -346,6 +360,25 @@
                     [(ngModel)]="details.Weight"
                     placeholder="0"
                     required
+                  />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="PolishRatio">Polish Ratio:</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="PolishRatio"
+                    name="PolishRatio"
+                    [(ngModel)]="details.PolishRatio"
+                    placeholder="0"
+                    (change)="
+                      details.Polish = RoundTo(
+                        (details.Weight * details.PolishRatio) / 11.664,
+                        2
+                      )
+                    "
                   />
                 </div>
               </div>
@@ -405,6 +438,20 @@
                   />
                 </div>
               </div>
+
+              <!-- <div class="col-md-3">
+                <div class="form-group">
+                  <label for="Purity">Purity:</label>
+                  <input
+                    type="number"
+                    class="form-control text-warning"
+                    id="Purity"
+                    name="Purity"
+                    [value]="selectedProduct.Purity "
+                  />
+                </div>
+              </div> -->
+
               <div class="col-md-3">
                 <div class="form-group">
                   <label for="NetWeight">Net Weight:</label>

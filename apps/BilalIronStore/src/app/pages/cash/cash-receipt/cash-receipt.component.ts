@@ -1,10 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Buttons } from '../../../../../../../libs/future-tech-lib/src/lib/components/navigator/navigator.component';
-import {
-  GetDateJSON,
-  JSON2Date
-} from '../../../factories/utilities';
+import { GetDateJSON, JSON2Date } from '../../../factories/utilities';
 import { HttpBase } from '../../../services/httpbase.service';
 import { MyToastService } from '../../../services/toaster.server';
 import { VoucherModel } from '../voucher.model';
@@ -24,6 +21,8 @@ export class CashReceiptComponent implements OnInit {
   private AcctTypeID = '';
   curCustomer: any = {};
   Products: any = [];
+  Banks: any = [];
+  ExpenseHeads: any = [];
   constructor(
     private http: HttpBase,
     private alert: MyToastService,
@@ -32,23 +31,36 @@ export class CashReceiptComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {}
 
-  ngOnInit() {
-    // this.http.getData('accttypes').then((r: any) => {
-    //   this.AcctTypes = r;
-    // });
+  async ngOnInit() {
+    this.Banks = await this.http.getAccountsByType('Bank');
     this.LoadCustomer('');
-
+    this.ExpenseHeads = await this.http.getData('expensehead', {
+      orderby: 'HeadName',
+      filter: 'IsDiscount=1',
+    });
+    if (this.ExpenseHeads && this.ExpenseHeads.length > 0) {
+      this.Voucher.ExpenseHeadID = this.ExpenseHeads[0].HeadID;
+    }
+    this.Voucher.Discount = 0;
     this.activatedRoute.params.subscribe((params: Params) => {
-      if (params.EditID) {
-        this.EditID = params.EditID;
-        this.Ino = this.EditID;
+      const customerId = params['CustomerID'];
+      if (customerId) {
+        this.GetCustomer(customerId);
+        this.Voucher.CustomerID = customerId;
+      }
+      const editId = params['EditID'];
+      if (editId && editId > 0) {
+        this.EditID = editId;
+        this.Ino = editId;
         this.http
-          .getData('qryvouchers?filter=VoucherID=' + this.EditID)
+          .getData(`qryvouchers?filter=VoucherID=${editId}`)
           .then((r: any) => {
-            this.Voucher = r[0];
-            this.Voucher.Date = GetDateJSON(new Date(r[0].Date));
-            this.LoadCustomer({ AcctTypeID: r[0].AcctTypeID });
-            this.GetCustomer(this.Voucher.CustomerID);
+            if (r && r.length > 0) {
+              this.Voucher = r[0];
+              this.Voucher.Date = GetDateJSON(new Date(r[0].Date));
+              this.LoadCustomer({ AcctTypeID: r[0].AcctTypeID });
+              this.GetCustomer(this.Voucher.CustomerID);
+            }
           });
       } else {
         this.EditID = '';
@@ -57,46 +69,51 @@ export class CashReceiptComponent implements OnInit {
     });
   }
   async FindINo() {
-    let voucher:any = await this.http.getData( 'vouchers/' + this.Ino)
-    if (voucher.Credit > 0 )
+    let voucher: any = await this.http.getData('vouchers/' + this.Ino);
+    if (voucher.Credit > 0)
       this.router.navigate(['/cash/cashreceipt/', this.Ino]);
-    else
-      this.router.navigate(['/cash/cashpayment/', this.Ino]);
+    else this.router.navigate(['/cash/cashpayment/', this.Ino]);
   }
   LoadCustomer(event) {
-      this.http
-        .getData(
-          'qrycustomers?flds=CustomerName,Address, Balance, CustomerID&orderby=CustomerName'
-        )
-        .then((r: any) => {
-          this.Customers = r;
-        });
+    this.http
+      .getData(
+        'qrycustomers?flds=CustomerName,Address, Balance, CustomerID&orderby=CustomerName'
+      )
+      .then((r: any) => {
+        this.Customers = r;
+      });
   }
   SaveData() {
     let voucherid = '';
+
+    this.AcctTypeID = this.Voucher.AcctTypeID;
+    if (this.Voucher.Bank > 0 && !this.Voucher.BankID) {
+      this.alert.Error('Please select a bank.', 'Error', 1);
+      return;
+    }
+
     this.Voucher.PrevBalance = this.curCustomer.Balance;
     this.Voucher.Date = JSON2Date(this.Voucher.Date);
     if (this.EditID != '') {
       voucherid = '/' + this.EditID;
     }
-    this.AcctTypeID = this.Voucher.AcctTypeID;
+    this.Voucher.VoucherType = 1; // 1 for Receipt
     console.log(this.Voucher);
     this.http
       .postTask('vouchers' + voucherid, this.Voucher)
-      .then((r) => {
+      .then((r: any) => {
         this.alert.Sucess('Receipt Saved', 'Save', 1);
-        if (this.EditID != '') {
-          this.router.navigateByUrl('/cash/cashreceipt/');
-        } else {
-          this.Voucher = new VoucherModel();
-          this.cmbCustomer.focusIn();
+        if (this.EditID == '') {
+          this.EditID = r.id;
         }
+        this.router.navigateByUrl('/cash/cashreceipt/' + this.EditID);
+        this.http.PrintVoucher(this.EditID);
       })
       .catch((err) => {
         this.Voucher.Date = GetDateJSON();
         console.log(err);
 
-        this.alert.Error(err.error.message, 'Error',1);
+        this.alert.Error(err.error.message, 'Error', 1);
       });
   }
   GetCustomer(CustomerID) {
@@ -118,27 +135,28 @@ export class CashReceiptComponent implements OnInit {
     let billNo = 240000001;
     switch (Number(e.Button)) {
       case Buttons.First:
-        this.http.getData('getvouchno/R/0/F').then((r:any)=>{
+        this.http.getData('getvouchno/R/0/F').then((r: any) => {
           this.router.navigateByUrl('/cash/cashreceipt/' + r.Vno);
-        })
+        });
         break;
       case Buttons.Previous:
-        this.http.getData('getvouchno/R/' + this.EditID + "/B").then((r:any)=>{
-
-          this.router.navigateByUrl('/cash/cashreceipt/' + r.Vno);
-        })
+        this.http
+          .getData('getvouchno/R/' + this.EditID + '/B')
+          .then((r: any) => {
+            this.router.navigateByUrl('/cash/cashreceipt/' + r.Vno);
+          });
         break;
       case Buttons.Next:
-        this.http.getData('getvouchno/R/' + this.EditID + "/N").then((r:any)=>{
-
-          this.router.navigateByUrl('/cash/cashreceipt/' + r.Vno);
-        })
+        this.http
+          .getData('getvouchno/R/' + this.EditID + '/N')
+          .then((r: any) => {
+            this.router.navigateByUrl('/cash/cashreceipt/' + r.Vno);
+          });
         break;
       case Buttons.Last:
-        this.http.getData('getvouchno/R/0/L').then((r:any)=>{
-
+        this.http.getData('getvouchno/R/0/L').then((r: any) => {
           this.router.navigateByUrl('/cash/cashreceipt/' + r.Vno);
-        })
+        });
         break;
       default:
         break;
@@ -148,7 +166,7 @@ export class CashReceiptComponent implements OnInit {
   Add() {
     this.router.navigateByUrl('/cash/cashreceipt');
   }
-  Cancel(){
+  Cancel() {
     this.Voucher = new VoucherModel();
     this.router.navigateByUrl('/cash/cashreceipt');
   }

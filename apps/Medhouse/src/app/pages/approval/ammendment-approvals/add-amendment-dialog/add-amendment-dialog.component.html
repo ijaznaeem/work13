@@ -1,0 +1,283 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ isEditMode ? 'Edit' : 'Add' }} Product Amendment</h4>
+</div>
+
+<div class="modal-body">
+  <div class="container-fluid">
+    <!-- Amendment Information Section -->
+    <div class="row">
+      <div class="col-12">
+        <h5 class="section-title">Amendment Information</h5>
+        <form [formGroup]="amendmentForm" class="amendment-form">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label for="masterProductId" class="required">Master Product:</label>
+                <select
+                  id="masterProductId"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(amendmentForm, 'masterProductId')"
+                  formControlName="masterProductId"
+                  [disabled]="loadingMasterProducts"
+                >
+                  <option value="">{{ loadingMasterProducts ? 'Loading...' : 'Select Master Product' }}</option>
+                  <option *ngFor="let product of masterProducts" [value]="product.ProductID">
+                    {{ product.ProductName }}
+                  </option>
+                </select>
+                <div class="invalid-feedback">
+                  {{ getFieldError(amendmentForm, 'masterProductId') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="forwardedTo">Forward To:</label>
+                <select
+                  id="forwardedTo"
+                  class="form-control form-control-sm"
+                  formControlName="forwardedTo"
+                >
+                  <option [value]="1">CEO</option>
+                  <option [value]="2">Commercial</option>
+                  <option [value]="3">Production</option>
+                  <option [value]="7">QC</option>
+                  <option [value]="9">GM</option>
+                  <option [value]="10">Operations</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="remarks" class="required">Amendment Remarks:</label>
+                <textarea
+                  id="remarks"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(amendmentForm, 'remarks')"
+                  formControlName="remarks"
+                  rows="3"
+                  placeholder="Enter justification and details for this amendment..."
+                ></textarea>
+                <div class="invalid-feedback">
+                  {{ getFieldError(amendmentForm, 'remarks') }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Amendment Details Section -->
+    <div class="row">
+      <div class="col-12">
+        <h5 class="section-title">Amendment Details</h5>
+        
+        <!-- Add Detail Form -->
+        <form [formGroup]="amendmentDetailForm" class="detail-form">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="rawProductId" class="required">Raw Product:</label>
+                <select
+                  id="rawProductId"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(amendmentDetailForm, 'rawProductId')"
+                  formControlName="rawProductId"
+                  (change)="onRawProductSelect()"
+                  [disabled]="loadingRawProducts"
+                >
+                  <option value="">{{ loadingRawProducts ? 'Loading...' : 'Select Raw Product' }}</option>
+                  <option *ngFor="let product of rawProducts" [value]="product.ProductID">
+                    {{ product.ProductName }}
+                  </option>
+                </select>
+                <div class="invalid-feedback">
+                  {{ getFieldError(amendmentDetailForm, 'rawProductId') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="type" class="required">Type:</label>
+                <select
+                  id="type"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(amendmentDetailForm, 'type')"
+                  formControlName="type"
+                  (change)="onTypeChange()"
+                >
+                  <option *ngFor="let type of amendmentTypes" [value]="type.value">
+                    {{ type.label }}
+                  </option>
+                </select>
+                <div class="invalid-feedback">
+                  {{ getFieldError(amendmentDetailForm, 'type') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="oldQty">Old Qty:</label>
+                <input
+                  type="number"
+                  id="oldQty"
+                  class="form-control form-control-sm"
+                  formControlName="oldQty"
+                  readonly
+                  step="0.0001"
+                />
+              </div>
+            </div>
+            
+            <div class="col-md-2">
+              <div class="form-group">
+                <label for="newQty" class="required">New Qty:</label>
+                <input
+                  type="number"
+                  id="newQty"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(amendmentDetailForm, 'newQty')"
+                  formControlName="newQty"
+                  min="0"
+                  step="0.0001"
+                />
+                <div class="invalid-feedback">
+                  {{ getFieldError(amendmentDetailForm, 'newQty') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm btn-block add-detail-btn"
+                  (click)="addAmendmentDetail()"
+                  [disabled]="amendmentDetailForm.invalid"
+                >
+                  <i class="fas fa-plus"></i> Add
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="category" class="required">Category:</label>
+                <select
+                  id="category"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(amendmentDetailForm, 'category')"
+                  formControlName="category"
+                >
+                  <option value="">Select Category</option>
+                  <option *ngFor="let category of categories" [value]="category.value">
+                    {{ category.label }}
+                  </option>
+                </select>
+                <div class="invalid-feedback">
+                  {{ getFieldError(amendmentDetailForm, 'category') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="price" class="required">Price per Unit:</label>
+                <input
+                  type="number"
+                  id="price"
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="isFieldInvalid(amendmentDetailForm, 'price')"
+                  formControlName="price"
+                  min="0"
+                  step="0.01"
+                />
+                <div class="invalid-feedback">
+                  {{ getFieldError(amendmentDetailForm, 'price') }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Amendment Details Table -->
+        <div class="details-table-container" *ngIf="amendmentDetails.length > 0">
+          <table class="table table-sm table-striped table-hover details-table">
+            <thead>
+              <tr>
+                <th>Raw Product</th>
+                <th>Type</th>
+                <th>Old Qty</th>
+                <th>New Qty</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th width="80">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let detail of amendmentDetails; let i = index">
+                <td>{{ getRawProductName(detail.RawID) }}</td>
+                <td>
+                  <span class="badge" [class]="getTypeBadgeClass(detail.Type)">
+                    {{ detail.Type }}
+                  </span>
+                </td>
+                <td>{{ detail.OldQty | number:'1.4-4' }}</td>
+                <td>{{ detail.NewQty | number:'1.4-4' }}</td>
+                <td>{{ detail.Category }}</td>
+                <td>{{ detail.Price | currency:'USD':'symbol':'1.2-2' }}</td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    (click)="removeAmendmentDetail(i)"
+                    title="Remove Detail"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- No Details Message -->
+        <div *ngIf="amendmentDetails.length === 0" class="alert alert-info">
+          <i class="fas fa-info-circle"></i> No amendment details added yet. Please add component changes above.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="onCancel()"
+    [disabled]="savingAmendment"
+  >
+    Cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="onSave()"
+    [disabled]="amendmentForm.invalid || amendmentDetails.length === 0 || savingAmendment"
+  >
+    <span *ngIf="savingAmendment" class="spinner-border spinner-border-sm" role="status"></span>
+    {{ savingAmendment ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }} Amendment
+  </button>
+</div>

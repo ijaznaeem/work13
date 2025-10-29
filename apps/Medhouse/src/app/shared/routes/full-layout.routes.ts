@@ -33,6 +33,12 @@ export const Full_ROUTES: Routes = [
   },
   {
     canActivateChild: [AuthGuard],
+    path: 'approvals',
+    loadChildren: () =>
+      import('../../pages/approval/approval.module').then((m) => m.ApprovalModule),
+  },
+  {
+    canActivateChild: [AuthGuard],
     path: 'employees',
     loadChildren: () =>
       import('../../pages/employees/employees.module').then((m) => m.EmployeesModule),
@@ -98,6 +104,22 @@ export const Full_ROUTES: Routes = [
     loadChildren: () =>
       import('../../pages/accounts/acounts.module').then(
         (m) => m.AccountsModule
+      ),
+  },
+  {
+    canActivateChild: [AuthGuard],
+    path: 'intimations-and-requisitions',
+    loadChildren: () =>
+      import('../../pages/intimations/intimations.module').then(
+        (m) => m.IntimationsModule
+      ),
+  },
+  {
+    canActivateChild: [AuthGuard],
+    path: 'budgeting',
+    loadChildren: () =>
+      import('../../pages/budget/budget.module').then(
+        (m) => m.BudgetModule
       ),
   },
 ];

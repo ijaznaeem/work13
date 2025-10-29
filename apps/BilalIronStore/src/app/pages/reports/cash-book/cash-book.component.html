@@ -5,7 +5,7 @@
   <div class="card-block widget-body">
     <form #frmFilter="ngForm">
       <div class="row no-pad">
-        <div class="col-md-3">
+        <div class="col-md-2">
           <label for="dtFrom">Date:</label>
           <div class="input-group">
             <input
@@ -27,7 +27,13 @@
             </div>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="Search">Search:</label>
+            <input type="text" class="form-control" name="Search" [(ngModel)]="Filter.Search" placeholder="Search Account Name" />
+          </div>
+        </div>
+        <div class="col-md-2">
           <div class="form-group">
             <label>&nbsp;</label>
             <button
@@ -41,7 +47,7 @@
             </button>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <div class="form-group">
             <label>&nbsp;</label>
             <button
@@ -55,7 +61,7 @@
             </button>
           </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <div class="form-group">
             <label>&nbsp;</label>
             <button
@@ -77,12 +83,13 @@
           #RptTable
           [Settings]="setting"
           [Data]="data"
+          [Search]="Filter.Search"
         ></ft-dynamic-table>
       </div>
 
       <div class="col-md-4"></div>
       <div class="col-md-4">
-        <h4>Opening Amount: <strong>{{ open_balance | number }}</strong>  </h4>
+        <!-- <h4>Opening Amount: <strong>{{ open_balance | number }}</strong>  </h4> -->
       </div>
 
       <div class="col-md-4">

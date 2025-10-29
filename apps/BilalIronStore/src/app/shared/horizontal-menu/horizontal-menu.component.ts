@@ -1,9 +1,10 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { NavigationService } from '../../services/navigation.service';
 import { ConfigService } from '../services/config.service';
 import { LayoutService } from '../services/layout.service';
-import { ROUTES } from '../vertical-menu/vertical-menu-routes.config';
+import { HROUTES } from './navigation-routes.config';
 
 
 @Component({
@@ -24,12 +25,17 @@ export class HorizontalMenuComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(private layoutService: LayoutService,
     private configService: ConfigService,
     private cdr: ChangeDetectorRef,
+    private navigation: NavigationService,
     private router: Router) {
     this.config = this.configService.templateConf;
   }
 
   ngOnInit() {
-    this.menuItems = ROUTES;
+     this.navigation.getFilteredRoutes().subscribe(r=>{
+      console.log(r);
+
+      this.menuItems = HROUTES;
+    })
   }
 
   ngAfterViewInit() {

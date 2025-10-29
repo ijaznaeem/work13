@@ -1,0 +1,146 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add Recall Comment</h4>
+</div>
+
+<div class="modal-body">
+  <div class="container-fluid">
+    <!-- Recall Information -->
+    <div class="row" *ngIf="recallData">
+      <div class="col-12">
+        <div class="alert alert-info recall-info">
+          <strong>{{ getRecallInfo() }}</strong>
+          <br>
+          <small>Customer: {{ recallData.CustomerName || 'N/A' }} | Current Status: {{ recallData.Status }}</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comment Form -->
+    <form [formGroup]="commentForm" class="comment-form">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="actionDate" class="required">Action Date:</label>
+            <input
+              type="date"
+              id="actionDate"
+              class="form-control form-control-sm"
+              [class.is-invalid]="isFieldInvalid('actionDate')"
+              formControlName="actionDate"
+            />
+            <div class="invalid-feedback">
+              {{ getFieldError('actionDate') }}
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="status" class="required">Status:</label>
+            <select
+              id="status"
+              class="form-control form-control-sm"
+              [class.is-invalid]="isFieldInvalid('status')"
+              formControlName="status"
+              (change)="onStatusChange()"
+            >
+              <option value="">Select Status</option>
+              <option *ngFor="let status of statusOptions" [value]="status">
+                {{ status }}
+              </option>
+            </select>
+            <div class="invalid-feedback">
+              {{ getFieldError('status') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group">
+            <label for="forwardTo">Forward To Department:</label>
+            <select
+              id="forwardTo"
+              class="form-control form-control-sm"
+              formControlName="forwardTo"
+            >
+              <option value="">Select Department</option>
+              <option *ngFor="let dept of departments" [value]="dept.value">
+                {{ dept.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group">
+            <label for="comments" class="required">Comments:</label>
+            <textarea
+              id="comments"
+              class="form-control form-control-sm"
+              [class.is-invalid]="isFieldInvalid('comments')"
+              formControlName="comments"
+              rows="5"
+              placeholder="Enter your comments regarding this recall..."
+            ></textarea>
+            <div class="invalid-feedback">
+              {{ getFieldError('comments') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Guidelines -->
+      <div class="row">
+        <div class="col-12">
+          <div class="alert alert-light status-guide">
+            <h6><i class="fas fa-info-circle"></i> Status Guidelines:</h6>
+            <ul class="status-list">
+              <li><strong>In Process:</strong> Recall is being reviewed</li>
+              <li><strong>Approved:</strong> Recall has been approved for processing</li>
+              <li><strong>Rejected:</strong> Recall has been rejected</li>
+              <li><strong>Hold:</strong> Recall is on hold pending further review</li>
+              <li><strong>Completed:</strong> Recall process is completed</li>
+              <li><strong>Cancelled:</strong> Recall has been cancelled</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Previous Comments Section -->
+      <div class="row" *ngIf="recallData?.Remarks">
+        <div class="col-12">
+          <div class="form-group">
+            <label>Previous Comments & History:</label>
+            <div class="previous-comments">
+              <pre>{{ recallData.Remarks }}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="onCancel()"
+    [disabled]="savingComment"
+  >
+    Cancel
+  </button>
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="onSave()"
+    [disabled]="commentForm.invalid || savingComment"
+  >
+    <span *ngIf="savingComment" class="spinner-border spinner-border-sm" role="status"></span>
+    {{ savingComment ? 'Saving...' : 'Save Comment' }}
+  </button>
+</div>

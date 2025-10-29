@@ -50,7 +50,12 @@ export class SaleInvoiceComponent implements OnInit, OnChanges {
   public Agencies: any = [];
   public OrderTo: any = [];
 
-  public selectedProduct: any = {};
+  public selectedProduct: any = {
+    Description: '',
+    Weight: 0,
+    Karat: '',
+    Purity: 0,
+  };
   public ImageUrl = UPLOADS_URL + '/pictures/';
   $GoldTypes: Observable<any[]>;
   $Accounts: Observable<any[]>;
@@ -67,6 +72,7 @@ export class SaleInvoiceComponent implements OnInit, OnChanges {
     this.$GoldTypes = this.cachedData.goldType$;
     this.$Accounts = this.cachedData.accounts$;
     this.$Stores = this.cachedData.stores$;
+    this.$GoldTypes = this.cachedData.goldType$;
   }
 
   ngOnInit() {
@@ -115,12 +121,15 @@ export class SaleInvoiceComponent implements OnInit, OnChanges {
   }
   StoreSelected(event) {
     if (event && event.StoreID) {
-      this.http.getStock(event.StoreID).then((res: any) => {
-        this.Stock = res;
-      });
+      this.loadStockForStore(event.StoreID);
     } else {
       this.Stock = [];
     }
+  }
+  loadStockForStore(StoreID: any) {
+    this.http.getStock(StoreID).then((res: any) => {
+      this.Stock = res;
+    });
   }
   ProductSearchFn(term: any, item) {
     return (
@@ -131,17 +140,26 @@ export class SaleInvoiceComponent implements OnInit, OnChanges {
   }
 
   ItemSelected(event) {
-    if (event && event.ProductID !== '') {
-      this.selectedProduct = event;
-      this.details.Description = this.selectedProduct.ProductName;
-    } else {
-      this.selectedProduct = {};
-      this.details.Description = '';
+    this.selectedProduct = {
+      Description: '',
+      Weight: 0,
+      Karat: '',
+      Purity: 0,
+    };
+    if (event && event.StockID !== '') {
+      this.http
+        .getData(`qryStock?filter=StockID=${event.StockID}`)
+        .then((res: any) => {
+          this.selectedProduct = res[0];
+          this.details.Description = this.selectedProduct.ProductName;
+          this.details.Weight = this.selectedProduct.Weight || 0;
+        });
     }
   }
   private AddToDetails(ord: Details | any) {
     console.log(ord);
     ord.Cutting = RoundTo(ord.Cutting || 0, 3);
+    ord.Polish = RoundTo(ord.Polish || 0, 3);
     ord.Weight = RoundTo(ord.Weight || 0, 3);
     ord.NetWeight = this.GetNetWeight(ord);
     if (ord.Picture) {
@@ -159,6 +177,11 @@ export class SaleInvoiceComponent implements OnInit, OnChanges {
         this.invoice.CustomerName = res.CustomerName;
         this.invoice.PhoneNo = res.PhoneNo;
         this.invoice.Address = res.Address;
+        this.invoice.PrevBalance = {
+          Cash:  res.Balance || 0,
+          Gold24K: res.GoldBalance || 0,
+          Gold22K: res.Gold21K || 0,
+        };
       });
     }
   }
@@ -169,12 +192,12 @@ export class SaleInvoiceComponent implements OnInit, OnChanges {
       });
       return;
     }
-    if (this.details.Qty == 0) {
-      Swal.fire('Invalid Qty').then(() => {
-        this.elQty.nativeElement.focus();
-      });
-      return;
-    }
+    // if (this.details.Qty == 0) {
+    //   Swal.fire('Invalid Qty').then(() => {
+    //     this.elQty.nativeElement.focus();
+    //   });
+    //   return;
+    // }
     this.details.Picture = this.selectedProduct.Picture || null;
 
     this.AddToDetails(this.details);
@@ -268,7 +291,7 @@ export class SaleInvoiceComponent implements OnInit, OnChanges {
       (this.invoice.BalanceWeight * this.invoice.Rate) / 11.664,
       0
     );
-    this.invoice.TotalAmount = this.invoice.Amount + this.invoice.TotalLabour;
+    this.invoice.TotalAmount = this.invoice.Amount * 1 + this.invoice.TotalLabour * 1;
     this.invoice.NetBillGold =
       this.invoice.BillGold - this.invoice.BillGoldCutting;
     this.invoice.BillGoldAmount = RoundTo(
@@ -279,11 +302,14 @@ export class SaleInvoiceComponent implements OnInit, OnChanges {
       this.invoice.TotalAmount -
       this.invoice.BillGoldAmount -
       this.invoice.AdvanceAmount;
+
+
+
     this.invoice.CreditAmount =
       this.invoice.BalanceAmount -
-      this.invoice.Discount +
-      this.invoice.GoldAmountPaid +
-      this.invoice.AdvanceReturned -
+      this.invoice.Discount * 1 +
+      this.invoice.GoldAmountPaid * 1 +
+      this.invoice.AdvanceReturned * -
       this.invoice.AdvanceAmount -
       this.invoice.RecievedAmount;
   }
@@ -298,6 +324,7 @@ export class SaleInvoiceComponent implements OnInit, OnChanges {
     this.invoice = new Invoice();
     this.invoice.DtCr = this.Type || 'CR';
     this.details = new Details();
+    this.loadStockForStore(this.details.StoreID);
     this.btnsave = false;
   }
 
@@ -312,8 +339,6 @@ export class SaleInvoiceComponent implements OnInit, OnChanges {
 
     this.http.getData('Orders/' + this.invoice.OrderNo).then((res: any) => {
       if (res) {
-        // this.invoice = GetProps(res, Object.keys(this.invoice));
-        // this.invoice.OrderNo = this.OrderNo;
         this.invoice.CustomerID = res.CustomerID;
         this.invoice.CustomerName = res.CustomerName;
         this.invoice.PhoneNo = res.PhoneNo;
@@ -369,10 +394,13 @@ export class SaleInvoiceComponent implements OnInit, OnChanges {
   }
   GetNetWeight(obj) {
     if (!obj.Weight || !obj.CutRatio) {
-      return obj.Weight;
+      return obj.Weight + (obj.Polish || 0) * 1;
     }
     return RoundTo(
-      obj.Weight - (obj.Weight * obj.CutRatio) / 96 + (obj.Polish || 0),
+      obj.Weight -
+        (obj.Weight * obj.CutRatio) / 96 +
+        (obj.Polish || 0) +
+        obj.Polish * 1,
       3
     );
   }

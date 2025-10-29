@@ -8,6 +8,8 @@ export interface ButtonConfig {
   disabled?: boolean;
   shortcut?:string
   type?:string
+  size?:string
+
 }
 
 @Component({
@@ -34,4 +36,5 @@ export class ButtonsBarComponent {
       this.buttons = [...this.buttons];
     }
   }
+
 }

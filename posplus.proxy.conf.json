@@ -1,6 +1,6 @@
 {
   "/apis/*": {
-    "target": "http://php74.localhost:8080/posplus/",
+    "target": "http://localhost/posplus/",
     "secure": false,
     "logLevel": "debug",
     "pathRewrite": {

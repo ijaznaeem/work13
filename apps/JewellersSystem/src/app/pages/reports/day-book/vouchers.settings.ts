@@ -3,7 +3,7 @@ export const VoucherSetting = {
   Columns: [
     {
       label: "Voucher No",
-      fldName: "VoucherID",
+      fldName: "DailyID",
     },
     {
       label: "Date",
@@ -14,24 +14,59 @@ export const VoucherSetting = {
       fldName: "CustomerName",
     },
     {
-      label: "Description",
-      fldName: "Description",
+      label: "Address",
+      fldName: "Address",
     },
 
     {
-      label: "Debit",
-      fldName: "Debit",
+      label: "Gold",
+      fldName: "Gold",
       sum: true,
       valueFormatter: (d) => {
-        return formatNumber(d["Debit"]);
+        return formatNumber(d["Gold"],3);
       },
     },
     {
-      label: "Credit",
-      fldName: "Credit",
+      label: "Gold Rate",
+      fldName: "GoldRate",
       sum: true,
       valueFormatter: (d) => {
-        return formatNumber(d["Credit"]);
+        return formatNumber(d["GoldRate"],3);
+      },
+    },
+
+    {
+      label: "Cash CR",
+      fldName: "CashCR",
+      sum: true,
+      valueFormatter: (d) => {
+        return formatNumber(d["CashCR"],3);
+      },
+    },
+
+    {
+      label: "Cash DR",
+      fldName: "CashDR",
+      sum: true,
+      valueFormatter: (d) => {
+        return formatNumber(d["CashDR"],3);
+      },
+    },
+    {
+      label: "Gold CR",
+      fldName: "GoldCR",
+      sum: true,
+      valueFormatter: (d) => {
+        return formatNumber(d["GoldCR"],3);
+      },
+    },
+
+    {
+      label: "Gold DR",
+      fldName: "GoldDR",
+      sum: true,
+      valueFormatter: (d) => {
+        return formatNumber(d["GoldDR"],3);
       },
     },
     {

@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-    GetDateJSON,
-    JSON2Date,
-    formatNumber,
+  GetDateJSON,
+  JSON2Date,
+  formatNumber,
 } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
@@ -27,18 +27,30 @@ export class SalesummaryComponent implements OnInit {
     Checkbox: false,
     GroupBy: 'StoreName',
     Columns: [
+
       {
         label: 'Product Name',
         fldName: 'ProductName',
       },
-      {
-        label: 'Price',
-        fldName: 'SPrice',
-        sum: true,
-      },
+
       {
         label: 'Qty',
         fldName: 'Qty',
+        sum: true,
+      },
+      {
+        label: 'Weight',
+        fldName: 'Weight',
+        sum: true,
+      },
+      {
+        label: 'Polish',
+        fldName: 'Polish',
+        sum: true,
+      },
+      {
+        label: 'Cutting',
+        fldName: 'Cutting',
         sum: true,
       },
       {
@@ -47,6 +59,22 @@ export class SalesummaryComponent implements OnInit {
         sum: true,
         valueFormatter: (d) => {
           return formatNumber(d['Amount']);
+        },
+      },
+      {
+        label: 'Labour',
+        fldName: 'Labour',
+        sum: true,
+        valueFormatter: (d) => {
+          return formatNumber(d['Labour']);
+        },
+      },
+      {
+        label: 'Net Amount',
+        fldName: 'NetAmount',
+        sum: true,
+        valueFormatter: (d) => {
+          return formatNumber(d['NetAmount']);
         },
       },
     ],
@@ -89,35 +117,16 @@ export class SalesummaryComponent implements OnInit {
       JSON2Date(this.Filter.ToDate) +
       "'";
 
-    if (this.Filter.ProductID && this.Filter.ProductID != '') {
-      filter += ' And ProductID=' + this.Filter.ProductID;
+    this.http
+      .getData(
+        'qrysalereport?flds=StoreName,ProductName,' +
+          'sum(Qty) as Qty, sum(Weight) as Weight, sum(Polish) as Polish, sum(Cutting) as Cutting, sum(Amount) as Amount, sum(Labour) as Labour, sum(NetAmount) as NetAmount,&groupby=StoreName,' +
+          'ProductName&filter=' +
+          filter
+      )
+      .then((r: any) => {
 
-      this.http
-        .getData(
-          'qrysalereport?flds=InvoiceID,ProductName,SPrice,' +
-            'sum(TotKGs) as Qty, sum(Amount) as Amount&groupby=InvoiceID,StoreName,' +
-            'ProductName,SPrice&filter=' +
-            filter
-        )
-        .then((r: any) => {
-          this.sting = JSON.parse(JSON.stringify(this.setting));
-          this.sting.Columns.unshift({
-            label: 'Bill No',
-            fldName: 'InvoiceID',
-          });
-          this.data = r;
-        });
-    } else {
-      this.http
-        .getData(
-          'qrysalereport?flds=StoreName,ProductName,SPrice,sum(TotKGs) as Qty, ' +
-            'sum(Amount) as Amount&groupby=StoreName,ProductName,SPrice&filter=' +
-            filter
-        )
-        .then((r: any) => {
-          this.sting = JSON.parse(JSON.stringify(this.setting));
-          this.data = r;
-        });
-    }
+        this.data = r;
+      });
   }
 }

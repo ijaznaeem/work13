@@ -179,7 +179,7 @@ export class DonarsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.Filter.Type = ''
+    this.Filter.Type = '';
     this.FilterData();
   }
 
@@ -207,7 +207,13 @@ export class DonarsComponent implements OnInit {
 
   PrintReport() {
     this.ps.PrintData.HTMLData = document.getElementById('print-section');
-    this.ps.PrintData.Title = 'Donars List';
+    this.ps.PrintData.Title =
+      '' +
+      (this.Filter.Type == ''
+        ? 'Donars  and Members'
+        : this.Filter.Type == 1
+        ? 'Donars'
+        : 'Members');
     this.ps.PrintData.SubTitle = '';
 
     this.router.navigateByUrl('/print/print-html');

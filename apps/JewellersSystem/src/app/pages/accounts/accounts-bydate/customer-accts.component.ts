@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { GetDateJSON, JSON2Date } from '../../../factories/utilities';
-import { CachedDataService } from '../../../services/cacheddata.service';
+import {
+  GetDateJSON,
+  JSON2Date,
+} from '../../../factories/utilities';
 import { HttpBase } from '../../../services/httpbase.service';
 import { PrintDataService } from '../../../services/print.data.services';
 
@@ -20,7 +22,7 @@ export class CustomerAcctsComponent implements OnInit {
     FromDate: GetDateJSON(),
     ToDate: GetDateJSON(),
     CustomerID: '',
-    ProductID: '',
+    GoldTypeID: '0',
   };
   setting = {
     Columns: [
@@ -31,15 +33,13 @@ export class CustomerAcctsComponent implements OnInit {
       {
         label: 'Invoice No',
         fldName: 'RefID',
-      },
-      {
-        label: 'Notes',
-        fldName: 'Notes',
+
       },
       {
         label: 'Description',
         fldName: 'Description',
       },
+
 
       {
         label: 'Debit',
@@ -54,6 +54,7 @@ export class CustomerAcctsComponent implements OnInit {
       {
         label: 'Balance',
         fldName: 'Balance',
+        type: 'number',
       },
     ],
     Actions: [],
@@ -66,17 +67,16 @@ export class CustomerAcctsComponent implements OnInit {
 
   constructor(
     private http: HttpBase,
-    private cache: CachedDataService,
     private ps: PrintDataService,
     private router: Router
   ) {}
 
   ngOnInit() {
     this.Filter.FromDate.day = 1;
-    this.http.getUsers().then((r: any) => {
-      this.Users = r;
+
+    this.http.getCustomers('0').then((r: any) => {
+      this.Customers = r;
     });
-    this.Customers = this.cache.Accounts$;
     this.FilterData();
   }
   load() {}
@@ -88,6 +88,7 @@ export class CustomerAcctsComponent implements OnInit {
       "' and '" +
       JSON2Date(this.Filter.ToDate) +
       "'";
+    filter += ' and (GoldTypeID=' + this.Filter.GoldTypeID + ')';
 
     if (this.Filter.CustomerID === '' || this.Filter.CustomerID === null) {
       return;
@@ -96,7 +97,7 @@ export class CustomerAcctsComponent implements OnInit {
     }
 
     this.http
-      .getData('qrycustomeraccts?filter=' + filter + '&orderby=DetailID')
+      .getData('CustomerAccts?filter=' + filter + '&orderby=DetailID')
       .then((r: any) => {
         this.data = r;
         if (this.data.length > 0) {
@@ -108,6 +109,8 @@ export class CustomerAcctsComponent implements OnInit {
           this.data.unshift({
             Date: this.data[0].Date,
             Description: 'Opeing Balance ...',
+            Qty: 0,
+            Rate: 0,
             Debit: 0,
             Credit: 0,
             Balance: this.customer.OpenBalance,
@@ -118,7 +121,7 @@ export class CustomerAcctsComponent implements OnInit {
 
           this.http
             .getData(
-              'qrycustomeraccts?filter=' +
+              'CustomerAccts?filter=' +
                 filter +
                 '&orderby=DetailID desc&limit=1'
             )
@@ -126,14 +129,15 @@ export class CustomerAcctsComponent implements OnInit {
               if (r.length > 0) {
                 this.customer.OpenBalance = r[0].Balance;
                 this.customer.CloseBalance = r[0].Balance;
-
               } else {
                 this.customer.OpenBalance = 0;
                 this.customer.CloseBalance = 0;
               }
               this.data.unshift({
-                Date: JSON2Date(this.Filter.FromDate) ,
+                Date: JSON2Date(this.Filter.FromDate),
                 Description: 'Opeing Balance ...',
+                Qty: 0,
+                Rate: 0,
                 Debit: 0,
                 Credit: 0,
                 Balance: this.customer.OpenBalance,
@@ -173,6 +177,7 @@ export class CustomerAcctsComponent implements OnInit {
     }
   }
   formatDate(d) {
-    return JSON2Date(d);
+    return (JSON2Date(d));
   }
+
 }

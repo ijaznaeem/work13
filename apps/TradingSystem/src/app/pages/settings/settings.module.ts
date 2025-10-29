@@ -16,10 +16,12 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { QuillModule } from 'ngx-quill';
 import { FutureTechLibModule } from '../../../../../../libs/future-tech-lib/src';
 import { CompaniesBySalesman } from '../products/companiesbysm/companiesbysm.component';
+import { BanksComponent } from './banks/banks.component';
 import { CtrlAcctsComponent } from './ctrlaccts/ctrlaccts.component';
 import { DeptsComponent } from './depts/depts.component';
 import { ExpenseheadComponent } from './expensehead/expensehead.component';
 import { LabourheadsComponent } from './labourheads/labourheads.component';
+import { PStoresComponent } from './purchasestores/pstores.component';
 import { RoutesComponent } from './routes/routes.component';
 import { SalesmanComponent } from './salesman/salesman.component';
 import { SetupsComponent } from './setups/setups.component';
@@ -30,9 +32,14 @@ import { WarrantiesComponent } from './warranties/warranties.component';
 const routes: any = [
   { path: '', redirectTo: 'products', pathMatch: 'full' },
   {
-    path: 'ctrlaccts',
-    component: CtrlAcctsComponent,
-    data: { breadcrumb: 'Control Accounts' },
+    path: 'stores',
+    component: StoresComponent,
+    data: { breadcrumb: 'Stores' },
+  },
+  {
+    path: 'pstores',
+    component: PStoresComponent,
+    data: { breadcrumb: 'Stores' },
   },
   {
     path: 'salesman',
@@ -60,9 +67,9 @@ const routes: any = [
     data: { breadcrumb: 'Users List' },
   },
   {
-    path: 'labourheads',
-    component: LabourheadsComponent,
-    data: { breadcrumb: 'Labourheads List' },
+    path: 'banks',
+    component: BanksComponent,
+    data: { breadcrumb: 'Banks List' },
   },
 
 ];
@@ -77,11 +84,13 @@ const routes: any = [
     CtrlAcctsComponent,
     // DataentryComponent,
     StoresComponent,
+    PStoresComponent,
     WarrantiesComponent,
     SetupsComponent,
     RoutesComponent,
     SalesmanComponent,
     ExpenseheadComponent,
+    BanksComponent,
   ],
   imports: [
     CommonModule,

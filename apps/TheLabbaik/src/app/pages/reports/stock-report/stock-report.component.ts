@@ -76,55 +76,12 @@ export class StockReportComponent implements OnInit {
       },
     ],
     Actions: [
-      {
-        action: 'edit',
-        title: 'Edit',
-        icon: 'pencil',
-        class: 'primary',
-      },
+
     ],
     Data: [],
   };
 
-  stockform = {
-    title: 'Stock',
-    tableName: 'stock',
-    pk: 'StockID',
-    columns: [
-      {
-        fldName: 'Stock',
-        control: 'input',
-        type: 'number',
-        label: 'Sock',
-        required: true,
-        size: 3,
-      },
-      {
-        fldName: 'SPrice',
-        control: 'input',
-        type: 'number',
-        label: 'Sale Price',
-        required: true,
-        size: 3,
-      },
-      {
-        fldName: 'PPrice',
-        control: 'input',
-        type: 'number',
-        label: 'PPrice',
-        required: true,
-        size: 3,
-      },
-      {
-        fldName: 'BatchNo',
-        control: 'input',
-        type: 'text',
-        label: 'BatchNo',
-        required: false,
-        size: 3,
-      },
-    ],
-  };
+
 
   Stores = [];
   Categories$: Observable<any[]>;
@@ -153,20 +110,7 @@ export class StockReportComponent implements OnInit {
   Clicked(e) {
     console.log(e);
     if (e.action === 'edit') {
-      this.http
-        .openForm(this.stockform, {
-          StockID: e.data.StockID,
-          Stock: e.data.Stock,
-          SPrice: e.data.SPrice,
-          PPrice: e.data.PPrice,
-          BatchNo: e.data.BatchNo,
-          StoreID: e.data.StoreID
-        })
-        .then((r) => {
-          if (r == 'save') {
-            this.FilterData();
-          }
-        });
+
     }
   }
 }

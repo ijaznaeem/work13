@@ -90,14 +90,18 @@ export class CrudFormComponent implements OnInit, AfterContentInit {
 
     if (!event.cancel) {
       if (this.files) {
+        let filecolumn = this.form.columns.find((x) => {
+          return x.control === 'file';
+        });
+        let folder = '';
+        if (filecolumn && filecolumn.hasOwnProperty('folder')) {
+          folder = '/' + filecolumn.folder;
+        }
         let filedata = new FormData();
         filedata.append('file', this.files);
         this.http
-          .postData('uploadfile', filedata)
+          .postData('uploadfile' + folder, filedata)
           .then((r: any) => {
-            let filecolumn = this.form.columns.find((x) => {
-              return x.control === 'file';
-            });
             if (filecolumn) {
               this.formdata[filecolumn.fldName] = r.msg.file_name;
             }

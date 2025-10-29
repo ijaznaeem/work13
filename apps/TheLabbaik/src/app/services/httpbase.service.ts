@@ -105,7 +105,7 @@ export class HttpBase {
   }
   getRawItems() {
     let filter = '';
-    filter = 'filter=StatusID=1 ';
+    filter = 'StatusID=1 ';
     return this.getData(
       'rawitems', {
         flds: 'ItemID,ItemName,PPrice,PackingWght,Packing',
@@ -116,7 +116,7 @@ export class HttpBase {
   }
   getRawProducts() {
     let filter = '';
-    filter = 'filter=StatusID=1 and PackingWght>0';
+    filter = 'StatusID=1 and PackingWght>0';
     return this.getData('rawitems', {
       flds: 'ItemID as ProductID,ItemName as ProductName,PackingWght,Packing',
       filter: filter,

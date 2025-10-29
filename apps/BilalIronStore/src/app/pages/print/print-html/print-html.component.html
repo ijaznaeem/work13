@@ -72,7 +72,15 @@
     <tbody>
       <tr>
         <td>
-          <div id="main" style="margin-right: 80px"></div>
+          <div id="main" style="margin-right: 80px">
+            <!-- New data-driven table generation -->
+            <div *ngIf="reportConfig?.tableConfig" class="report-table-container">
+
+            </div>
+
+            <!-- Legacy HTML data fallback -->
+            <div id="legacy-content"></div>
+          </div>
         </td>
       </tr>
     </tbody>

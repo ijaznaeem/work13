@@ -81,6 +81,7 @@
                   (change)="GetCustomer($event.CustomerID)"
                   required
                   [(ngModel)]="Voucher.CustomerID"
+                  selectOnTab="true"
                 >
                   <ng-template ng-option-tmp let-item="item">
                     <div class="row no-gutter">
@@ -118,8 +119,64 @@
               </div>
             </div>
             <div class="row form-group">
+              <label for="Cash" class="col-md-4 form-label"
+                >Cash Paid
+              </label>
+              <div class="col-md-8">
+                <input
+                  class="form-control"
+                  type="number"
+                  name="Cash"
+                  [(ngModel)]="Voucher.Cash"
+                    (focus)="$event.target.select()"
+                  id="Cash"
+                  (change)="
+                    Voucher.Debit =
+                      (Voucher.Bank || 0) * 1 +
+                      (Voucher.Cash || 0) * 1+
+                      (Voucher.Discount || 0) * 1
+                  "
+                  required
+                />
+              </div>
+            </div>
+            <div class="row no-gutter form-group">
+              <label for="Bank" class="col-md-4 form-label">Bank Account</label>
+              <div class="col-md-4">
+                <input
+                  class="form-control"
+                  type="number"
+                  name="bank"
+                  [(ngModel)]="Voucher.Bank"
+                    (focus)="$event.target.select()"
+                  id="Bank"
+                  required
+                  (change)="
+                    Voucher.Debit =
+                     (Voucher.Bank || 0) * 1 +
+                      (Voucher.Cash || 0) * 1+
+                      (Voucher.Discount || 0) * 1
+                  "
+                />
+              </div>
+
+              <div class="col-md-4">
+                <ng-select
+                  name="bankAccount"
+                  class="custom"
+                  [items]="Banks"
+                  bindLabel="CustomerName"
+                  bindValue="CustomerID"
+                  placeholder="Select Bank Account"
+                  [(ngModel)]="Voucher.BankID"
+                  selectOnTab="true"
+                >
+                </ng-select>
+              </div>
+            </div>
+            <div class="row form-group">
               <label for="amount" class="col-md-4 form-label"
-                >Amount Paid
+                > Amount Paid
               </label>
               <div class="col-md-8">
                 <input

@@ -1,0 +1,89 @@
+orders
+	delete order				-	done
+	product sale details		-	done (reports)
+	purchase previous bbal  -  done
+	invoice screen shot and whatsapp  -
+	expend->add Expense Hedd    - done
+	Sale -> Load Order        - done
+	acct ledger
+		sale/purchase -> summary (purchase ladger - summary)
+	offline data
+		same as pos
+
+	Employees
+		Salary Sheet   - done
+
+
+-------------------
+increase font size of overall theme -done
+
+recovery by period      - done
+all field auto select   - done
+employee attendance, salary, deduction, account  - pending
+color employee accoring to period and account list  - one
+  1 month green
+  3 yellow
+  6 orange
+  9 blue
+  12 red
+multiple bills at once            once
+  clear and bill before loading new bill    check
+top navigation
+
+order report - deleted orders   -done
+sale edit item from godam selection -done
+cutomer category Home by default    pending
+add to  order on enter  done
+recieve /paid         done
+recovery list no or days/ amount    done-
+-------------------------------------------------
+
+Employee Complete with attendance
+Day book return this bill
+Stock Audit
+--------------------------------
+add cities
++ stock audit
++ check report
++ deleted bills
++ order report print + edit
++ page headign bold - all
++ sale report phone number
+------------------ 8/15
+refrence in order order
+order auto print
+purchase bill bank
+suppleir -> customer category
+purchase  product search
+
+30 august 2025
+پرچیز ریٹرن سپلائر کے کھاتہ میں شو نہیں ہو رہی پوسٹ کرنے کے باوجود
+theek kr di hy
+
+بل پرنٹ میں کوانٹٹی میں اعشاریہ کے بعد والی رقم شو نہیں ہوتی
+theek Kr di hy
+
+آرڈر ایڈٹ نہیں ہو رہا
+check kia hy online edit ho raha hy
+
+کسٹمر لیجر میں رسیو پےمنٹ کے ووچر پر کلک کریں تو وہ کسی اور کا بل شو کر دیتا یے
+theek kr deya hy
+
+بنک کے کھاتہ میں رقم رسیو ہونے کے بعد منفی میں چلی جاتی ہے
+theek kr di hy
+
+بنک کے لیجر میں رقم جس اکاونٹ سے آئی اسکا نام بھی شو نہیں ہو ریا
+Voucher/Bill ka print a raha hy
+
+پوسٹ آل کریں تو بھی سب طل ان ہوسٹ ہی رہتے
+theek kr dia hy
+
+ڈے بک میں سیل ریٹرن والی اینٹریز اور پرچیز والے میں پرچیز ریٹرن والی ایٹریز کے ساتھ ریٹرن لکھا ہونا چاہیے
+CR/DT a raha hy
+
+لیجر میں ریٹرن ٹھیک ہے مگر پرنٹ بل میں ٹوٹل غلط کر رہا ہے
+theek kr deya hy
+
+
+
+

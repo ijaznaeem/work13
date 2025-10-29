@@ -2,19 +2,24 @@ import { getCurDate } from '../../../factories/utilities';
 
 export class Details {
   public ProductName = '';
-  public Picture:any = null;
-  public PicturePrev:any = null;
+  public Picture: any = null;
+  public PicturePrev: any = null;
   public Qty = 0;
   public Weight = 0.0;
   public CutRatio = 0.0;
-  public Polish = 0.0;
   public Cutting = 0.0;
+  public Wastage = 0.0;
+  public WastageRatio = 0.0;
+  public MotiCharges = 0.0;
+  public LacerCharges = 0.0;
+  public Purity = 0.0;
   public ProductID = '';
   public BigStone = 0.0;
   public SmallStone = 0.0;
   public StoreName = '';
   public StoreID = '';
-
+  public Comments = '';
+  public GoldType = '';
 }
 
 export class Invoice {
@@ -26,11 +31,12 @@ export class Invoice {
   public Cutting = 0.0;
   public SmallStone = 0.0;
   public BigStone = 0.0;
-  public TotalPolish = 0.0;
+  public TotalWastage = 0.0;
   public NetWeight = 0.0;
   public GoldPaid = 0.0;
   public GoldBalance = 0.0;
   public Rate = 0.0;
+  public Labour = 0.0;
   public Amount = 0.0;
   public AmountPaid = 0.0;
   public CreditAmount = 0.0;
@@ -70,13 +76,12 @@ export const DetailsSettings = {
   },
   noDataMessage: 'No data found',
   columns: {
-
     PicturePrev: {
       title: 'Picture',
       type: 'html',
       valuePrepareFunction: (image: string) => {
         return `<img src="${image}" width="50" height="50"/>`;
-      }
+      },
     },
     Account: {
       editable: false,
@@ -85,7 +90,6 @@ export const DetailsSettings = {
     ProductName: {
       editable: false,
       title: 'Product',
-      width: '150px',
     },
 
     Qty: {
@@ -105,9 +109,9 @@ export const DetailsSettings = {
       editable: true,
       title: 'Cutting',
     },
-    Polish: {
+    Wastage: {
       editable: true,
-      title: 'Polish',
+      title: 'Wastage',
     },
 
     BigStone: {

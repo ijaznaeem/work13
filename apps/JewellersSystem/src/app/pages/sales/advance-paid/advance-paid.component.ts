@@ -30,7 +30,7 @@ export class AdvancePaidComponent implements OnInit, OnChanges {
   @ViewChild('cmbCustomers') cmbCustomers;
 
   public data = new LocalDataSource([]);
-  navigateURL = '/sale/advance';
+  navigateURL = '/sale/advance-paid';
   Ino = '';
   tqty: any = '';
   public btnsave = false;
@@ -91,9 +91,9 @@ export class AdvancePaidComponent implements OnInit, OnChanges {
     if (this.modelData.CashID == null || this.modelData.CashID == 0) {
       let bno: any = 1;
       bno = await this.http.getData(
-        'getbno/ADVANCE-' + enTransactionType.Advance + '/1'
+        'getbno/4/' + enTransactionType.AdvancePaid
       );
-      this.modelData.CashID = bno.billno;
+      this.modelData.CashID = bno.billno * 1 + 1;
     }
     this.http
       .postTask(
@@ -125,7 +125,7 @@ export class AdvancePaidComponent implements OnInit, OnChanges {
   Cancel() {
     this.isPosted = false;
     this.modelData = new CashModel();
-    this.modelData.Type = enTransactionType.Advance;
+    this.modelData.Type = enTransactionType.AdvancePaid;
     this.btnsave = false;
   }
 
@@ -179,7 +179,7 @@ export class AdvancePaidComponent implements OnInit, OnChanges {
         break;
       case 'Last':
         this.http
-          .getData('getbno/ADVANCE-' + enTransactionType.Advance)
+          .getData('getbno/4/' + enTransactionType.AdvancePaid)
           .then((r: any) => {
             billNo = r.billno;
             this.NavigateTo(billNo);

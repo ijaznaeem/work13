@@ -21,22 +21,23 @@ export class HttpBase {
   ) {}
 
   getData(table, param: any = {}) {
-    let params = new HttpParams();
-    if (typeof param === 'string') {
-      params = new HttpParams().set('filter', param);
+     let params = new HttpParams();
+    if (param) {
+      if (typeof param === "string") {
+        params = new HttpParams().set("filter", param);
+      }
+      params = this.toHttpParams(param);
     }
-    param.bid = this.getBusinessID();
-    params = this.toHttpParams(param);
 
-    params = this.toHttpParams(param);
-    // console.log(param);
-
-    this.spinner.show(undefined, {
-      fullScreen: true,
-    });
-    setTimeout(() => {
-      this.spinner.hide();
-    }, 3000);
+    if (
+      !params.keys().find((f) => {
+        return f == "bid";
+      })
+    ) {
+      params = this.toHttpParams({
+        bid: this.getBusinessID(),
+      });
+    }
 
     return new Promise((resolve, reject) => {
       this.http

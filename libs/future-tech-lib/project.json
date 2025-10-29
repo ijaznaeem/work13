@@ -12,6 +12,7 @@
       "options": {
         "jestConfig": "libs/future-tech-lib/jest.config.ts",
         "passWithNoTests": true
+
       }
     },
     "lint": {

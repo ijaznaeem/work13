@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
 import { GetDateJSON, JSON2Date } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
@@ -12,18 +13,14 @@ export class StockReportComponent implements OnInit {
   public data: object[];
   public Filter = {
     StoreID: '1',
-    Stock: true,
+    CategoryID: '',
+    Stock: false,
     nWhat: '1',
   };
   setting: any = {
     Columns: [],
     Actions: [
-      {
-        action: 'edit',
-        title: 'Edit',
-        icon: 'pencil',
-        class: 'primary',
-      },
+
     ],
   };
   Columns = [
@@ -35,7 +32,6 @@ export class StockReportComponent implements OnInit {
     {
       label: 'Packing',
       fldName: 'Packing',
-
     },
     {
       label: 'Stock',
@@ -45,28 +41,28 @@ export class StockReportComponent implements OnInit {
     {
       label: 'PPrice',
       fldName: 'PPrice',
-      type: 'number'
+      type: 'number',
     },
     {
       label: 'SPrice',
       fldName: 'SPrice',
-      type: 'number'
+      type: 'number',
+    },
+    {
+      label: 'Base Rate',
+      fldName: 'BaseRate',
+      type: 'number',
     },
     {
       label: 'P Value',
       fldName: 'PurchaseValue',
       sum: true,
     },
-    {
-      label: 'Unit',
-      fldName: 'UnitName',
-    },
+
     {
       label: 'Store',
       fldName: 'StoreName',
     },
-
-
   ];
 
   stockform = {
@@ -127,32 +123,20 @@ export class StockReportComponent implements OnInit {
     let filter = ' Stock > 0 ';
     if (this.Filter.StoreID !== '')
       filter += ' AND StoreID=' + this.Filter.StoreID;
+    if (this.Filter.CategoryID !== '')
+      filter += ' AND CategoryID=' + this.Filter.CategoryID;
 
-
-    let flds = '*';
-    if (this.Filter.nWhat == '2') {
-      flds =
-        'ProductName,sum(Stock) as Qty, Sum(Stock)/1000 as Tons &groupby=ProductName';
-      this.setting.Columns = [
-        { label: 'ProductName', fldName: 'ProductName' },
-        { label: 'Stock', fldName: 'ClosingStock', sum: true },
-        { label: 'In Tons', fldName: 'Tons', sum: true },
-      ];
-    } else {
-      this.setting.Columns = this.Columns;
-    }
 
     this.http
       .postData('dailystock', {
         StoreID: this.Filter.StoreID,
+        CategoryID: this.Filter.CategoryID,
         Date: JSON2Date(GetDateJSON()),
         Type: this.Filter.nWhat,
-        Stock: this.Filter.Stock
-
+        Stock: this.Filter.Stock,
       })
       .then((r: any) => {
         this.data = r;
-
       });
 
     // this.http
@@ -178,5 +162,48 @@ export class StockReportComponent implements OnInit {
           }
         });
     }
+  }
+  UpdateStock() {
+    if (!this.Filter.CategoryID || this.Filter.CategoryID === '') {
+      Swal.fire('Error', 'Please select a category before updating stock.', 'error');
+      return;
+    }
+
+
+    Swal.fire({
+      title: 'Update Stock',
+      html:
+      '<input id="base-value" text = 10 type="number" min="0" step="1" class="swal2-input" placeholder="Base Value">' +
+      '<input id="percent-value" text = 0 type="number" min="0" step="1" class="swal2-input" placeholder="%age Value">',
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: 'Update',
+      cancelButtonText: 'Cancel',
+      preConfirm: () => {
+      const baseValue = (document.getElementById('base-value') as HTMLInputElement).value;
+      const percentValue = (document.getElementById('percent-value') as HTMLInputElement).value;
+      if (!baseValue || isNaN(Number(baseValue)) || Number(baseValue) < 0) {
+        return Swal.showValidationMessage('Please enter a valid base value');
+      }
+      if (!percentValue || isNaN(Number(percentValue)) || Number(percentValue) < 0) {
+        return Swal.showValidationMessage('Please enter a valid %age value');
+      }
+      return { baseValue: Number(baseValue), percentValue: Number(percentValue) };
+      }
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+      const { baseValue, percentValue } = result.value;
+      this.http.postData('update_discount', {
+        baseValue,
+        percentValue,
+        CategoryID: this.Filter.CategoryID
+      }).then(() => {
+        Swal.fire('Success', 'Stock updated successfully', 'success');
+        this.FilterData();
+      }).catch(() => {
+        Swal.fire('Error', 'Failed to update stock', 'error');
+      });
+      }
+    });
   }
 }

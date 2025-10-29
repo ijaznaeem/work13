@@ -1,15 +1,19 @@
 import { AfterContentChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import html2canvas from 'html2canvas';
+import * as JSPDF from 'jspdf';
+import * as moment from 'moment';
 import { ToWords } from "to-words";
 import { environment } from "../../../../environments/environment";
 import {
   FindTotal,
   RoundTo,
-  RoundTo2,
   formatNumber,
-  getDMYDate,
+  getDMYDate
 } from "../../../factories/utilities";
 import { HttpBase } from "../../../services/httpbase.service";
+
+
 declare let pdfMake: any;
 
 @Component({
@@ -99,230 +103,24 @@ export class PrintPurchaseComponent implements OnInit, AfterContentChecked {
     window.print();
   }
 
-  async SaveAsPdf() {
-    let docDefinition = {
-      content: [
-        {
-          image: await this.getBase64ImageFromURL(environment.UPLOADS_URL + "logo.png"),
-          width: 520,
-          margin: [0, 0, 0, 10],
-        },
-        {
-          text:
-            this.Invoice.DtCr == "CR" ? "PURCHASE DETAILS " : "PURCHASE RETURN",
-          alignment: "center",
-          fontSize: 16,
-          bold: true,
-        },
-        {
-          alignment: "justify",
-          margin: [0, 0, 0, 10],
-          columns: [
-            {
-              table: {
-                widths: [245],
-                body: [
-                  [
-                    {
-                      text: "Supplier's Detail",
-                      bold: true,
-                    },
-                  ],
-                  [
-                    {
-                      text: [
-                        {
-                          text: "Supplier Name: ",
-                        },
-                        {
-                          text: this.Invoice.CustomerName,
-                          bold: true,
-                        },
-                      ],
-                    },
-                  ],
-                  [
-                    {
-                      text: [
-                        {
-                          text: "Address: ",
-                        },
-                        {
-                          text: this.Invoice.Address,
-                          bold: true,
-                        },
-                      ],
-                    },
-                  ],
-                  [
-                    {
-                      text: [
-                        {
-                          text: "Contact Person: ",
-                        },
-                        {
-                          text: this.Invoice.ContactPerson,
-                          bold: true,
-                        },
-                      ],
-                    },
-                  ],
-                  [
-                    {
-                      text: [
-                        {
-                          text: "Contact#: ",
-                        },
-                        {
-                          text: this.Invoice.PhoneNo1,
-                          bold: true,
-                        },
-                      ],
-                    },
-                  ],
-                ],
-              },
-            },
-            {
-              table: {
-                widths: [245],
-                body: [
-                  [
-                    {
-                      text: [
-                        {
-                          text: "Invoice No: ",
-                        },
-                        {
-                          text: this.Invoice.InvoiceNo,
-                          bold: true,
-                        },
-                      ],
-                    },
-                  ],
-                  [
-                    {
-                      text: [
-                        {
-                          text: "Invoice Date: ",
-                        },
-                        {
-                          text: this.Invoice.InvoiceDate,
-                          bold: true,
-                        },
-                      ],
-                    },
-                  ],
+   SaveAsPdf() {
+    const data: any = document.getElementById('print-section');
+    html2canvas(data).then((canvas) => {
+      // Few necessary setting options
+      var imgWidth = 208;
+      var pageHeight = 295;
+      var imgHeight = (canvas.height * imgWidth) / canvas.width;
+      var heightLeft = imgHeight;
 
-                  [
-                    {
-                      text: [
-                        {
-                          text: "Supplier NTN #: ",
-                        },
-                        {
-                          text: this.Invoice.NTN,
-                          bold: true,
-                        },
-                      ],
-                    },
-                  ],
-                  [
-                    {
-                      text: [
-                        {
-                          text: "Supplier STN #: ",
-                        },
-                        {
-                          text: this.Invoice.STN,
-                          bold: true,
-                        },
-                      ],
-                    },
-                  ],
-                ],
-              },
-            },
-          ],
-        },
-        {
-          margin: [0, 0, 0, 10],
-          table: {
-            widths: [25, "*", "auto", "auto", "auto", "auto"],
-            body: this.buildTableBody(),
-          },
-        },
-        {
-          alignment: "justify",
-          margin: [0, 0, 0, 10],
-          columns: [
-            {},
-            {
-              width: 300,
-              layout: "noBorders",
-              table: {
-                body: [
-                  [
-                    {
-                      text: [
-                        {
-                          text: this.Invoice.Notes,
-                        },
-                      ],
-                    },
-                  ],
-                  [
-                    {
-                      text: [
-                        {
-                          text: "Net Amount: ",
-                        },
-                        {
-                          text: RoundTo2(this.Invoice.NetAmount),
-                          bold: true,
-                        },
-                      ],
-                    },
-                  ],
-                  [
-                    {
-                      text: [
-                        {
-                          text: "Amount In Words: ",
-                        },
-                        {
-                          text: this.Invoice.BalanceInWords + " Only",
-                          bold: true,
-                        },
-                      ],
-                    },
-                  ],
-                ],
-              },
-            },
-          ],
-        },
-      ],
-      footer: [
-        {
-          image: await this.getBase64ImageFromURL(environment.UPLOADS_URL + "brands.png"),
-          width: 520,
-          margin: [38, 0],
-        },
-        {
-          image: await this.getBase64ImageFromURL(environment.UPLOADS_URL + "footer.png"),
-          width: 520,
-          margin: [38, 0],
-        },
-      ],
-      pageMargins: [38, 30, 38, 70],
-      defaultStyle: {
-        fontSize: 10,
-      },
-    };
-    pdfMake.createPdf(docDefinition).open();
+      const contentDataURL = canvas.toDataURL('image/png');
+      let pdf = new JSPDF.jsPDF('p', 'mm', 'a4'); // A4 size page of PDF
+      var position = 0;
+      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.save(
+        this.Invoice.CustomerName + '-' + this.Invoice.InvoiceID + '.pdf'
+      ); // Generated PDF
+    });
   }
-
   buildTableBody() {
     const body1: any = [];
     const body = new Array();
@@ -389,4 +187,7 @@ export class PrintPurchaseComponent implements OnInit, AfterContentChecked {
       img.src = url;
     });
   }
+  FormatDate(date) {
+      return moment(date).format('DD-MM-YYYY')
+    }
 }

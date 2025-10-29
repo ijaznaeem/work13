@@ -1,5 +1,52 @@
-export const OrderSettings = {
-    selectMode: 'single', // single|multi
+import { getCurDate, GetDateJSON } from '../../../factories/utilities';
+
+export class SaleModel {
+  public InvoiceID = 0;
+  public CustomerID = '';
+  public Date: any = GetDateJSON(new Date(getCurDate()));
+  public Time = '';
+  public Discount = 0;
+  public Amount: number = 0;
+  public DeliveryCharges = 0;
+  public Labour = 0;
+  public PackingCharges = 0;
+  public AmntRecvd = 0;
+  public Cash = 0;
+  public Bank = 0;
+  public BankID: string | null = '';
+  public ClosingID = 0;
+  public DtCr = 'CR';
+  public Type = '1';
+  public Notes = '';
+  public IsPosted = 0;
+  public UserID = 0;
+  public CustCatID = 0;
+  public PrevBalance = 0;
+  public details = [];
+  public TransporterIDs: Number[] = [];
+  public NetAmount = 0;
+  public BusinessID = '';
+  public CustomerName = '';
+  public Reference = '';
+}
+export class SaleDetails {
+  public DetailID = '';
+  public PCode = '';
+  public BillNo = '';
+  public ProductID = '';
+  public StoreID = '1';
+  public Qty: any = '';
+  public KGs: any = '0';
+  public Packing = 0;
+  public PPrice = 0;
+  public SPrice = 0;
+  public ProductName = '';
+  public StoreName = '';
+  public BusinessID = '';
+}
+export function getInvoiceSettings(storeList: any) {
+  return {
+    selectMode: 'single',
     hideHeader: false,
     hideSubHeader: true,
     actions: {
@@ -31,23 +78,25 @@ export const OrderSettings = {
       SNo: {
         title: 'S. No',
         type: 'text',
-        valuePrepareFunction: (cell, row, index) => index.row.index + 1, // Adding 1 to start from 1
-        filter: false, // Optional: Disable filtering for serial number
-        sort: false, // Optional: Disable sorting for serial number
+        valuePrepareFunction: (cell, row, index) => index.row.index + 1,
+        filter: false,
+        sort: false,
         editable: false,
       },
+      StoreName: {
+        editable: true,
+        title: 'Store',
 
+      },
       ProductName: {
         editable: false,
         title: 'Product',
         width: '250px',
       },
-
       Qty: {
         title: 'Qty',
         editable: true,
       },
-
       SPrice: {
         title: 'Price',
         editable: true,
@@ -62,3 +111,4 @@ export const OrderSettings = {
       perPage: 50,
     },
   };
+}

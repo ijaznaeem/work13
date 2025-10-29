@@ -36,15 +36,17 @@ export class CashPaymentComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-
-    this.http.getData('accttypes').then((r: any) => {
-      this.AcctTypes = r;
-    });
-
-await this.LoadBanks();
+    this.LoadCustomer();
+    this.LoadBanks();
 
     this.activatedRoute.params.subscribe((params: Params) => {
-      if (params.EditID) {
+      const customerId = params['CustomerID'];
+      if (customerId) {
+        this.Voucher.CustomerID = customerId;
+        this.GetCustomer(customerId);
+      }
+
+      if (params.EditID && params.EditID > 0) {
         this.EditID = params.EditID;
         this.Ino = this.EditID;
         this.http
@@ -57,7 +59,6 @@ await this.LoadBanks();
             }
             this.Voucher = r[0];
             this.Voucher.Date = GetDateJSON(new Date(r[0].Date));
-            this.LoadCustomer({ AcctTypeID: r[0].AcctTypeID });
             this.GetCustomer(this.Voucher.CustomerID);
           });
       } else {
@@ -73,25 +74,19 @@ await this.LoadBanks();
     );
   }
   async FindINo() {
-
-    let voucher:any = await this.http.getData( 'vouchers/' + this.Ino)
-    if (voucher.Credit > 0 )
+    let voucher: any = await this.http.getData('vouchers/' + this.Ino);
+    if (voucher.Credit > 0)
       this.router.navigate(['/cash/cashreceipt/', this.Ino]);
-    else
-      this.router.navigate(['/cash/cashpayment/', this.Ino]);
+    else this.router.navigate(['/cash/cashpayment/', this.Ino]);
   }
-  LoadCustomer(event) {
-    if (event.AcctTypeID !== '') {
-      this.http
-        .getData(
-          'qrycustomers?flds=CustomerName,Address, Balance, CustomerID&orderby=CustomerName' +
-            '&filter=AcctTypeID=' +
-            event.AcctTypeID
-        )
-        .then((r: any) => {
-          this.Customers = r;
-        });
-    }
+  LoadCustomer() {
+    this.http
+      .getData(
+        'qrycustomers?flds=CustomerName,Address, Balance, CustomerID&orderby=CustomerName'
+      )
+      .then((r: any) => {
+        this.Customers = r;
+      });
   }
   SaveData() {
     let voucherid = '';
@@ -100,11 +95,11 @@ await this.LoadBanks();
     if (this.EditID != '') {
       voucherid = '/' + this.EditID;
     }
-    this.Voucher.RefType = 2
+    this.Voucher.RefType = 2;
     console.log(this.Voucher);
     this.http
       .postTask('vouchers' + voucherid, this.Voucher)
-      .then((r:any) => {
+      .then((r: any) => {
         this.alert.Sucess('Payment Saved', 'Save', 1);
         if (this.EditID != '') {
           this.router.navigateByUrl('/cash/cashpayment/' + this.EditID);
@@ -170,20 +165,18 @@ await this.LoadBanks();
     this.router.navigateByUrl('/cash/cashreceipt');
   }
   Print() {
-     const initialState: any = {
-       initialState: {
-         InvoiceID: this.EditID,
-       },
-       class: 'modal-sm',
+    const initialState: any = {
+      initialState: {
+        InvoiceID: this.EditID,
+      },
+      class: 'modal-sm',
 
-       ignoreBackdropClick: false,
-     };
+      ignoreBackdropClick: false,
+    };
 
-     this.modalService.show(PrintVoucherComponent, initialState);
-     this.modalService.onHide.subscribe((reason: string) => {
-       const _reason = reason ? `, dismissed by ${reason}` : '';
-     });
-
-
-   }
+    this.modalService.show(PrintVoucherComponent, initialState);
+    this.modalService.onHide.subscribe((reason: string) => {
+      const _reason = reason ? `, dismissed by ${reason}` : '';
+    });
+  }
 }

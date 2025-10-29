@@ -80,6 +80,7 @@
                   (change)="GetCustomer($event.CustomerID)"
                   required
                   [(ngModel)]="Voucher.CustomerID"
+                  selectOnTab="true"
                 >
                   <ng-template ng-option-tmp let-item="item">
                     <div class="row no-gutter">
@@ -117,17 +118,107 @@
               </div>
             </div>
             <div class="row form-group">
+              <label for="Cash" class="col-md-4 form-label"
+                >Cash Recieved
+              </label>
+              <div class="col-md-8">
+                <input
+                  class="form-control"
+                  type="number"
+                  name="Cash"
+                  [(ngModel)]="Voucher.Cash"
+                  id="Cash"
+                  (change)="
+                    Voucher.Credit =
+                      (Voucher.Bank || 0) * 1 +
+                      (Voucher.Cash || 0) * 1 +
+                      (Voucher.Discount || 0) * 1
+                  "
+                  (focus)="$event.target.select()"
+                  required
+                />
+              </div>
+            </div>
+            <div class="row no-gutter form-group">
+              <label for="Bank" class="col-md-4 form-label">Bank Account</label>
+              <div class="col-md-4">
+                <input
+                  class="form-control"
+                  type="number"
+                  name="bank"
+                  [(ngModel)]="Voucher.Bank"
+                  id="Bank"
+                  required
+                  (change)="
+                    Voucher.Credit =
+                      (Voucher.Bank || 0) * 1 +
+                      (Voucher.Cash || 0) * 1 +
+                      (Voucher.Discount || 0) * 1
+                  "
+                  (focus)="$event.target.select()"
+                />
+              </div>
+
+              <div class="col-md-4">
+                <ng-select
+                  name="bankAccount"
+                  class="custom"
+                  [items]="Banks"
+                  bindLabel="CustomerName"
+                  bindValue="CustomerID"
+                  placeholder="Select Bank Account"
+                  [(ngModel)]="Voucher.BankID"
+                  selectOnTab="true"
+                >
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="row no-gutter form-group">
+              <label for="Bank" class="col-md-4 form-label">Discount </label>
+              <div class="col-md-4">
+                <input
+                  class="form-control"
+                  type="number"
+                  name="Discount"
+                  [(ngModel)]="Voucher.Discount"
+                  id="Discount"
+                  required
+                  (change)="
+                    Voucher.Credit =
+                      (Voucher.Bank || 0) * 1 +
+                      (Voucher.Cash || 0) * 1 +
+                      (Voucher.Discount || 0) * 1
+                  "
+                />
+              </div>
+
+              <div class="col-md-4">
+                <ng-select
+                  name="ExpenseHeads"
+                  class="custom"
+                  [items]="ExpenseHeads"
+                  bindLabel="HeadName"
+                  bindValue="HeadID"
+                  placeholder="Select Expense Head"
+                  [(ngModel)]="Voucher.ExpenseHeadID"
+                  disabled
+                >
+                </ng-select>
+              </div>
+            </div>
+            <div class="row form-group">
               <label for="amount" class="col-md-4 form-label"
-                >Amount Recieved
+                >Total Amount Recieved
               </label>
               <div class="col-md-8">
                 <input
                   class="form-control"
                   type="number"
                   name="amount"
-                  [(ngModel)]="Voucher.Credit "
+                  [(ngModel)]="Voucher.Credit"
                   id="amount"
-                  required
+                  disabled
                 />
               </div>
             </div>

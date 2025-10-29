@@ -1,0 +1,233 @@
+<div class="content-wrapper">
+  <div class="content-header row">
+    <div class="content-header-left col-md-8 col-12 mb-2 breadcrumb-new">
+      <h3 class="content-header-title mb-0 d-inline-block">
+        {{ isEdit ? 'Edit Intimation Letter' : 'New Intimation Letter' }}
+      </h3>
+      <div class="row breadcrumbs-top d-inline-block">
+        <div class="breadcrumb-wrapper col-12">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a routerLink="/dashboard">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a routerLink="/intimations">Intimation Letters</a>
+            </li>
+            <li class="breadcrumb-item active">
+              {{ isEdit ? 'Edit' : 'New' }}
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-body">
+    <section id="intimation-form">
+      <div class="card">
+        <div class="card-content">
+          <div class="card-body">
+            <form [formGroup]="intimationForm" (ngSubmit)="onSave()">
+
+              <!-- Basic Information Row -->
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="DepartmentID" class="required">Department:</label>
+                    <select
+                      id="DepartmentID"
+                      class="form-control"
+                      formControlName="DepartmentID"
+                      (change)="onDepartmentChange()"
+                      [class.is-invalid]="isFieldInvalid('DepartmentID')">
+                      <option value="">Select Department</option>
+                      <option *ngFor="let dept of departments" [value]="dept.DeptID">
+                        {{dept.DeptName}}
+                      </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="isFieldInvalid('DepartmentID')">
+                      {{getFieldError('DepartmentID')}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="Date" class="required">Date:</label>
+                    <input
+                      type="date"
+                      id="Date"
+                      class="form-control"
+                      formControlName="Date"
+                      [class.is-invalid]="isFieldInvalid('Date')">
+                    <div class="invalid-feedback" *ngIf="isFieldInvalid('Date')">
+                      {{getFieldError('Date')}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="Time">Time:</label>
+                    <input
+                      type="time"
+                      id="Time"
+                      class="form-control"
+                      formControlName="Time">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Nature of Work -->
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="NatureOfWork" class="required">Nature of Work:</label>
+                    <input
+                      type="text"
+                      id="NatureOfWork"
+                      class="form-control"
+                      formControlName="NatureOfWork"
+                      placeholder="Enter nature of work"
+                      [class.is-invalid]="isFieldInvalid('NatureOfWork')">
+                    <div class="invalid-feedback" *ngIf="isFieldInvalid('NatureOfWork')">
+                      {{getFieldError('NatureOfWork')}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="Description">Description:</label>
+                    <textarea
+                      id="Description"
+                      class="form-control"
+                      formControlName="Description"
+                      rows="4"
+                      placeholder="Enter detailed description">
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- User Assignment Row -->
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="InitiatedBy" class="required">Initiated By:</label>
+                    <select
+                      id="InitiatedBy"
+                      class="form-control"
+                      formControlName="InitiatedBy"
+                      [class.is-invalid]="isFieldInvalid('InitiatedBy')">
+                      <option value="">Select User</option>
+                      <option *ngFor="let user of users" [value]="user.UserID">
+                        {{user.UserName}}
+                      </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="isFieldInvalid('InitiatedBy')">
+                      {{getFieldError('InitiatedBy')}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="ForwardedTo">Forward To:</label>
+                    <select
+                      id="ForwardedTo"
+                      class="form-control"
+                      formControlName="ForwardedTo">
+                      <option value="">Select User</option>
+                      <option *ngFor="let user of users" [value]="user.UserID">
+                        {{user.UserName}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Job Completion Information -->
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="jobCompletionDate">Job Completion Date:</label>
+                    <input
+                      type="date"
+                      id="jobCompletionDate"
+                      class="form-control"
+                      formControlName="jobCompletionDate">
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="jobCompletionTime">Job Completion Time:</label>
+                    <input
+                      type="time"
+                      id="jobCompletionTime"
+                      class="form-control"
+                      formControlName="jobCompletionTime">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Remarks -->
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="Remarks">Remarks:</label>
+                    <textarea
+                      id="Remarks"
+                      class="form-control"
+                      formControlName="Remarks"
+                      rows="3"
+                      placeholder="Enter any remarks">
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="row">
+                <div class="col-12">
+                  <hr>
+                  <div class="form-actions text-right">
+                    <button
+                      type="button"
+                      class="btn btn-secondary mr-2"
+                      (click)="onCancel()"
+                      [disabled]="isSaving">
+                      <i class="ft-x"></i> Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      class="btn btn-success"
+                      [disabled]="isSaving || intimationForm.invalid">
+                      <i class="ft-save"></i>
+                      {{ isSaving ? 'Saving...' : (isEdit ? 'Update' : 'Save') }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="loading-content">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+    <p class="mt-2">Loading...</p>
+  </div>
+</div>

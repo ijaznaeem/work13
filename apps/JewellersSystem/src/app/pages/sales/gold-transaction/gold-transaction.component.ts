@@ -9,8 +9,9 @@ import {
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Observable } from 'rxjs';
-import { CashModel, enTransactionType } from '../../../factories/static.data';
-import { GetProps } from '../../../factories/utilities';
+import { FindCtrl } from '../../../../../../../libs/future-tech-lib/src/lib/components/crud-form/crud-form-helper';
+import { DailyCash } from '../../../factories/static.data';
+import { GetProps, RoundTo } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
 import { MyToastService } from '../../../services/toaster.server';
@@ -30,13 +31,12 @@ export class GoldTransactionComponent implements OnInit, OnChanges {
   @ViewChild('cmbCustomers') cmbCustomers;
 
   public data = new LocalDataSource([]);
-  navigateURL = '/sale/gold';
   Ino = '';
   tqty: any = '';
   public btnsave = false;
   public isPosted = false;
 
-  modelData = new CashModel();
+  orderData: any = new DailyCash();
   orderForm = GolTrForm;
 
   public selectedProduct: any = {};
@@ -51,14 +51,11 @@ export class GoldTransactionComponent implements OnInit, OnChanges {
     private activatedRoute: ActivatedRoute,
     private router: Router
   ) {
-
     this.AcctTypes = this.cachedData.acctTypes$;
   }
 
   ngOnInit() {
     this.Cancel();
-    this.EditID = '';
-    this.Ino = '';
     this.activatedRoute.params.subscribe((params: Params) => {
       if (params.EditID) {
         this.EditID = params.EditID;
@@ -77,29 +74,54 @@ export class GoldTransactionComponent implements OnInit, OnChanges {
     this.Ino = this.EditID;
     console.log(this.EditID);
 
-    this.http.getData(`Cash?filter=CashID='${this.EditID}'`).then((r: any) => {
-      if (r.length > 0) {
-        this.isPosted = !(r[0].IsPosted == '0');
-        this.modelData = GetProps(r[0], Object.keys(new CashModel()));
-        this.modelData.Date = this.modelData.Date.split(' ')[0];
-        this.CalcGoldAmount();
-      } else {
-        this.myToaster.Error('Invoice No not found', 'Edit', 1);
-      }
-    });
+    this.http
+      .getData('DailyCash', { filter: `DailyID='${this.EditID}'` })
+      .then((r: any) => {
+        if (r.length > 0) {
+          this.isPosted = !(r[0].IsPosted == '0');
+          this.orderData = GetProps(r[0], Object.keys(new DailyCash()));
+          this.orderData.Date = this.orderData.Date.split(' ')[0];
+
+          this.CalcGoldAmount();
+        } else {
+          this.myToaster.Error('Invoice No not found', 'Edit', 1);
+        }
+      });
   }
-  public async Save(event) {
-    if (this.modelData.CashID == null || this.modelData.CashID == 0) {
-      let bno: any = 1;
-      bno = await this.http.getData(
-        'getbno/CASH-' + enTransactionType.Gold + '/1'
-      );
-      this.modelData.CashID = bno.billno;
+  public Save(event) {
+
+    console.log('Save called', this.orderData);
+
+    if (!this.orderData.CustomerID || this.orderData.CustomerID === '') {
+      this.myToaster.Error('Please select a customer', 'Save', 1);
+      return;
     }
+
+    if (this.orderData.RawGold > 0 && this.orderData.GoldTypeID == '') {
+      this.myToaster.Error('Please select Gold Type', 'Save', 1);
+      return;
+    }
+
+    if (this.orderData.Gold < 0) {
+      this.myToaster.Error('Invalid Gold Amount', 'Save', 1);
+      return;
+    }
+    if (this.orderData.GoldRate < 0) {
+      this.myToaster.Error('Invalid Gold Rate', 'Save', 1);
+      return;
+    }
+    if (
+      (!this.orderData.Gold || this.orderData.Gold <= 0) &&
+      (!this.orderData.TotalCash || this.orderData.TotalCash <= 0)
+    ) {
+      this.myToaster.Error('Please enter Gold or  Cash amount', 'Save', 1);
+      return;
+    }
+
     this.http
       .postTask(
-        'vouchers' + (this.EditID == '' ? '' : '/' + this.EditID),
-        this.modelData
+        'dailycash' + (this.EditID == '' ? '' : '/' + this.EditID),
+        this.orderData
       )
       .then((r: any) => {
         if (r) {
@@ -107,7 +129,7 @@ export class GoldTransactionComponent implements OnInit, OnChanges {
           this.btnsave = true;
           this.isPosted = false;
           if (this.EditID == '') {
-            this.NavigateTo(this.modelData.CashID.toString());
+            this.NavigatorClicked({ col: { label: 'Last' } });
           }
         }
       })
@@ -115,31 +137,75 @@ export class GoldTransactionComponent implements OnInit, OnChanges {
         this.myToaster.Error('Error Saving', 'Save', 1);
       });
   }
+  BeforeSave(event) {
+    console.log(event);
+    delete event.data['RateInGrams'];
+  }
 
-  public Changed(event) {
+  public async Changed(event) {
     console.log(event);
     if (event.fldName == 'RawGold' || event.fldName == 'GoldCutting') {
+      this.orderData.Gold = RoundTo(
+        this.orderData.RawGold -
+          (this.orderData.RawGold * this.orderData.GoldCutting) / 96,
+        4
+      );
+      this.CalcGoldAmount();
+    } else if (event.fldName == 'GoldRate' || event.fldName == 'Gold') {
+      this.CalcGoldAmount();
+    } else if (event.fldName == 'Cash' || event.fldName == 'GoldAmount') {
+      this.CalcTotalAmount();
+    } else if (event.fldName == 'CustomerID') {
+      let cust: any = await this.http.getData('Customers/' + event.value);
+      if (cust) {
+        this.orderData.CBal = RoundTo(cust.Balance, 0);
+        this.orderData.K24 = RoundTo(cust.GoldBalance, 3);
+        this.orderData.K22 = RoundTo(cust.Gold21K, 3);
+      } else {
+        this.SelectCust = {};
+        this.orderData.CBal = '0';
+        this.orderData.K24 = '0';
+        this.orderData.K22 = '0';
+      }
+    } else if (event.fldName == 'TrType') {
+      const CashFld = FindCtrl(this.orderForm, 'CashReceived');
+
+      if (CashFld && event.value == 'CR') {
+        CashFld.label = 'Cash Received';
+      } else if (CashFld && event.value == 'DT') {
+        CashFld.label = 'Cash Paid';
+      }
     }
   }
-  CalcGoldAmount() {}
-
+  CalcGoldAmount() {
+    const nRate = RoundTo(this.orderData.GoldRate / 11.664, 4);
+    this.orderData.GoldAmount = RoundTo(this.orderData.Gold * nRate, 4);
+    this.orderData.RateInGrams = RoundTo(nRate, 4);
+    this.CalcTotalAmount();
+  }
+  CalcTotalAmount() {
+    this.orderData.TotalCash = RoundTo(
+      Number(this.orderData.Cash) + Number(this.orderData.GoldAmount),
+      4
+    );
+    this.orderData.CashBalance = RoundTo(
+      this.orderData.TotalCash - this.orderData.CashReceived,
+      4
+    );
+  }
   Cancel() {
     this.isPosted = false;
-    this.modelData = new CashModel();
-    this.modelData.Type = enTransactionType.Gold;
+    this.orderData = new DailyCash();
+    this.orderData.Type = 'TR';
     this.btnsave = false;
+    this.CalcGoldAmount();
   }
 
   FindINo() {
     this.NavigateTo(this.Ino);
   }
   NavigateTo(rt = '') {
-    // this.router.navigate([this.navigateURL, rt]);
-    if (rt == '') {
-      this.router.navigateByUrl(this.navigateURL);
-    } else {
-      this.router.navigateByUrl(this.navigateURL + '/' + rt);
-    }
+    this.router.navigateByUrl('/sale/gold' + (rt != '' ? '/' + rt : ''));
   }
 
   ButtonClicked(e) {
@@ -159,32 +225,32 @@ export class GoldTransactionComponent implements OnInit, OnChanges {
   }
 
   NavigatorClicked(e) {
-    let billNo: any = 1;
+    console.log(e);
+
+    let billNo: any = 'TR-100000001';
     switch (e.col.label) {
       case 'First':
         this.NavigateTo(billNo);
         break;
       case 'Prev':
         if (!(this.EditID == '' || this.EditID == null)) {
-          if (Number(this.EditID) - 1 > billNo) {
-            billNo = Number(this.EditID) - 1;
+          if (Number(this.EditID.slice(-9)) - 1 > billNo) {
+            billNo = Number(this.EditID.slice(-9)) - 1;
           }
         }
         this.NavigateTo(billNo);
         break;
       case 'Next':
         if (!(this.EditID == '' || this.EditID == null)) {
-          billNo = Number(this.EditID) + 1;
+          billNo = Number(this.EditID.slice(-9)) + 1;
         }
         this.NavigateTo(billNo);
         break;
       case 'Last':
-        this.http
-          .getData('getbno/CASH-' + enTransactionType.Gold)
-          .then((r: any) => {
-            billNo = r.billno;
-            this.NavigateTo(billNo);
-          });
+        this.http.getData('getbno/TR').then((r: any) => {
+          billNo = r.billno;
+          this.NavigateTo(billNo);
+        });
         break;
       default:
         break;

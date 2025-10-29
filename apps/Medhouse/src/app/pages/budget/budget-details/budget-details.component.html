@@ -1,0 +1,327 @@
+<!-- Budget Details Component -->
+<div class="budget-details">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="page-header">
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary btn-sm mr-3"
+            (click)="goBack()"
+            title="Back to Budget Management"
+          >
+            <i class="fas fa-arrow-left"></i>
+            Back
+          </button>
+          <div class="header-content">
+            <h3 class="page-title">{{ getPageTitle() }}</h3>
+            <p class="instruction-text text-info" *ngIf="state.budgetHead">
+              {{ getBudgetSummaryText() }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 text-right">
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button
+            type="button"
+            class="btn btn-primary btn-sm mr-2"
+            (click)="refreshData()"
+            title="Refresh data"
+          >
+            <i class="fas fa-sync"></i>
+            Refresh
+          </button>
+          <button
+            type="button"
+            class="btn btn-success btn-sm mr-2"
+            (click)="exportToExcel()"
+            title="Export to Excel"
+          >
+            <i class="fas fa-file-excel"></i>
+            Export
+          </button>
+          <button
+            type="button"
+            class="btn btn-info btn-sm"
+            (click)="showAddExpenseHeadForm()"
+            title="Add new expense head"
+            *ngIf="state.canAdd"
+          >
+            <i class="fas fa-plus"></i>
+            Add Expense Head
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget Summary Card -->
+  <div class="budget-summary-card" *ngIf="state.budgetHead">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-chart-pie text-primary mr-2"></i>
+          Budget Summary
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="summary-item">
+              <div class="summary-label">Budget Name</div>
+              <div class="summary-value text-primary">{{ state.budgetHead.BudgetName }}</div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="summary-item">
+              <div class="summary-label">Percentage Allocation</div>
+              <div class="summary-value text-success">{{ formatPercentage(state.budgetHead.Percentage) }}</div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="summary-item">
+              <div class="summary-label">Current Balance</div>
+              <div class="summary-value text-info">{{ formatCurrency(state.budgetHead.Balance) }}</div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="summary-item">
+              <div class="summary-label">Expense Heads</div>
+              <div class="summary-value text-warning">{{ expenseHeads.length }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Section -->
+  <div class="content-section">
+    <div class="row">
+      <!-- Expense Heads Grid -->
+      <div class="col-12">
+        <div class="grid-container">
+          <div class="grid-header">
+            <h5>Expense Heads</h5>
+            <div class="grid-tools">
+              <span class="record-count">{{ expenseHeads.length }} expense heads</span>
+            </div>
+          </div>
+          <div class="grid-content">
+            <ft-data-grid
+              #grdExpenseHeads
+              [columns]="expenseHeadColumns"
+              [data]="expenseHeads"
+              [loading]="state.loading"
+              [selectionMode]="'Single'"
+              [allowSorting]="true"
+              [allowFiltering]="false"
+              [pageSize]="25"
+              [height]="500"
+              [ShowSearch]="false"
+              (selectionChange)="onExpenseHeadSelected($event)"
+              (rowDoubleClick)="onExpenseHeadDoubleClick()"
+              class="expense-heads-grid"
+            >
+            </ft-data-grid>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="state.loading" class="loading-overlay">
+    <div class="loading-content">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <p class="loading-text">Loading budget details...</p>
+    </div>
+  </div>
+
+  <!-- Selection Info Panel -->
+  <div class="selection-info-panel" *ngIf="state.selectedExpenseHead">
+    <div class="row">
+      <div class="col-md-2">
+        <strong>Selected ID:</strong> #{{ state.selectedExpenseHead.HeadID }}
+      </div>
+      <div class="col-md-4">
+        <strong>Expense Head:</strong> {{ state.selectedExpenseHead.Head }}
+      </div>
+      <div class="col-md-2">
+        <strong>Balance:</strong> {{ formatCurrency(state.selectedExpenseHead.Balance) }}
+      </div>
+      <div class="col-md-2">
+        <strong>Percentage:</strong> {{ formatPercentage(state.selectedExpenseHead.Perecentage) }}
+      </div>
+      <div class="col-md-2">
+        <strong>Status:</strong> 
+        <span [class]="getStatusClass(state.selectedExpenseHead.IsActive)">
+          {{ getStatusText(state.selectedExpenseHead.IsActive) }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="bottom-action-buttons" *ngIf="state.selectedExpenseHead">
+    <div class="row">
+      <div class="col-12">
+        <div class="button-group">
+          <!-- Edit Button -->
+          <button
+            type="button"
+            class="btn btn-primary btn-action"
+            (click)="editExpenseHead(state.selectedExpenseHead!)"
+            [disabled]="!state.canEdit"
+            title="Edit selected expense head"
+          >
+            <i class="fas fa-edit"></i>
+            Edit
+          </button>
+
+          <!-- Delete Button -->
+          <button
+            type="button"
+            class="btn btn-danger btn-action"
+            (click)="deleteExpenseHead()"
+            [disabled]="!state.canDelete"
+            title="Delete selected expense head"
+          >
+            <i class="fas fa-trash"></i>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Permissions Info -->
+  <div class="permissions-info" *ngIf="!state.canAdd && !state.canEdit">
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle"></i>
+      You have limited permissions. Some actions may not be available based on your department role.
+    </div>
+  </div>
+</div>
+
+<!-- Expense Head Form Modal -->
+<div class="modal fade" [class.show]="showExpenseForm" [style.display]="showExpenseForm ? 'block' : 'none'" 
+     tabindex="-1" role="dialog" *ngIf="showExpenseForm">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-plus text-primary mr-2" *ngIf="!isEditMode"></i>
+          <i class="fas fa-edit text-primary mr-2" *ngIf="isEditMode"></i>
+          {{ isEditMode ? 'Edit' : 'Add New' }} Expense Head
+        </h5>
+        <button type="button" class="close" (click)="hideExpenseHeadForm()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <form [formGroup]="expenseHeadForm" (ngSubmit)="submitExpenseHead()">
+        <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+          <div class="row">
+            <!-- Expense Head Name -->
+            <div class="col-12 mb-3">
+              <label for="expenseHead" class="form-label">
+                Expense Head Name <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                id="expenseHead"
+                class="form-control"
+                formControlName="head"
+                placeholder="Enter expense head name..."
+                maxlength="255"
+                [class.is-invalid]="hasFieldError('head')"
+              />
+              <div class="invalid-feedback" *ngIf="hasFieldError('head')">
+                {{ getFieldError('head') }}
+              </div>
+              <small class="form-text text-muted">
+                {{ expenseHeadForm.get('head')?.value?.length || 0 }}/255 characters
+              </small>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Status -->
+            <div class="col-md-6 mb-3">
+              <label for="expenseStatus" class="form-label">
+                Status <span class="text-danger">*</span>
+              </label>
+              <select
+                id="expenseStatus"
+                class="form-control"
+                formControlName="statusId"
+                [class.is-invalid]="hasFieldError('statusId')"
+              >
+                <option [value]="1">Active</option>
+                <option [value]="0">Inactive</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="hasFieldError('statusId')">
+                {{ getFieldError('statusId') }}
+              </div>
+            </div>
+
+            <!-- Budget Info (Read-only) -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Budget</label>
+              <input
+                type="text"
+                class="form-control"
+                [value]="state.budgetHead?.BudgetName || 'Loading...'"
+                readonly
+                disabled
+              />
+            </div>
+          </div>
+
+          <!-- Hidden fields -->
+          <input type="hidden" formControlName="headId" />
+          <input type="hidden" formControlName="budgetId" />
+
+          <!-- Validation Summary -->
+          <div class="alert alert-warning" *ngIf="expenseHeadForm.invalid && expenseHeadForm.touched">
+            <h6><i class="fas fa-exclamation-triangle"></i> Please correct the following errors:</h6>
+            <ul class="mb-0">
+              <li *ngIf="hasFieldError('head')">{{ getFieldError('head') }}</li>
+              <li *ngIf="hasFieldError('statusId')">{{ getFieldError('statusId') }}</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="hideExpenseHeadForm()"
+            [disabled]="formSubmitting"
+          >
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="expenseHeadForm.invalid || formSubmitting"
+          >
+            <i class="fas fa-spinner fa-spin" *ngIf="formSubmitting"></i>
+            <i class="fas fa-save" *ngIf="!formSubmitting"></i>
+            {{ formSubmitting ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update' : 'Create') }} Expense Head
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Form Modal Backdrop -->
+<div class="modal-backdrop fade show" *ngIf="showExpenseForm" (click)="hideExpenseHeadForm()"></div>

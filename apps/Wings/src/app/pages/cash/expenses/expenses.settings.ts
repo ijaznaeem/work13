@@ -1,9 +1,14 @@
 export const ExpensestSetting = {
   Columns: [
     {
+      fldName: 'expense_id',
+      label: 'ID',
+    },
+    {
       fldName: 'date',
       label: 'Date',
     },
+
     {
       fldName: 'expense_head',
       label: 'Expense Account',

@@ -54,7 +54,7 @@
           <ejs-combobox
             name="customer"
             id="customer"
-            [allowFiltering] = "true"
+            [allowFiltering]="true"
             [dataSource]="Customers"
             [fields]="{ text: 'CustomerName', value: 'CustomerID' }"
             [(ngModel)]="Filter.CustomerID"
@@ -100,9 +100,7 @@
       </div>
       <table class="table">
         <tr>
-          <td>
-            Customer Name:
-          </td>
+          <td>Customer Name:</td>
           <td>
             {{ customer.CustomerName }}
           </td>
@@ -110,9 +108,7 @@
           <td>{{ formatDate(Filter.FromDate) }}</td>
         </tr>
         <tr>
-          <td>
-            Address:
-          </td>
+          <td>Address:</td>
           <td>
             {{ customer.Address }}
           </td>
@@ -120,9 +116,7 @@
           <td>{{ formatDate(Filter.ToDate) }}</td>
         </tr>
         <tr>
-          <td>
-            City:
-          </td>
+          <td>City:</td>
           <td>
             {{ customer.City }}
           </td>

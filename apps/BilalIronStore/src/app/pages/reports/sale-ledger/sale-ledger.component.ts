@@ -35,19 +35,16 @@ export class SaleLedgerComponent implements OnInit {
         label: 'Product Name',
         fldName: 'ProductName',
       },
-      {
-        label: 'Unit',
-        fldName: 'UnitName',
+     {
+        label: 'Qty',
+        fldName: 'Qty',
+        sum: true,
       },
       {
         label: 'Packing',
         fldName: 'Packing',
       },
-      {
-        label: 'Qty',
-        fldName: 'Qty',
-        sum: true,
-      },
+
       {
         label: 'Price',
         fldName: 'SPrice',
@@ -66,14 +63,16 @@ export class SaleLedgerComponent implements OnInit {
   Items: any = [{ ItemID: '1', ItemName: 'Test Item' }];
 
   public data: object[];
-  public Accounts: any = this.cachedData.Accounts$;
+  public Accounts: any;
   public selectedCustomer: any = {};
   constructor(
     private http: HttpBase,
     private ps: PrintDataService,
     private cachedData: CachedDataService,
     private router: Router
-  ) {}
+  ) {
+    this.Accounts = this.cachedData.Accounts$;
+  }
 
   ngOnInit() {
     this.LoadItems();
@@ -111,11 +110,11 @@ export class SaleLedgerComponent implements OnInit {
       filter += ' and CustomerID=' + this.Filter.CustomerID;
 
     if (this.Filter.ItemID)
-      if (this.nWhat == '1') filter += ' and ProductID=' + this.Filter.ItemID;
-      else filter += ' and UnitID=' + this.Filter.ItemID;
+       filter += ' and ProductID=' + this.Filter.ItemID;
+
 
     let flds =
-      'Date,InvoiceID, ProductName, UnitName, Packing, Qty, Sprice, Amount';
+      'Date,InvoiceID, ProductName, Packing, Qty, Sprice, Amount';
 
     this.http
       .getData(

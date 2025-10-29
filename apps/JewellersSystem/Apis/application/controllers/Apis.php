@@ -161,29 +161,29 @@ class Apis extends REST_Controller
                     $this->response($result, REST_Controller::HTTP_OK);
                 } else {
                     $this->db->select($flds)
-                      ->from($table)
-                      ->where($filter);
+                        ->from($table)
+                        ->where($filter);
 
                     if ($orderby != "") {
-                      $this->db->order_by($orderby);
+                        $this->db->order_by($orderby);
                     }
 
                     if ($groupby != "") {
-                      $this->db->group_by($groupby);
+                        $this->db->group_by($groupby);
                     }
 
                     if ($limit > 0) {
-                      $this->db->limit($limit);
+                        $this->db->limit($limit);
                     }
                     if ($offset > 0) {
-                      $this->db->offset($offset);
+                        $this->db->offset($offset);
                     }
 
                     $query = $this->db->get();
                     if ($query) {
-                      $this->response($query->result_array(), REST_Controller::HTTP_OK);
+                        $this->response($query->result_array(), REST_Controller::HTTP_OK);
                     } else {
-                      $this->response(['result' => 'Error', 'message' => $this->db->error()], REST_Controller::HTTP_BAD_REQUEST);
+                        $this->response(['result' => 'Error', 'message' => $this->db->error()], REST_Controller::HTTP_BAD_REQUEST);
                     }
 
                     // $this->getAll($this->db->get_compiled_select());
@@ -218,11 +218,10 @@ class Apis extends REST_Controller
 
     public function getAll($qry)
     {
-      // echo $qry;
-      // exit();
+        // echo $qry;
+        // exit();
 
         $query = $this->db->query($qry);
-
 
         if ($query) {
             $this->response($query->result_array(), REST_Controller::HTTP_OK);
@@ -684,11 +683,10 @@ class Apis extends REST_Controller
         }
     }
 
-    public function getbno_get($type, $isnext=false)
+    public function getbno_get($table)
     {
         $this->load->library('utilities');
-        $bid          = $this->get('bid');
-        $maxInvoiceID = $this->utilities->getBillNo($this->db, $type, $isnext);
+        $maxInvoiceID = $this->utilities->getBillNo($this->db, $table, false);
         $this->response(['billno' => $maxInvoiceID], REST_Controller::HTTP_OK);
     }
     private function dbquery($str_query)
@@ -959,9 +957,46 @@ class Apis extends REST_Controller
         // // Output the generated PDF
         // $this->dompdf->stream("output.pdf", array("Attachment" => 0));
     }
-public function getfarmers_get($search=''){
-  $this->load->database();
-  $query = $this->db->query("select Top 1000 * from Farmers where FarmerName like '%$search%' OR CNICNo = '$search' OR MobileNo = '$search' order by FarmerName")->result_array();
-  $this->response($query, REST_Controller::HTTP_OK);
-}
+    public function cashreport_post()
+    {
+        if (! $this->checkToken()) {
+            $this->response(
+                [
+                    'result'  => 'Error',
+                    'message' => 'user is not authorised',
+                ],
+                REST_Controller::HTTP_BAD_REQUEST
+            );
+            return;
+        }
+        $this->output->set_header('Last-Modified: ' . gmdate("D, d M Y H:i:s") . ' GMT');
+
+        $filter = "1";
+        $fromDate = $this->post('FromDate');
+        $toDate = $this->post('ToDate');
+        $filterDate = "Date BETWEEN '$fromDate' AND '$toDate'";
+        $type   = $this->post('Type'); // 1 for cashbook, 2 for bankbook
+
+        if ($type == 1) {
+            $filter = $filterDate . " and (GoldTypeID = 0 or Cash>0)";
+            $query = "select TypeGroup, DailyID, Date, CustomerName, Notes as Description, CashDT Debit, CashCR Credit from qryCashBook where $filter union all ";
+            $query .= "select 'Sale', cast(InvoiceID as nvarchar(10)), Date, CustomerName, 'Cash Receipt', 0 Debit, RecievedAmount Credit from qryInvoices where RecievedAmount >0 and $filterDate union all ";
+            $query .= "select 'Sale', cast(InvoiceID as nvarchar(10)), Date, CustomerName, 'Gold Amount Paid', GoldAmountPaid Debit, 0 Credit from qryInvoices where GoldAmountPaid >0 and $filterDate union all ";
+            $query .= "select 'Sale', cast(InvoiceID as nvarchar(10)), Date, CustomerName, 'Advance Returned', AdvanceReturned Debit, 0 Credit from qryInvoices where AdvanceReturned >0 and $filterDate union all ";
+            $query .= "select 'Purchase', cast(InvoiceID as nvarchar(10)), Date, CustomerName, 'Amount Paid', AmountPaid Debit, 0 Credit from qryPinvoices where AmountPaid>0 and $filterDate ";
+
+        } else {
+
+            $query = "select TypeGroup, DailyID, Date, CustomerName, Notes as Description, GoldDT Debit, GoldCR Credit from qryCashBook where $filterDate and GoldTypeID = $type and Gold>0 union all ";
+            $query .= "select 'Sale', cast(InvoiceID as nvarchar(10)), Date, CustomerName, 'Bill Gold Received', 0 Debit, NetBillGold Credit from qryInvoices where NetBillGold >0 and $filterDate  and GoldType = $type union all ";
+            $query .= "select 'Purchase', cast(InvoiceID as nvarchar(10)), Date, CustomerName, 'Purchase Gold Paid', GoldPaid Debit, 0 Credit from qryPInvoices where GoldPaid >0 and $filterDate  and GoldType = $type";
+        }
+
+        // echo $query;
+        $query .= " Select * from ( $query) as T  Order By TypeGroup,  DailyID ";
+        $res = $this->dbquery($query);
+
+        $this->response($res, REST_Controller::HTTP_OK);
+    }
+
 }

@@ -1,5 +1,3 @@
-import { SaleSetting } from './sale.setting';
-import { formatNumber, GetDateJSON, JSON2Date } from '../../../factories/utilities';
 export const VoucherSetting = {
   Columns: [
     {
@@ -9,6 +7,10 @@ export const VoucherSetting = {
     {
       label: "Date",
       fldName: "Date",
+    },
+    {
+      label: "Business",
+      fldName: "BusinessName",
     },
     {
       label: "Customer Name",
@@ -26,17 +28,13 @@ export const VoucherSetting = {
       label: "Debit",
       fldName: "Debit",
       sum: true,
-      valueFormatter: (d) => {
-        return formatNumber(d["Debit"]);
-      },
+
     },
     {
       label: "Credit",
       fldName: "Credit",
       sum: true,
-      valueFormatter: (d) => {
-        return formatNumber(d["Credit"]);
-      },
+
     },
     {
       label: "Status",
@@ -71,3 +69,4 @@ export const VoucherSetting = {
   ],
   Data: [],
 };
+

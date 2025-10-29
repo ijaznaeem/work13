@@ -16,16 +16,15 @@ import { environment } from '../../../../environments/environment';
 import { months } from '../../../factories/constants';
 import { FindTotal, RoundTo, getDMYDate } from '../../../factories/utilities';
 import { HttpBase } from '../../../services/httpbase.service';
+import { MyToastService } from '../../../services/toaster.server';
 
 @Component({
   selector: 'app-print-voucher',
   templateUrl: './print-voucher.component.html',
   styleUrls: ['./print-voucher.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
-export class PrintVoucherComponent
-  implements OnInit, OnChanges, AfterViewInit
-{
+export class PrintVoucherComponent implements OnInit, OnChanges, AfterViewInit {
   public Invoice: any = {};
 
   @Input() InvoiceID = '';
@@ -42,7 +41,8 @@ export class PrintVoucherComponent
   constructor(
     private http: HttpBase,
     private ref: ChangeDetectorRef,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toast: MyToastService
   ) {}
 
   ngOnInit() {
@@ -51,7 +51,7 @@ export class PrintVoucherComponent
     });
     this.route.paramMap.subscribe((params) => {
       let InvoiceID = params.get('VoucherID');
-      if (this.InvoiceID!= '') InvoiceID = this.InvoiceID
+      if (this.InvoiceID != '') InvoiceID = this.InvoiceID;
 
       this.http
         .getData('qryvouchers?filter=VoucherID=' + InvoiceID)
@@ -60,7 +60,6 @@ export class PrintVoucherComponent
           this.Invoice.BalanceInWords = new ToWords().convert(
             this.Invoice.NetAmount
           );
-
         });
     });
   }
@@ -73,11 +72,7 @@ export class PrintVoucherComponent
     }
   }
 
-  ngAfterViewInit() {
-
-  }
-
-
+  ngAfterViewInit() {}
 
   getDMYDate(d) {
     return getDMYDate(new Date(d));
@@ -86,7 +81,7 @@ export class PrintVoucherComponent
     return RoundTo(dgt, dec);
   }
   FormatDate(date) {
-    return moment(date).format('DD-MM-YYYY')
+    return moment(date).format('DD-MM-YYYY');
   }
   FormatInvNo(inv: string) {
     if (!inv) return;
@@ -99,9 +94,8 @@ export class PrintVoucherComponent
     return `${mon}-${kg}`;
   }
 
-  RoundTo(n, d)
-  {
-    return RoundTo(n,d);
+  RoundTo(n, d) {
+    return RoundTo(n, d);
   }
   Print() {
     window.print();
@@ -124,6 +118,27 @@ export class PrintVoucherComponent
       pdf.save(
         this.Invoice.CustomerName + '-' + this.Invoice.InvoiceID + '.pdf'
       ); // Generated PDF
+    });
+  }
+  SendWhatsApp() {
+    const data: any = document.getElementById('print-section');
+    html2canvas(data).then(async (canvas) => {
+      canvas.toBlob(async (blob) => {
+        if (blob && navigator.clipboard && (navigator.clipboard as any).write) {
+          const item = new ClipboardItem({ 'image/png': blob });
+          await (navigator.clipboard as any).write([item]);
+          // Open WhatsApp Web with prefilled message
+          const phone = this.Invoice.PhoneNo1 || '';
+          const url = `https://wa.me/+923424256584?text=Please%20find%20attached%20your%20invoice.`;
+          this.toast.Info(
+            'Invoice image copied to clipboard. Opening WhatsApp...',
+            ''
+          );
+          window.open(url, '_blank');
+        } else {
+          alert('Clipboard image copy is not supported in this browser.');
+        }
+      }, 'image/png');
     });
   }
 }

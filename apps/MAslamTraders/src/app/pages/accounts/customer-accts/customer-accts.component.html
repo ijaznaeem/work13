@@ -1,6 +1,21 @@
 <div widget class="card border-0 box-shadow">
   <div class="card-header transparent border-0 text-muted">
-    <h5 class="mb-3">Account Ledger</h5>
+    <div class="row no-gutter">
+      <div class="col-md-3">
+        <h5 class="mb-3">Account Ledger</h5>
+      </div>
+      <div class="col-md-3">
+        <button type="button" class="btn btn-warning" (click)="NavigateTo('Receipt')">
+          <i class="fa fa-money"></i> Cash Receipt
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button type="button" class="btn btn-danger" (click)="NavigateTo('Payment')">
+          <i class="fa fa-money"></i> Cash Payment
+        </button>
+      </div>
+
+    </div>
   </div>
   <div class="card-block widget-body">
     <form #frmFilter="ngForm">

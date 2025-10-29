@@ -292,7 +292,20 @@ class Tasks extends REST_Controller
 
     public function validateDate($date, $format = 'Y-m-d')
     {
-        return DateTime::createFromFormat($format, $date) == true;
+        if( DateTime::createFromFormat($format, $date) == true) {
+          $lastClosing = $this->db
+            ->order_by('Date', 'DESC')
+            ->where('Status', 0)
+            ->get('closing')
+            ->row_array();
+
+          if ($lastClosing && strtotime($date) != strtotime($lastClosing['Date'])) {
+            return false;
+          }
+
+            return true;
+        }
+        return false;
     }
 
     public function pendinginvoice_post($id = null)
@@ -559,14 +572,14 @@ class Tasks extends REST_Controller
 
         $this->db->trans_begin();
         foreach ($InvoiceRes as $InvoiceValue) {
-            $data['CustomerID']  = $InvoiceValue['CustomerID'];
-            $data['Date']        = $InvoiceValue['Date'];
+            $data['CustomerID'] = $InvoiceValue['CustomerID'];
+            $data['Date']       = $InvoiceValue['Date'];
             if ($InvoiceValue['RefType'] == 1) {
-               $data['Credit']      = $InvoiceValue['Credit'] + $InvoiceValue['BankCash'];
-               $data['Debit']       = 0;
+                $data['Credit'] = $InvoiceValue['Credit'] + $InvoiceValue['BankCash'];
+                $data['Debit']  = 0;
             } else {
-              $data['Debit']       = $InvoiceValue['Debit'] + $InvoiceValue['BankCash'];
-              $data['Credit']      = 0;
+                $data['Debit']  = $InvoiceValue['Debit'] + $InvoiceValue['BankCash'];
+                $data['Credit'] = 0;
             }
 
             $data['Description'] = $InvoiceValue['Description'];
@@ -638,7 +651,8 @@ class Tasks extends REST_Controller
                     $stock['Stock']      = $qtyin - $qtyout;
                     $this->db->insert('stock', $stock);
                 }
-                $this->db->query("update products set PPrice = $pprice, SPrice = ($pprice + $pprice * Percentage/100) / Packing where ProductID = $pid");
+                // $this->db->query("update products set PPrice = $pprice, SPrice = ($pprice + $pprice * Percentage/100) / Packing where ProductID = $pid");
+                $this->db->query("update products set PPrice = $pprice where ProductID = $pid");
             } else {
                 // var_dump($qtyin, $qtyout);
                 $this->db->where('ProductID', $pid);
@@ -710,6 +724,7 @@ class Tasks extends REST_Controller
             //echo 'purchase posted';
             $this->PostVouchers(0, $bid);
             $this->PostStockTranfer(0, $bid);
+            $this->PostExpenses(0, $bid);
             // echo 'vouchers posted';
 
             $this->db->trans_begin();
@@ -900,16 +915,16 @@ class Tasks extends REST_Controller
                         $data['Credit']      = 0;
                         $this->AddToAccount($data);
                     }
-                    if ( $PInvoiceValue['OnlineCash'] > 0) {
+                    if ($PInvoiceValue['OnlineCash'] > 0) {
                         $data['CustomerID']  = $PInvoiceValue['BankID'];
                         $data['Date']        = $PInvoiceValue['Date'];
-                        $data['Credit']       =  $PInvoiceValue['OnlineCash'];
+                        $data['Credit']      = $PInvoiceValue['OnlineCash'];
                         $data['Description'] = 'Purchase No ' . $PInvoiceValue['InvoiceID'];
                         $data['RefID']       = $PInvoiceValue['InvoiceID'];
                         $data['RefType']     = 2;
                         $data['Notes']       = $PInvoiceValue['Notes'];
                         $data['BusinessID']  = $PInvoiceValue['BusinessID'];
-                        $data['Debit']      = 0;
+                        $data['Debit']       = 0;
                         $this->AddToAccount($data);
                     }
 
@@ -1074,5 +1089,39 @@ class Tasks extends REST_Controller
             return true;
         }
         return true;
+    }
+    public function postexpenses_post($id = 0 )
+    {
+        $this->PostExpenses($id, 0);
+        $this->response(['msg' => 'Expenses Posted'], REST_Controller::HTTP_OK);
+    }
+
+    private function PostExpenses($id = 0, $bid = 0)
+    {
+        if ($id > 0) {
+            $this->db->where('BillID', $id);
+        } else {
+            $this->db->where('BusinessID', $bid);
+        }
+        $this->db->where('IsPosted', 0);
+        $this->db->where("Date <> '0000-00-00'");
+
+        $ExpenseRes = $this->db->get('expensebills')->result_array();
+        foreach ($ExpenseRes as $ExpenseValue) {
+            $data['Date']        = $ExpenseValue['Date'];
+            $data['CustomerID']  = $ExpenseValue['CustomerID'];
+            $data['Description'] = $ExpenseValue['Description'];
+            $data['Credit']       = $ExpenseValue['Amount'];
+            $data['Debit']      = 0;
+            $data['RefID']       = $ExpenseValue['BillID'];
+            $data['RefType']     = 3; // Expense
+            $data['BusinessID']  = $ExpenseValue['BusinessID'];
+
+            $this->AddToAccount($data);
+
+            $posted['IsPosted'] = '1';
+            $this->db->where('BillID', $ExpenseValue['BillID']);
+            $this->db->update('expensebills', $posted);
+        }
     }
 }

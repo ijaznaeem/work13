@@ -1,6 +1,6 @@
 {
   "/apis/*": {
-    "target": "http://localhost/fivestar2/",
+    "target": "http://localhost/fivestar/",
     "secure": false,
     "logLevel": "debug",
     "pathRewrite": {

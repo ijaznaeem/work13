@@ -502,19 +502,21 @@ class Apis extends REST_Controller
         $this->response($data->result_array(), REST_Controller::HTTP_OK);
     }
 
-    private function sendsms($mobile, $message)
+    private function sendsms_x($mobile, $message)
     {
         $parameters = [
-            "api_key"  => "923000645113-a4d7bf5a-da2c-44f9-a520-b63cc546d95a",
-            "mobile"   => $mobile,
-            "message"  => $message,
-            "priority" => "10",
-            "type"     => 0,
+            // "api_key"  => "923000645113-a4d7bf5a-da2c-44f9-a520-b63cc546d95a",
+            // "mobile"   => $mobile,
+            "to"      => $mobile . "@s.whatsapp.net",
+            "message" => $message,
+            // "priority" => "10",
+            // "type"     => 0,
         ];
 
+        print_r($parameters);
         $ch      = curl_init();
         $timeout = 30;
-        curl_setopt($ch, CURLOPT_URL, "http://myapi.pk/api/send.php");
+        curl_setopt($ch, CURLOPT_URL, "https://whatsapp-multi-device-api-1bbc6dde032d.herokuapp.com/api/devices/ikmf/send");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -527,9 +529,13 @@ class Apis extends REST_Controller
 
         $responseData = json_decode($response, true);
 
+        print_r($response);
+
         $logDate = date('Y-m-d H:i:s');
         $task    = "Send WhatsApp Message";
-        $status  = isset($responseData['results'][0]['status']) && $responseData['results'][0]['status'] === "OK" ? "Success" : "Failed";
+        //$status  = isset($responseData['results'][0]['status']) && $responseData['results'][0]['status'] === "OK" ? "Success" : "Failed";
+
+        $status = isset($responseData['status']) && $responseData['status'] === "sent" ? "Success" : "Failed";
 
         $logData = [
             'Date'    => $logDate,
@@ -727,7 +733,7 @@ class Apis extends REST_Controller
         $this->response(['msg' => 'Data saved'], REST_Controller::HTTP_OK);
     }
 
-    public function sendWhatsapp_post($data = null)
+    public function sendwhatsapp_post($data = null)
     {
         if ($data == null) {
             $post_data = $this->post();
@@ -737,20 +743,65 @@ class Apis extends REST_Controller
         $mobile  = $post_data['phone'];
         $message = $post_data['message'];
 
+        $status = $this->sendsms($mobile, $message);
+
+        $response = json_decode($status);
+        print_r($response);
+
+        if ($response->status === "sent") {
+            $this->response(['status' => 'success', 'message' => 'Message sent successfully'], REST_Controller::HTTP_OK);
+        } else {
+            $this->response(['status' => 'error', 'message' => 'Failed to send message'], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+    private function sendsms($mobile, $message)
+    {
+
         if (strpos($mobile, '+') === 0) {
             $mobile = ltrim($mobile, '+');
         } else {
             $mobile = "92" . ltrim($mobile, '0');
         }
 
-        $status = $this->sendsms($mobile, $message);
+        $payload = [
+            "to"      => $mobile . "@s.whatsapp.net",
+            "message" => $message,
+        ];
 
-        if ($status === "Success") {
-            $this->response(['status' => 'success', 'message' => 'Message sent successfully'], REST_Controller::HTTP_OK);
-        } else {
-            $this->response(['status' => 'error', 'message' => 'Failed to send message'], REST_Controller::HTTP_BAD_REQUEST);
+        $url = 'http://185.197.251.107:3000/api/devices/372996/send';
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL            => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING       => '',
+            CURLOPT_MAXREDIRS      => 10,
+            CURLOPT_TIMEOUT        => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST  => 'POST',
+            CURLOPT_POSTFIELDS     => json_encode($payload),
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+
+        if (curl_errno($curl)) {
+            echo 'Curl error: ' . curl_error($curl);
         }
+
+        curl_close($curl);
+        return $response;
+
+        // echo "Sent to: {$mobile}\n";
+        // echo "Response: {$response}\n";
+
+        // exit(0);
+
     }
+
     public function acctdetails_post()
     {
 

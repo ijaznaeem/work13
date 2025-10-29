@@ -28,7 +28,7 @@ export class GatepassReportComponent implements OnInit {
   public setting = GPSetting;
   public stingsdetails = GPDetails;
 
-  Stores: Observable<any[]>;
+  Stores: Observable<unknown>;
 
   public toolbarOptions: object[];
   constructor(

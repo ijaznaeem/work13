@@ -1,0 +1,9 @@
+accounting type
+    single entry
+        balance forward
+        no editing 
+    double entry
+        financial year
+        back date editing ?
+    voucher printing 
+        

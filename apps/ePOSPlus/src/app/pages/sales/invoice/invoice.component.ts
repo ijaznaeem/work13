@@ -1,14 +1,14 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
-import { Router } from "@angular/router";
-import { FilteringEventArgs } from "@syncfusion/ej2-angular-dropdowns";
+import { Component, OnInit, ViewChild, Input } from "@angular/core";
 import { LocalDataSource } from "ng2-smart-table";
-import swal from "sweetalert";
-import { InvoiceTypes } from "../../../factories/constants";
-import { GetDateJSON, JSON2Date, RoundTo2 } from "../../../factories/utilities";
-import { CachedDataService } from "../../../services/cacheddata.service";
+import { SaleDetails, SaleModel } from "../sale.model";
 import { HttpBase } from "../../../services/httpbase.service";
 import { MyToastService } from "../../../services/toaster.server";
-import { SaleDetails, SaleModel } from "../sale.model";
+import { JSON2Date, GetDateJSON, RoundTo2 } from "../../../factories/utilities";
+import { Router } from "@angular/router";
+import swal from "sweetalert";
+import { CachedDataService } from "../../../services/cacheddata.service";
+import { InvoiceTypes } from "../../../factories/constants";
+import { FilteringEventArgs } from "@syncfusion/ej2-angular-dropdowns";
 
 @Component({
   selector: "app-invoice",
@@ -16,7 +16,7 @@ import { SaleDetails, SaleModel } from "../sale.model";
   styleUrls: ["./invoice.component.scss"],
 })
 export class InvoiceComponent implements OnInit {
-  @Input() Type: string = '';
+  @Input() Type: string;
   @Input() EditID = "";
 
   selectedProduct: any;
@@ -161,7 +161,7 @@ export class InvoiceComponent implements OnInit {
       });
     }
   }
-  getCustomers(routeid: string) {
+  getCustomers(routeid) {
     if (routeid != "") {
       this.sale.CustomerID ='';
       this.http.getCustList(routeid).then((r:any) => {
@@ -170,17 +170,17 @@ export class InvoiceComponent implements OnInit {
       });
     }
   }
-  CustomerSelected(event: any) {
+  CustomerSelected(event) {
     console.log(event);
 
     if (event) {
-      this.SelectCust = this.Accounts.find((x: any) => {
+      this.SelectCust = this.Accounts.find((x) => {
         return x.CustomerID == event.CustomerID;
       });
       // this.sale.PrevBalance = this.SelectCust.Balance
     }
   }
-  RouteSelected($event: any) {
+  RouteSelected($event) {
     if ($event.itemData)
     this.getCustomers($event.itemData.RouteID);
   }
@@ -192,7 +192,7 @@ export class InvoiceComponent implements OnInit {
     } else {
 
       //  console.log(prop === 'CustomerName'? this.Accounts: this.Prods);
-      let filtered = this.Accounts.filter((f: any) => {
+      let filtered = this.Accounts.filter(f=>{
         return f[prop].toLowerCase().indexOf(e.text.toLowerCase() ) >=0;
       })
       e.updateData(filtered);
@@ -271,7 +271,7 @@ export class InvoiceComponent implements OnInit {
     this.sdetails = new SaleDetails();
   }
 
-  ProductSelected($event: any) {
+  ProductSelected($event) {
     this.selectedProduct = $event.itemData;
     console.log($event.itemData);
 
@@ -351,7 +351,7 @@ export class InvoiceComponent implements OnInit {
       }
     });
   }
-  public onDeleteConfirm(event: any): void {
+  public onDeleteConfirm(event): void {
     if (window.confirm("Are you sure you want to delete?")) {
       event.confirm.resolve();
       setTimeout(() => {
@@ -362,7 +362,7 @@ export class InvoiceComponent implements OnInit {
       event.confirm.reject();
     }
   }
-  public onEdit(event: any): void {
+  public onEdit(event) {
     event.newData.Amount =
       event.newData.Qty * event.newData.SPrice * event.newData.Packing;
     event.newData.Discount =
@@ -379,13 +379,13 @@ export class InvoiceComponent implements OnInit {
       this.calculation();
     }, 100);
   }
-  getProducts(value: string) {
-    this.http.getData('qrystock?orderby=ProductName&filter=stock>0 and CompanyID=' + value).then((res: any) => {
+  getProducts(v) {
+    this.http.getData('qrystock?orderby=ProductName&filter=stock>0 and CompanyID=' + v).then((res: any) => {
       this.Prods = res;
     });
   }
 
-  CashInvoice(e: any) {
+  CashInvoice(e) {
     this.sale.AmountRecvd = this.sale.NetAmount;
   }
   changel() {

@@ -93,7 +93,7 @@ export class PurchaseOrdersComponent implements OnInit {
     this.POCols[2].onClick =  this.Approval
     this.FilterData();
   }
-  Approval(event): any {
+  Approval(event:any): any {
     console.log(event);
 
   }

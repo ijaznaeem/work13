@@ -6,7 +6,7 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 // Registering Syncfusion license key
-registerLicense('ORg4AjUWIQA/Gnt2VVhkQlFadVdJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxRd0dhX39ZcHBQRmNeWUY=');
+registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cWWdCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWX5fdHZUQ2heUkJ3WUA=');
 
 if (environment.production) {
   enableProdMode();

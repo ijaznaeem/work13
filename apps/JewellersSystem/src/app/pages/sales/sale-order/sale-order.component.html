@@ -40,15 +40,15 @@
   </div>
   <div class="card-block widget-body">
     <ft-crud-form
+      [CrudButtons]="false"
       [form]="orderForm"
       [formdata]="orderData"
       (DataSaved)="Save($event)"
       (Cancelled)="Cancel($event)"
       (ItemChanged)="Changed($event)"
       (BeforeSave)="BeforeSave($event)"
-      (ButtonClicked)="NavigatorClicked($event)"
+      (ButtonClicked)="ButtonClicked($event)"
     >
     </ft-crud-form>
-
   </div>
 </div>

@@ -264,7 +264,11 @@ export class HttpBase {
   }
 
   getCustomers(t: string) {
-    return this.getData('customers?filter=customer_type=' + t);
+    return this.getData('Customers', {
+      orderby: 'CustomerName',
+      flds: 'CustomerID,CustomerName,Address,PhoneNo,Balance,GoldBalance,Gold21K',
+      filter: t === '0' ? '' : 'AcctTypeID=' + t,
+    });
   }
 
   getAgents() {

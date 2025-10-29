@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { JSON2Date, GetDateJSON } from '../../../factories/utilities';
-import { HttpBase } from '../../../services/httpbase.service';
 import { Router } from '@angular/router';
+import { GetDateJSON, JSON2Date } from '../../../factories/utilities';
+import { HttpBase } from '../../../services/httpbase.service';
 import { MyToastService } from '../../../services/toaster.server';
-
 
 class ExpenseModel {
   Date: any = GetDateJSON();
@@ -11,12 +10,12 @@ class ExpenseModel {
   Description = '';
   Amount = 0;
   BusinessID = '';
-  ClosingID = JSON.parse(localStorage.getItem('currentUser')||'{}').closingid;
+  ClosingID = JSON.parse(localStorage.getItem('currentUser') || '{}').closingid;
 }
 @Component({
   selector: 'app-expend',
   templateUrl: './expend.component.html',
-  styleUrls: ['./expend.component.scss']
+  styleUrls: ['./expend.component.scss'],
 })
 export class ExpendComponent implements OnInit {
   @ViewChild('cmbHeads') cmbHeads;
@@ -28,19 +27,21 @@ export class ExpendComponent implements OnInit {
     private http: HttpBase,
     private alert: MyToastService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.http.getData('expensehead').then((r: any) => {
+   this.LoadHeads();
+  }
+  LoadHeads() {
+     this.http.getData('expensehead').then((r: any) => {
       this.ExpenseHeads = r;
     });
-
   }
   SaveData() {
     this.Voucher.Date = JSON2Date(this.Voucher.Date);
     this.Voucher.BusinessID = this.http.getBusinessID();
     console.log(this.Voucher);
-    this.http.postData('expenses', this.Voucher).then(r => {
+    this.http.postData('expenses', this.Voucher).then((r) => {
       this.alert.Sucess('Expense Saved', 'Save', 1);
       this.Voucher = new ExpenseModel();
       this.cmbHeads.focusIn();
@@ -49,5 +50,27 @@ export class ExpendComponent implements OnInit {
 
   Round(amnt) {
     return Math.round(amnt);
+  }
+  AddNewHead() {
+    const customer_form = {
+      title: 'Expense Head',
+      tableName: 'expensehead',
+      pk: 'HeadID',
+      columns: [
+        {
+          data: 'HeadName',
+          fldName: 'HeadName',
+          control: 'input',
+          type: 'text',
+          label: 'Head Name',
+          required: true,
+        },
+      ],
+    };
+    this.http.openForm(customer_form).then((r) => {
+      if (r) {
+        this.LoadHeads();
+      }
+    });
   }
 }

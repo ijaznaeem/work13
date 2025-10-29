@@ -32,7 +32,7 @@ export class SuppliersBillComponent implements OnInit {
     FromDate: GetDateJSON(),
     ToDate: GetDateJSON(),
     supplier_id: '',
-    StatusID: '0',
+    StatusID: '',
   };
   bsModalRef?: BsModalRef;
   addpayment_form = SupplierPayment_Form;
@@ -55,6 +55,11 @@ export class SuppliersBillComponent implements OnInit {
       status_id: '-1',
       status: 'Void',
     });
+    this.Status.unshift({
+      status_id: '',
+      status: 'All',
+    });
+
     this.Filter.FromDate.day = 1;
     this.FilterData();
   }

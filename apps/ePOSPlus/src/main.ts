@@ -1,12 +1,12 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-import { registerLicense } from '@syncfusion/ej2-base';
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+import { registerLicense } from '@syncfusion/ej2-base';
 
 // Registering Syncfusion license key
-registerLicense('Ngo9BigBOggjHTQxAR8/V1NHaF5cWWdCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWX5fdHZUQ2heUkJ3WUA=');
+registerLicense('ORg4AjUWIQA/Gnt2VVhkQlFadVdJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxRd0dhX39ZcHBQRmNeWUY=');
 
 if (environment.production) {
   enableProdMode();

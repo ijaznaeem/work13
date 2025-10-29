@@ -153,4 +153,7 @@ export class CashReceiptComponent implements OnInit {
     this.Voucher = new VoucherModel();
     this.router.navigateByUrl('/cash/cashreceipt');
   }
+  print (){
+    this.http.PrintVoucher(this.EditID);
+  }
 }

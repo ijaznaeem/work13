@@ -48,6 +48,7 @@ class Auth extends REST_Controller
         $this->db->where('Password', $password);
         $User = $this->db->get('users')->result_array();
 
+
         if (count($User)>0) {
             // var_dump($User);
 

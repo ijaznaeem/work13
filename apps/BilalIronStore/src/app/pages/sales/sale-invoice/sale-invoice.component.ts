@@ -12,7 +12,7 @@ import {
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { LocalDataSource } from 'ng2-smart-table';
-import { BsModalRef } from 'ngx-bootstrap/modal';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
 
 import { NgSelectComponent } from '@ng-select/ng-select';
@@ -22,27 +22,27 @@ import {
   ButtonsBarComponent,
 } from '../../../../../../../libs/future-tech-lib/src/lib/components/buttons-bar/buttons-bar.component';
 import { Buttons } from '../../../../../../../libs/future-tech-lib/src/lib/components/navigator/navigator.component';
-import { GetDate } from '../../../../../../../libs/future-tech-lib/src/lib/utilities/utilities';
 import { InvoiceTypes } from '../../../factories/constants';
 import {
+  getCurDate,
   GetDateJSON,
   JSON2Date,
   RoundTo2,
-  getCurDate,
 } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
 import { PrintBillService } from '../../../services/print-bill.service';
 import { MyToastService } from '../../../services/toaster.server';
-import { SaleDetails, SaleModel } from '../sale.model';
-import { OrderSettings } from './sale-order.setting';
+
+import { CustomersComponent } from '../../accounts/customers/customers.component';
+import { SaleDetails, SaleModel } from './sale-invoice.setting';
 
 @Component({
-  selector: 'app-sale-order',
-  templateUrl: './sale-order.component.html',
-  styleUrls: ['./sale-order.component.scss'],
+  selector: 'app-sale-invoice',
+  templateUrl: './sale-invoice.component.html',
+  styleUrls: ['./sale-invoice.component.scss'],
 })
-export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
+export class SaleInvoiceComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('searchTab') searchTab: TabsetComponent;
   @ViewChild('gatepass') gpTmplt;
   @ViewChild('btnBar') btnBar: ButtonsBarComponent;
@@ -52,7 +52,7 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('fromPurchase') fromPurchase: NgForm;
   @ViewChild('formqty') formSub: NgForm;
   @ViewChild('qty') elQty: ElementRef;
-  @ViewChild('cmbStores') cmbStores: NgSelectComponent;
+  @ViewChild('cmbStores') cmbStores;
   @ViewChild('cmbProduct') cmbProduct;
   @ViewChild('txtRate') txtRate;
   @ViewChild('txtRemarks') txtRemarks;
@@ -61,9 +61,11 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
 
   searchData: any = {};
   srchResult: any = [];
+  storeList: any = [];
   public data = new LocalDataSource([]);
   selectedProduct: any;
   public Ino = '';
+  public OrderNo = '';
   public btnsave = false;
   public isPosted = false;
   public isSaving = false;
@@ -71,26 +73,110 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
   public InvTypes = InvoiceTypes;
   public bsModalRef?: BsModalRef;
   sdetails = new SaleDetails();
-  sale: any = new SaleModel();
+  sale = new SaleModel();
 
- public settings =  OrderSettings;
+  public settings = {
+    selectMode: 'single',
+    hideHeader: false,
+    hideSubHeader: true,
+    actions: {
+      columnTitle: 'Actions',
+      add: false,
+      edit: true,
+      delete: true,
+      custom: [],
+      position: 'right', // left|right
+    },
+    add: {
+      addButtonContent:
+        '<h4 class="mb-1"><i class="fa fa-plus ml-3 text-success"></i></h4>',
+      createButtonContent: '<i class="fa fa-check mr-3 text-success"></i>',
+      cancelButtonContent: '<i class="fa fa-times text-danger"></i>',
+    },
+    edit: {
+      confirmSave: true,
+      editButtonContent: '<i class="fa fa-pencil mr-3 text-primary"></i>',
+      saveButtonContent: '<i class="fa fa-check mr-3 text-success"></i>',
+      cancelButtonContent: '<i class="fa fa-times text-danger"></i>',
+    },
+    delete: {
+      deleteButtonContent: '<i class="fa fa-trash text-danger"></i>',
+      confirmDelete: true,
+    },
+    noDataMessage: 'No data found',
+    columns: {
+      SNo: {
+        title: 'S. No',
+        type: 'text',
+        valuePrepareFunction: (cell, row, index) => index.row.index + 1,
+        filter: false,
+        sort: false,
+        editable: false,
+      },
+      StoreID: {
+        editable: true,
+        title: 'Store',
+        width: '150px',
+        editor: {
+          type: 'list',
+          config: {
+            selectText: 'Select Store',
+            list: this.storeList,
+          },
+        },
+        valuePrepareFunction: (cell) => {
+          const store = this.storeList.find((s: any) => s.value === cell);
+          return store ? store.title : cell;
+        },
+      },
+      ProductName: {
+        editable: false,
+        title: 'Product',
+        width: '250px',
+      },
+      Qty: {
+        title: 'Qty',
+        editable: true,
+      },
+      SPrice: {
+        title: 'Price',
+        editable: true,
+      },
+      Amount: {
+        editable: false,
+        title: 'Amount',
+      },
+    },
+    pager: {
+      display: true,
+      perPage: 50,
+    },
+  };
   Stock: any = [];
   Banks: any = [];
 
-  public Prods: Observable<any[]>;
+  public Prods: Observable<any>;
   public Accounts: any = [];
+  public Transporters: any = [];
   public SelectCust: any = {};
   public LastPrice: any = {};
   public curStoreID: any = 0;
   public GPStoreID: 1;
+  Stores: any = [];
+  CustCats: Observable<unknown>;
+  heldInvoices: number;
+  heldInvoicesCount: number = 0;
   constructor(
     private http: HttpBase,
     private cachedData: CachedDataService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private myToaster: MyToastService,
-    private bill: PrintBillService
-  ) {}
+    private bill: PrintBillService,
+    private bsService: BsModalService
+  ) {
+    this.CustCats = this.cachedData.CustCats$;
+  }
 
   buttonConfigs: ButtonConfig[] = [
     {
@@ -98,48 +184,59 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
       icon: 'fa fa-file',
       classes: 'btn-primary',
       action: () => this.NewInvoice(),
+      size: 'lg',
     },
     {
       title: 'Edit',
       icon: 'fa fa-pencil',
       classes: 'btn-secondary',
       action: () => this.EditInvoice(),
+      size: 'lg',
     },
     {
       title: 'Print',
       icon: 'fa fa-print',
       classes: 'btn-warning',
       action: () => this.PrintInvoice(this.EditID),
+      size: 'lg',
     },
     {
-      title: 'Gatepass',
+      title: 'Thermal',
       icon: 'fa fa-print',
-      classes: 'btn-danger',
-      action: () => this.OpenGatepass(this.gpTmplt),
+      classes: 'btn-warning',
+      action: () => this.PrintThermalInvoice(this.EditID),
+
+      size: 'lg',
     },
   ];
   btnSave: ButtonConfig[] = [
     {
-      title: 'Save',
+      title: '  Save  ',
       icon: 'fa fa-save',
       classes: 'btn-success',
       action: () => this.SaveData(),
       type: 'button',
+      size: 'lg',
     },
+  ];
+  btnCancel: ButtonConfig[] = [
     {
       title: 'Cancel',
       icon: 'fa fa-refresh',
       classes: 'btn-warning',
       action: () => this.CancelInvoice(),
+      size: 'lg',
     },
   ];
 
-  ngOnInit() {
+  async ngOnInit() {
     this.btnLocked = false;
-    this.Prods = this.cachedData.Products$;
+    this.Banks = await this.http.getAccountsByType('Bank');
+    this.Transporters = await this.http.getAccountsByType('Transporter');
+    this.Stock = await this.http.getProducts(0);
+
     this.Cancel();
-    this.getCustomers('');
-    this.onTabSelect();
+    this.loadHeldInvoicesCount();
 
     this.activatedRoute.params.subscribe((params: Params) => {
       if (params.EditID) {
@@ -153,14 +250,41 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
     });
   }
   ngAfterViewInit(): void {
-    if (this.EditID == '') this.EditDisabled(true);
-    else this.EditDisabled(false);
     setTimeout(() => {
+      if (this.EditID == '') this.EditDisabled(true);
+      else this.EditDisabled(false);
       this.cmbAccts.focus();
     }, 500);
   }
+
+  async StoreSelected(e) {
+    if (e.target.value || e.target.value != '') {
+      let product: any = await this.http.getData(
+        'qrystock?filter=ProductID=' +
+          this.sdetails.ProductID +
+          ' and StoreID = ' +
+          e.target.value
+      );
+      if (product.length > 0) {
+        this.selectedProduct = product[0];
+        this.sdetails.PPrice = this.selectedProduct.PPrice;
+        this.sdetails.SPrice = this.selectedProduct.SPrice;
+        this.sdetails.Packing = this.selectedProduct.Packing;
+
+        this.sdetails.ProductName = this.selectedProduct.ProductName;
+      }
+    }
+  }
+  CustomerCat(event) {
+    console.log(event.target.value);
+    if (event.target.value && event.target.value != '') {
+      this.http.getAccountsByCat(event.target.value).then((r: any) => {
+        this.Accounts = r;
+      });
+    }
+  }
   FindINo() {
-    this.router.navigate(['/sale/order/', this.Ino]);
+    this.router.navigate(['/sale/invoice/', this.Ino]);
   }
   ngOnChanges(changes: SimpleChanges) {
     if (changes.EditID.currentValue != changes.EditID.previousValue) {
@@ -171,32 +295,54 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.EditID && this.EditID !== '') {
       console.log('loadinvoice', this.EditID);
       this.Ino = this.EditID;
-      this.http.getData('orders/' + this.EditID).then((r: any) => {
+      this.http.getData('invoices/' + this.EditID).then((r: any) => {
         if (!r) {
-          this.myToaster.Warning('Invalid order No', 'Edit', 1);
-          this.router.navigateByUrl('sale/order');
+          this.myToaster.Warning('Invalid invoice No', 'Edit', 1);
+          this.router.navigateByUrl('sale/invoice');
           return;
         }
         if (r.IsPosted == '1') {
-          // this.myToaster.Warning('order is already posted', 'Edit', 1);
+          // this.myToaster.Warning('invoice is already posted', 'Edit', 1);
           this.isPosted = true;
         } else {
           this.isPosted = false;
         }
+
         this.EditDisabled(false);
         this.sale = r;
         this.sale.Date = GetDateJSON(new Date(r.Date));
 
+        this.CustomerCat({ target: { value: this.sale.CustCatID } });
+
         this.http
-          .getData(
-            'qryorderdetails?orderby=OrderDetailID desc&filter=OrderID=' +
-              this.EditID
-          )
+          .getData('invoicetransporters', {
+            filter: 'InvoiceID=' + this.EditID,
+          })
+          .then((rtrans: any) => {
+            this.sale.TransporterIDs = Array.isArray(rtrans)
+              ? rtrans.map((t: any) => t.TransporterID)
+              : [];
+          });
+
+        this.http
+          .getData('qryinvoicedetails', {
+            orderby: 'DetailID desc',
+            filter: 'InvoiceID=' + this.EditID,
+          })
           .then((rdet: any) => {
             this.data.empty();
 
             for (const det of rdet) {
-              const { ProductID, ProductName, Qty, SPrice, PPrice } = det;
+              const {
+                ProductID,
+                ProductName,
+                Qty,
+                SPrice,
+                PPrice,
+                StockID,
+                StoreID,
+                StoreName,
+              } = det;
               // Create new object with selected properties
               this.AddToDetails({
                 ProductID,
@@ -204,6 +350,9 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
                 Qty,
                 SPrice,
                 PPrice,
+                StockID,
+                StoreID,
+                StoreName,
               });
             }
             this.calculation();
@@ -212,14 +361,6 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  getCustomers(routeid) {
-    this.http.getCustList(routeid).then((r: any) => {
-      this.Accounts = r;
-    });
-    this.http.getAccountsByType('Bank').then((r: any) => {
-      this.Banks = r;
-    });
-  }
   CustomerSelected(event) {
     console.log(event);
 
@@ -227,20 +368,14 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
       this.SelectCust = this.Accounts.find((x) => {
         return x.CustomerID == event.CustomerID;
       });
-      this.sale.PrevBalance = this.SelectCust.Balance;
-      this.sale.CustomerName = this.SelectCust.CustomerName;
+      // if (this.EditID == '' || this.EditID == '0') {
+      this.sale.PrevBalance = this.SelectCust.CBalance;
+      // }
+      this.SelectCust.CustomerName = this.SelectCust.CustomerName;
+      this.GetFromHeldInvoice(this.SelectCust.CustomerID);
     }
   }
 
-  StoreSelected(e) {
-    if (e) {
-      this.http.getStock(e.StoreID).then((r) => {
-        this.Stock = r;
-        this.sdetails.StoreName = e.StoreName;
-        localStorage.setItem('StoreID', e.StoreID);
-      });
-    }
-  }
   AddToDetails(ord: any) {
     const tQty = parseFloat('0' + ord.Qty);
 
@@ -254,6 +389,9 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
       Amount: RoundTo2(ord.SPrice * tQty),
       ProductID: ord.ProductID,
       Packing: 1,
+      StoreName: ord.StoreName,
+      StoreID: ord.StoreID,
+      StockID: ord.StockID,
       BusinessID: this.http.getBusinessID(),
     };
 
@@ -269,21 +407,42 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
       return;
     }
 
+    // For a native HTML <select> element, get the selected option's text
+    const storeSelect: HTMLSelectElement =
+      this.cmbStores && this.cmbStores.nativeElement;
+    if (storeSelect && storeSelect.selectedIndex >= 0) {
+      this.sdetails.StoreName =
+        storeSelect.options[storeSelect.selectedIndex].text;
+    } else {
+      this.sdetails.StoreName = '';
+    }
+
     this.AddToDetails(this.sdetails);
     this.data.refresh();
     this.calculation();
     this.cmbProduct.focus();
     this.sdetails = new SaleDetails();
+    this.AddToInvoice();
   }
 
   ProductSelected(product) {
     this.selectedProduct = product;
 
     if (product) {
-      console.log(product);
-      this.sdetails.PPrice = product.PPrice;
-      this.sdetails.SPrice = product.SPrice;
-      this.sdetails.ProductName = product.ProductName;
+      this.GetStores(product.ProductID);
+    }
+  }
+  async GetStores(ProductID) {
+    if (ProductID) {
+      this.Stores = await this.http.getData(
+        'qrystock?orderby=StoreID&flds=StoreID,StoreName,Stock&filter=ProductID=' +
+          ProductID
+      );
+      if (this.Stores.length > 0) {
+        this.StoreSelected({
+          target: { value: this.Stores[0].StoreID },
+        });
+      }
     }
   }
   getTime(d: Date) {
@@ -293,15 +452,23 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
     this.isSaving = true;
     let InvoiceID = '';
 
+    this.sale.TransporterIDs = this.sale.TransporterIDs || [];
+
+    if (this.sale.Bank > 0 && this.sale.BankID == '') {
+      this.myToaster.Error('Please select Bank Account', 'Save', 2);
+      return;
+    }
+    if (this.sale.DeliveryCharges > 0 && this.sale.TransporterIDs.length == 0) {
+      this.myToaster.Error('Please select Transporter', 'Save', 2);
+      return;
+    }
+
     let res1 = await this.data.getAll();
     if (!this.fromPurchase.valid || res1.length == 0) {
       this.myToaster.Error('Invalid Data', 'Save', 2);
       return;
     }
-    if (this.sale.Bank > 0 && !this.sale.BankID) {
-      this.myToaster.Error('Please select Bank Account', 'Save', 2);
-      return;
-    }
+
     this.sale.AmntRecvd = this.sale.Cash * 1 + this.sale.Bank * 1;
 
     if (this.EditID) {
@@ -315,23 +482,27 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
     this.sale.UserID = this.http.getUserID();
 
     this.sale.details = res1;
-    this.http.postTask('order' + InvoiceID, this.sale).then(
-      (r: any) => {
-        this.myToaster.Sucess('Order Saved Successfully', 'Save', 2);
 
+    this.http.postTask('sale' + InvoiceID, this.sale).then(
+      async (r: any) => {
+        this.myToaster.Sucess('Invoice Saved Successfully', 'Save', 2);
+        await this.http.RemoveHeldInvoice(this.sale.CustomerID);
         if (this.EditID != '') {
           this.LoadInvoice();
         } else {
           this.NavigatorClicked({ Button: Buttons.Last });
+          this.EditID = r.id;
         }
 
-        // this.PrintInvoice(this.EditID)
+        setTimeout(() => {
+          this.PrintInvoice(this.EditID);
+        }, 1000);
 
         this.isSaving = false;
       },
       (err) => {
         this.sale.Date = GetDateJSON(new Date(getCurDate()));
-        this.myToaster.Error('Error saving order', 'Error', 2);
+        this.myToaster.Error('Error saving invoice', 'Error', 2);
         console.log(err);
       }
     );
@@ -365,9 +536,6 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
     }, 100);
   }
 
-  CashInvoice(e) {
-    this.sale.AmntRecvd = this.sale.NetAmount;
-  }
   changel() {
     this.calculation();
   }
@@ -391,6 +559,7 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
     this.sale = new SaleModel();
     this.sale.UserID = this.http.getUserID();
     this.sdetails = new SaleDetails();
+    this.StoreSelected({ target: { value: this.sdetails.StoreID } });
     this.btnsave = false;
     this.isPosted = false;
     this.SelectCust = {};
@@ -398,12 +567,8 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
 
   SubmitOrder() {
     if (this.formSub.valid) {
-      // Perform actions before submission if needed
-
-      // Submit the form
       this.AddOrder();
     } else {
-      // Handle form validation errors or display messages
       this.myToaster.Error('Invalid data', 'Error');
     }
   }
@@ -419,7 +584,7 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
     let billNo = 1;
     switch (Number(e.Button)) {
       case Buttons.First:
-        this.router.navigateByUrl('/sale/order/' + billNo);
+        this.router.navigateByUrl('/sale/invoice/' + billNo);
         break;
       case Buttons.Previous:
         if (!(this.EditID == '' || this.EditID == null)) {
@@ -427,20 +592,20 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
             billNo = Number(this.EditID) - 1;
           }
         }
-        this.router.navigateByUrl('/sale/order/' + billNo);
+        this.router.navigateByUrl('/sale/invoice/' + billNo);
         break;
       case Buttons.Next:
         if (!(this.EditID == '' || this.EditID == null)) {
           billNo = Number(this.EditID) + 1;
         }
-        this.router.navigateByUrl('/sale/order/' + billNo);
+        this.router.navigateByUrl('/sale/invoice/' + billNo);
         break;
       case Buttons.Last:
-        this.http.getData('getbno/4').then((r: any) => {
+        this.http.getData('getbno/1').then((r: any) => {
           billNo = r.billno;
           console.log(r);
 
-          this.router.navigateByUrl('/sale/order/' + billNo);
+          this.router.navigateByUrl('/sale/invoice/' + billNo);
         });
         break;
       default:
@@ -450,17 +615,12 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
   }
   NewInvoice() {
     //this.Cancel();
-    this.router.navigateByUrl('/sale/order');
+    this.router.navigateByUrl('/sale/invoice');
   }
 
-  onTabSelect() {
-    this.searchData.FromDate = GetDate();
-    this.searchData.ToDate = GetDate();
-    this.searchData.CustomerID = '';
-  }
   Clicked(e) {
     if (e.data) {
-      this.router.navigateByUrl('/sale/order/' + e.data.InvoiceID);
+      this.router.navigateByUrl('/sale/invoice/' + e.data.InvoiceID);
       this.searchTab.tabs[0].active = true;
     }
   }
@@ -477,17 +637,24 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
     });
   }
   ProductSearchFn(term: any, item) {
-    if (isNaN(term)) {
+    if (term) {
       return (
         item.ProductName.toLocaleLowerCase().indexOf(
           term.toLocaleLowerCase()
-        ) >= 0
+        ) >= 0 || item.ProductID.indexOf(term) >= 0
       );
-    } else return item.ProductID == term;
+    } else {
+      return false;
+    }
   }
   PrintInvoice(InvoiceID) {
     // window.open('/#/print/printinvoice/' + InvoiceID, '_blank');
     this.http.PrintSaleInvoice(InvoiceID);
+    return;
+  }
+  PrintThermalInvoice(InvoiceID) {
+    // window.open('/#/print/printinvoice/' + InvoiceID, '_blank');
+    this.http.PrintThermalInvoice(InvoiceID);
     return;
   }
 
@@ -530,21 +697,227 @@ export class SaleOrderComponent implements OnInit, OnChanges, AfterViewInit {
     this.cmbAccts.focus();
   }
   CancelInvoice() {
-    this.Cancel();
-    if (this.EditID != '') {
-      this.LoadInvoice();
+    // Add SweetAlert confirmation before canceling
+    import('sweetalert2').then((Swal) => {
+      Swal.default
+        .fire({
+          title: 'Are you sure?',
+          text: 'Do you want to cancel this invoice?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, cancel it!',
+          cancelButtonText: 'No, keep it',
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            this.Cancel();
+            await this.http.RemoveHeldInvoice(this.sale.CustomerID);
+            if (this.EditID != '') {
+              this.LoadInvoice();
+            } else {
+              this.NavigatorClicked({
+                Button: Buttons.Last,
+              });
+            }
+          }
+        });
+    });
+  }
+
+  async NewCustomer() {
+    await this.bsService.show(CustomersComponent, {
+      class: 'modal-lg',
+      backdrop: true,
+      initialState: {
+        EditID: '',
+      },
+    });
+     this.CustomerCat({ target: { value: this.sale.CustCatID } });
+    this.cmbAccts.focus();
+  }
+  getCustomerName() {
+    if (this.SelectCust && this.SelectCust.CustomerName) {
+      return this.SelectCust.CustomerName;
     } else {
-      this.NavigatorClicked({
-        Button: Buttons.Last,
-      });
+      return this.sale.CustomerName || '';
     }
   }
-  formatNumber() {
-    this.sale.Amount = this.sale.Amount.replace(/,/g, ''); // Remove previous commas
-    if (!isNaN(Number(this.sale.Amount))) {
-      this.sale.Amount = new Intl.NumberFormat('en-US').format(
-        Number(this.sale.Amount)
+
+  async AddToInvoice() {
+    // Add SweetAlert confirmation before holding invoice
+    // import('sweetalert2').then((Swal) => {
+    //   Swal.default
+    //
+
+    await this.http.HoldInvoice({
+      CustomerID: this.sale.CustomerID,
+      CustomerName: this.getCustomerName(),
+      Invoice: this.sale,
+      Details: await this.data.getAll(),
+    });
+
+    // Refresh the held invoices count
+    this.loadHeldInvoicesCount();
+  }
+
+  RetrieveInvoice() {
+    import('sweetalert2').then(async (Swal) => {
+      // Get held invoices
+      const heldInvoices = await this.http.GetHeldInvoices();
+      if (!heldInvoices || heldInvoices.length === 0) {
+        return null;
+      }
+
+      // Prepare options for dropdown
+      const options = heldInvoices.reduce((acc, inv) => {
+        acc[inv.CustomerID] = `${inv.CustomerName || ''}`;
+        return acc;
+      }, {});
+
+      // Show SweetAlert with dropdown
+      Swal.default
+        .fire({
+          title: 'Retrieve Held Invoice',
+          input: 'select',
+          inputOptions: options,
+          inputPlaceholder: 'Select an invoice',
+          showCancelButton: true,
+          confirmButtonText: 'Retrieve',
+          cancelButtonText: 'Cancel',
+        })
+        .then(async (result) => {
+          if (result.isConfirmed && result.value) {
+            const selectedId = result.value;
+            // Find and remove selected invoice from heldInvoices
+            this.GetFromHeldInvoice(selectedId);
+          }
+        });
+    });
+  }
+  GetFromHeldInvoice(selectedId: any) {
+    this.data.empty();
+    this.data.refresh();
+    this.calculation();
+    this.http.GetHeldInvoices().then((heldInvoices: any[]) => {
+      const selectedInvoice = heldInvoices.find(
+        (inv) => inv.CustomerID === selectedId
       );
+
+      if (selectedInvoice) {
+        // Remove from held list (if needed, call API to remove)
+        // await this.http.RemoveHeldInvoice(selectedId);
+        // Load invoice data into form
+        this.sale = selectedInvoice.Invoice;
+
+        this.data.load(selectedInvoice.Details || []);
+        this.calculation();
+
+        this.myToaster.Sucess('Invoice retrieved successfully', 'Retrieve', 1);
+      }
+    });
+  }
+
+  FindOrder() {
+    if (this.OrderNo && this.OrderNo != '') {
+      this.http
+        .getData('qryorders', {
+          filter: 'OrderID=' + this.OrderNo,
+        })
+        .then((r: any) => {
+          if (!r) {
+            this.myToaster.Warning('Invalid Order No', 'Find Order', 1);
+            return;
+          }
+
+          this.sale = Object.assign(this.sale, r[0]);
+          this.CustomerCat({ target: { value: this.sale.CustCatID } });
+          this.sale.Cash = 0;
+          this.sale.Bank = 0;
+          this.sale.IsPosted = 0;
+          this.sale.BankID = '';
+          this.sale.AmntRecvd = 0;
+          setTimeout(() => {
+            this.CustomerSelected({
+              CustomerID: this.sale.CustomerID,
+              CustomerName: this.sale.CustomerName,
+            });
+            this.data.empty();
+            this.http
+              .getData('qryorderdetails', {
+                filter: 'OrderID=' + this.OrderNo,
+                orderby: 'OrderDetailID desc',
+              })
+              .then((details: any) => {
+                this.data.empty();
+                this.data.refresh();
+
+                for (const det of details) {
+                  if (!det.StoreID) {
+                    det.StoreID = this.sdetails.StoreID || 1;
+                    // Try to get store name from Stores observable if available
+                    if (
+                      this.Stores &&
+                      typeof this.Stores.subscribe === 'function'
+                    ) {
+                      this.Stores.subscribe((stores: any) => {
+                        const store = stores?.find(
+                          (s) => s.StoreID == det.StoreID
+                        );
+                        if (store) {
+                          det.StoreName = store.StoreName;
+                        }
+                      });
+                    }
+                  }
+
+                  this.AddToDetails(det);
+                }
+                this.data.refresh();
+                this.calculation();
+              });
+          }, 500);
+          this.sale.Date = GetDateJSON(new Date(r[0].Date));
+
+          this.myToaster.Sucess('Order loaded successfully', 'Find Order', 1);
+
+          this.calculation();
+        });
+    } else {
+      this.myToaster.Error('Please enter Order No', 'Find Order', 1);
     }
+  }
+  GetHoldedInvoicesCount() {
+    return this.http.GetHeldInvoices().then((invoices: any[]) => {
+      this.heldInvoicesCount = invoices ? invoices.length : 0;
+      return this.heldInvoicesCount;
+    });
+  }
+
+  async loadHeldInvoicesCount() {
+    try {
+      await this.GetHoldedInvoicesCount();
+    } catch (error) {
+      this.heldInvoicesCount = 0;
+    }
+  }
+
+  ClearHoldInvoices(){
+    import('sweetalert2').then(async (Swal) => {
+      const result = await Swal.default.fire({
+        title: 'Are you sure?',
+        text: 'This will clear all held invoices. Do you want to continue?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, clear all!',
+        cancelButtonText: 'No, keep them',
+      });
+
+      if (result.isConfirmed) {
+
+        await this.http.ClearHeldInvoices();
+        this.loadHeldInvoicesCount();
+        this.myToaster.Sucess('All held invoices cleared', 'Clear', 1);
+      }
+    });
   }
 }

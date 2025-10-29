@@ -227,7 +227,7 @@ export class PurchaseInvoiceComponent implements OnInit, OnChanges {
     this.data.getAll().then((res1) => {
       this.invoice.details = res1;
       this.invoice.FinYearID = this.http.getFinYearID();
-      this.invoice.SessionID = this.http.getClosingID();
+      this.invoice.UserID = this.http.getUserID();
 
       this.http.postTask('purchase' + InvoiceID, this.invoice).then(
         (r: any) => {

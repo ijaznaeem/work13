@@ -15,7 +15,8 @@ export class ProductionsummaryComponent implements OnInit {
   public Filter = {
     FromDate: GetDateJSON(),
     ToDate: GetDateJSON(),
-
+    Type: '1',
+    ProductID: '',
     StoreID: '',
   };
   setting = {
@@ -51,6 +52,7 @@ export class ProductionsummaryComponent implements OnInit {
   };
 
   public data: object[];
+  Products: any= [];
 
   constructor(
     private http: HttpBase,
@@ -59,7 +61,8 @@ export class ProductionsummaryComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.FilterData();
+    this.ProductType({ target: { value: '1' } });
+
   }
   PrintReport() {
     this.ps.PrintData.HTMLData = document.getElementById('print-section');
@@ -72,6 +75,9 @@ export class ProductionsummaryComponent implements OnInit {
 
     this.router.navigateByUrl('/print/print-html');
   }
+  ProductSelected(e) {
+    this.FilterData();
+  }
   FilterData() {
     // tslint:disable-next-line:quotemark
     let filter =
@@ -81,6 +87,11 @@ export class ProductionsummaryComponent implements OnInit {
       JSON2Date(this.Filter.ToDate) +
       "'";
 
+    filter += ' and ProductionType=\'' + this.Filter.Type  + '\'';
+
+    if ( this.Filter.ProductID &&  this.Filter.ProductID != '') {
+      filter += " and ProductID = " + this.Filter.ProductID ;
+    }
     this.http
       .getData('qryproductionreport', {
         flds: 'Date,ProductName,ProductionType, Qty, PackingWght, Weight',
@@ -91,4 +102,22 @@ export class ProductionsummaryComponent implements OnInit {
       });
   }
   Clicked(e) {}
+  ProductType(e) {
+    if (e.target.value === 'Finish Goods') {
+      this.http
+        .getData('products?flds=ProductID, ProductName&orderby=ProductName')
+        .then((r: any) => {
+          this.Products = r;
+        });
+    } else {
+      this.http
+        .getData(
+          'rawitems?flds=ItemID as ProductID,ItemName as ProductName&orderby=ItemName'
+        )
+        .then((r: any) => {
+          this.Products = r;
+        });
+    }
+    this.FilterData();
+  }
 }

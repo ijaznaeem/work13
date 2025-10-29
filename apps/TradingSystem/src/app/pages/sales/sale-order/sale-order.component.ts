@@ -109,7 +109,7 @@ export class SaleOrderComponent implements OnInit, OnChanges {
           // this.sale.Date = GetDateJSON(new Date(r[0].Date));
 
           this.http
-            .getData(`qryPOrderDetails?filter=OrderID='${this.EditID}'`)
+            .getData(`qrySOrdDetails?filter=OrderID='${this.EditID}'`)
             .then((rdet: any) => {
               for (const det of rdet) {
                 this.AddToDetails(det);
@@ -222,9 +222,9 @@ export class SaleOrderComponent implements OnInit, OnChanges {
         (r: any) => {
           this.myToaster.Sucess('Data Insert successfully', '', 2);
           if (this.EditID != '') {
-            this.router.navigateByUrl('/sale/so/' + this.EditID);
+            this.router.navigateByUrl('/sale/order/' + this.EditID);
           } else {
-            this.router.navigateByUrl('/sale/so/' + r.id);
+            this.router.navigateByUrl('/sale/order/' + r.id);
           }
         },
         (err) => {
@@ -325,7 +325,7 @@ export class SaleOrderComponent implements OnInit, OnChanges {
     let billNo: any = 'SO' + '-' + dt.year.toString().slice(2) + '000001';
     switch (Number(e.Button)) {
       case Buttons.First:
-        this.router.navigateByUrl('/sale/so/' + billNo);
+        this.router.navigateByUrl('/sale/order/' + billNo);
         break;
       case Buttons.Previous:
         if (!(this.EditID == '' || this.EditID == null)) {
@@ -333,18 +333,18 @@ export class SaleOrderComponent implements OnInit, OnChanges {
             billNo = Number(this.EditID) - 1;
           }
         }
-        this.router.navigateByUrl('/sale/so/' + billNo);
+        this.router.navigateByUrl('/sale/order/' + billNo);
         break;
       case Buttons.Next:
         if (!(this.EditID == '' || this.EditID == null)) {
           billNo = Number(this.EditID) + 1;
         }
-        this.router.navigateByUrl('/sale/so/' + billNo);
+        this.router.navigateByUrl('/sale/order/' + billNo);
         break;
       case Buttons.Last:
         this.http.getData('getbno/SO').then((r: any) => {
           billNo = r.billno;
-          this.router.navigateByUrl('/sale/so/' + billNo);
+          this.router.navigateByUrl('/sale/order/' + billNo);
         });
         break;
       default:
@@ -353,7 +353,7 @@ export class SaleOrderComponent implements OnInit, OnChanges {
   }
   NewInvoice() {
     this.Cancel();
-    this.router.navigateByUrl('/sale/so');
+    this.router.navigateByUrl('/sale/order');
   }
   PrintInvoice() {
     this.router.navigateByUrl('/print/printsale/' + this.EditID);

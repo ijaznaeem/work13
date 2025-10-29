@@ -9,11 +9,12 @@ import {
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Observable } from 'rxjs';
+import { DailyCash } from '../../../factories/static.data';
 import { GetProps, RoundTo } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
 import { MyToastService } from '../../../services/toaster.server';
-import { Order, SaleOrderForm } from './sale-order.settings';
+import { SaleOrderForm } from './sale-order.settings';
 
 @Component({
   selector: 'app-sale-order',
@@ -34,7 +35,7 @@ export class SaleOrderComponent implements OnInit, OnChanges {
   public btnsave = false;
   public isPosted = false;
 
-  orderData = new Order();
+  orderData:any = {};
   orderForm = SaleOrderForm;
 
   public selectedProduct: any = {};
@@ -77,7 +78,7 @@ export class SaleOrderComponent implements OnInit, OnChanges {
       .then((r: any) => {
         if (r.length > 0) {
           this.isPosted = !(r[0].IsPosted == '0');
-          this.orderData = GetProps(r[0], Object.keys(new Order()));
+          this.orderData = GetProps(r[0], Object.keys(new DailyCash()));
           this.orderData.OrderDate = this.orderData.OrderDate.split(' ')[0];
           this.orderData.DueDate = this.orderData.DueDate.split(' ')[0];
           this.CalcGoldAmount();
@@ -87,9 +88,24 @@ export class SaleOrderComponent implements OnInit, OnChanges {
       });
   }
   public Save(event) {
-    this.myToaster.Success('Saved Successfully', 'Save', 1);
-    this.btnsave = true;
-    this.isPosted = false;
+    this.http
+      .postTask(
+        'dailycash' + (this.EditID == '' ? '' : '/' + this.EditID),
+        this.orderData
+      )
+      .then((r: any) => {
+        if (r) {
+          this.myToaster.Success('Saved Successfully', 'Save', 1);
+          this.btnsave = true;
+          this.isPosted = false;
+          if (this.EditID == '') {
+            this.NavigatorClicked({ col: { label: 'Last' } });
+          }
+        }
+      })
+      .catch((err) => {
+        this.myToaster.Error('Error Saving', 'Save', 1);
+      });
   }
   BeforeSave(event) {
     console.log(event);
@@ -121,14 +137,14 @@ export class SaleOrderComponent implements OnInit, OnChanges {
     this.CalcTotalAmount();
   }
   CalcTotalAmount() {
-    this.orderData.TotalAmount = RoundTo(
+    this.orderData.TotalCash = RoundTo(
       Number(this.orderData.AdvanceAmount) + Number(this.orderData.GoldAmount),
       4
     );
   }
   Cancel(event) {
     this.isPosted = false;
-    this.orderData = new Order();
+    this.orderData = new DailyCash();
     this.btnsave = false;
   }
 
@@ -136,8 +152,25 @@ export class SaleOrderComponent implements OnInit, OnChanges {
     this.NavigateTo(this.Ino);
   }
   NavigateTo(rt = '') {
-    this.router.navigateByUrl('/sale/order' + ( rt != '' ? '/' + rt : ''));
+    this.router.navigateByUrl('/sale/order' + (rt != '' ? '/' + rt : ''));
   }
+
+  ButtonClicked(e) {
+    switch (e.col.label) {
+      case 'New':
+        this.NavigateTo('');
+        break;
+      case 'Save':
+        this.Save(e);
+        break;
+      case 'Cancel':
+        this.Cancel(e);
+        break;
+      default:
+        this.NavigatorClicked(e);
+    }
+  }
+
   NavigatorClicked(e) {
     console.log(e);
 
@@ -148,15 +181,15 @@ export class SaleOrderComponent implements OnInit, OnChanges {
         break;
       case 'Prev':
         if (!(this.EditID == '' || this.EditID == null)) {
-          if (Number(this.EditID) - 1 > billNo) {
-            billNo = Number(this.EditID) - 1;
+          if (Number(this.EditID.slice(-8)) - 1 > billNo) {
+            billNo = Number(this.EditID.slice(-8)) - 1;
           }
         }
         this.router.navigateByUrl('/sale/order/' + billNo);
         break;
       case 'Next':
         if (!(this.EditID == '' || this.EditID == null)) {
-          billNo = Number(this.EditID) + 1;
+          billNo = Number(this.EditID.slice(-8)) + 1;
         }
         this.router.navigateByUrl('/sale/order/' + billNo);
         break;

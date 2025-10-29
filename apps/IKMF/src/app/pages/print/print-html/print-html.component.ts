@@ -1,8 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  OnInit
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { PrintDataService } from '../../../services/print.data.services';
 
 import jsPDF from 'jspdf';
@@ -16,17 +12,15 @@ import { HttpBase } from '../../../services/httpbase.service';
   templateUrl: './print-html.component.html',
   styleUrls: ['./print-html.component.scss'],
 })
-
 export class PrintHtmlComponent implements OnInit, AfterViewInit {
   public printdata: any;
-  Business: any = Company
+  Business: any = Company;
   IMAGE_URL = UPLOADS_URL;
 
   constructor(private pdata: PrintDataService, private http: HttpBase) {}
 
   ngOnInit() {
     this.printdata = this.pdata.PrintData;
-
   }
   ngAfterViewInit() {
     if (this.printdata.HTMLData) {
@@ -46,7 +40,7 @@ export class PrintHtmlComponent implements OnInit, AfterViewInit {
 
     $('.table .table-dyna tr').find('th:last-child, td:last-child').remove();
 
-    doc.setFont("helvetica", "bold");
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
     doc.text(this.Business.Name, 105, 10, {
       align: 'center',
@@ -66,11 +60,13 @@ export class PrintHtmlComponent implements OnInit, AfterViewInit {
       align: 'center',
     });
     doc.setFontSize(10);
-    autoTable(doc, { html: '.table .table-dyna', startY: 30,
+    autoTable(doc, {
+      html: '.table .table-dyna',
+      startY: 30,
       theme: 'grid',
       margin: { top: 5, left: 3, right: 3, bottom: 5 },
-      styles: { cellPadding: 0.5, overflow: "linebreak", fontSize: 8 },
-       },);
+      styles: { cellPadding: 0.5, overflow: 'linebreak', fontSize: 8 },
+    });
     doc.save(this.printdata.Title);
   }
 }

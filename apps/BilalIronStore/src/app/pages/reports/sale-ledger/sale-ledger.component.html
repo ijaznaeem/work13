@@ -51,40 +51,10 @@
         </div>
         <div class="col-md-8">
           <div class="row no-gutter">
-            <div class="form-group col-md-2">
-              <div class="custom-control mt-2 custom-radio">
-                <input
-                  class="custom-control-input radio-inline"
-                  id="rdByProduct"
-                  name="radio"
-                  type="radio"
-                  value="1"
-                  [(ngModel)]="nWhat"
-                  (change)="ItemChange($event)"
-                />
-                <label class="custom-control-label" for="rdByProduct">
-                  By Product
-                </label>
-              </div>
 
-              <div class="custom-control custom-radio">
-                <input
-                  class="custom-control-input radio-inline radio-primary"
-                  id="rdByUnit"
-                  name="radio"
-                  type="radio"
-                  value="2"
-                  [(ngModel)]="nWhat"
-                  (change)="ItemChange($event)"
-                />
-                <label class="custom-control-label" for="rdByUnit">
-                  By Unit
-                </label>
-              </div>
-            </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
               <label for="customer"
-                >Select {{ nWhat == '1' ? 'Product' : 'Unit' }}
+                >Select Product
               </label>
               <ng-select
                 #cmbProduct

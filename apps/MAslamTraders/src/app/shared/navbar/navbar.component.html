@@ -60,6 +60,7 @@
             placement="bottom-left"
             display="static"
             ngbDropdown
+            #shortcutsDropdown="ngbDropdown"
           >
             <a
               class="nav-link dropdown-toggle dropdown-notification p-0 mt-2"
@@ -94,6 +95,7 @@
                   [routerLink]="short.path == '' ? null : short.path"
                   *ngFor="let short of shortcuts"
                   class="d-flex justify-content-between"
+                  (click)="shortcutsDropdown.close()"
                 >
                   <div class="media d-flex align-items-center">
                     <div class="media-left">

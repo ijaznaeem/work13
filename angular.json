@@ -11,7 +11,7 @@
     "ePosPWA": "apps/ePosPWA",
     "QandFashan": "apps/QandFashan",
     "RiceMills": "apps/RiceMills",
-	"MasoodFloorMills": "apps/MasoodFloorMills",
+    "MasoodFloorMills": "apps/MasoodFloorMills",
     "ControlSheds": "apps/ControlSheds",
     "WarisEnterprises": "apps/WarisEnterprises",
     "RanaTraders": "apps/RanaTraders",
@@ -41,8 +41,12 @@
     "JewellersSystem": "apps/JewellersSystem",
     "ePOSPlus": "apps/ePOSPlus",
     "IKMF": "apps/IKMF",
-	"MedicalDMS": "apps/MedicalDMS",
+    "MedicalDMS": "apps/MedicalDMS",
     "FiveStar": "apps/FiveStar",
+    "LPGPlant": "apps/LPGPlant",
+    "MobileAccessories": "apps/MobileAccessories",
+    "CementAgency": "apps/CementAgency",
+     "AccountsSystem": "apps/AccountsSystem",
     "future-tech-lib": "libs/future-tech-lib"
   }
 }

@@ -46,35 +46,27 @@ export class PrintStockTransferComponent
   ) {}
 
   ngOnInit() {
-    this.http.getData('business/' + this.http.getBusinessID()).then((d) => {
-      this.Business = d;
-
-      console.log('invoiceID=' + this.InvoiceID);
-
-      this.route.paramMap.subscribe((params) => {
-        this.InvoiceID = params.get('id');
-
+    this.route.paramMap.subscribe((params) => {
+      this.InvoiceID = params.get('id');
+      this.http.getData('business/' + this.http.getBusinessID()).then((d) => {
+        this.Business = d;
         this.http
-        .getData("qrystocktransfer?filter=TransferID=" + this.InvoiceID)
-        .then((inv: any) => {
-          this.Invoice = inv[0];
-
-          this.http
-            .getData("qrytransferdetails?filter=TransferID=" + this.InvoiceID)
-            .then((r) => {
-              this.Invoice.Detail = r;
-              this.ref.markForCheck();
-              // for (let i = 0; i < (20 - this.Invoice.Detail.length); i++) {
-              //   this.extra.push({ Extra: '' });
-              // }
-            });
-        });
+          .getData("qrystocktransfer?filter=TransferID=" + this.InvoiceID)
+          .then((inv: any) => {
+            this.Invoice = inv[0];
+            this.http
+              .getData("qrytransferdetails?filter=TransferID=" + this.InvoiceID)
+              .then((r) => {
+                this.Invoice.Detail = r;
+                this.ref.markForCheck();
+                // for (let i = 0; i < (20 - this.Invoice.Detail.length); i++) {
+                //   this.extra.push({ Extra: '' });
+                // }
+              });
+          });
       });
     });
-
     this.ref.markForCheck();
-
-
   }
 
   ngOnChanges() {}
@@ -90,10 +82,6 @@ export class PrintStockTransferComponent
     //document.getElementById('preloader')?.classList.add('hide');
     document.body.classList.add('A5');
     document.body.classList.remove('A4');
-
-    setTimeout(() => {
-      this.Print();
-    }, 2000);
   }
 
   Print() {

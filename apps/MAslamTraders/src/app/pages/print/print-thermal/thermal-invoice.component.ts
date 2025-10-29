@@ -13,7 +13,6 @@ import * as JSPDF from 'jspdf';
 import * as moment from 'moment';
 import { ToWords } from 'to-words';
 import { environment } from '../../../../environments/environment';
-import { months } from '../../../factories/constants';
 import { FindTotal, RoundTo, getDMYDate } from '../../../factories/utilities';
 import { HttpBase } from '../../../services/httpbase.service';
 
@@ -131,7 +130,8 @@ export class ThermalInvoiceComponent
   FormatInvNo(inv: string) {
     if (!inv) return;
     const m = inv.substring(2, 4);
-    return inv.slice(0, 2) + months[Number(m) - 1].Month + inv.slice(4);
+    // return inv.slice(0, 2) + months[Number(m) - 1].Month + inv.slice(4);
+    return inv;
   }
   FindWieght(w) {
     let mon = Math.floor(w / 40);

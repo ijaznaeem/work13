@@ -76,7 +76,7 @@ export class StockAcctsComponent implements OnInit {
     Data: [],
   };
   lstDataRource: any = [];
-  stores$: Observable<any[]>;
+  stores$: Observable<unknown>;
 
   constructor(
     private http: HttpBase,

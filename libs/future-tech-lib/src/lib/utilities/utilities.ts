@@ -194,7 +194,7 @@ function pad(n, width, z) {
 }
 
 export function formatNumber(
-  price,
+  price: any,
   digits = 0,
   thoSeperator = ',',
   decSeperator = '.',
@@ -205,7 +205,7 @@ export function formatNumber(
   bdisplayprice = typeof bdisplayprice === 'undefined' ? true : bdisplayprice;
   thoSeperator = typeof thoSeperator === 'undefined' ? '.' : thoSeperator;
   decSeperator = typeof decSeperator === 'undefined' ? ',' : decSeperator;
-  price = price.toString();
+  price = (price || 0).toString();
   var _temp = price.split('.');
   var dig = digits > 0 && typeof _temp[1] === 'undefined' ? '00' : _temp[1];
   if (bdisplayprice && parseInt(dig, 10) === 0) {

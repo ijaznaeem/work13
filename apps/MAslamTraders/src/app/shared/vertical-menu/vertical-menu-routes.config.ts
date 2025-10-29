@@ -64,8 +64,8 @@ export const ROUTES: RouteInfo[] = [
       },
       {
         id: 350,
-        path: '/sale/pending',
-        title: 'Pending Invoice',
+        path: '/cash/expense-bill',
+        title: 'Add Expense Bill',
         icon: 'ft-shopping-bag submenu-icon',
         class: '',
         badge: '',
@@ -102,7 +102,7 @@ export const ROUTES: RouteInfo[] = [
       {
         id: 440,
         path: '/cash/journalvoucher',
-        title: 'Cash Tarnasfer',
+        title: 'Cash Transfer',
         icon: 'ft-dollar-sign submenu-icon',
         class: '',
         badge: '',

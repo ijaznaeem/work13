@@ -43,7 +43,7 @@ class Auth extends REST_Controller
             $res1 = $this->db->query("select * from closing where ClosingID = (select max(ClosingID) from closing where status = 0)")->result_array();
 
             if (count($res1) > 0) {
-                $res = $this->db->query("select *, (select top 1 FinYearID from FinYears where Status =1 order by FinYearID desc ) as FinYearID  from closing where ClosingID=(select max(ClosingID) from closing) and Date = '" . $date . "' and Status = 0")->result_array();
+                $res = $this->db->query("select *, (select  FinYearID from FinYears where Status =1 order by FinYearID desc Limit 1) as FinYearID  from closing where ClosingID=(select max(ClosingID) from closing) and Date = '" . $date . "' and Status = 0")->result_array();
                 if (count($res) > 0) {
                     $output = $this->CreateOutput($User[0], $res[0]);
                     $this->set_response($output, REST_Controller::HTTP_OK);
@@ -69,7 +69,7 @@ class Auth extends REST_Controller
                     $data['OpeningAmount'] = $OpnAmnt;
                     $this->db->insert('closing', $data);
 
-                    $res = $this->db->query("select *, (select top 1 FinYearID from FinYears where Status =1 order by FinYearID desc ) as FinYearID from closing where ClosingID = " . $this->db->insert_id())->result_array();
+                    $res = $this->db->query("select *, (select FinYearID from FinYears where Status =1 order by FinYearID desc limit 1 ) as FinYearID from closing where ClosingID = " . $this->db->insert_id())->result_array();
 
                     $output = $this->CreateOutPut($User[0], $res[0]);
                     $output['date'] = date("Y-m-d", strtotime($res[0]['Date']));

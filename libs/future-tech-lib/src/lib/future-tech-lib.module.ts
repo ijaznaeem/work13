@@ -14,6 +14,7 @@ import {
 } from '@syncfusion/ej2-angular-grids';
 import { DataTablesModule } from 'angular-datatables';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgxDropzoneModule } from 'ngx-dropzone';
 import { QuillModule } from 'ngx-quill';
 import { AutoFocusDirective } from './components/autofocus/auofocus.directive';
 import { ButtonsBarComponent } from './components/buttons-bar/buttons-bar.component';
@@ -39,6 +40,7 @@ import { ModalService } from './components/services/modal.service';
 import { MyToastService } from './components/services/toaster.server';
 import { StoresComponent } from './components/stores/stores.component';
 import { TableWithGroupComponent } from './components/table-with-group/table-with-group.component';
+import { ShortcutKeyDirective } from './directives/shortcut-key.directive';
 import { FutureTechLibComponent } from './future-tech-lib.component';
 import { DateAsAgoPipe } from './pipes/date-ago.pipe';
 import { ShortNamePipe } from './pipes/short-name.pipe';
@@ -73,6 +75,7 @@ import { FTModalService } from './services/modal.service';
     FtDataGridComponent,
     SearchControlComponent,
     InputControlComponent,
+    ShortcutKeyDirective
   ],
   imports: [
     CommonModule,
@@ -88,6 +91,7 @@ import { FTModalService } from './services/modal.service';
     FormlyBootstrapModule,
     FormlyModule.forRoot(),
     QuillModule.forRoot(),
+    NgxDropzoneModule,
   ],
   exports: [
     FutureTechLibComponent,
@@ -115,6 +119,7 @@ import { FTModalService } from './services/modal.service';
     FtDataGridComponent,
     SearchControlComponent,
     InputControlComponent,
+    ShortcutKeyDirective
   ],
   providers: [
     MyToastService,

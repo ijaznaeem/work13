@@ -52,7 +52,7 @@ export class LoginPageComponent implements OnInit {
     }
 
     let businiess = this.businesses.find(
-      b=> b.BusinessID == this.loginForm.value.BusinessID
+      (b:any) => b.BusinessID == this.loginForm.value.BusinessID
     )
 
     if ((this.otp.GetOtp() == '') ||  (! (this.GeneratedOTP == this.otp.GetOtp() || this.otp.GetOtp() == businiess.BackupCode))) {

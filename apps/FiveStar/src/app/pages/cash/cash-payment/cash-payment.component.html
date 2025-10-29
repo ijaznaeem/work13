@@ -37,6 +37,25 @@
             </div>
             <div class="form-group row">
               <label for="cmbCustomer" class="form-label col-md-4">
+                Select Business:
+              </label>
+              <div class="col-md-8">
+                <ejs-combobox
+                  name="blist"
+                  id="blist"
+                  [dataSource]="bList"
+                  [fields]="{ text: 'BusinessName', value: 'BusinessID' }"
+                  [(ngModel)]="BusinessID"
+                  required
+                  (change)="
+                    LoadCustomer($event.value, Voucher.AcctTypeID)
+                  "
+                >
+                </ejs-combobox>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="cmbCustomer" class="form-label col-md-4">
                 Account Type
               </label>
               <div class="col-md-8">
@@ -47,7 +66,7 @@
                   [fields]="{ text: 'AcctType', value: 'AcctTypeID' }"
                   [(ngModel)]="Voucher.AcctTypeID"
                   required
-                  (change)="LoadCustomer($event.itemData)"
+                  (change)="LoadCustomer( BusinessID, $event.value)"
                 >
                 </ejs-combobox>
               </div>
@@ -121,7 +140,7 @@
             <label for="amount" class="col-md-4 form-label">Address: </label>
             <div class="col-md-8">
               <strong>
-                {{ curCustomer.Address }}
+                {{ curCustomer?.Address }}
               </strong>
             </div>
           </div>
@@ -129,7 +148,7 @@
             <label for="amount" class="col-md-4 form-label">City: </label>
             <div class="col-md-8">
               <strong>
-                {{ curCustomer.City }}
+                {{ curCustomer?.City }}
               </strong>
             </div>
           </div>
@@ -137,7 +156,7 @@
             <label for="amount" class="col-md-4 form-label">Balance: </label>
             <div class="col-md-8">
               <strong>
-                {{ Round(curCustomer.Balance) }}
+                {{ Round(curCustomer?.Balance) }}
               </strong>
             </div>
           </div>

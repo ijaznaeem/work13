@@ -1,9 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-    GetDateJSON,
-    JSON2Date
-} from '../../../factories/utilities';
+import { GetDateJSON, JSON2Date } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
 import { PrintDataService } from '../../../services/print.data.services';
@@ -30,41 +27,27 @@ export class StockAcctsComponent implements OnInit {
       fldName: 'Date',
     },
     {
-      label: 'Invoice No',
-      fldName: 'RefID',
+      label: 'Description',
+      fldName: 'Description',
     },
     {
-      label: 'Customer Name',
-      fldName: 'CustomerName',
+      label: 'Qty Weight',
+      fldName: 'Qty Weight',
     },
     {
-      label: 'Stock In',
-      fldName: 'QtyIn',
+      label: 'BalQty',
+      fldName: 'BalQty',
     },
     {
-      label: 'Stock Out',
-      fldName: 'QtyOut',
+      label: 'BalWeight',
+      fldName: 'BalWeight',
+    },
+    {
+      label: 'TrType',
+      fldName: 'TrType',
     },
   ];
-  colUnits = [
-    {
-      label: 'Date',
-      fldName: 'Date',
-    },
 
-    {
-      label: 'Customer Name',
-      fldName: 'CustomerName',
-    },
-    {
-      label: 'Stock In',
-      fldName: 'QtyIn',
-    },
-    {
-      label: 'Stock Out',
-      fldName: 'QtyOut',
-    },
-  ];
   setting: any = {
     Columns: [],
     Actions: [],
@@ -79,6 +62,12 @@ export class StockAcctsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.http
+      .getData('Products?flds=ProductID, ProductName&orderby=ProductName')
+      .then((r) => {
+        this.lstDataRource = r;
+      });
+
     this.Filter.FromDate.day = 1;
 
     this.FilterData();
@@ -92,48 +81,27 @@ export class StockAcctsComponent implements OnInit {
       JSON2Date(this.Filter.ToDate) +
       "'";
 
-    filter +=" and StoreID = " + this.Filter.StoreID
-
-
     if (!(this.Filter.ItemID === '' || this.Filter.ItemID === null)) {
-      if (this.Filter.What == '1') {
-        this.LoadProductsData(filter);
-      } else {
-        this.LoadUnitsData(filter);
-      }
+      filter += ' and ItemID = ' + this.Filter.ItemID;
+
+      this.http
+        .getData(
+          'qryProductAccts?flds=Date,  Description,  Qty Weight, BalQty, BalWeight, TrType' +
+            ' &filter=' +
+            filter +
+            '&orderby=ProductAcctID'
+        )
+        .then((r: any) => {
+          this.setting.Columns = this.colProducts;
+          this.data = r;
+        });
     }
   }
   LoadUnitsData(filter) {
     filter += " and UnitName = '" + this.Filter.ItemID + "'";
-
-    this.http
-      .getData(
-        'qrystockaccts?flds=Date,RefID,CustomerName, QtyIn, QtyOut' +
-          ' &filter=' +
-          filter +
-          '&orderby=AcctID'
-      )
-      .then((r: any) => {
-        this.setting.Columns = this.colProducts;
-        this.data = r;
-      });
   }
   LoadProductsData(filter) {
     // tslint:disable-next-line:quotemark
-
-    filter += ' and ProductID = ' + this.Filter.ItemID;
-
-    this.http
-      .getData(
-        'qrystockaccts?flds=Date, RefID , CustomerName, QtyIn, QtyOut' +
-          ' &filter=' +
-          filter +
-          '&orderby=AcctID'
-      )
-      .then((r: any) => {
-        this.setting.Columns = this.colProducts;
-        this.data = r;
-      });
   }
   Clicked(e) {}
   PrintReport() {
@@ -151,25 +119,5 @@ export class StockAcctsComponent implements OnInit {
   CustomerSelected(e) {}
   formatDate(d) {
     return JSON2Date(d);
-  }
-
-  Changed(e) {
-    if (e.target.value == '1') {
-      this.http
-        .getData(
-          'qryproducts?flds=ProductID as ItemID, ProductName as ProductName&orderby=ProductName'
-        )
-        .then((r) => {
-          this.lstDataRource = r;
-        });
-    } else if (e.target.value == '2') {
-      this.http
-        .getData(
-          'qryproducts?flds=UnitName as ItemID, UnitName as ProductName&groupby=UnitName&orderby=UnitName'
-        )
-        .then((r) => {
-          this.lstDataRource = r;
-        });
-    }
   }
 }

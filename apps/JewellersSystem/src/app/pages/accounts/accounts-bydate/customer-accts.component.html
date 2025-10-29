@@ -1,6 +1,41 @@
 <div widget class="card border-0 box-shadow">
   <div class="card-header transparent border-0 text-muted">
     <h5 class="mb-3">Account Ledger</h5>
+    <div class="col-md-4">
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="radioBoth"
+            value="0"
+            [(ngModel)]="Filter.GoldTypeID"
+            name="transactionType"
+          />
+          <label class="form-check-label text-primary" for="radioBoth">Cash</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="radioDebit"
+            value="2"
+            [(ngModel)]="Filter.GoldTypeID"
+            name="transactionType"
+          />
+          <label class="form-check-label text-danger" for="radioDebit">Gold 24K</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="radioCredit"
+            value="3"
+            [(ngModel)]="Filter.GoldTypeID"
+            name="transactionType"
+          />
+          <label class="form-check-label text-warning" for="radioCredit">Gold 22K</label>
+        </div>
+      </div>
   </div>
   <div class="card-block widget-body">
     <form #frmFilter="ngForm">
@@ -55,9 +90,10 @@
           #Customer
             name="customer"
             id="customer"
-            [dataSource]="Customers | async"
+            [dataSource]="Customers"
             [fields]="{ text: 'CustomerName', value: 'CustomerID' }"
             [(ngModel)]="Filter.CustomerID"
+            [allowFiltering]="true"
             (change)="CustomerSelected($event)"
             required
           >

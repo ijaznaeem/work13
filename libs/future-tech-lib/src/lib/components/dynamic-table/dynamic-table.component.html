@@ -14,10 +14,10 @@
             </th>
             <th *ngIf="hasSubTable" class="screenOnly"></th>
             <th
-            [ngClass]="{ 'text-right': c.type == 'number' || c.sum || c.align == 'right' }"
-
-            *ngFor="let c of settings.Columns"
-
+              [ngClass]="{
+                'text-right': c.type == 'number' || c.sum || c.align == 'right'
+              }"
+              *ngFor="let c of settings.Columns"
             >
               {{ c.label }}
             </th>
@@ -34,7 +34,7 @@
           >
             <tr
               (click)="ExandRow($event, i)"
-              [style.background-color]="Data[i].checked ? 'yellow' : 'white'"
+              [style.background-color]="getRowBackgroundColor(r, i)"
             >
               <ng-container *ngIf="settings.ButtonsAtRight">
                 <td class="screenOnly">
@@ -48,7 +48,7 @@
                       <button
                         type="button"
                         class="btn btn-sm btn-{{ act.class || 'primary' }}"
-                        [title]="act.title"
+                        [title]="act.title || act.label"
                         *ngFor="let act of settings.Actions"
                         (click)="ClickActionEv(r, act.action)"
                       >
@@ -80,7 +80,7 @@
                             *ngIf="act.icon"
                           >
                           </i>
-                          {{ act.title }}
+                          {{ act.title || act.label}}
                         </a>
                       </div>
                     </ng-template>
@@ -99,7 +99,10 @@
               </td>
               <td
                 *ngFor="let col of settings.Columns"
-                [ngClass]="{ 'text-right': col.type == 'number' || col.sum  || col.align == 'right' }"
+                [ngClass]="{
+                  'text-right':
+                    col.type == 'number' || col.sum || col.align == 'right'
+                }"
               >
                 <span
                   [ngClass]="{
@@ -112,9 +115,9 @@
                   {{ formattedValue(r, col, r[col.fldName]) }}
                 </span>
 
-                <ng-template #plain>{{
-                  formattedValue(r, col, r[col.fldName])
-                }}</ng-template>
+                <ng-template #plain>
+                  {{ formattedValue(r, col, r[col.fldName]) }}
+              </ng-template>
               </td>
               <ng-container *ngIf="!settings.ButtonsAtRight">
                 <td class="screenOnly">
@@ -128,7 +131,7 @@
                       <button
                         type="button"
                         class="btn btn-sm btn-{{ act.class || 'primary' }}"
-                        [title]="act.title"
+                        [title]="act.title || act.label"
                         *ngFor="let act of settings.Actions"
                         (click)="ClickActionEv(r, act.action)"
                       >
@@ -160,7 +163,7 @@
                             *ngIf="act.icon"
                           >
                           </i>
-                          {{ act.title }}
+                          {{ act.title || act.label }}
                         </a>
                       </div>
                     </ng-template>
@@ -176,22 +179,36 @@
               id="rsub{{ i }}"
             >
               <td [attr.colspan]="GetFldCounts() + 1" style="height: auto">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th *ngFor="let col of SubTable.Columns">
-                        {{ col.label }}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let rsub of r[SubTable.table]">
-                      <td *ngFor="let col of SubTable.Columns">
-                        {{ rsub[col.fldName] }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <table class="table">
+                <thead>
+                <tr>
+                  <th *ngFor="let col of SubTable.Columns"
+                   [ngClass]="{ 'text-right': col.sum }"
+                  >
+                  {{ col.label }}
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr
+                  *ngFor="let rsub of r[SubTable.table]; let j = index"
+                  [style.background-color]="getSubRowBackgroundColor(rsub, r, j, i)"
+                >
+                  <td
+                    *ngFor="let col of SubTable.Columns"
+                    [ngClass]="{ 'text-right': col.sum }"
+                  >
+                    {{ rsub[col.fldName] }}
+                  </td>
+                </tr>
+
+                <tr>
+                  <th *ngFor="let c of SubTable.Columns" class="text-right">
+                    {{ c.sum ? FindSubTotal(r[SubTable.table], c.fldName) : '' }}
+                  </th>
+                </tr>
+                </tbody>
+              </table>
               </td>
             </tr>
           </ng-container>
@@ -200,7 +217,10 @@
           <tr>
             <th *ngIf="settings.Checkbox" class="screenOnly"></th>
             <th *ngIf="hasSubTable" class="screenOnly"></th>
-            <th *ngFor="let c of settings.Columns"   [ngClass]="{ 'text-right': c.type == 'number' || c.sum }">
+            <th
+              *ngFor="let c of settings.Columns"
+              [ngClass]="{ 'text-right': c.type == 'number' || c.sum }"
+            >
               <!-- {{ c.sum ? c.sumValue > 0 ? c.SumValue : FindTotal(c.fldName) : "" }} -->
               {{ c.sum ? FindTotal(c.fldName) : '' }}
             </th>

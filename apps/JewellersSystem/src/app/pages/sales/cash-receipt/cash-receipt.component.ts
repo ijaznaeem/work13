@@ -9,8 +9,8 @@ import {
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { LocalDataSource } from 'ng2-smart-table';
 import { Observable } from 'rxjs';
-import { CashModel, enTransactionType } from '../../../factories/static.data';
-import { GetProps } from '../../../factories/utilities';
+import { DailyCash } from '../../../factories/static.data';
+import { GetProps, RoundTo } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
 import { MyToastService } from '../../../services/toaster.server';
@@ -22,21 +22,18 @@ import { CashTrForm } from './cash-receipt.settings';
   styleUrls: ['./cash-receipt.component.scss'],
 })
 export class CashReceiptComponent implements OnInit, OnChanges {
-  @Input() Type: string;
+  @Input() Type: string = '';
   @Input() EditID = '';
-  @ViewChild('fromSale') fromSale;
-  @ViewChild('cmbProduct') cmbProd;
-  @ViewChild('qty') elQty;
-  @ViewChild('cmbCustomers') cmbCustomers;
+  
 
   public data = new LocalDataSource([]);
-  navigateURL = '/sale/cash';
+  navigateURL = '/sale/cash-receipt';
   Ino = '';
   tqty: any = '';
   public btnsave = false;
   public isPosted = false;
 
-  modelData = new CashModel();
+  orderData = new DailyCash();
   orderForm = CashTrForm;
 
   public selectedProduct: any = {};
@@ -76,29 +73,24 @@ export class CashReceiptComponent implements OnInit, OnChanges {
     this.Ino = this.EditID;
     console.log(this.EditID);
 
-    this.http.getData(`Cash/'${this.EditID}'`).then((r: any) => {
-      if (r) {
-        this.isPosted = !(r.IsPosted == '0');
-        this.modelData = GetProps(r, Object.keys(new CashModel()));
-        this.modelData.Date = this.modelData.Date.split(' ')[0];
-        this.CalcCashAmount();
-      } else {
-        this.myToaster.Error('Invoice No not found', 'Edit', 1);
-      }
-    });
+    this.http
+      .getData('DailyCash', { filter: `DailyID='${this.EditID}'` })
+      .then((r: any) => {
+        if (r.length > 0) {
+          this.isPosted = !(r[0].IsPosted == '0');
+          this.orderData = GetProps(r[0], Object.keys(new DailyCash()));
+          this.orderData.Date = this.orderData.Date.split(' ')[0];
+          this.CalcTotalAmount();
+        } else {
+          this.myToaster.Error('Invoice No not found', 'Edit', 1);
+        }
+      });
   }
-  public async Save(event) {
-    if (this.modelData.CashID == null || this.modelData.CashID == 0) {
-      let bno: any = 1;
-      bno = await this.http.getData(
-        'getbno/CASH-' + enTransactionType.Cash + '/1'
-      );
-      this.modelData.CashID = bno.billno;
-    }
+  public Save(event:any) {
     this.http
       .postTask(
-        'vouchers' + (this.EditID == '' ? '' : '/' + this.EditID),
-        this.modelData
+        'dailycash' + (this.EditID == '' ? '' : '/' + this.EditID),
+        this.orderData
       )
       .then((r: any) => {
         if (r) {
@@ -106,7 +98,7 @@ export class CashReceiptComponent implements OnInit, OnChanges {
           this.btnsave = true;
           this.isPosted = false;
           if (this.EditID == '') {
-            this.NavigateTo(this.modelData.CashID.toString());
+            this.NavigatorClicked({ col: { label: 'Last' } });
           }
         }
       })
@@ -114,18 +106,36 @@ export class CashReceiptComponent implements OnInit, OnChanges {
         this.myToaster.Error('Error Saving', 'Save', 1);
       });
   }
-
-  public Changed(event) {
+  BeforeSave(event: any) {
     console.log(event);
-    if (event.fldName == 'RawCash' || event.fldName == 'CashCutting') {
+    delete event.data['RateInGrams'];
+  }
+
+  public async Changed(event: any) {
+    console.log(event);
+
+    if (event.fldName == 'CustomerID') {
+      let cust: any = await this.http.getData('Customers/' + event.value);
+      if (cust) {
+        this.orderData.CBal = RoundTo(cust.Balance || 0, 0);
+        this.orderData.K24 = RoundTo(cust.GoldBalance || 0, 3);
+        this.orderData.K22 = RoundTo(cust.Gold21K || 0, 3);
+      } else {
+        this.orderData.CBal = this.orderData.K24 = this.orderData.K22 = 0;
+      }
     }
   }
-  CalcCashAmount() {}
 
+  CalcTotalAmount() {
+    this.orderData.TotalCash = RoundTo(
+      Number(this.orderData.Cash) + Number(this.orderData.GoldAmount),
+      4
+    );
+  }
   Cancel() {
     this.isPosted = false;
-    this.modelData = new CashModel();
-    this.modelData.Type = enTransactionType.Cash;
+    this.orderData = new DailyCash();
+    this.orderData.Type = 'RV';
     this.btnsave = false;
   }
 
@@ -133,26 +143,18 @@ export class CashReceiptComponent implements OnInit, OnChanges {
     this.NavigateTo(this.Ino);
   }
   NavigateTo(rt = '') {
-    // this.router.navigate([this.navigateURL, rt]);
-    if (rt == '') {
-      this.router.navigateByUrl(this.navigateURL);
-    } else {
-      this.router.navigateByUrl(this.navigateURL + '/' + rt);
-    }
+    this.router.navigateByUrl(
+      '/sale/cash-receipt' + (rt != '' ? '/' + rt : '')
+    );
   }
 
-  ButtonClicked(e) {
+  ButtonClicked(e: any) {
     switch (e.col.label) {
       case 'New':
         this.NavigateTo('');
         break;
       case 'Save':
-        if (e.ngform.valid) {
         this.Save(e);
-        } else {
-          e.ngform.markAllAsTouched();
-          this.myToaster.Error('Please fill all required fields', 'Save', 1);
-        }
         break;
       case 'Cancel':
         this.Cancel();
@@ -162,33 +164,33 @@ export class CashReceiptComponent implements OnInit, OnChanges {
     }
   }
 
-  NavigatorClicked(e) {
-    let billNo: any = 1;
+  NavigatorClicked(e: any) {
+    console.log(e);
+
+    let billNo: any = 'RV-100000001';
     switch (e.col.label) {
       case 'First':
         this.NavigateTo(billNo);
         break;
       case 'Prev':
         if (!(this.EditID == '' || this.EditID == null)) {
-          if (Number(this.EditID) - 1 > billNo) {
-            billNo = Number(this.EditID) - 1;
+          if (Number(this.EditID.slice(-9)) - 1 > billNo) {
+            billNo = Number(this.EditID.slice(-9)) - 1;
           }
         }
         this.NavigateTo(billNo);
         break;
       case 'Next':
         if (!(this.EditID == '' || this.EditID == null)) {
-          billNo = Number(this.EditID) + 1;
+          billNo = Number(this.EditID.slice(-9)) + 1;
         }
         this.NavigateTo(billNo);
         break;
       case 'Last':
-        this.http
-          .getData('getbno/CASH-' + enTransactionType.Cash)
-          .then((r: any) => {
-            billNo = r.billno;
-            this.NavigateTo(billNo);
-          });
+        this.http.getData('getbno/RV').then((r: any) => {
+          billNo = r.billno;
+          this.NavigateTo(billNo);
+        });
         break;
       default:
         break;

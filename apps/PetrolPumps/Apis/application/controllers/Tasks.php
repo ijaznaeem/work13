@@ -42,8 +42,7 @@ class Tasks extends REST_Controller
 
   public function purchase_post($id = null)
   {
-    if (!$this->
-    checkToken()) {
+    if (!$this->checkToken()) {
       $this->response(
         array(
           'result' => 'Error',
@@ -90,8 +89,7 @@ class Tasks extends REST_Controller
   public function transfer_post($id = null)
   {
 
-    if (!$this->
-    checkToken()) {
+    if (!$this->checkToken()) {
       $this->response(
         array(
           'result' => 'Error',
@@ -266,7 +264,7 @@ class Tasks extends REST_Controller
     }
     foreach ($details as $value) {
 
-     // print_r($value);
+      // print_r($value);
 
       if ($value['StockID'] == '0' || !isset($value['StockID'])) {
         $query = $this->db->get_where('stock', array('ProductID' => $value['ProductID']));
@@ -489,7 +487,7 @@ class Tasks extends REST_Controller
   ) {
     try {
 
-      $this->db->trans_start();
+      $this->db->trans_begin();
       if ($a == 1) {
         $this->db->where('ProductID', $pid);
 
@@ -513,15 +511,17 @@ class Tasks extends REST_Controller
         $desc = "Puchase";
       } else {
         // var_dump($qtyin, $qtyout);
-        $this->db->where('StockID', $pid);
+        $this->db->where('ProductID', $pid);
+
+
         $stock1 = $this->db->get('stock')->result_array();
         $desc = "stock out";
         if (count($stock1) > 0) {
           $stock['Stock'] = $stock1[0]['Stock'] - $qtyout + $qtyin;
-          $this->db->where('StockID', $pid);
+          $this->db->where('ProductID', $pid);
           $this->db->update('stock', $stock);
         } else {
-          throw (new Exception('Stock not found'));
+          throw (new Exception('Stock not found' . $pid));
         }
       }
 
@@ -535,8 +535,9 @@ class Tasks extends REST_Controller
       $stockacct['RefID'] = $billNo;
       $stockacct['RefType'] = $bType;
       $this->db->insert('stockaccts', $stockacct);
-      $this->db->trans_complete();
+      $this->db->trans_commit();
     } catch (Exception $e) {
+      throw $e;
     }
   }
   public function postsales_post($InvoiceID)
@@ -563,7 +564,6 @@ class Tasks extends REST_Controller
       $this->db->query('delete from pinvoicedetails where InvoiceID=' . $post_data['ID']);
     } elseif ($post_data['Table'] === 'E') {
       $this->db->query('delete from expenses where ExpendID=' . $post_data['ID']);
-
     }
     $this->db->trans_commit();
     $this->response(array('msg' => 'Ok'), REST_Controller::HTTP_OK);
@@ -580,6 +580,10 @@ class Tasks extends REST_Controller
       $this->db->query("delete from pinvoicedetails where InvoiceID in (Select InvoiceID from invoices where Date = '0000-00-00')");
       $this->db->query("delete from  pinvoices where Date = '0000-00-00'");
       $this->db->query("delete from  vouchers where Date = '0000-00-00'");
+
+      $this->db->query("update `expenses` set IsPosted = 1 where IsPosted = 0 and Date <> '0000-00-00'");
+
+
       $this->db->trans_commit();
 
       $this->PostSales();
@@ -616,6 +620,7 @@ class Tasks extends REST_Controller
     $InvoiceRes = $this->db->get('qryinvoices')->result_array();
     $this->db->trans_begin();
     if (count($InvoiceRes) > 0) {
+
       foreach ($InvoiceRes as $InvoiceValue) {
         $this->db->where('InvoiceID', $InvoiceValue['InvoiceID']);
         $InvoiceDetailsRes = $this->db->get('qryinvoicedetails')->result_array();
@@ -623,11 +628,9 @@ class Tasks extends REST_Controller
         // var_dump($InvoiceDetailsRes);
         foreach ($InvoiceDetailsRes as $InvoiceDetailsvalue) {
 
-
-
           $this->UpdateStock(
             2,
-            $InvoiceDetailsvalue['StockID'],
+            $InvoiceDetailsvalue['ProductID'],
             $InvoiceDetailsvalue['PPrice'],
             $InvoiceDetailsvalue['SPrice'],
             $InvoiceValue['DtCr'] == 'CR' ? $InvoiceDetailsvalue['Qty'] : 0,
@@ -670,7 +673,8 @@ class Tasks extends REST_Controller
           $InvoiceValue['StockID'],
           $InvoiceValue['PPrice'],
           $InvoiceValue['SPrice'],
-          $InvoiceValue['WeightUsed'], 0,
+          $InvoiceValue['WeightUsed'],
+          0,
           0,
           'Product Processed',
           $InvoiceValue['ProcessID'],
@@ -709,7 +713,6 @@ class Tasks extends REST_Controller
 
     $this->db->trans_commit();
     $this->response(array('msg' => 'All invoices/vouchers are posted'), REST_Controller::HTTP_OK);
-
   }
   private function PostPurchases($id = 0)
   {
@@ -742,22 +745,22 @@ class Tasks extends REST_Controller
             $PInvoiceValue['BusinessID']
           );
         }
-          $data['CustomerID'] = $PInvoiceValue['CustomerID'];
-          $data['Date'] = $PInvoiceValue['Date'];
-          $data['Description'] = $PInvoiceDetailsvalue['ProductName'];
-          $data['Qty'] = $PInvoiceDetailsvalue['Qty'];
-          $data['Rate'] = $PInvoiceDetailsvalue['PPrice'];
-          $data['Credit'] = $PInvoiceValue['DtCr'] == 'CR' ? $PInvoiceDetailsvalue['Amount'] : 0;
-          $data['Debit'] = $PInvoiceValue['DtCr'] == 'CR' ? 0 : $PInvoiceDetailsvalue['Amount'];
-          $data['RefID'] = $PInvoiceValue['InvoiceID'];
-          $data['RefType'] = 2;
-          $data['BusinessID'] = $PInvoiceValue['BusinessID'];
-          $this->AddToAccount($data);
-        }
-        $posted['IsPosted'] = '1';
-        $this->db->where('InvoiceID', $PInvoiceValue['InvoiceID']);
-        $this->db->update('pinvoices', $posted);
+        $data['CustomerID'] = $PInvoiceValue['CustomerID'];
+        $data['Date'] = $PInvoiceValue['Date'];
+        $data['Description'] = $PInvoiceDetailsvalue['ProductName'];
+        $data['Qty'] = $PInvoiceDetailsvalue['Qty'];
+        $data['Rate'] = $PInvoiceDetailsvalue['PPrice'];
+        $data['Credit'] = $PInvoiceValue['DtCr'] == 'CR' ? $PInvoiceDetailsvalue['Amount'] : 0;
+        $data['Debit'] = $PInvoiceValue['DtCr'] == 'CR' ? 0 : $PInvoiceDetailsvalue['Amount'];
+        $data['RefID'] = $PInvoiceValue['InvoiceID'];
+        $data['RefType'] = 2;
+        $data['BusinessID'] = $PInvoiceValue['BusinessID'];
+        $this->AddToAccount($data);
       }
+      $posted['IsPosted'] = '1';
+      $this->db->where('InvoiceID', $PInvoiceValue['InvoiceID']);
+      $this->db->update('pinvoices', $posted);
+    }
 
     $this->db->trans_commit();
   }
@@ -769,8 +772,7 @@ class Tasks extends REST_Controller
   }
   public function getLastID_get($tableName)
   {
-    if (!$this->
-    checkToken()) {
+    if (!$this->checkToken()) {
       $this->response(
         array(
           'result' => 'Error',
@@ -878,7 +880,7 @@ class Tasks extends REST_Controller
             $InvoiceDetailsvalue['StockID'],
             $InvoiceDetailsvalue['PPrice'],
             $InvoiceDetailsvalue['SPrice'],
-            $InvoiceDetailsvalue['Qty'] ,
+            $InvoiceDetailsvalue['Qty'],
             0,
             $InvoiceValue['FromStore'],
             '',
@@ -888,19 +890,19 @@ class Tasks extends REST_Controller
             $InvoiceValue['BusinessID']
           );
           $this->UpdateStock(
-          1,
-          $InvoiceDetailsvalue['ProductID'],
-          $InvoiceDetailsvalue['PPrice'],
-          $InvoiceDetailsvalue['SPrice'],
-          0,
-          $InvoiceDetailsvalue['Qty'] ,
-          $InvoiceValue['ToStore'],
-          '',
-          $InvoiceValue['TransferID'],
-          5,
-          $InvoiceValue['Date'],
-          $InvoiceValue['BusinessID']
-        );
+            1,
+            $InvoiceDetailsvalue['ProductID'],
+            $InvoiceDetailsvalue['PPrice'],
+            $InvoiceDetailsvalue['SPrice'],
+            0,
+            $InvoiceDetailsvalue['Qty'],
+            $InvoiceValue['ToStore'],
+            '',
+            $InvoiceValue['TransferID'],
+            5,
+            $InvoiceValue['Date'],
+            $InvoiceValue['BusinessID']
+          );
         }
 
         $posted['IsPosted'] = '1';
@@ -911,8 +913,5 @@ class Tasks extends REST_Controller
 
     $this->db->trans_commit();
     $this->response(array('msg' => 'stock transfer is posted'), REST_Controller::HTTP_OK);
-
   }
-
-
 }

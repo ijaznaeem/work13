@@ -3,7 +3,10 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ComboBoxAllModule, DropDownListAllModule } from '@syncfusion/ej2-angular-dropdowns';
+import {
+  ComboBoxAllModule,
+  DropDownListAllModule,
+} from '@syncfusion/ej2-angular-dropdowns';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ComponentsModule } from '../components/components.module';
 
@@ -14,11 +17,9 @@ import { DrCrVouchersComponent } from './drcr-vouchers/drcr-vouchers.component';
 import { AccrualExpensesComponent } from './expenses-accrual/accrual-expenses.component';
 import { ExpensesComponent } from './expenses/expenses.component';
 import { JournalVoucherComponent } from './journal-voucher/journal-voucher.component';
-import { SalarySheetomponent } from './salary-sheet/salary-sheet.component';
+import { SalarySheetComponent } from './salary-sheet/salary-sheet.component';
 
-
-
-const routes:any = [
+const routes: any = [
   { path: '', redirectTo: 'cashrecvd', pathMatch: 'full' },
   {
     path: 'cashrecvd',
@@ -52,10 +53,9 @@ const routes:any = [
   },
   {
     path: 'salary-sheet',
-    component: SalarySheetomponent,
+    component: SalarySheetComponent,
     data: { breadcrumb: 'Expenses' },
   },
-
 ];
 
 @NgModule({
@@ -65,7 +65,8 @@ const routes:any = [
     ExpensesComponent,
     JournalVoucherComponent,
     AccrualExpensesComponent,
-    DrCrVouchersComponent, SalarySheetomponent
+    DrCrVouchersComponent,
+    SalarySheetComponent,
   ],
   imports: [
     CommonModule,

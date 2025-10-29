@@ -21,11 +21,13 @@ export class CashBookComponent implements OnInit {
   public data: any = [];
 
   public Filter = {
-    Date: GetDateJSON(),
+    FromDate: GetDateJSON(),
+    ToDate: GetDateJSON(),
   };
   setting = {
     Checkbox: false,
     Columns: [
+      { label: 'Date', fldName: 'Date' },
       { label: 'Type', fldName: 'Type' },
 
       { label: 'Account Name', fldName: 'AccountName' },
@@ -86,13 +88,22 @@ export class CashBookComponent implements OnInit {
   PrintReport() {
     this.ps.PrintData.HTMLData = document.getElementById('print-section');
     this.ps.PrintData.Title = 'Cash Report';
-    this.ps.PrintData.SubTitle = 'Date :' + JSON2Date(this.Filter.Date);
+    this.ps.PrintData.SubTitle =
+      'Date :' +
+      JSON2Date(this.Filter.FromDate) +
+      ' To ' +
+      JSON2Date(this.Filter.ToDate);
 
     this.router.navigateByUrl('/print/print-html');
   }
   FilterData() {
     // tslint:disable-next-line:quotemark
-    let filter = "Date = '" + JSON2Date(this.Filter.Date) + "'";
+    let filter =
+      "Date Between '" +
+      JSON2Date(this.Filter.FromDate) +
+      "' And '" +
+      JSON2Date(this.Filter.ToDate) +
+      "'";
 
     this.http.getData('qryvouchers?filter=' + filter).then((r: any) => {
       this.data = r;
@@ -105,35 +116,6 @@ export class CashBookComponent implements OnInit {
     return FindTotal(this.data, 'Credit') - FindTotal(this.data, 'Debit');
   }
 
-  CloseAccounts() {
-    swal({
-      text: 'Account will be closed, Continue ??',
-      icon: 'warning',
-      buttons: {
-        cancel: true,
-        confirm: true,
-      },
-    }).then((close) => {
-      if (close) {
-        this.http
-          .postTask('CloseAccount/' + this.http.getBusinessID(), {
-            ClosingID: this.http.getClosingID(),
-            ClosingAmount: this.FindBalance(),
-          })
-          .then((r) => {
-            swal(
-              'Close Account!',
-              'Account was successfully closed, Login to next date',
-              'success'
-            );
-            this.router.navigateByUrl('/auth/login');
-          })
-          .catch((er) => {
-            swal('Oops!', 'Error while deleting voucher', 'error');
-          });
-      }
-    });
-  }
   onClickAction(e) {
     console.log(e);
 
@@ -141,13 +123,15 @@ export class CashBookComponent implements OnInit {
       this.http.getData('vouchers/' + e.data.VoucherID).then((r: any) => {
         if (r && r.Type == '1' && r.Credit > 0) {
           this.router.navigateByUrl('/tasks/donation/' + e.data.VoucherID);
-        } else if (r && r.Type == '2' && r.Debit > 0){
+        } else if (r && r.Type == '2' && r.Debit > 0) {
           this.router.navigateByUrl('/tasks/expense/' + e.data.VoucherID);
-        } else if ((r && r.Type == '3' && r.Credit > 0) || (r && r.Type == '4' && r.Debit > 0)) {
+        } else if (
+          (r && r.Type == '3' && r.Credit > 0) ||
+          (r && r.Type == '4' && r.Debit > 0)
+        ) {
           this.router.navigateByUrl('/tasks/cashtransfer/' + e.data.VoucherID);
-        }
-        else {
-           swal('Error!', 'Invalid Voucher Type', 'error');
+        } else {
+          swal('Error!', 'Invalid Voucher Type', 'error');
         }
       });
     } else if (e.action === 'delete') {

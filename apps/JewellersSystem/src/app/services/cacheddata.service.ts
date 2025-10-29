@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { shareReplay, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { GoldTypes } from '../factories/static.data';
 import { HttpBase } from './httpbase.service';
 
 @Injectable({
@@ -45,13 +46,14 @@ export class CachedDataService {
   }
 
   // ========================= GoldType =========================
+
   private _goldTypeTrigger$ = new BehaviorSubject<void>(undefined);
   public goldType$ = this.cacheStream(this._goldTypeTrigger$, () =>
-    this.http.get<any[]>(`${this.api}GoldTypes`)
+    new Observable<any[]>(observer => {
+      observer.next(GoldTypes);
+      observer.complete();
+    })
   );
-  public updateGoldType() {
-    this._goldTypeTrigger$.next();
-  }
 
 
 

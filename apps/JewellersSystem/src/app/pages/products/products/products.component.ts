@@ -18,6 +18,14 @@ export class ProductsComponent implements OnInit {
 
 
       {
+        fldName: 'BarCode',
+        control: 'input',
+        type: 'text',
+        label: 'Special Bar Code',
+        required: true,
+        size: 3,
+      },
+      {
         fldName: 'ProductName',
         control: 'input',
         type: 'text',
@@ -26,22 +34,7 @@ export class ProductsComponent implements OnInit {
         size: 6,
       },
 
-      {
-        fldName: 'Qty',
-        control: 'input',
-        type: 'number',
-        label: 'Quantity',
-        required: true,
-        size: 3,
-      },
-      {
-        fldName: 'Weight',
-        control: 'input',
-        type: 'number',
-        label: 'Weight',
-        required: true,
-        size: 3,
-      },
+
 
     ],
   };
@@ -53,8 +46,8 @@ export class ProductsComponent implements OnInit {
     columns: [
       { data: 'ProductID', label: 'ID' },
       { data: 'ProductName', label: 'Item Name' },
-      { data: 'Qty', label: 'Quantity' },
-      { data: 'Weight', label: 'Weight' },
+      { data: 'BarCode', label: 'Special Bar Code' },
+
     ],
     actions: [
       { action: 'edit', title: 'Edit', icon: 'pencil', class: 'primary' },

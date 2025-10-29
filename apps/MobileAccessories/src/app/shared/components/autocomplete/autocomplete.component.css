@@ -1,0 +1,27 @@
+.autocomplete {
+  width: 100%;
+  display: block;
+}
+
+.search-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #FFFFFF !important;
+  width: 100%;
+  margin-top: 1rem;
+  padding-left: 0;
+  border-radius: 0.267rem;
+  z-index: 1200;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e3e6f0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Dark theme support */
+.layout-dark .search-list {
+  background: #2c3e50 !important;
+  border-color: #34495e !important;
+  color: #ffffff !important;
+}

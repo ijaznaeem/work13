@@ -28,7 +28,6 @@ import { MyToastService } from '../../../services/toaster.server';
 import { SaleDetails, SaleModel } from '../sale.model';
 import { SearchStockComponent } from '../search-stock/search-stock.component';
 
-
 @Component({
   selector: 'app-cash-sale',
   templateUrl: './cash-sale.component.html',
@@ -41,8 +40,8 @@ export class CashSaleComponent implements OnInit, OnChanges {
   @ViewChild('formqty') formSub: NgForm;
   @ViewChild('qty') elQty: ElementRef;
   @ViewChild('txtRate') txtRate: any;
-  @ViewChild('cmbAccts') cmbAccts: { focus: () => void; };
-  @ViewChild('cmbProduct') cmbProduct: { focus: () => void; };
+  @ViewChild('cmbAccts') cmbAccts: { focus: () => void };
+  @ViewChild('cmbProduct') cmbProduct: { focus: () => void };
 
   public data = new LocalDataSource([]);
   selectedProduct: any;
@@ -134,7 +133,7 @@ export class CashSaleComponent implements OnInit, OnChanges {
   };
   Salesman: Observable<any[]>;
   Companies: Observable<any[]>;
-  Routes: Observable<any[]> ;
+  Routes: Observable<any[]>;
   Stock: Observable<any[]>;
   public Prods = [];
   public Accounts: any = [];
@@ -152,9 +151,9 @@ export class CashSaleComponent implements OnInit, OnChanges {
     private myToaster: MyToastService
   ) {
     this.Salesman = this.cachedData.Salesman$;
-  this.Companies = this.cachedData.Companies$;
-  this.Routes = this.cachedData.routes$;
-  this.Stock = this.cachedData.Stock$;
+    this.Companies = this.cachedData.Companies$;
+    this.Routes = this.cachedData.routes$;
+    this.Stock = this.cachedData.Stock$;
   }
 
   ngOnInit() {
@@ -229,19 +228,18 @@ export class CashSaleComponent implements OnInit, OnChanges {
       this.Accounts = [...r];
     });
   }
-  CustomerSelected(event: { CustomerID: any; }) {
+  CustomerSelected(event: { CustomerID: any }) {
     console.log(event);
 
     if (event) {
-      this.SelectCust = this.Accounts.find((x: { CustomerID: any; }) => {
+      this.SelectCust = this.Accounts.find((x: { CustomerID: any }) => {
         return x.CustomerID == event.CustomerID;
       });
       this.sale.PrevBalance = this.SelectCust.Balance;
       //this.sale.CustomerName = this.SelectCust.CustomerName;
-
     }
   }
-  RouteSelected($event:  any ) {
+  RouteSelected($event: any) {
     if ($event) this.getCustomers($event.RouteID);
   }
 
@@ -369,7 +367,9 @@ export class CashSaleComponent implements OnInit, OnChanges {
       }
     });
   }
-  public onDeleteConfirm(event: { confirm: { resolve: () => void; reject: () => void; }; }): void {
+  public onDeleteConfirm(event: {
+    confirm: { resolve: () => void; reject: () => void };
+  }): void {
     if (window.confirm('Are you sure you want to delete?')) {
       event.confirm.resolve();
       setTimeout(() => {
@@ -380,13 +380,30 @@ export class CashSaleComponent implements OnInit, OnChanges {
       event.confirm.reject();
     }
   }
-  public onEdit(event: { newData: { Amount: number; Qty: number; Packing: number; Pcs: number; SPrice: number; Discount: number; DiscRatio: number; NetAmount: number; }; confirm: { resolve: (arg0: any) => void; }; }) {
-    event.newData.Amount = (event.newData.Qty * event.newData.Packing + event.newData.Pcs)
-     * event.newData.SPrice;
+  public onEdit(event: {
+    newData: {
+      Amount: number;
+      Qty: number;
+      Packing: number;
+      Pcs: number;
+      SPrice: number;
+      Discount: number;
+      DiscRatio: number;
+      NetAmount: number;
+    };
+    confirm: { resolve: (arg0: any) => void };
+  }) {
+    event.newData.Amount =
+      (event.newData.Qty * event.newData.Packing + event.newData.Pcs * 1) *
+      event.newData.SPrice;
     event.newData.Discount =
-      ((event.newData.Qty * event.newData.Packing + event.newData.Pcs) * event.newData.SPrice * event.newData.DiscRatio) /
+      ((event.newData.Qty * event.newData.Packing + event.newData.Pcs * 1) *
+        event.newData.SPrice *
+        event.newData.DiscRatio) /
       100;
-    event.newData.NetAmount = RoundTo2( event.newData.Amount - event.newData.Discount);
+    event.newData.NetAmount = RoundTo2(
+      event.newData.Amount - event.newData.Discount
+    );
 
     event.confirm.resolve(event.newData);
     setTimeout(() => {
@@ -455,15 +472,17 @@ export class CashSaleComponent implements OnInit, OnChanges {
       initialState
     );
 
-    this.bsModalRef.content.Event.subscribe((res: { res: string; data: { Packing: number; }; }) => {
-      if (res.res == 'ok') {
-        this.bsModalRef?.hide();
-        res.data.Packing = 1;
-        this.ProductSelected(res.data);
-      } else {
-        this.cmbProduct.focus();
+    this.bsModalRef.content.Event.subscribe(
+      (res: { res: string; data: { Packing: number } }) => {
+        if (res.res == 'ok') {
+          this.bsModalRef?.hide();
+          res.data.Packing = 1;
+          this.ProductSelected(res.data);
+        } else {
+          this.cmbProduct.focus();
+        }
       }
-    });
+    );
   }
 
   openModal(template: TemplateRef<any>) {
@@ -493,20 +512,14 @@ export class CashSaleComponent implements OnInit, OnChanges {
     const target = event.target as HTMLInputElement; // Get the target element
     target.select(); // Select the text inside the input element
   }
-  customSearchFn(term: string, item: { CustomerName: string; }) {
-    return item.CustomerName.toLowerCase().includes(
-      term.toLowerCase()
-    );
+  customSearchFn(term: string, item: { CustomerName: string }) {
+    return item.CustomerName.toLowerCase().includes(term.toLowerCase());
   }
 
-  ProductSearchFn(term: string, item: { ProductName: string; }) {
+  ProductSearchFn(term: string, item: { ProductName: string }) {
     // console.log(item);
 
-    return (
-      item.ProductName.toLowerCase().includes(
-        term.toLowerCase()
-      )
-    );
+    return item.ProductName.toLowerCase().includes(term.toLowerCase());
   }
   Round(v: number) {
     return RoundTo2(v);

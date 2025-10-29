@@ -15,6 +15,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { FutureTechLibModule } from '../../../../../../libs/future-tech-lib/src';
 import { AccountLedgerComponent } from './account-ledger/account-ledger.component';
 import { CashBookComponent } from './cash-book/cash-book.component';
+import { DonationReportComponent } from './donars-donation.report/donation-report.component';
 import { DonationRemindersComponent } from './donation-reminders/donation-reminders.component';
 import { ExpenseReportComponent } from './expense-report/expense-report.component';
 
@@ -25,7 +26,8 @@ const routes:any= [
   { path: 'cashbook', component: CashBookComponent, data: { breadcrumb: 'Day Book' } },
   { path: 'account-ledger', component: AccountLedgerComponent, data: { breadcrumb: 'Day Book' } },
   { path: 'donation-reminders', component: DonationRemindersComponent, data: { breadcrumb: 'Donation Reminder' } },
-  { path: 'expense-report', component: ExpenseReportComponent, data: { breadcrumb: 'Donation Reminder' } },
+  { path: 'expense-report', component: ExpenseReportComponent, data: { breadcrumb: 'Expense Report' } },
+  { path: 'donation-report', component: DonationReportComponent, data: { breadcrumb: 'Donation Report' } },
 
 
 
@@ -37,6 +39,7 @@ const routes:any= [
     AccountLedgerComponent,
     DonationRemindersComponent,
     ExpenseReportComponent,
+    DonationReportComponent
   ],
 
   imports: [

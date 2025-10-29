@@ -54,6 +54,7 @@ class Apis extends REST_Controller
             );
             return;
         }
+        $table = strtolower($table);
 
         // header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
         // header("Cache-Control: post-check=0, pre-check=0", false);
@@ -303,6 +304,7 @@ class Apis extends REST_Controller
         $this->output->set_header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 
         $insertedid = 0;
+        $table = strtolower($table);
         $post_data  = [];
         $this->load->database();
         if (! $this->db->table_exists($table)) {
@@ -373,20 +375,13 @@ class Apis extends REST_Controller
     {
 
         // Query to retrieve primary key information
-        $query = $this->db->query("
-          SELECT COLUMN_NAME
-          FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-          WHERE OBJECTPROPERTY(OBJECT_ID(CONSTRAINT_SCHEMA + '.' + QUOTENAME(CONSTRAINT_NAME)), 'IsPrimaryKey') = 1
-          AND TABLE_NAME = '$tableName'
-      ");
+        $fields = $this->db->field_data($tableName);
 
-        // Fetch the result
-        $primaryKeyColumns = [];
-        foreach ($query->result() as $row) {
-            return $row->COLUMN_NAME;
+        foreach ($fields as $field) {
+            if ($field->primary_key) {
+                return $field->name;
+            }
         }
-
-        // Display or use the primary key columns
         return "";
     }
 
@@ -967,7 +962,7 @@ class Apis extends REST_Controller
     public function saleslist_post()
     {
         $post_data = $this->post();
-        $query     = $this->db->query("exec GetSaleInvoices ?, ?, ?, ?", [
+        $query     = $this->db->query("call GetSaleInvoices(?, ?, ?, ?)", [
             $post_data['FromDate'],
             $post_data['ToDate'],
             $post_data['Type'],
@@ -1036,4 +1031,5 @@ class Apis extends REST_Controller
       }
 
     }
+
 }

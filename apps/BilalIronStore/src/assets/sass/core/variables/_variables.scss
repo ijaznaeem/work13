@@ -109,13 +109,18 @@ $headings-font-family: $font-family-sans-serif !default;
 $headings-line-height: 1.1 !default;
 $headings-color: #17102F !default;
 
-$small-font-size: 90% !default;
+$small-font-size: 95% !default; // Increased from 90%
 
 $text-muted: #BDBDBD !default;
 
-$blockquote-font-size: 1.1rem !default;
+$blockquote-font-size: 1.2rem !default; // Increased from 1.1rem
 
 $hr-border-color: $border-color !default;
+
+// Base font size variables for improved readability
+$font-size-base: 1rem !default; // 16px
+$font-size-lg: 1.25rem !default; // 20px
+$font-size-sm: 0.875rem !default; // 14px
 
 // Tables
 //
@@ -230,7 +235,7 @@ $toast-header-border-color: $border-color !default;
 
 // Badges
 
-$badge-font-size: 85% !default;
+$badge-font-size: 90% !default; // Increased from 85%
 $badge-font-weight: 500 !default;
 $badge-padding-y: 0.4rem !default;
 $badge-padding-x: 0.666666667rem !default;
@@ -267,7 +272,7 @@ $thumbnail-border-color: $border-color !default;
 
 // Code
 
-$code-font-size: 90% !default;
+$code-font-size: 95% !default; // Increased from 90%
 $code-color: $danger !default;
 
 // Utilities

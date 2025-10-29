@@ -30,7 +30,7 @@ export class WagesPaidComponent implements OnInit, OnChanges {
   @ViewChild('cmbCustomers') cmbCustomers;
 
   public data = new LocalDataSource([]);
-  navigateURL = '/sale/wages';
+  navigateURL = '/sale/wages-paid';
   Ino = '';
   tqty: any = '';
   public btnsave = false;
@@ -91,7 +91,7 @@ export class WagesPaidComponent implements OnInit, OnChanges {
     if (this.modelData.CashID == null || this.modelData.CashID == 0) {
       let bno: any = 1;
       bno = await this.http.getData(
-        'getbno/WAGES-' + enTransactionType.Labour + '/1'
+        'getbno/4/' + enTransactionType.Labour + '/1'
       );
       this.modelData.CashID = bno.billno;
     }
@@ -179,7 +179,7 @@ export class WagesPaidComponent implements OnInit, OnChanges {
         break;
       case 'Last':
         this.http
-          .getData('getbno/WAGES-' + enTransactionType.Labour)
+          .getData('getbno/4/' + enTransactionType.Labour)
           .then((r: any) => {
             billNo = r.billno;
             this.NavigateTo(billNo);

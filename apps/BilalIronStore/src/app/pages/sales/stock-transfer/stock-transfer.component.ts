@@ -93,10 +93,7 @@ export class StockTransferComponent implements OnInit, OnChanges {
         title: 'Packing',
         editable: false,
       },
-      KGs: {
-        title: 'Kgs',
-        editable: true,
-      },
+
     },
     pager: {
       display: true,

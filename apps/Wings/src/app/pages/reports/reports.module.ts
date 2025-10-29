@@ -6,8 +6,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ComboBoxAllModule, DropDownListAllModule } from '@syncfusion/ej2-angular-dropdowns';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ComponentsModule } from '../components/components.module';
+import { CashFlowReportComponent } from './cash-flow-report/cash-flow-report.component';
 import { InvoiceReportComponent } from './invoice-report/invoice-report.component';
 import { LogReportComponent } from './log-report/log-report.component';
+import { SaleComparisonComponent } from './sale-comparison/sale-comparison.component';
 import { SaleReporAdminComponent } from './sale-report-admin/sale-report-admin.component';
 import { SaleReporByAgentsComponent } from './sale-report-byagets/sale-report-byagents.component';
 import { SaleReportBytemitemComponent } from './sale-report-byitem/salereport-byitem.component';
@@ -21,7 +23,9 @@ const routes:any = [
   { path: 'trial-balance', component: TrialBalanceComponent, data: { breadcrumb: 'Sale Report by Agents' }, },
   { path: 'salereport-admin', component: SaleReporAdminComponent, data: { breadcrumb: 'Sale Report for Admin' }, },
   { path: 'salreport-byitem', component: SaleReportBytemitemComponent, data: { breadcrumb: 'Sale Report by Item' }, },
-  { path: 'log-report', component: LogReportComponent, data: { breadcrumb: 'Sale Report by Item' }, },
+  { path: 'log-report', component: LogReportComponent, data: { breadcrumb: 'Log Report' }, },
+  { path: 'cash-flow-report', component: CashFlowReportComponent, data: { breadcrumb: 'Cash Flow Report' }, },
+  { path: 'sale-comparison', component: SaleComparisonComponent, data: { breadcrumb: 'Sale Comparison Report' }, },
 
 
 ];
@@ -34,6 +38,8 @@ const routes:any = [
     TrialBalanceComponent,
     SaleReportBytemitemComponent,
     LogReportComponent,
+    CashFlowReportComponent,
+    SaleComparisonComponent,
   ],
   imports: [
     CommonModule,

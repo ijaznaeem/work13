@@ -1,0 +1,228 @@
+// Invoice Approvals Component Styles
+.invoice-approvals-container {
+  padding: 0;
+  
+  // Card styling
+  .card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    
+    .card-header {
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+      padding: 0.75rem 1rem;
+      
+      h6 {
+        color: #495057;
+        font-weight: 600;
+      }
+    }
+  }
+
+  // Form styling
+  .form-label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .form-control-sm, .form-select-sm {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+  }
+
+  // Table styling
+  .table {
+    font-size: 0.875rem;
+    
+    th {
+      background-color: #f8f9fa;
+      border-bottom: 2px solid #dee2e6;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    td {
+      vertical-align: middle;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    tbody tr {
+      transition: background-color 0.15s ease-in-out;
+      
+      &:hover {
+        background-color: #f8f9fa;
+      }
+      
+      &.table-active {
+        background-color: #e3f2fd;
+        border-color: #2196f3;
+      }
+    }
+  }
+
+  // Status badges
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    
+    &.bg-success {
+      background-color: #28a745 !important;
+      color: white;
+    }
+    
+    &.bg-danger {
+      background-color: #dc3545 !important;
+      color: white;
+    }
+    
+    &.bg-warning {
+      background-color: #ffc107 !important;
+      color: #212529;
+    }
+    
+    &.bg-secondary {
+      background-color: #6c757d !important;
+      color: white;
+    }
+  }
+
+  // Button styling
+  .btn {
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 0.375rem;
+    transition: all 0.15s ease-in-out;
+    
+    &.btn-sm {
+      padding: 0.5rem 1rem;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    i {
+      font-size: 0.8rem;
+    }
+  }
+
+  // Responsive table container
+  .table-responsive {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+      
+      &:hover {
+        background: #a8a8a8;
+      }
+    }
+  }
+
+  // Remarks textarea
+  textarea {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    resize: none;
+    
+    &:focus {
+      border-color: #80bdff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+  }
+
+  // Loading spinner
+  .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  // Typography
+  h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  small {
+    font-size: 0.8rem;
+  }
+
+  // Utility classes
+  .text-success {
+    color: #28a745 !important;
+  }
+
+  .text-primary {
+    color: #007bff !important;
+  }
+
+  .text-danger {
+    color: #dc3545 !important;
+  }
+
+  .text-muted {
+    color: #6c757d !important;
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .card-body {
+      padding: 0.75rem;
+    }
+    
+    .table-responsive {
+      font-size: 0.8rem;
+    }
+    
+    .btn-sm {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8rem;
+    }
+    
+    h4 {
+      font-size: 1.25rem;
+    }
+  }
+
+  // Print styles
+  @media print {
+    .card, .btn, .form-control, .form-select {
+      display: none;
+    }
+    
+    .table {
+      border-collapse: collapse;
+      
+      th, td {
+        border: 1px solid #000;
+        padding: 0.25rem;
+      }
+    }
+  }
+}

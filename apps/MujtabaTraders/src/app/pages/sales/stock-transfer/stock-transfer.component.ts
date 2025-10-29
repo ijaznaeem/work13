@@ -86,6 +86,10 @@ export class StockTransferComponent implements OnInit, OnChanges {
         title: 'Qty',
         editable: true,
       },
+      TWeight: {
+        title: 'Weight',
+        editable: true,
+      },
       PPrice: {
         title: 'Rate',
         editable: true,
@@ -163,6 +167,7 @@ export class StockTransferComponent implements OnInit, OnChanges {
                 ProductID,
                 ProductName,
                 Qty,
+                Weight,
                 KGs,
                 PPrice,
                 StockID,
@@ -175,6 +180,7 @@ export class StockTransferComponent implements OnInit, OnChanges {
                 ProductID,
                 ProductName,
                 Qty,
+                Weight,
                 KGs,
                 PPrice,
                 StockID,
@@ -214,6 +220,9 @@ export class StockTransferComponent implements OnInit, OnChanges {
       Amount: parseFloat(ord.Qty) * ord.PPrice,
       PPrice: ord.PPrice,
       UnitValue: ord.UnitValue,
+
+      TWeight: ord.Weight * ord.Qty * 1,
+
       ProductID: ord.ProductID,
       StockID: ord.StockID,
       Packing: ord.Packing,
@@ -252,6 +261,7 @@ export class StockTransferComponent implements OnInit, OnChanges {
       this.transferdetails.Packing = product.Packing;
       this.transferdetails.UnitValue = product.UnitValue;
       this.transferdetails.ProductName = product.ProductName;
+      this.transferdetails.Weight = product.Weight;
     }
   }
   getTime(d: Date) {
@@ -278,10 +288,11 @@ export class StockTransferComponent implements OnInit, OnChanges {
         (r: any) => {
           this.myToaster.Sucess('Transfer Saved Successfully', 'Save', 2);
 
-          if (this.EditID != '') {
-            this.router.navigateByUrl('/sale/transfer');
+          if (this.EditID == '') {
+            this.router.navigateByUrl('/sale/transfer/' + r.id);
+
           } else {
-            this.Cancel();
+            this.router.navigateByUrl('/sale/transfer/' + this.EditID);
             this.scrollToAccts();
           }
         },
@@ -333,6 +344,7 @@ export class StockTransferComponent implements OnInit, OnChanges {
   public calculation() {
     this.stocktransfer.Amount = 0;
     this.stocktransfer.Labour = 0;
+    this.stocktransfer.Weight = 0;
 
     this.data.getAll().then((d) => {
       console.log(d);
@@ -341,6 +353,7 @@ export class StockTransferComponent implements OnInit, OnChanges {
 
       for (i = 0; i < d.length; i++) {
         this.stocktransfer.Amount += d[i].Amount * 1;
+        this.stocktransfer.Weight += d[i].TWeight * 1;
         // this.stocktransfer.Labour += d[i].Qty * d[i].Labour;
       }
     });

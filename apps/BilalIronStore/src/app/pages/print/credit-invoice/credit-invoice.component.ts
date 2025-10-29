@@ -15,6 +15,7 @@ import { environment } from '../../../../environments/environment';
 import { months } from '../../../factories/constants';
 import { FindTotal, RoundTo, getDMYDate } from '../../../factories/utilities';
 import { HttpBase } from '../../../services/httpbase.service';
+import { MyToastService } from '../../../services/toaster.server';
 
 @Component({
   selector: 'app-credit-invoice',
@@ -42,7 +43,8 @@ export class CreditInvoiceComponent
   constructor(
     private http: HttpBase,
     private ref: ChangeDetectorRef,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toast: MyToastService
   ) {}
 
   ngOnInit() {
@@ -88,9 +90,9 @@ export class CreditInvoiceComponent
     document.body.classList.add('A4');
     // document.body.classList.remove('A4');
 
-    setTimeout(() => {
-      this.Print();
-    }, 2000);
+    // setTimeout(() => {
+    //   this.Print();
+    // }, 2000);
   }
 
   Print() {
@@ -141,4 +143,26 @@ export class CreditInvoiceComponent
   {
     return RoundTo(n,d);
   }
+  SendWhatsApp() {
+    const data: any = document.getElementById('print-section');
+    html2canvas(data).then(async (canvas) => {
+      canvas.toBlob(async (blob) => {
+      if (blob && navigator.clipboard && (navigator.clipboard as any).write) {
+        const item = new ClipboardItem({ 'image/png': blob });
+        await (navigator.clipboard as any).write([item]);
+        // Open WhatsApp Web with prefilled message
+        const phone = this.Invoice.PhoneNo1 || '';
+        const url = `https://wa.me/+923424256584?text=Please%20find%20attached%20your%20invoice.`;
+        this.toast.Info('Invoice image copied to clipboard. Opening WhatsApp...','');
+        window.open(url, '_blank');
+      } else {
+        alert('Clipboard image copy is not supported in this browser.');
+      }
+      }, 'image/png');
+    });
+  }
+GetTime(time: string) {
+  return moment(time).format('hh:mm A');
+}
+
 }

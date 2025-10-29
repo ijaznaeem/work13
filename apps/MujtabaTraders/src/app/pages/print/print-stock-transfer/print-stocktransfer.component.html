@@ -6,18 +6,26 @@
           <tbody style="vertical-align: top">
             <tr>
               <td colspan="4" *ngIf="Invoice.Type != 3">
-                <app-print-title [Business]="Business"></app-print-title>
+                <table style="width: 100%">
+                  <tr>
+                    <td class="text-center header">
+                      <div
+                        style="
+                          font-size: 1.5rem;
+                          font-weight: 600;
+                          text-transform: capitalize;
+                        "
+                      >
+                        GUJRAT WAREHOUSE OUTWARD
+                      </div>
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
             <tr>
               <td colspan="4" class="text-center" style="font-size: 16px">
-                <strong
-                  >{{
-                    Invoice.DtCr == 'CR'
-                      ? 'STOCK TRANSFER '
-                      : 'STOCK TRANSFER RETURN'
-                  }}
-                </strong>
+                <strong>GATEPASS</strong>
               </td>
             </tr>
             <tr>
@@ -48,27 +56,18 @@
               <td colspan="2" class="text-left" style="width: 50%">
                 <table class="">
                   <tr>
-                    <td style="width: 40">Transfer No::</td>
+                    <td style="width: 40">Gatepass No::</td>
                     <td>
                       <strong>{{ Invoice.TransferID }} </strong>
                     </td>
                   </tr>
                   <tr>
-                    <td>Transfer Date:</td>
+                    <td>Gatepass Date:</td>
                     <td>
                       {{ FormatDate(Invoice.Date) }}
                     </td>
                   </tr>
-                  <tr>
-                    <td>From Store:</td>
-                    <td>
-                      {{ Invoice.FromStoreName }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>To Store:</td>
-                    <td>{{ Invoice.ToStoreName }}</td>
-                  </tr>
+
                 </table>
               </td>
             </tr>
@@ -107,16 +106,16 @@
                       <td>
                         <strong>{{ RoundIt(det.Qty, 0) }}</strong>
                       </td>
-                      <td>{{ RoundIt(det.PPrice, 0) }}</td>
-                      <td>{{ RoundIt(det.Amount, 0) }}</td>
+                      <td>{{ RoundIt(det.PPrice, 0) | number:'1.0-0' }}</td>
+                      <td>{{ RoundIt(det.Amount, 0) | number:'1.0-0' }}</td>
                     </tr>
                   </tbody>
                   <tr>
                     <th></th>
                     <th class="text-left">
                       <strong>
-                        Weight: {{ RoundTo(FindTotal('Weight'), 2) }} Mon,
-                        {{ RoundTo(FindTotal('Weight') / 1000, 2) }} Mon
+                        Weight: {{ RoundTo(FindTotal('TotalWeight'), 2) }} KGs,
+                        {{ RoundTo(FindTotal('TotalWeight') / 1000, 2) }} Ton
                         <span> Grand Total: </span></strong
                       >
                     </th>
@@ -125,10 +124,18 @@
                     </th>
                     <th></th>
                     <th>
-                      <strong>{{ FindTotal('Amount') }}</strong>
+                      <strong>{{ FindTotal('Amount') | number:'1.0-0' }}</strong>
                     </th>
                   </tr>
                 </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <strong>Remarks:</strong>
+                <span style="font-size: 10px; font-weight: 600">
+                  {{ Invoice.Notes }}
+                </span>
               </td>
             </tr>
           </tbody>

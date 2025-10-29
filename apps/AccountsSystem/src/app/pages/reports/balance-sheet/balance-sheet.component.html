@@ -1,0 +1,315 @@
+<div widget class="card border-0 box-shadow">
+  <div class="card-header transparent border-0 text-muted">
+    <h5 class="mb-3">
+      <i class="fa fa-balance-scale"></i> Balance Sheet
+      <span *ngIf="bdata && bdata.length > 0" 
+            class="badge badge-pill ml-2"
+            [ngClass]="balanceSheetSummary.isBalanced ? 'badge-success' : 'badge-danger'">
+        {{ balanceSheetSummary.isBalanced ? 'BALANCED' : 'OUT OF BALANCE' }}
+      </span>
+    </h5>
+  </div>
+  <div class="card-block widget-body">
+    <div class="row no-gutter">
+      <div class="col-md-2">
+        <label for="dtFrom">As On Date:</label>
+        <div class="input-group">
+          <input
+            class="form-control"
+            placeholder="yyyy-mm-dd"
+            name="dtFrom"
+            [(ngModel)]="Filter.Date"
+            ngbDatepicker
+            #dtFrom="ngbDatepicker"
+          />
+          <div class="input-group-addon">
+            <button
+              type="button"
+              class="btn btn-warning"
+              (click)="dtFrom.toggle()"
+            >
+              <i class="fa fa-calendar"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <button
+          type="button"
+          class="btn btn-primary form-control"
+          (click)="LoadData()"
+          accesskey="a"
+        >
+          <i class="fa fa-search"></i>
+          Load Data
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button
+          type="button"
+          class="btn btn-info form-control"
+          (click)="PrintReport()"
+          accesskey="a"
+        >
+          <i class="fa fa-print"></i>
+          Print
+        </button>
+      </div>
+      <div class="col-md-2">
+        <button
+          type="button"
+          class="btn btn-success form-control"
+          (click)="validateBalanceSheet(bdata)"
+          title="Validate current balance sheet data"
+          [disabled]="!bdata || bdata.length === 0"
+        >
+          <i class="fa fa-check"></i>
+          Validate
+        </button>
+      </div>
+      <div class="col-md-2">
+        <button
+          type="button"
+          class="btn btn-warning form-control"
+          (click)="testWithSampleData()"
+          title="Test balance sheet validation with sample data"
+        >
+          <i class="fa fa-flask"></i>
+          Test
+        </button>
+      </div>
+    </div>
+
+    <!-- Balance Sheet Summary Cards -->
+    <div class="row mb-4" *ngIf="bdata && bdata.length > 0">
+      <div class="col-md-3">
+        <div class="card bg-light border-primary balance-card">
+          <div class="card-body text-center">
+            <h5 class="card-title text-primary">
+              <i class="fa fa-plus-circle"></i> Total Debits
+            </h5>
+            <h3 class="text-primary">{{ formatCurrency(balanceSheetSummary.totalDebits) }}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-light border-info balance-card">
+          <div class="card-body text-center">
+            <h5 class="card-title text-info">
+              <i class="fa fa-minus-circle"></i> Total Credits
+            </h5>
+            <h3 class="text-info">{{ formatCurrency(balanceSheetSummary.totalCredits) }}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-light balance-card" 
+             [ngClass]="balanceSheetSummary.isBalanced ? 'border-success' : 'border-danger difference-highlight'">
+          <div class="card-body text-center">
+            <h5 class="card-title" [ngClass]="getBalanceStatusClass()">
+              <i class="fa" [ngClass]="getBalanceStatusIcon()"></i> Difference
+            </h5>
+            <h3 [ngClass]="getBalanceStatusClass()">
+              {{ formatCurrency(getAbsoluteValue(balanceSheetSummary.difference)) }}
+              <span *ngIf="balanceSheetSummary.difference > 0" class="small">(Dr)</span>
+              <span *ngIf="balanceSheetSummary.difference < 0" class="small">(Cr)</span>
+            </h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-light balance-card" [ngClass]="balanceSheetSummary.isBalanced ? 'border-success' : 'border-warning'">
+          <div class="card-body text-center">
+            <h5 class="card-title" [ngClass]="getBalanceStatusClass()">
+              <i class="fa" [ngClass]="getBalanceStatusIcon()"></i> Status
+            </h5>
+            <h4 [ngClass]="getBalanceStatusClass()">
+              {{ balanceSheetSummary.isBalanced ? 'BALANCED' : 'OUT OF BALANCE' }}
+            </h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Summary (Optional) -->
+    <div class="row mb-3" *ngIf="bdata && bdata.length > 0 && balanceSheetSummary.categories.length > 0">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mb-0">
+              <i class="fa fa-chart-pie"></i> Category Summary
+              <button class="btn btn-sm btn-outline-secondary float-right" 
+                      type="button" 
+                      data-toggle="collapse" 
+                      data-target="#categorySummary">
+                Toggle
+              </button>
+            </h6>
+          </div>
+          <div class="collapse" id="categorySummary">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4" *ngFor="let category of balanceSheetSummary.categories">
+                  <div class="card mb-2" [ngClass]="category.isPositive ? 'border-success' : 'border-warning'">
+                    <div class="card-body p-2">
+                      <h6 class="card-title mb-1">{{ category.name }}</h6>
+                      <small class="text-muted">
+                        Dr: {{ formatCurrency(category.debits) }} | 
+                        Cr: {{ formatCurrency(category.credits) }}
+                      </small>
+                      <div class="font-weight-bold" [ngClass]="getAmountClass(category.netAmount)">
+                        Net: {{ formatCurrency(getAbsoluteValue(category.netAmount)) }}
+                        <span *ngIf="category.netAmount >= 0" class="small">(Dr)</span>
+                        <span *ngIf="category.netAmount < 0" class="small">(Cr)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" id="print-section">
+      <div class="col-md-12">
+
+        <table class="table table-light table-enhanced">
+          <thead>
+            <tr class="table-dark">
+              <th style="width: 50%">Account Details</th>
+              <th style="width: 25%" class="text-right">Debit</th>
+              <th style="width: 25%" class="text-right">Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container
+              *ngFor="
+                let d of GetProps(GetGroupBy(bdata, 'Level1'));
+                let i = index
+              "
+            >
+            <tr>
+              <td>
+                <strong>
+                  <h5 class="text-primary">{{ d }}</h5>
+                </strong>
+              </td>
+              <td class="text-right">
+                <h5 class="text-primary">
+                  <strong>{{ formatCurrency(FindTotal(GetGroupBy(bdata, 'Level1')[d], 'Debit')) }}</strong>
+                </h5>
+              </td>
+              <td class="text-right">
+                <h5 class="text-primary">
+                  <strong>{{ formatCurrency(FindTotal(GetGroupBy(bdata, 'Level1')[d], 'Credit')) }}</strong>
+                </h5>
+              </td>
+            </tr>
+              <tr
+                *ngFor="
+                  let g of GetProps(
+                    GetGroupBy(GetGroupBy(bdata, 'Level1')[d], 'Level2')
+                  );
+                  let i = index
+                "
+              >
+                <td style="padding-left: 30px;">
+                  <strong>
+                    <h6 class="text-warning">{{ g }}</h6>
+                  </strong>
+                </td>
+
+                <td class="text-right">
+                  <h6 class="text-warning">
+                    <strong>
+                      {{
+                        formatCurrency(FindTotal(
+                          GetGroupBy(GetGroupBy(bdata, 'Level1')[d], 'Level2')[
+                            g
+                          ],
+                          'Debit'
+                        ))
+                      }}
+                    </strong>
+                  </h6>
+                </td>
+                <td class="text-right">
+                  <h6 class="text-warning">
+                    <strong>
+                      {{
+                        formatCurrency(FindTotal(
+                          GetGroupBy(GetGroupBy(bdata, 'Level1')[d], 'Level2')[
+                            g
+                          ],
+                          'Credit'
+                        ))
+                      }}
+                    </strong>
+                  </h6>
+                </td>
+              </tr>
+              <tr class="table-secondary">
+                <td class="thick-border">
+                  <strong>{{ d }} Total</strong>
+                </td>
+                <td class="thick-border text-right">
+                  <h5 class="text-primary">
+                    <strong>{{ formatCurrency(FindTotal(GetGroupBy(bdata, 'Level1')[d], 'Debit')) }}</strong>
+                  </h5>
+                </td>
+                <td class="thick-border text-right">
+                  <h5 class="text-primary">
+                    <strong>{{ formatCurrency(FindTotal(GetGroupBy(bdata, 'Level1')[d], 'Credit')) }}</strong>
+                  </h5>
+                </td>
+              </tr>
+            </ng-container>
+            <!-- Grand Total Row -->
+            <tr class="table-dark">
+              <td class="thick-border">
+                <h5 class="text-white mb-0">
+                  <i class="fa fa-calculator"></i> Grand Total
+                </h5>
+              </td>
+              <td class="thick-border text-right">
+                <h5 class="text-white mb-0">
+                  <strong>{{ formatCurrency(balanceSheetSummary.totalDebits) }}</strong>
+                </h5>
+              </td>
+              <td class="thick-border text-right">
+                <h5 class="text-white mb-0">
+                  <strong>{{ formatCurrency(balanceSheetSummary.totalCredits) }}</strong>
+                </h5>
+              </td>
+            </tr>
+            <!-- Difference Row -->
+            <tr [ngClass]="balanceSheetSummary.isBalanced ? 'table-success' : 'table-danger'">
+              <td class="thick-border">
+                <h5 class="mb-0" [ngClass]="getBalanceStatusClass()">
+                  <i class="fa" [ngClass]="getBalanceStatusIcon()"></i> 
+                  {{ balanceSheetSummary.isBalanced ? 'BALANCED' : 'DIFFERENCE' }}
+                </h5>
+              </td>
+              <td class="thick-border text-right" [ngClass]="balanceSheetSummary.difference > 0 ? 'bg-warning' : ''">
+                <h5 class="mb-0" [ngClass]="balanceSheetSummary.difference > 0 ? 'text-dark' : getBalanceStatusClass()">
+                  <strong>
+                    {{ balanceSheetSummary.difference > 0 ? formatCurrency(getAbsoluteValue(balanceSheetSummary.difference)) : '0.00' }}
+                  </strong>
+                </h5>
+              </td>
+              <td class="thick-border text-right" [ngClass]="balanceSheetSummary.difference < 0 ? 'bg-warning' : ''">
+                <h5 class="mb-0" [ngClass]="balanceSheetSummary.difference < 0 ? 'text-dark' : getBalanceStatusClass()">
+                  <strong>
+                    {{ balanceSheetSummary.difference < 0 ? formatCurrency(getAbsoluteValue(balanceSheetSummary.difference)) : '0.00' }}
+                  </strong>
+                </h5>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

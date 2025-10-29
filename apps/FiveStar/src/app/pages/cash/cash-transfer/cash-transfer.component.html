@@ -1,12 +1,10 @@
 <div widget class="card border-0 box-shadow">
-  <div class="card-header transparent border-0 text-muted">
-
-  </div>
+  <div class="card-header transparent border-0 text-muted"></div>
   <div class="card-block widget-body">
     <form #frmFilter="ngForm" (submit)="SaveData()">
       <div class="container">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-8 offset-md-2">
             <h5 class="mb-5">Amount For Account</h5>
             <div class="form-group row">
               <label for="dtFrom" class="col-sm-4 col-form-label">Date: </label>
@@ -23,7 +21,11 @@
                     disabled
                   />
                   <div class="input-group-addon">
-                    <button type="button" class="btn btn-warning" (click)="dtFrom.toggle()">
+                    <button
+                      type="button"
+                      class="btn btn-warning"
+                      (click)="dtFrom.toggle()"
+                    >
                       <i class="fa fa-calendar"> </i>
                     </button>
                   </div>
@@ -32,7 +34,9 @@
               <div class="col-md-6"></div>
             </div>
             <div class="form-group row">
-              <label for="cmbCustomer" class="form-label col-md-4"> Account Type: </label>
+              <label for="cmbCustomer" class="form-label col-md-4">
+                Account Type:
+              </label>
               <div class="col-md-8">
                 <ejs-combobox
                   name="cmbAcctType"
@@ -47,7 +51,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="cmbCustomer" class="form-label col-md-4"> Account </label>
+              <label for="cmbCustomer" class="form-label col-md-4">
+                Account
+              </label>
               <div class="col-md-8">
                 <ejs-combobox
                   name="cmbCustomer"
@@ -63,16 +69,28 @@
               </div>
             </div>
             <div class="row form-group">
-              <label for="description" class="col-md-4 form-label">Description </label>
+              <label for="description" class="col-md-4 form-label"
+                >Description
+              </label>
               <div class="col-md-8">
-                <input name="description1" class="form-control" type="text" [(ngModel)]="Voucher.Description" id="description" />
+                <input
+                  name="description1"
+                  class="form-control"
+                  type="text"
+                  [(ngModel)]="Voucher.Description"
+                  id="description"
+                />
               </div>
             </div>
             <div class="row form-group">
-              <label for="description" class="col-md-4 form-label">Account Details </label>
+              <label for="description" class="col-md-4 form-label"
+                >Account Details
+              </label>
               <div class="col-md-8">
                 <div class="row form-group">
-                  <label for="amount" class="col-md-4 form-label">Address: </label>
+                  <label for="amount" class="col-md-4 form-label"
+                    >Address:
+                  </label>
                   <div class="col-md-8">
                     <strong>
                       {{ curCustomer.Address }}
@@ -88,7 +106,9 @@
                   </div>
                 </div>
                 <div class="row form-group">
-                  <label for="amount" class="col-md-4 form-label">Balance: </label>
+                  <label for="amount" class="col-md-4 form-label"
+                    >Balance:
+                  </label>
                   <div class="col-md-8">
                     <strong>
                       {{ Round(curCustomer.Balance) }}
@@ -97,7 +117,18 @@
                 </div>
               </div>
             </div>
-
+            <div class="form-group row">
+              <label for="debit" class="form-label col-md-4"> Amount Received</label>
+              <div class="col-md-8">
+                <input
+                  name="Debit"
+                  class="form-control"
+                  type="text"
+                  [(ngModel)]="Voucher.Debit"
+                  id="Debit"
+                />
+              </div>
+            </div>
             <!-- <div class="row form-group">
               <label for="amount" class="col-md-4 form-label">Amount Recieved
               </label>
@@ -107,12 +138,14 @@
               </div>
             </div> -->
           </div>
-          <div class="col-md-6">
+          <div class="col-md-8 offset-md-2">
             <h5 class="mb-5">Amount Paid To:</h5>
 
             <div>
               <div class="form-group row">
-                <label for="dtFrom" class="col-sm-4 col-form-label">Date: </label>
+                <label for="dtFrom" class="col-sm-4 col-form-label"
+                  >Date:
+                </label>
                 <div class="col-md-8">
                   <div class="input-group">
                     <input
@@ -121,11 +154,16 @@
                       name="dtFrom"
                       [(ngModel)]="Voucher1.Date"
                       ngbDatepicker
-                      #dtFrom="ngbDatepicker" disabled
+                      #dtFrom="ngbDatepicker"
+                      disabled
                       required
                     />
                     <div class="input-group-addon">
-                      <button type="button" class="btn btn-warning" (click)="dtFrom.toggle()">
+                      <button
+                        type="button"
+                        class="btn btn-warning"
+                        (click)="dtFrom.toggle()"
+                      >
                         <i class="fa fa-calendar"> </i>
                       </button>
                     </div>
@@ -134,7 +172,9 @@
                 <div class="col-md-6"></div>
               </div>
               <div class="form-group row">
-                <label for="cmbCustomer" class="form-label col-md-4"> Select Business: </label>
+                <label for="cmbCustomer" class="form-label col-md-4">
+                  Select Business:
+                </label>
                 <div class="col-md-8">
                   <ejs-combobox
                     name="blist"
@@ -149,7 +189,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label for="cmbCustomer" class="form-label col-md-4">Customers </label>
+                <label for="cmbCustomer" class="form-label col-md-4"
+                  >Customers
+                </label>
                 <div class="col-md-8">
                   <ejs-combobox
                     name="cmbCustomer1"
@@ -165,16 +207,28 @@
                 </div>
               </div>
               <div class="row form-group">
-                <label for="description" class="col-md-4 form-label">Description </label>
+                <label for="description" class="col-md-4 form-label"
+                  >Description
+                </label>
                 <div class="col-md-8">
-                  <input name="description1" class="form-control" type="text" [(ngModel)]="Voucher1.Description" id="description" />
+                  <input
+                    name="description1"
+                    class="form-control"
+                    type="text"
+                    [(ngModel)]="Voucher1.Description"
+                    id="description"
+                  />
                 </div>
               </div>
               <div class="row form-group">
-                <label for="description" class="col-md-4 form-label">Account Details </label>
+                <label for="description" class="col-md-4 form-label"
+                  >Account Details
+                </label>
                 <div class="col-md-8">
                   <div class="row form-group">
-                    <label for="amount" class="col-md-4 form-label">Address: </label>
+                    <label for="amount" class="col-md-4 form-label"
+                      >Address:
+                    </label>
                     <div class="col-md-8">
                       <strong>
                         {{ curCustomer1.Address }}
@@ -182,7 +236,9 @@
                     </div>
                   </div>
                   <div class="row form-group">
-                    <label for="amount" class="col-md-4 form-label">City: </label>
+                    <label for="amount" class="col-md-4 form-label"
+                      >City:
+                    </label>
                     <div class="col-md-8">
                       <strong>
                         {{ curCustomer1.City }}
@@ -190,7 +246,9 @@
                     </div>
                   </div>
                   <div class="row form-group">
-                    <label for="amount" class="col-md-4 form-label">Balance: </label>
+                    <label for="amount" class="col-md-4 form-label"
+                      >Balance:
+                    </label>
                     <div class="col-md-8">
                       <strong>
                         {{ Round(curCustomer1.Balance) }}
@@ -199,20 +257,35 @@
                   </div>
                 </div>
               </div>
+              <div class="form-group row">
+              <label for="Credit" class="form-label col-md-4"> Amount Paid</label>
+              <div class="col-md-8">
+                <input
+                  name="Credit"
+                  class="form-control"
+                  type="text"
+                  [(ngModel)]="Voucher1.Credit"
+                  id="Credit"
+                />
+              </div>
+            </div>
             </div>
           </div>
         </div>
         <div class="row">
-          <div class="form-group col-md-6">
-            <label for="amountpaid" class="col-md-4 form-label">Amount </label>
-            <div class="col-md-8">
-              <input name="amount" class="form-control" type="text" [(ngModel)]="Voucher.Debit" id="Credit" />
-            </div>
+          <div class="form-group col-md-4">
+
           </div>
-          <div class="form-group col-md-6">
+          <div class="form-group col-md-4">
             <label for="amountpaid" class="col-md-4 form-label">&nbsp; </label>
-            <button type="submit" class="btn btn-primary form-control" accesskey="s" [disabled]="!frmFilter.valid">
+            <button
+              type="submit"
+              class="btn btn-primary form-control"
+              accesskey="s"
+              [disabled]="!frmFilter.valid"
+            >
               <i class="fa fa-save"></i>
+              Save Transaction
             </button>
           </div>
         </div>

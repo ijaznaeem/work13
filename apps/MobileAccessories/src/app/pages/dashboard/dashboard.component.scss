@@ -1,0 +1,491 @@
+// Dashboard Container
+.dashboard-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+// Header Styles
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #2c3e50;
+}
+
+.dashboard-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dashboard-subtitle {
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin: 0;
+  font-weight: 400;
+}
+
+// Action Cards Grid
+.action-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+  margin-bottom: 40px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// Main Action Card Styles
+.action-card {
+  border: none;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  height: 200px;
+
+  &:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+
+    .icon-wrapper {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .card-footer {
+      background: rgba(255, 255, 255, 0.95);
+    }
+  }
+
+  .card-body {
+    padding: 25px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+      transform: rotate(45deg);
+      transition: all 0.6s;
+      opacity: 0;
+    }
+
+    &:hover::before {
+      opacity: 1;
+      animation: shimmer 1.5s ease-in-out;
+    }
+  }
+
+  .card-footer {
+    padding: 15px 25px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+// Icon Wrapper Styles
+.icon-wrapper {
+  width: 65px;
+  height: 65px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+  i {
+    font-size: 28px;
+    color: white;
+  }
+}
+
+// Card Title and Text
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.card-text {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.card-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.action-text {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+// Color Schemes for Different Cards
+.orders-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  .orders-icon {
+    background: linear-gradient(135deg, #4834d4 0%, #686de0 100%);
+  }
+}
+
+.orders-list {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+
+  .orders-list-icon {
+    background: linear-gradient(135deg, #eb4d4b 0%, #f0932b 100%);
+  }
+}
+
+.invoices {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+
+  .invoices-icon {
+    background: linear-gradient(135deg, #0abde3 0%, #006ba6 100%);
+  }
+}
+
+.vouchers {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+
+  .vouchers-icon {
+    background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+  }
+}
+
+.customers-add {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+
+  .customers-add-icon {
+    background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+  }
+}
+
+.customers-list {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+
+  .customers-list-icon {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  }
+}
+
+.customer-accounts {
+  background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);
+
+  .accounts-icon {
+    background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+  }
+}
+
+.products {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+
+  .products-icon {
+    background: linear-gradient(135deg, #ff7675 0%, #e17055 100%);
+  }
+}
+
+.categories {
+  background: linear-gradient(135deg, #a8caba 0%, #5d4e75 100%);
+
+  .categories-icon {
+    background: linear-gradient(135deg, #55a3ff 0%, #003d82 100%);
+  }
+}
+
+.admin {
+  background: linear-gradient(135deg, #434343 0%, #000000 100%);
+
+  .admin-icon {
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+  }
+}
+
+// Recent Activities Section
+.recent-activities-section {
+  margin-top: 40px;
+}
+
+.recent-activities-card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+
+  .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 25px;
+    border: none;
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+
+      i {
+        margin-right: 12px;
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .card-body {
+    padding: 25px;
+  }
+}
+
+// Activity Items
+.activity-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #f1f2f6;
+  transition: all 0.3s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+.activity-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  color: white;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  &.order {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+  }
+
+  &.invoice {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+  }
+
+  &.customer {
+    background: linear-gradient(135deg, #fa709a, #fee140);
+  }
+
+  &.product {
+    background: linear-gradient(135deg, #ffecd2, #fcb69f);
+  }
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-text {
+  font-size: 0.95rem;
+  color: #2c3e50;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.activity-meta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.activity-time {
+  font-size: 0.8rem;
+  color: #74b9ff;
+}
+
+.activity-amount {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #00b894;
+}
+
+// Loading Styles
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+
+  i {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #667eea;
+  }
+}
+
+.loading-text {
+  margin: 0;
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+// Animations
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+// Responsive Design
+@media (max-width: 1200px) {
+  .action-cards-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 15px;
+  }
+
+  .dashboard-title {
+    font-size: 2.2rem;
+  }
+
+  .dashboard-subtitle {
+    font-size: 1rem;
+  }
+
+  .action-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .action-card {
+    height: 180px;
+
+    .card-body {
+      height: 130px;
+      padding: 20px;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+    }
+
+    .card-text {
+      font-size: 0.9rem;
+    }
+  }
+
+  .recent-activities-card {
+    .card-header {
+      padding: 15px 20px;
+
+      .section-title {
+        font-size: 1.2rem;
+      }
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 10px;
+  }
+
+  .dashboard-title {
+    font-size: 1.8rem;
+  }
+
+  .action-card {
+    height: 160px;
+
+    .card-body {
+      height: 115px;
+      padding: 15px;
+    }
+
+    .icon-wrapper {
+      width: 55px;
+      height: 55px;
+      margin-bottom: 10px;
+
+      i {
+        font-size: 24px;
+      }
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+    }
+
+    .card-text {
+      font-size: 0.85rem;
+    }
+
+    .card-footer {
+      padding: 12px 15px;
+
+      .action-text {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}

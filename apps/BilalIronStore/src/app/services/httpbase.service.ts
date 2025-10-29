@@ -9,7 +9,6 @@ import { AuthenticationService } from './authentication.service';
 
 @Injectable()
 export class HttpBase {
-
   apiUrl = environment.INSTANCE_URL;
   bsModalRef: BsModalRef;
   constructor(
@@ -102,7 +101,7 @@ export class HttpBase {
       filter = 'filter=Category =' + CatID;
     }
     return this.getData(
-      'qryproducts?flds=ProductID,ProductName,SPrice,PPrice,Packing,Value as UnitValue&' +
+      'qryproducts?flds=ProductID,ProductName,SPrice,PPrice,Packing&' +
         filter +
         '&orderby=ProductName'
     );
@@ -110,13 +109,13 @@ export class HttpBase {
   getStock(StoreID = '') {
     let filter = '';
     if (StoreID != '') {
-      filter = 'filter=StoreID =' + StoreID;
+      filter = 'StoreID =' + StoreID;
     }
-    return this.getData(
-      'qrystock?flds=ProductID,ProductName,Stock,SPrice,PPrice,Packing,UnitValue as UnitValue&' +
-        filter +
-        '&orderby=ProductName'
-    );
+    return this.getData('qrystock', {
+      flds: 'ProductID,StockID,ProductName,Stock,SPrice,PPrice,Packing',
+      filter,
+      orderby: 'ProductName',
+    });
   }
 
   getRoutes() {
@@ -310,6 +309,15 @@ export class HttpBase {
       });
     });
   }
+  OpenAsDialog(Component, InitState: any = {}): BsModalRef {
+    const initialState: ModalOptions = {
+      initialState: InitState,
+      class: 'modal-lg',
+      backdrop: true,
+      ignoreBackdropClick: true,
+    };
+    return this.modalService.show(Component, initialState);
+  }
 
   private jwt() {
     // create authorization header with jwt token
@@ -389,16 +397,6 @@ export class HttpBase {
     });
   }
 
-  getCustByType(rtid = '') {
-    let filter = '';
-    if (rtid !== '') {
-      filter = ' AcctTypeID=' + rtid;
-    }
-    return this.getData(
-      'customers?flds=CustomerName,Balance,CustomerID,RouteID&orderby=CustomerName' +
-        (filter === '' ? '' : '&filter=' + filter)
-    );
-  }
   ProductsAll() {
     return this.getData(
       'products?flds=ProductID,ProductName&orderby=ProductName'
@@ -413,6 +411,28 @@ export class HttpBase {
       'qrycustomers?flds=CustomerName,Address,PhoneNo1,City,Balance,CustomerID&orderby=CustomerName' +
         filter
     );
+  }
+  getAccountsByType(type = '') {
+    let filter = '';
+    if (type != '') {
+      filter = `AcctType like '%${type}%'`;
+    }
+    return this.getData('qrycustomers', {
+      flds: 'CustomerName,Address,PhoneNo1,City,Balance,CustomerID',
+      orderby: 'CustomerName',
+      filter,
+    });
+  }
+  getAccountsByCat(cat = '') {
+    let filter = '';
+    if (cat != '') {
+      filter = `CustCatID = ${cat}`;
+    }
+    return this.getData('qrycustomers', {
+      flds: 'CustomerName,Address,PhoneNo1,City,Balance,CBalance,CustomerID',
+      orderby: 'CustomerName',
+      filter,
+    });
   }
   getAcctstList(type = '') {
     let filter = '';
@@ -432,8 +452,6 @@ export class HttpBase {
   }
 
   Printgatepass() {
-
-
     return new Promise((resolve, reject) => {
       Swal.fire({
         title: 'Select Store',
@@ -507,42 +525,127 @@ export class HttpBase {
         },
       }).then((result) => {
         if (result.isConfirmed) {
-    resolve(  result.value)
-
+          resolve(result.value);
         } else {
-          reject(0)
+          reject(0);
         }
       });
-
-    })
+    });
   }
 
-  PrintSaleInvoice(InvoiceID){
+  HoldInvoice(data: any) {
+    const key = 'heldInvoices';
+    let heldInvoices: any[] = [];
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      try {
+        heldInvoices = JSON.parse(stored);
+        if (!Array.isArray(heldInvoices)) {
+          heldInvoices = [];
+        }
+      } catch {
+        heldInvoices = [];
+      }
+    }
+    // Check if the customer already exists in heldInvoices
+    const existingIndex = heldInvoices.findIndex(
+      (inv) => inv.CustomerID === data.CustomerID
+    );
+    if (existingIndex !== -1) {
+      // If it exists, update the existing invoice
+      heldInvoices[existingIndex] = data;
+    } else {
+      // If it doesn't exist, add a new invoice
+      heldInvoices.push(data);
+    }
+
+    // Save the updated heldInvoices back to localStorage
+    localStorage.setItem(key, JSON.stringify(heldInvoices));
+    return Promise.resolve();
+  }
+
+  GetHeldInvoices() {
+    const key = 'heldInvoices';
+    let heldInvoices: any[] = [];
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      try {
+        heldInvoices = JSON.parse(stored);
+        if (!Array.isArray(heldInvoices)) {
+          heldInvoices = [];
+        }
+      } catch {
+        heldInvoices = [];
+      }
+    }
+    return Promise.resolve(heldInvoices);
+  }
+  RemoveHeldInvoice(customerID: any) {
+    const key = 'heldInvoices';
+    let heldInvoices: any[] = [];
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      try {
+        heldInvoices = JSON.parse(stored);
+        if (!Array.isArray(heldInvoices)) {
+          heldInvoices = [];
+        }
+      } catch {
+        heldInvoices = [];
+      }
+    }
+    heldInvoices = heldInvoices.filter(inv => inv && inv.CustomerID !== customerID);
+    localStorage.setItem(key, JSON.stringify(heldInvoices));
+    return Promise.resolve();
+  }
+  ClearHeldInvoices() {
+    const key = 'heldInvoices';
+    localStorage.removeItem(key);
+    return Promise.resolve();
+  }
+
+
+
+  PrintSaleInvoice(InvoiceID) {
     window.open(
       '/#/print/printinvoice/' + InvoiceID,
       '_blank',
-      'toolbar=1, scrollbars=1, resizable=1, width=' + 1015 + ', height=' + 800
+      'toolbar=1, scrollbars=1, resizable=1, width=' + 800 + ', height=' + 800
     );
   }
-  PrintVoucher(ID){
+  PrintSaleOrder(InvoiceID) {
     window.open(
-      '/#/print/print-voucher/' + ID,
+      '/#/print/print-order/' + InvoiceID,
+      '_blank',
+      'toolbar=1, scrollbars=1, resizable=1, width=' + 700 + ', height=' + 800
+    );
+  }
+  PrintThermalInvoice(InvoiceID) {
+    window.open(
+      '/#/print/thermalinvoice/' + InvoiceID,
       '_blank',
       'toolbar=1, scrollbars=1, resizable=1, width=' + 600 + ', height=' + 800
     );
   }
-  PrintPurchaseInvoice(InvoiceID){
+  PrintVoucher(ID) {
+    window.open(
+      '/#/print/print-voucher/' + ID,
+      '_blank',
+      'toolbar=1, scrollbars=1, resizable=1, width=' + 800 + ', height=' + 800
+    );
+  }
+  PrintPurchaseInvoice(InvoiceID) {
     window.open(
       '/#/print/printpurchase/' + InvoiceID,
       '_blank',
-      'toolbar=1, scrollbars=1, resizable=1, width=' + 1015 + ', height=' + 800
+      'toolbar=1, scrollbars=1, resizable=1, width=' + 800 + ', height=' + 800
     );
   }
-  PrintSaleGatePass(InvoiceID, store){
-    window.open('/#/print/gatepass/' + InvoiceID + '/' + store,
+  PrintSaleGatePass(InvoiceID, store) {
+    window.open(
+      '/#/print/gatepass/' + InvoiceID + '/' + store,
       '_blank',
-      'toolbar=1, scrollbars=1, resizable=1, width=' + 1015 + ', height=' + 800
+      'toolbar=1, scrollbars=1, resizable=1, width=' + 800 + ', height=' + 800
     );
   }
-
 }

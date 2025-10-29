@@ -51,57 +51,7 @@
         </div>
         <div class="col-md-8">
           <div class="row no-gutter">
-            <div class="form-group col-md-2">
-              <div class="custom-control mt-2 custom-radio">
-                <input
-                  class="custom-control-input radio-inline"
-                  id="rdByProduct"
-                  name="radio"
-                  type="radio"
-                  value="1"
-                  [(ngModel)]="nWhat"
-                  (change)="ItemChange($event)"
-                />
-                <label class="custom-control-label" for="rdByProduct">
-                  By Product
-                </label>
-              </div>
-
-              <div class="custom-control custom-radio">
-                <input
-                  class="custom-control-input radio-inline radio-primary"
-                  id="rdByUnit"
-                  name="radio"
-                  type="radio"
-                  value="2"
-                  [(ngModel)]="nWhat"
-                  (change)="ItemChange($event)"
-                />
-                <label class="custom-control-label" for="rdByUnit">
-                  By Unit
-                </label>
-              </div>
-            </div>
-            <div class="form-group col-md-3">
-              <label for="customer"
-                >Select {{ nWhat == '1' ? 'Product' : 'Unit' }}
-              </label>
-              <ng-select
-                #cmbProduct
-                name="cmbProduct"
-                id="cmbProduct"
-                class="custom"
-                [items]="Items"
-                bindLabel="ItemName"
-                bindValue="ItemID"
-                placeholder="Select Item"
-                (change)="ItemSelected($event)"
-                [(ngModel)]="Filter.ItemID"
-              >
-              </ng-select>
-            </div>
-
-            <div class="form-group col-md-5">
+            <div class="form-group col-md-4">
               <label for="customer">Customer</label>
               <ng-select
                 #cmbCustomers
@@ -113,7 +63,7 @@
                 bindValue="CustomerID"
                 placeholder="Select Customer"
                 [(ngModel)]="Filter.CustomerID"
-                (change) = "CustomerSelected($event)"
+                (change)="CustomerSelected($event)"
               >
                 <ng-template ng-option-tmp let-item="item">
                   <div class="row no-gutter">
@@ -129,8 +79,35 @@
                 </ng-template>
               </ng-select>
             </div>
-
-            <div class="col-md-1">
+            <div class="form-group col-md-2">
+              <div class="form-check mb-3">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="reportType"
+                  id="detailRadio"
+                  value="detail"
+                  [(ngModel)]="Filter.ReportType"
+                  (change)="onReportTypeChange()"
+                />
+                <label class="form-check-label" for="detailRadio">Detail</label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="reportType"
+                  id="summaryRadio"
+                  value="summary"
+                  [(ngModel)]="Filter.ReportType"
+                  (change)="onReportTypeChange()"
+                />
+                <label class="form-check-label" for="summaryRadio"
+                  >Summary</label
+                >
+              </div>
+            </div>
+            <div class="col-md-2">
               <div class="form-group">
                 <label>&nbsp;</label>
                 <button
@@ -144,7 +121,7 @@
                 </button>
               </div>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
               <div class="form-group">
                 <label>&nbsp;</label>
                 <button
@@ -162,6 +139,7 @@
         </div>
       </div>
     </form>
+
     <div class="row no-gutter" id="print-section">
       <div class="col-md-12">
         <ft-dynamic-table
@@ -169,6 +147,7 @@
           [Settings]="setting"
           [Data]="data"
           (ClickAction)="Clicked($event)"
+          [class.summary-mode]="Filter.ReportType === 'summary'"
         ></ft-dynamic-table>
       </div>
     </div>

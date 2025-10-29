@@ -34,6 +34,7 @@ export class Invoice {
   public AmntRecvd: number | null = null;
   public DtCr: string = 'CR';
   public SessionID: number | null = null;
+  public UserID: number | null = null;
   public Type: number | null = null;
   public Notes: string = '';
   public IsPosted: number = 0;

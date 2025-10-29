@@ -75,11 +75,11 @@ $query_builder = TRUE;
 
 $db['default'] = array(
   'dsn'  => '',
-  'hostname' => 'NAEEM-PC\SQL14',
-	'username' => 'sa',
-	'password' => '',
-  'database' => 'TradingSystemWeb',
-  'dbdriver' => 'sqlsrv',
+  'hostname' => 'localhost',
+  'username' => 'root',
+  'password' => '123',
+  'database' => 'db_trading',
+  'dbdriver' => 'mysqli',
   'dbprefix' => '',
   'pconnect' => FALSE,
   'db_debug' => (ENVIRONMENT !== 'production'),

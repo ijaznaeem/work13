@@ -184,7 +184,7 @@ class Tasks extends REST_Controller
             $this->db->insert('transferdetails', $detdata);
         }
         $this->db->trans_commit();
-        $this->response(['id' => $this->db->insert_id()], REST_Controller::HTTP_OK);
+        $this->response(['id' => $transferID], REST_Controller::HTTP_OK);
     }
 
     private function PostStockTranfer($id = 0, $bid = 0)
@@ -767,110 +767,125 @@ class Tasks extends REST_Controller
     }
     private function PostSales($id = 0, $bid = 0)
     {
-        if ($id > 0) {
-            $this->db->where('InvoiceID', $id);
-        } else {
-            $this->db->where('BusinessID', $bid);
-        }
-        $this->db->where('IsPosted', 0);
-        $this->db->where("Date <> '0000-00-00'");
+      if ($id > 0) {
+        $this->db->where('InvoiceID', $id);
+      } else {
+        $this->db->where('BusinessID', $bid);
+      }
+      $this->db->where('IsPosted', 0);
+      $this->db->where("Date <> '0000-00-00'");
 
-        $InvoiceRes = $this->db->get('qryinvoices')->result_array();
-        $this->db->trans_begin();
-        if (count($InvoiceRes) > 0) {
-            foreach ($InvoiceRes as $InvoiceValue) {
-                $this->db->where('InvoiceID', $InvoiceValue['InvoiceID']);
-                $InvoiceDetailsRes = $this->db->get('qryinvoicedetails')->result_array();
+      $InvoiceRes = $this->db->get('qryinvoices')->result_array();
+      $this->db->trans_begin();
+      if (count($InvoiceRes) > 0) {
+        foreach ($InvoiceRes as $InvoiceValue) {
+          $hasError = false;
+          $this->db->where('InvoiceID', $InvoiceValue['InvoiceID']);
+          $InvoiceDetailsRes = $this->db->get('qryinvoicedetails')->result_array();
 
-                if ($InvoiceValue['DtCr'] == 'CR') { // sale
+          try {
+            if ($InvoiceValue['DtCr'] == 'CR') { // sale
 
-                    // var_dump($InvoiceValue['NetAmount'], $InvoiceValue['AmountRecvd']);
-                    $data['CustomerID']  = $InvoiceValue['CustomerID'];
-                    $data['Date']        = $InvoiceValue['Date'];
-                    $data['Credit']      = 0;
-                    $data['Debit']       = $InvoiceValue['NetAmount'];
-                    $data['Description'] = 'Bill No ' . $InvoiceValue['InvoiceID'];
-                    $data['Notes']       = $InvoiceValue['Notes'];
-                    $data['RefID']       = $InvoiceValue['InvoiceID'];
-                    $data['RefType']     = 1;
-                    $data['BusinessID']  = $InvoiceValue['BusinessID'];
+              $data['CustomerID']  = $InvoiceValue['CustomerID'];
+              $data['Date']        = $InvoiceValue['Date'];
+              $data['Credit']      = 0;
+              $data['Debit']       = $InvoiceValue['NetAmount'];
+              $data['Description'] = 'Bill No ' . $InvoiceValue['InvoiceID'];
+              $data['Notes']       = $InvoiceValue['Notes'];
+              $data['RefID']       = $InvoiceValue['InvoiceID'];
+              $data['RefType']     = 1;
+              $data['BusinessID']  = $InvoiceValue['BusinessID'];
 
-                    $this->AddToAccount($data);
-                    if ($InvoiceValue['AmntRecvd'] > 0) {
-                        $data['CustomerID']  = $InvoiceValue['CustomerID'];
-                        $data['Date']        = $InvoiceValue['Date'];
-                        $data['Credit']      = $InvoiceValue['AmntRecvd'];
-                        $data['Debit']       = 0;
-                        $data['Description'] = 'Cash Recvd Bill No ' . $InvoiceValue['InvoiceID'];
-                        $data['RefID']       = $InvoiceValue['InvoiceID'];
-                        $data['RefType']     = 1;
-                        $data['BusinessID']  = $InvoiceValue['BusinessID'];
-                        $this->AddToAccount($data);
-                    }
+              $hasError = ! $this->AddToAccount($data);
+              if ($InvoiceValue['AmntRecvd'] > 0) {
+                $data['CustomerID']  = $InvoiceValue['CustomerID'];
+                $data['Date']        = $InvoiceValue['Date'];
+                $data['Credit']      = $InvoiceValue['AmntRecvd'];
+                $data['Debit']       = 0;
+                $data['Description'] = 'Cash Recvd Bill No ' . $InvoiceValue['InvoiceID'];
+                $data['RefID']       = $InvoiceValue['InvoiceID'];
+                $data['RefType']     = 1;
+                $data['BusinessID']  = $InvoiceValue['BusinessID'];
+                $hasError = ! $this->AddToAccount($data);
+              }
 
-                    // var_dump($InvoiceDetailsRes);
-                    foreach ($InvoiceDetailsRes as $InvoiceDetailsvalue) {
-                        $this->UpdateStock(
-                            2,
-                            'Sale Bill # ' . $InvoiceValue['InvoiceID'],
-                            $InvoiceDetailsvalue['ProductID'],
-                            $InvoiceDetailsvalue['PPrice'],
-                            $InvoiceDetailsvalue['TotKGs'],
-                            0,
-                            $InvoiceValue['InvoiceID'],
-                            '2',
-                            $InvoiceValue['Date'],
-                            $InvoiceDetailsvalue['StoreID'],
-                            $InvoiceDetailsvalue['UnitID'],
-                            $InvoiceValue['BusinessID']
-                        );
-                    }
-                } else { // sale return
-                    $data['CustomerID']  = $InvoiceValue['CustomerID'];
-                    $data['Date']        = $InvoiceValue['Date'];
-                    $data['Credit']      = $InvoiceValue['NetAmount'];
-                    $data['Debit']       = 0;
-                    $data['Description'] = 'Bill No ' . $InvoiceValue['InvoiceID'];
-                    $data['RefID']       = $InvoiceValue['InvoiceID'];
-                    $data['RefType']     = 1;
-                    $data['BusinessID']  = $InvoiceValue['BusinessID'];
-
-                    $this->AddToAccount($data);
-                    if ($InvoiceValue['AmountRecvd'] > 0) {
-                        $data['CustomerID']  = $InvoiceValue['CustomerID'];
-                        $data['Date']        = $InvoiceValue['Date'];
-                        $data['Credit']      = 0;
-                        $data['Debit']       = $InvoiceValue['AmountRecvd'];
-                        $data['Description'] = 'Cah Return Bill No ' . $InvoiceValue['InvoiceID'];
-                        $data['RefID']       = $InvoiceValue['InvoiceID'];
-                        $data['RefType']     = 1;
-                        $data['BusinessID']  = $InvoiceValue['BusinessID'];
-                        $this->AddToAccount($data);
-                    } // sale return
-                    foreach ($InvoiceDetailsRes as $InvoiceDetailsvalue) {
-                        // var_dump('in return ');
-                        $this->UpdateStock(
-                            2,
-                            'Sale Return Bill # ' . $InvoiceValue['InvoiceID'],
-                            $InvoiceDetailsvalue['ProductID'],
-                            $InvoiceDetailsvalue['PPrice'],
-                            0,
-                            $InvoiceDetailsvalue['TotKGs'],
-                            $InvoiceValue['InvoiceID'],
-                            '2',
-                            $InvoiceValue['Date'],
-                            $InvoiceDetailsvalue['StoreID'],
-                            $InvoiceDetailsvalue['UnitID'],
-                            $InvoiceValue['BusinessID']
-                        );
-                    }
+              foreach ($InvoiceDetailsRes as $InvoiceDetailsvalue) {
+                try {
+                  $this->UpdateStock(
+                    2,
+                    'Sale Bill # ' . $InvoiceValue['InvoiceID'],
+                    $InvoiceDetailsvalue['ProductID'],
+                    $InvoiceDetailsvalue['PPrice'],
+                    $InvoiceDetailsvalue['TotKGs'],
+                    0,
+                    $InvoiceValue['InvoiceID'],
+                    '2',
+                    $InvoiceValue['Date'],
+                    $InvoiceDetailsvalue['StoreID'],
+                    $InvoiceDetailsvalue['UnitID'],
+                    $InvoiceValue['BusinessID']
+                  );
+                } catch (\Exception $e) {
+                  $hasError = true;
+                  break;
                 }
-                $posted['IsPosted'] = '1';
-                $this->db->where('InvoiceID', $InvoiceValue['InvoiceID']);
-                $this->db->update('invoices', $posted);
+              }
+            } else { // sale return
+              $data['CustomerID']  = $InvoiceValue['CustomerID'];
+              $data['Date']        = $InvoiceValue['Date'];
+              $data['Credit']      = $InvoiceValue['NetAmount'];
+              $data['Debit']       = 0;
+              $data['Description'] = 'Bill No ' . $InvoiceValue['InvoiceID'];
+              $data['RefID']       = $InvoiceValue['InvoiceID'];
+              $data['RefType']     = 1;
+              $data['BusinessID']  = $InvoiceValue['BusinessID'];
+
+              $hasError = ! $this->AddToAccount($data);
+              if ($InvoiceValue['AmntRecvd'] > 0) {
+                $data['CustomerID']  = $InvoiceValue['CustomerID'];
+                $data['Date']        = $InvoiceValue['Date'];
+                $data['Credit']      = 0;
+                $data['Debit']       = $InvoiceValue['AmntRecvd'];
+                $data['Description'] = 'Cash Return Bill No ' . $InvoiceValue['InvoiceID'];
+                $data['RefID']       = $InvoiceValue['InvoiceID'];
+                $data['RefType']     = 1;
+                $data['BusinessID']  = $InvoiceValue['BusinessID'];
+                $hasError = ! $this->AddToAccount($data);
+              }
+              foreach ($InvoiceDetailsRes as $InvoiceDetailsvalue) {
+                try {
+                  $this->UpdateStock(
+                    2,
+                    'Sale Return Bill # ' . $InvoiceValue['InvoiceID'],
+                    $InvoiceDetailsvalue['ProductID'],
+                    $InvoiceDetailsvalue['PPrice'],
+                    0,
+                    $InvoiceDetailsvalue['TotKGs'],
+                    $InvoiceValue['InvoiceID'],
+                    '2',
+                    $InvoiceValue['Date'],
+                    $InvoiceDetailsvalue['StoreID'],
+                    $InvoiceDetailsvalue['UnitID'],
+                    $InvoiceValue['BusinessID']
+                  );
+                } catch (\Exception $e) {
+                  $hasError = true;
+                  break;
+                }
+              }
             }
+          } catch (\Exception $e) {
+            $hasError = true;
+          }
+
+          if (! $hasError) {
+            $posted['IsPosted'] = '1';
+            $this->db->where('InvoiceID', $InvoiceValue['InvoiceID']);
+            $this->db->update('invoices', $posted);
+          }
         }
-        $this->db->trans_commit();
+      }
+      $this->db->trans_commit();
     }
 
     private function PostPurchases($id = 0, $bid = 0)
@@ -1036,14 +1051,28 @@ class Tasks extends REST_Controller
     public function AddToAccount($data)
     {
         $this->db->where('CustomerID', $data['CustomerID']);
-        $cust            = $this->db->get('customers')->result_array()[0];
-        $newBal          = 0.0;
-        $newBal          = $cust['Balance'] + $data['Debit'] - $data['Credit'];
+        $cust = $this->db->get('customers')->result_array();
+        if (empty($cust)) {
+            // Customer not found, handle error
+            log_message('error', 'Customer not found: ' . $data['CustomerID']);
+            return false;
+        }
+        $cust = $cust[0];
+        $newBal = $cust['Balance'] + $data['Debit'] - $data['Credit'];
         $data['Balance'] = $newBal;
-        $this->db->insert('customeraccts', $data);
+
+        if (! $this->db->insert('customeraccts', $data)) {
+            log_message('error', 'DB Insert Error (customeraccts): ' . print_r($this->db->error(), true));
+            return false;
+        }
+
         $cust['Balance'] = $newBal;
         $this->db->where('CustomerID', $cust['CustomerID']);
-        $this->db->update('customers', $cust);
+        if (! $this->db->update('customers', $cust)) {
+            log_message('error', 'DB Update Error (customers): ' . print_r($this->db->error(), true));
+            return false;
+        }
+        return true;
     }
 
     public function updateload_post($loadno)

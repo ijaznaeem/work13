@@ -81,7 +81,7 @@ class Apis extends REST_Controller
             $filter = " 1 = 1 ";
         }
 
-        $filter .= ' and (BusinessID =' . $bid . ')';
+        $filter .= ' and (BusinessID =' . $bid . ' OR ' . $bid . ' = 0)';
 
         if ($this->get('limit') > 0 || $this->get('limit') != "") {
             $limit = " LIMIT " . $this->get('limit');

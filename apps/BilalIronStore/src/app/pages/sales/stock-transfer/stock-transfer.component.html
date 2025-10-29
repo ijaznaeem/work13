@@ -98,44 +98,11 @@
             placeholder="Select Store"
             required
             [(ngModel)]="stocktransfer.ToStore"
-            (keydown.enter)="cmbCustomers.focus()"
+
           >
           </ng-select>
         </div>
-        <div class="col-md-4">
-          <label for="stores"> Select Account </label>
-          <ng-select
-            #cmbCustomers
-            name="cmbCustomer"
-            class="custom"
-            [items]="Accounts"
-            [virtualScroll]="true"
-            bindLabel="CustomerName"
-            bindValue="CustomerID"
-            placeholder="Select Customer"
-            required
-            [(ngModel)]="stocktransfer.CustomerID"
-            (keydown.enter)="cmbProduct.focus()"
-          >
-            <ng-template ng-option-tmp let-item="item">
-              <div class="row no-gutter">
-                <div class="col-md-12">
-                  {{ item.CustomerName }}
-                </div>
-                <div class="col-md-9 text-italic font-small-2 mt-1">
-                  <small>
-                    {{ item.Address }}
-                  </small>
-                </div>
-                <div class="col-md-3 text-italic font-small-2 mt-1">
-                  <small>
-                    {{ item.Balance }}
-                  </small>
-                </div>
-              </div>
-            </ng-template>
-          </ng-select>
-        </div>
+
       </div>
       <form #formqty="ngForm">
         <div class="row no-gutter">
@@ -183,7 +150,7 @@
                 name="qty"
                 [(ngModel)]="transferdetails.Qty"
                 #qty
-                (keydown.enter)="KGs.focus()"
+
                 (focus)="qty.select()"
               />
             </div>
@@ -202,22 +169,7 @@
               />
             </div>
           </div>
-          <div class="col-md-1">
-            <div class="form-group">
-              <label for="Kgs">Kgs</label>
-              <input
-                type="number"
-                class="form-control dation-field"
-                required="required"
-                id="Kgs"
-                name="Kgs"
-                [(ngModel)]="transferdetails.KGs"
-                #KGs
-                (keydown.enter)="btnAdd.focus()"
-                (focus)="KGs.select()"
-              />
-            </div>
-          </div>
+
           <div class="col-md-2">
             <div class="form-group">
               <label>&nbsp;</label>

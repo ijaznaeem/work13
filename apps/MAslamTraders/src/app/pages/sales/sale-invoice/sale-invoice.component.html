@@ -4,7 +4,9 @@
       <tab id="sale" heading="Sale">
         <div class="row no-gutter">
           <div class="col-md-4">
-            <h5 class="mb-3">Sale {{ EditID }}</h5>
+            <h5 class="mb-3">
+              {{ sale.DtCr == 'CR' ? 'Sale' : 'Return' }}: {{ EditID }}
+            </h5>
           </div>
           <div class="col-md-4">
             <div *ngIf="isPosted" class="text-center btn btn-danger btn-sm">
@@ -68,7 +70,11 @@
           </div>
         </div>
 
-        <div class="card-block widget-body">
+        <div
+          class="card-block widget-body {{
+            sale.DtCr == 'CR' ? 'sale-invoice' : 'return-invoice'
+          }}"
+        >
           <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
             <fieldset>
               <div class="row no-gutter">
@@ -128,7 +134,6 @@
                     [disabled]="!btnLocked"
                     [(ngModel)]="sale.CustomerID"
                     [searchFn]="customSearchFn"
-
                   >
                     <ng-template ng-option-tmp let-item="item">
                       <div class="row no-gutter">
@@ -137,12 +142,12 @@
                         </div>
                         <div class="col-md-9 text-italic font-small-2 mt-1">
                           <small>
-                            {{ item.Address }},  {{ item.PhoneNo1 }},
+                            {{ item.Address }}, {{ item.PhoneNo1 }},
                           </small>
                         </div>
                         <div class="col-md-3 text-italic font-small-2 mt-1">
                           <small>
-                            {{ item.Balance }}
+                            {{ item.CBalance }}
                           </small>
                         </div>
                       </div>
@@ -158,6 +163,7 @@
                       type="text"
                       name="CustName"
                       id="CustName"
+                      (focus)="$event.target.select()"
                     />
                   </div>
                 </div>
@@ -229,44 +235,57 @@
                             id="Remarks"
                             name="Remarks"
                             [(ngModel)]="sdetails.Remarks"
+                            (focus)="$event.target.select()"
                           />
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="col-md-2">
-                    <label for="stores"> Select Store </label>
-                    <ng-select
-                      #cmbStores
-                      name="stores"
-                      id="stores"
-                      class="custom"
-                      [items]="Stores"
-                      [virtualScroll]="true"
-                      bindLabel="StoreName"
-                      bindValue="StoreID"
-                      placeholder="Select Store"
-                      (change)="StoreSelected($event)"
-                      [searchFn]="ProductSearchFn"
-                      required
-                      [disabled]="isPosted || !btnLocked"
-                      TabSelectDirective
-                      [(ngModel)]="sdetails.StoreID"
-                      (keydown.enter)="qty.focus()"
-                    >
-                      <ng-template ng-option-tmp let-item="item">
-                        <div class="row no-gutter">
-                          <div class="col-md-9">
-                            {{ item.StoreName }}
-                          </div>
-                          <div class="col-md-3 text-italic font-small-2 mt-1">
-                            <small>
-                              {{ item.Stock }}
-                            </small>
-                          </div>
+                    <div class="row no-gutter">
+                      <div class="col-md-12">
+                        <label for="stores"> Select Store </label>
+                        <ng-select
+                          #cmbStores
+                          name="stores"
+                          id="stores"
+                          class="custom"
+                          [items]="Stores"
+                          [virtualScroll]="true"
+                          bindLabel="StoreName"
+                          bindValue="StoreID"
+                          placeholder="Select Store"
+                          (change)="StoreSelected($event)"
+                          [searchFn]="ProductSearchFn"
+                          required
+                          [disabled]="isPosted || !btnLocked"
+                          TabSelectDirective
+                          [(ngModel)]="sdetails.StoreID"
+                          (keydown.enter)="qty.focus()"
+                        >
+                          <ng-template ng-option-tmp let-item="item">
+                            <div class="row no-gutter">
+                              <div class="col-md-9">
+                                {{ item.StoreName }}
+                              </div>
+                              <div
+                                class="col-md-3 text-italic font-small-2 mt-1"
+                              >
+                                <small>
+                                  {{ item.Stock }}
+                                </small>
+                              </div>
+                            </div>
+                          </ng-template>
+                        </ng-select>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label>pp</label>
+                          <p>{{ sdetails.PPrice }}</p>
                         </div>
-                      </ng-template>
-                    </ng-select>
+                      </div>
+                    </div>
                   </div>
                   <div class="col-md-7">
                     <div class="row no-gutter">
@@ -349,6 +368,7 @@
                                 4
                               )
                             "
+                            (focus)="$event.target.select()"
                           />
                         </div>
                       </div>
@@ -403,6 +423,7 @@
                                 2
                               )
                             "
+                            (focus)="$event.target.select()"
                           />
                         </div>
                       </div>
@@ -454,11 +475,28 @@
                           <label> Stock </label>
                           <p
                             [ngClass]="{
-                              'text-danger': selectedProduct.Stock <= 0,
-                              'text-success': selectedProduct.Stock > 0
+                              'text-danger':
+                                (selectedProduct.Stock *
+                                  selectedProduct.Packing) /
+                                  selectedProduct.Weight <=
+                                0,
+                              'text-success':
+                                (selectedProduct.Stock *
+                                  selectedProduct.Packing) /
+                                  selectedProduct.Weight >
+                                0
                             }"
                           >
-                            <strong>{{ selectedProduct.Stock }}</strong>
+                            <strong
+                              *ngIf="selectedProduct.UnitName == 'Feet'"
+                              >{{ RoundTo(selectedProduct.Stock, 0) }}</strong
+                            >
+                            <strong
+                              *ngIf="selectedProduct.UnitName !== 'Feet'"
+                              >{{
+                                RoundTo(selectedProduct.TotalWeight, 0)
+                              }}</strong
+                            >
                           </p>
                         </div>
                       </div>
@@ -504,6 +542,7 @@
             </fieldset>
             <div>
               <div
+                #tableContainer
                 class="table-responsive custom-table-height table-bordered table-condensed"
               >
                 <div>
@@ -521,14 +560,14 @@
               <div class="row no-gutter">
                 <div class="col-md-2">
                   <div class="form-group">
-                    <label >Total Weight</label>
+                    <label>Total Weight</label>
                   </div>
                 </div>
                 <div class="col-md-2">
                   <div class="form-group">
                     <p>
                       <strong>
-                        {{ sale.TotalWeight }}
+                        {{ RoundTo(sale.TotalWeight, 2) }}
                       </strong>
                     </p>
                   </div>
@@ -547,6 +586,7 @@
                           type="text"
                           name="notes"
                           id="notes"
+                          (focus)="$event.target.select()"
                         />
                       </div>
                     </div>
@@ -559,6 +599,7 @@
                             class="form-control"
                             name="transport"
                             [(ngModel)]="sale.TransporterID"
+                            accesskey="t"
                           >
                             <option [value]="''">--Self--</option>
                             <option
@@ -577,7 +618,7 @@
                       <div class="col-md-3">
                         <div class="row no-gutter">
                           <div class="col-md-6">
-                            <label for="">Cash Recvd </label>
+                            <label for=""> {{ sale.DtCr == 'CR' ? 'Cash Received' : 'Cash Paid' }} </label>
                           </div>
                           <div class="col-md-6">
                             <div class="form-group">
@@ -593,7 +634,7 @@
                                     txtCashPaid.value * 1 + txtOnline.value * 1
                                 "
                                 name="txtCashPaid"
-                                tabindex="-1"
+                                (focus)="$event.target.select()"
                               />
                             </div>
                           </div>
@@ -618,6 +659,7 @@
                                   sale.AmntRecvd =
                                     txtCashPaid.value * 1 + txtOnline.value * 1
                                 "
+                                (focus)="$event.target.select()"
                               />
                             </div>
                           </div>
@@ -679,15 +721,20 @@
                       </div>
                       <div class="col-md-2">
                         <p>
-                          <strong>{{
-                            sale.PrevBalance * 1 +
-                              (sale.Amount * 1 +
-                                sale.LoadingCharges * 1 +
-                                sale.DeliveryCharges * 1 +
-                                sale.Labour * 1 -
-                                sale.Discount -
-                                sale.AmntRecvd * 1)
-                          }}</strong>
+                          <strong
+                            >{{
+                              RoundTo(
+                                sale.Amount * 1 +
+                                  sale.LoadingCharges * 1 +
+                                  sale.DeliveryCharges * 1 +
+                                  sale.Labour * 1 -
+                                  sale.Discount -
+                                  sale.AmntRecvd * 1 +
+                                  sale.PrevBalance * 1,
+                                2
+                              )
+                            }}
+                          </strong>
                         </p>
                       </div>
                     </div>
@@ -722,6 +769,8 @@
                             id="DeliveryCharges"
                             name="DeliveryCharges"
                             [(ngModel)]="sale.DeliveryCharges"
+                            accesskey="l"
+                            (focus)="$event.target.select()"
                           />
                         </div>
                       </div>
@@ -737,7 +786,7 @@
                             id="LoadingCharges"
                             name="LoadingCharges"
                             [(ngModel)]="sale.LoadingCharges"
-                            accesskey="z"
+                            (focus)="$event.target.select()"
                           />
                         </div>
                       </div>
@@ -753,6 +802,7 @@
                             id="TLabour"
                             name="TLabour"
                             [(ngModel)]="sale.Labour"
+                            (focus)="$event.target.select()"
                           />
                         </div>
                       </div>
@@ -767,11 +817,17 @@
                             id="Discount"
                             name="Discount"
                             [(ngModel)]="sale.Discount"
+                            (focus)="$event.target.select()"
                           />
                         </div>
                       </div>
                       <div class="col-md-6">
-                        <label for="netTotal">Cash Receieved</label>
+                        <label for="netTotal" *ngIf="sale.DtCr == 'CR'"
+                          >Cash Received</label
+                        >
+                        <label for="netTotal" *ngIf="sale.DtCr == 'DT'"
+                          >Payment</label
+                        >
                       </div>
                       <div class="col-md-6">
                         <div class="form-group">
@@ -781,6 +837,8 @@
                             id="AmntRecvd"
                             name="AmntRecvd"
                             [value]="sale.AmntRecvd"
+                            (focus)="$event.target.select()"
+                            readonly
                           />
                         </div>
                       </div>

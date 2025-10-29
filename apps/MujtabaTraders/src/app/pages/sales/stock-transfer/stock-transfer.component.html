@@ -220,6 +220,8 @@
                 Add
               </button>
             </div>
+          </div> <div class="col-md-2">
+            {{transferdetails| json}}
           </div>
         </div>
       </form>
@@ -239,9 +241,9 @@
         </div>
 
         <div class="row no-gutter">
-          <div class="col-md-8">
+          <div class="col-md-4">
             <div class="form-group">
-              <label for="Notes">Customer Name</label>
+              <label for="Notes">Remarks</label>
               <input
                 type="text"
                 class="form-control"
@@ -250,6 +252,14 @@
                 [(ngModel)]="stocktransfer.Notes"
                 tabindex="-1"
               />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="Notes">Total Weight</label>
+              <strong>
+                {{stocktransfer.Weight}} Kgs
+              </strong>
             </div>
           </div>
           <div class="col-md-4">

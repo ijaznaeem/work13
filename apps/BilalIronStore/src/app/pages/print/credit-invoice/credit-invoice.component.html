@@ -5,17 +5,15 @@
         <table style="width: 100%; height: 100%">
           <tbody style="vertical-align: top">
             <tr>
-              <td colspan="4" *ngIf="Invoice.Type != 3">
+              <td colspan="4">
                 <app-print-title [Business]="Business"></app-print-title>
               </td>
             </tr>
 
             <tr>
-              <td colspan="4" class="text-center" style="font-size: 16px">
+              <td colspan="4" class="text-center" style="font-size: 24px">
                 <strong
-                  >{{
-                    Invoice.DtCr == 'CR' ? 'SALE INVOICE ' : 'INVOICE RETURN'
-                  }}
+                  >{{ Invoice.DtCr == 'CR' ? 'SALE INVOICE ' : 'SALE RETURN' }}
                 </strong>
               </td>
             </tr>
@@ -47,6 +45,11 @@
                   </tr>
 
                   <tr>
+                    <td>
+                      Phone No: {{ Invoice.PhoneNo1 }},{{ Invoice.PhoneNo2 }}
+                    </td>
+                  </tr>
+                  <tr>
                     <td>Address: {{ Invoice.Address }}, {{ Invoice.City }}</td>
                   </tr>
                 </table>
@@ -56,11 +59,20 @@
                 <table class="">
                   <tr>
                     <td>
-                      Invoice No: <strong>{{ Invoice.InvoiceID }} </strong>
+                      Invoice No:
+                      <strong>{{ Invoice.InvoiceID }} </strong>
                     </td>
                   </tr>
                   <tr>
                     <td>Invoice Date: {{ FormatDate(Invoice.Date) }}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Invoice Time:
+                      <strong>
+                        {{ GetTime(Invoice.Date + ' ' + Invoice.Time) }}</strong
+                      >
+                    </td>
                   </tr>
                 </table>
               </td>
@@ -73,9 +85,7 @@
                       <th style="width: 5%" class="text-center">S#</th>
                       <th class="text-center">Product Name</th>
                       <th style="width: 5%">Qty</th>
-                      <th style="width: 5%">Packing</th>
-                      <th style="width: 5%">KGs</th>
-                      <th style="width: 5%">Labour</th>
+
                       <th style="width: 8%">Rate</th>
                       <th style="width: 12%">Amount</th>
                     </tr>
@@ -101,43 +111,15 @@
                         </span>
                       </td>
                       <td>
-                        <strong>{{ RoundIt(det.Qty, 0) }}</strong>
+                        <strong>{{ RoundIt(det.Qty, 2) }}</strong>
                       </td>
-                      <td>{{ RoundIt(det.Packing, 0) }}</td>
-                      <td>{{ RoundIt(det.KGs, 0) }}</td>
 
-                      <td>{{ RoundIt(det.Labour, 0) }}</td>
                       <td>{{ RoundIt(det.SPrice, 2) }}</td>
                       <td>
                         <strong>{{ RoundIt(det.Amount, 2) }}</strong>
                       </td>
                     </tr>
                   </tbody>
-                  <tr>
-                    <th></th>
-                    <th class="text-left">
-                      <strong>
-                        Weight: {{ RoundTo(FindTotal('Weight') , 2) }} KGs
-                        <span> Grand Total: </span></strong
-                      >
-                    </th>
-                    <th>
-                      <strong>{{ FindTotal('Qty') }}</strong>
-                    </th>
-                    <th></th>
-                    <th>
-                      <strong>{{ FindTotal('KGs') }}</strong>
-                    </th>
-                    <th>
-                      <strong>{{ FindTotal('LabourAmount') }}</strong>
-                    </th>
-                    <th></th>
-                    <th>
-                      <strong>{{
-                        FindTotal('Amount') | number: '1.0-0'
-                      }}</strong>
-                    </th>
-                  </tr>
                 </table>
               </td>
             </tr>
@@ -153,44 +135,33 @@
                         class="table table-border"
                       >
                         <tr>
-                          <td style="width: 50%">Prev Balance:</td>
+                          <td class="text-right" style="width: 50%">
+                            سابقہ بقایا:
+                          </td>
                           <td class="text-right">
                             <strong>{{
                               (Invoice.IsPosted == 1
-                                ? Invoice.PrevBalance - Invoice.Balance
+                                ? Invoice.PrevBalance
                                 : Invoice.PrevBalance
                               ) | number: '1.0-0'
                             }}</strong>
                           </td>
                         </tr>
                         <tr>
-                          <td>Total Balance:</td>
+                          <td class="text-right" style="width: 50%">
+                            موجودہ بقایا:
+                          </td>
+                          <td class="text-right">
+                            <strong>{{ Invoice.Balance | number: '1.0-0' }}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="text-right">کل بقایا:</td>
                           <td class="text-right">
                             <strong>{{
                               (Invoice.IsPosted == 1
                                 ? Invoice.PrevBalance
-                                : Invoice.PrevBalance * 1 +
-                                  Invoice.Balance * 1 -
-                                  Invoice.AmntRecvd
-                              ) | number: '1.0-0'
-                            }}</strong>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Cash Receieved:</td>
-                          <td class="text-right">
-                            <strong>{{
-                              Invoice.AmntRecvd | number: '1.0-0'
-                            }}</strong>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>New Balance:</td>
-                          <td class="text-right">
-                            <strong>{{
-                              (Invoice.IsPosted == 1
-                                ? Invoice.PrevBalance
-                                : Invoice.PrevBalance * 1 + Invoice.Balance * 1
+                                : Invoice.PrevBalance * 1 + Invoice.Balance * (Invoice.DtCr=='CR' ?1: -1)
                               ) | number: '1.0-0'
                             }}</strong>
                           </td>
@@ -205,41 +176,93 @@
                     </td>
                     <td style="width: 50%; padding-left: 5%">
                       <table
-                        style="width: 100%; vertical-align: top"
+                        style="
+                          width: 100%;
+                          vertical-align: top;
+                          text-align: right;
+                        "
                         class="table table-border"
                       >
                         <tr>
-                          <td style="width: 50%">Packing Charges:</td>
-                          <td class="text-right">
-                            {{ Invoice.PackingCharges | number: '1.0-0' }}
+                          <td style="text-align: right">رقم بل:</td>
+                          <td class="text-right" style="text-align: right">
+                            {{ Invoice.Amount | number: '1.0-0' }}
                           </td>
                         </tr>
-                        <tr>
-                          <td>Delivery Charges:</td>
-                          <td class="text-right">
-                            {{ Invoice.DeliveryCharges | number: '1.0-0' }}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Labour:</td>
-                          <td class="text-right">
-                            {{ Invoice.Labour | number: '1.0-0' }}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Discount:</td>
-                          <td class="text-right">
+                        <tr *ngIf="Invoice.Discount > 0">
+                          <td style="text-align: right">رعائت:</td>
+                          <td class="text-right" style="text-align: right">
                             {{ Invoice.Discount | number: '1.0-0' }}
                           </td>
                         </tr>
                         <tr>
-                          <td><strong>Net Amount:</strong></td>
-                          <td class="text-right">
+                          <td style="text-align: right">مزدوری:</td>
+                          <td class="text-right" style="text-align: right">
+                            {{ Invoice.Labour | number: '1.0-0' }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="text-align: right">کرایہ:</td>
+                          <td class="text-right" style="text-align: right">
+                            {{ Invoice.DeliveryCharges | number: '1.0-0' }}
+                          </td>
+                        </tr>
+                        <tr
+                          style="
+                            border-top: 2px solid #000;
+                            border-bottom: 2px solid #000;
+                          "
+                        >
+                          <td style="text-align: right">
+                            <strong>کل رقم:</strong>
+                          </td>
+                          <td class="text-right" style="text-align: right">
                             <strong>{{
-                              (Invoice.NetAmount < 0
-                                ? Invoice.NetAmount * -1
-                                : Invoice.NetAmount
-                              ) | number: '1.0-0'
+                              Invoice.NetAmount | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="text-align: right">نقد کیش:</td>
+                          <td class="text-right" style="text-align: right">
+                            {{ Invoice.Cash | number: '1.0-0' }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="text-align: right">
+                            بینک: {{ Invoice.BankName }}
+                          </td>
+                          <td class="text-right" style="text-align: right">
+                            {{ Invoice.Bank | number: '1.0-0' }}
+                          </td>
+                        </tr>
+                        <tr
+                          style="
+                            border-top: 2px solid #000;
+                            border-bottom: 2px solid #000;
+                          "
+                        >
+                          <td style="text-align: right">
+                            <strong>کل رقم وصول:</strong>
+                          </td>
+                          <td class="text-right" style="text-align: right">
+                            <strong>{{
+                              Invoice.AmntRecvd | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                        <tr
+                          style="
+                            border-top: 2px solid #000;
+                            border-bottom: 2px solid #000;
+                          "
+                        >
+                          <td style="text-align: right">
+                            <strong>بقایا رقم:</strong>
+                          </td>
+                          <td class="text-right" style="text-align: right">
+                            <strong>{{
+                              Invoice.Balance | number: '1.0-0'
                             }}</strong>
                           </td>
                         </tr>
@@ -276,9 +299,10 @@
           class="btn btn-primary"
           printSectionId="print-section"
           type="button"
-          (click)="SaveAsPdf()"
+          (click)="SendWhatsApp()"
         >
-          Save as PDF
+          <i class="fab fa whatsapp"></i>
+          Send WhatsApp
         </button>
       </div>
     </div>

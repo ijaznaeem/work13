@@ -1,0 +1,187 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    {{ isEditMode ? 'Edit' : 'Add' }} Purchase Return Approval
+  </h4>
+  <button 
+    type="button" 
+    class="btn-close" 
+    aria-label="Close" 
+    (click)="onCancel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="approvalForm" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
+          <input
+            type="date"
+            id="date"
+            class="form-control"
+            formControlName="date"
+            [class.is-invalid]="isFieldInvalid('date')"
+          />
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('date')">
+            {{ getFieldError('date') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="status" class="form-label">Status</label>
+          <select
+            id="status"
+            class="form-control"
+            formControlName="status"
+            disabled
+          >
+            <option *ngFor="let status of statuses" [value]="status.Status">
+              {{ status.Status }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="supplier" class="form-label">Supplier <span class="text-danger">*</span></label>
+          <select
+            id="supplier"
+            class="form-control"
+            formControlName="supplierID"
+            [class.is-invalid]="isFieldInvalid('supplierID')"
+          >
+            <option value="">Select Supplier...</option>
+            <option *ngFor="let supplier of suppliers" [value]="supplier.SupplierID">
+              {{ supplier.SupplierName }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('supplierID')">
+            {{ getFieldError('supplierID') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="product" class="form-label">Product <span class="text-danger">*</span></label>
+          <select
+            id="product"
+            class="form-control"
+            formControlName="productID"
+            [class.is-invalid]="isFieldInvalid('productID')"
+          >
+            <option value="">Select Product...</option>
+            <option *ngFor="let product of products" [value]="product.ProductID">
+              {{ product.ProductName }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('productID')">
+            {{ getFieldError('productID') }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="quantity" class="form-label">Quantity <span class="text-danger">*</span></label>
+          <input
+            type="number"
+            id="quantity"
+            class="form-control"
+            formControlName="quantity"
+            min="1"
+            step="1"
+            [class.is-invalid]="isFieldInvalid('quantity')"
+          />
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('quantity')">
+            {{ getFieldError('quantity') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="rate" class="form-label">Rate <span class="text-danger">*</span></label>
+          <input
+            type="number"
+            id="rate"
+            class="form-control"
+            formControlName="rate"
+            min="0"
+            step="0.01"
+            [class.is-invalid]="isFieldInvalid('rate')"
+          />
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('rate')">
+            {{ getFieldError('rate') }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="forwardedTo" class="form-label">Forwarded To <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            id="forwardedTo"
+            class="form-control"
+            formControlName="forwardedTo"
+            readonly
+            placeholder="Will be set automatically"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group mb-3">
+          <label for="total" class="form-label">Total Amount</label>
+          <input
+            type="text"
+            id="total"
+            class="form-control"
+            [value]="(approvalForm.get('quantity')?.value || 0) * (approvalForm.get('rate')?.value || 0)"
+            readonly
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group mb-3">
+          <label for="remarks" class="form-label">Remarks</label>
+          <textarea
+            id="remarks"
+            class="form-control"
+            formControlName="remarks"
+            rows="4"
+            placeholder="Enter any additional remarks..."
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="onCancel()">
+    Cancel
+  </button>
+  <button 
+    type="button" 
+    class="btn btn-primary" 
+    (click)="onSubmit()"
+    [disabled]="approvalForm.invalid">
+    {{ isEditMode ? 'Update' : 'Save' }}
+  </button>
+</div>

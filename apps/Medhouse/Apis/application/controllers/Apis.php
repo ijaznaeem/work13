@@ -64,6 +64,8 @@ class Apis extends REST_Controller
         $this->output->set_header('Pragma: no-cache');
         $this->output->set_header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 
+        // $table = strtolower(trim($table));
+
         if ($this->get('flds') != "") {
             $flds = $this->get('flds');
         } else {
@@ -646,7 +648,35 @@ class Apis extends REST_Controller
 
         $this->db->insert('grn_log', $post_data);
         $this->response(['status' => true,
-            'msg'                          => 'Added successfully'], REST_Controller::HTTP_OK);
+            'msg'                     => 'Added successfully'], REST_Controller::HTTP_OK);
 
+    }
+    public function serverinfo_get()
+    {
+
+        $serverName = "(local)\\sqlexpress";
+        $conn       = sqlsrv_connect($serverName);
+
+        if ($conn === false) {
+            echo "Could not connect.\n";
+            die(print_r(sqlsrv_errors(), true));
+        }
+
+        if ($client_info = sqlsrv_client_info($conn)) {
+            foreach ($client_info as $key => $value) {
+                echo $key . ": " . $value . "\n";
+            }
+        } else {
+            echo "Client info error.\n";
+        }
+
+/* Close connection resources. */
+        sqlsrv_close($conn);
+    }
+
+
+    public function phpinfo_get()
+    {
+       echo phpinfo();
     }
 }

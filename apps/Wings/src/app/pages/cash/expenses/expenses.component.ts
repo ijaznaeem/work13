@@ -49,6 +49,10 @@ export class ExpensesComponent implements OnInit {
       "'";
     this.http.getData(`qryexpenses?orderby=date desc&filter=${filter}`).then((d) => {
       this.data = d;
+      this.data = this.data.map((item: any, index: number) => ({
+        ...item,
+        SNo: index + 1,
+      }));
     });
   }
   Clicked(e) {

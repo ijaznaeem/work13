@@ -1,0 +1,33 @@
+<div class="error-page">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="error-content text-center">
+          <div class="error-number">
+            <h1>404</h1>
+          </div>
+          <div class="error-message">
+            <h2>Oops! Page Not Found</h2>
+            <p class="lead">
+              The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+            </p>
+          </div>
+          <div class="error-actions">
+            <button
+              type="button"
+              class="btn btn-primary btn-lg me-3"
+              (click)="goHome()">
+              <i class="fa fa-home"></i> Go to Dashboard
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary btn-lg"
+              (click)="goBack()">
+              <i class="fa fa-arrow-left"></i> Go Back
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -63,7 +63,7 @@ export class DayBookComponent implements OnInit {
       table = 'qrypinvoices?orderby=InvoiceID ';
     } else if (this.nWhat == '3') {
       this.settings = VoucherSetting;
-      table = 'qryvouchers?orderby=VoucherID ';
+      table = 'qryCashBook?orderby=DailyID ';
     }
 
     this.http.getData(table + '&filter=' + filter).then((r: any) => {

@@ -14,11 +14,15 @@ class Apis extends REST_Controller
     public $userID = 0;
     public function __construct()
     {
+        
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Origin, Accept");
+        header("Access-Control-Max-Age: 3600");
         parent::__construct();
         $this->load->database();
         $this->load->helper('url');
+    
     }
 
     public function checkToken()
@@ -376,17 +380,10 @@ class Apis extends REST_Controller
 
     public function index_options()
     {
-        if (! $this->checkToken()) {
-            $this->response(
-                [
-                    'result'  => 'Error',
-                    'message' => 'user is not authorised',
-                ],
-                REST_Controller::HTTP_BAD_REQUEST
-            );
-            return;
-        }
-        header('Access-Control-Allow-Headers: X-Requested-With, content-type, access-control-allow-origin, access-control-allow-methods, access-control-allow-headers');
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Origin, Accept");
+        header("Access-Control-Max-Age: 3600");
         $this->response(null, REST_Controller::HTTP_OK);
     }
 
@@ -541,15 +538,14 @@ class Apis extends REST_Controller
         $bid    = $this->get('bid');
         $filter = $this->get('filter');
         $acct   = $this->db->query(
-            " select Date, 'voucher' as Type, VoucherID as RefID, CustomerName, Description, Debit,  Credit from qryvouchers where $filter  and BusinessID = $bid   UNION ALL " .
-            " Select Date, 'Sale' as Type, InvoiceID, CustomerName, Address , 0 as Debit, AmntRecvd as Credit from qryinvoices where  AmntRecvd > 0  AND  $filter and BusinessID = $bid UNION ALL " .
-            " Select Date, 'Purchase' as Type, InvoiceID, CustomerName, Address,  AmountPaid as Debit, 0 as Credit from qrypinvoices where  AmountPaid > 0 AND $filter  and BusinessID = $bid "
+            "select * from (select Date, 'voucher' as Type, VoucherID as RefID, CustomerName, Description, `BankAccountName` as BankName,
+              Cash * CASE WHEN Debit>0 then -1 else 1 end as Cash,
+              Bank * CASE WHEN Debit>0 then -1 else 1 end as Bank, Discount, Debit,  Credit from qryvouchers where $filter  and BusinessID = $bid   UNION ALL " .
+            " Select Date, 'Sale' as Type, InvoiceID, CustomerName, Address , BankName, Cash, Bank, 0, 0 as Debit, AmntRecvd as Credit from qryinvoices where  AmntRecvd > 0  AND  $filter and BusinessID = $bid UNION ALL " .
+            " Select Date, 'Order' as Type, OrderID, CustomerName, Address , BankName, Cash, Bank, 0, 0 as Debit, AmntRecvd as Credit from qryorders where  AmntRecvd > 0  AND  $filter and BusinessID = $bid UNION ALL " .
+            " Select Date, 'Purchase' as Type, InvoiceID, CustomerName, Address, '', Cash * -1, Bank * -1,0,  AmountPaid as Debit, 0 as Credit from qrypinvoices where  AmountPaid > 0 AND $filter  and BusinessID = $bid ) as subquery
+            order by Type, RefID"
         )->result_array();
-
-        usort($acct, function ($a, $b) {
-            return $a['CustomerName'] <=> $b['CustomerName']; // Ascending order
-                                                              // return $b['CustomerName'] <=> $a['column_name'];  // Descending order
-        });
 
         $this->response($acct, REST_Controller::HTTP_OK);
     }
@@ -748,15 +744,19 @@ class Apis extends REST_Controller
 
         $post_data = $this->post();
 
-        $bid     = $this->post('BusinessID');
-        $Date    = $this->post('Date');
-        $Stock   = $this->post('Stock');
-        $storeID = $this->post('StoreID');
+        $bid        = $this->post('BusinessID');
+        $Date       = $this->post('Date');
+        $Stock      = $this->post('Stock');
+        $storeID    = $this->post('StoreID');
+        $categoryID = $this->post('CategoryID');
+        if ($categoryID == '') {
+            $categoryID = 0;
+        }
         if ($storeID == '') {
             $storeID = 0;
         }
 
-        $result = $this->dbquery("select * from qrystock where (StoreID = $storeID OR $storeID = 0) and (BusinessID = $bid)" . ($Stock == 1 ? " and Stock > 0" : ""));
+        $result = $this->dbquery("select * from qrystock where (StoreID = $storeID OR $storeID = 0) and (Category = $categoryID OR $categoryID = 0) and (BusinessID = $bid)" . ($Stock == 1 ? " and Stock > 0" : ""));
 
         $this->response($result, REST_Controller::HTTP_OK);
     }
@@ -769,7 +769,7 @@ class Apis extends REST_Controller
 
         $post_data = $this->post();
 
-        $bid     = $this->get('bid');
+        $bid = $this->get('bid');
 
         if ($storeID == '') {
             $storeID = 0;
@@ -992,4 +992,100 @@ class Apis extends REST_Controller
         // $this->dompdf->stream("output.pdf", array("Attachment" => 0));
     }
 
+    public function salarysheet_post()
+    {
+
+        $bid      = $this->post('BusinessID');
+        $date     = $this->post('Date');
+        $dateTime = new DateTime($date);
+        $month    = $dateTime->format('m'); // Returns the month with leading zero (e.g., '05')
+        $year     = $dateTime->format('Y');
+
+        $result = $this->db->query("select EmployeeID, EmployeeName, Designation, Salary
+        from qryemployees where StatusID = 1 and BusinessID = $bid")->result_array();
+
+        for ($i = 0; $i < count($result); $i++) {
+            $salary = $this->db->query("select * from qrysalarysheet
+                  where Month = $month and year = $year and EmployeeID = " . $result[$i]['EmployeeID'])->result_array();
+
+            if (count($salary) > 0) {
+                $result[$i]['DedAbsents'] = $salary[0]['DedAbsents'];
+                $result[$i]['DedAdvance'] = $salary[0]['DedAdvance'];
+                $result[$i]['Incentive']  = $salary[0]['Incentive'];
+                $result[$i]['Salary']     = $salary[0]['Salary'];
+                $result[$i]['NetSalary']  = $salary[0]['NetSalary'];
+                $result[$i]['SheetID']    = $salary[0]['SheetID'];
+                $result[$i]['Month']      = $salary[0]['Month'];
+                $result[$i]['Year']       = $salary[0]['Year'];
+
+            } else {
+
+                $result[$i]['DedAbsents'] = 0;
+                $result[$i]['DedAdvance'] = 0;
+                $result[$i]['Incentive']  = 0;
+                $result[$i]['Year']       = $year;
+                $result[$i]['Month']      = $month;
+                $result[$i]['NetSalary']  = $result[$i]['Salary'];
+            }
+        }
+        $this->response($result, REST_Controller::HTTP_OK);
+
+    }
+    public function getstock_get()
+    {
+        $bid = $this->get('bid');
+
+        $result = $this->dbquery("SELECT distinct stock.ProductID, stock.ProductName FROM qrystock stock where BusinessID =  $bid");
+
+        $this->response($result, REST_Controller::HTTP_OK);
+    }
+
+    public function update_discount_post()
+    {
+        $this->output->set_header('Last-Modified: ' . gmdate("D, d M Y H:i:s") . ' GMT');
+        $this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+        $this->output->set_header('Pragma: no-cache');
+        $this->output->set_header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+
+        $post_data = $this->post();
+
+        $bid          = $this->post('BusinessID');
+        $categoryID   = $this->post('CategoryID');
+        $baseValue    = $this->post('baseValue');
+        $percentValue = $this->post('percentValue');
+        if ($categoryID == '') {
+            $categoryID = 0;
+        }
+
+        $result = $this->db->query("
+
+        update products set PPrice= BaseRate + BaseRate * " . $baseValue . "/100,
+        SPrice= (BaseRate + BaseRate * " . ($baseValue) . "/100) +
+        (BaseRate * " . ($percentValue) . "/100 + BaseRate) * " . ($percentValue) . "/100
+        where BusinessID = $bid and  Category = $categoryID
+
+        ");
+
+        $this->response($result, REST_Controller::HTTP_OK);
+    }
+	// Handle OPTIONS requests for all endpoints
+    public function _remap($method, $params = array())
+    {
+        // Handle CORS preflight for all routes
+        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            header('Access-Control-Allow-Origin: *');
+            header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+            header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Origin, Accept");
+            header("Access-Control-Max-Age: 3600");
+            http_response_code(200);
+            exit();
+        }
+        
+        // Call the appropriate method
+        if (method_exists($this, $method)) {
+            return call_user_func_array(array($this, $method), $params);
+        } else {
+            show_404();
+        }
+    }
 }

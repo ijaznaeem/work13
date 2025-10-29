@@ -226,7 +226,7 @@ export class PurchaseInvoiceComponent implements OnInit, OnChanges, AfterViewIni
 
           this.purchase = r;
           this.purchase.Date = GetDateJSON(new Date(r.Date));
-
+          this.data.empty();
           this.http
             .getData('qrypinvoicedetails?filter=invoiceid=' + this.EditID)
             .then((rdet: any) => {

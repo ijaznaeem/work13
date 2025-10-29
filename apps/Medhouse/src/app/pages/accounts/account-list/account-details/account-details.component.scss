@@ -1,0 +1,493 @@
+// Account Details Component Styles
+.account-table {
+  ::ng-deep {
+    .ng2-smart-table {
+      font-size: 0.9rem;
+      
+      table {
+        margin-bottom: 0;
+        
+        th {
+          background-color: #f8f9fa;
+          border-top: 2px solid #007bff;
+          font-weight: 600;
+          color: #495057;
+          white-space: nowrap;
+          
+          &:first-child {
+            border-left: 2px solid #007bff;
+          }
+          &:last-child {
+            border-right: 2px solid #007bff;
+          }
+        }
+        
+        td {
+          border-color: #dee2e6;
+          vertical-align: middle;
+          
+          // Amount columns styling
+          &:nth-child(4), &:nth-child(5), &:nth-child(6) {
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+          }
+          
+          // Debit column (red)
+          &:nth-child(4) {
+            color: #dc3545;
+            
+            &:empty {
+              background-color: #f8f9fa;
+            }
+          }
+          
+          // Credit column (green)
+          &:nth-child(5) {
+            color: #28a745;
+            
+            &:empty {
+              background-color: #f8f9fa;
+            }
+          }
+          
+          // Balance column (bold)
+          &:nth-child(6) {
+            font-weight: 600;
+            color: #495057;
+          }
+        }
+        
+        tbody tr {
+          &:hover {
+            background-color: #e3f2fd;
+            cursor: pointer;
+          }
+          
+          &.selected {
+            background-color: #bbdefb;
+            border-left: 4px solid #2196f3;
+          }
+          
+          // Alternate row colors
+          &:nth-child(even) {
+            background-color: #f8f9fa;
+          }
+        }
+      }
+      
+      .ng2-smart-pagination {
+        .ng2-smart-pagination-nav {
+          justify-content: center;
+          
+          .page-link {
+            color: #007bff;
+            border-color: #dee2e6;
+            
+            &:hover {
+              background-color: #e7f3ff;
+              border-color: #007bff;
+            }
+          }
+          
+          .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Card styling
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  transition: all 0.15s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+  
+  &.border-primary {
+    border-left: 4px solid #007bff !important;
+  }
+  
+  &.border-info {
+    border-left: 4px solid #17a2b8 !important;
+  }
+  
+  &.border-success {
+    border-left: 4px solid #28a745 !important;
+  }
+  
+  &.border-warning {
+    border-left: 4px solid #ffc107 !important;
+  }
+}
+
+// Custom ng-select styling
+.custom-ng-select {
+  ::ng-deep {
+    .ng-select {
+      &.ng-select-focused .ng-select-container {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      }
+      
+      .ng-select-container {
+        border-radius: 0.375rem;
+        min-height: 38px;
+        
+        .ng-value-container {
+          padding-left: 12px;
+          
+          .ng-input > input {
+            font-size: 0.875rem;
+          }
+        }
+      }
+      
+      &.ng-select-single .ng-select-container {
+        height: 38px;
+      }
+      
+      .ng-arrow-wrapper {
+        width: 25px;
+        
+        .ng-arrow {
+          border-color: #6c757d transparent transparent;
+          border-width: 5px 5px 0;
+        }
+      }
+      
+      &.ng-select-opened .ng-arrow {
+        border-color: transparent transparent #6c757d;
+        border-width: 0 5px 5px;
+      }
+      
+      .ng-dropdown-panel {
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        
+        .ng-dropdown-panel-items {
+          .ng-option {
+            padding: 8px 12px;
+            font-size: 0.875rem;
+            
+            &.ng-option-highlighted {
+              background-color: #007bff;
+              color: white;
+            }
+            
+            &.ng-option-selected {
+              background-color: #e7f3ff;
+              color: #007bff;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Form controls
+.form-control {
+  transition: all 0.15s ease-in-out;
+  
+  &:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  &.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  }
+  
+  &.form-control-sm {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+  }
+}
+
+// Button styling
+.btn {
+  transition: all 0.15s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-1px);
+  }
+  
+  &:disabled {
+    transform: none;
+    cursor: not-allowed;
+  }
+  
+  &.btn-outline-primary {
+    &:hover:not(:disabled) {
+      background-color: #007bff;
+      transform: translateY(-1px);
+    }
+  }
+  
+  &.btn-outline-secondary {
+    &:hover:not(:disabled) {
+      background-color: #6c757d;
+      transform: translateY(-1px);
+    }
+  }
+  
+  &.btn-outline-info {
+    &:hover:not(:disabled) {
+      background-color: #17a2b8;
+      transform: translateY(-1px);
+    }
+  }
+  
+  &.btn-outline-danger {
+    &:hover:not(:disabled) {
+      background-color: #dc3545;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Button groups
+.btn-group-vertical {
+  .btn {
+    border-radius: 0;
+    margin-bottom: 2px;
+    
+    &:first-child {
+      border-top-left-radius: 0.375rem;
+      border-top-right-radius: 0.375rem;
+    }
+    
+    &:last-child {
+      border-bottom-left-radius: 0.375rem;
+      border-bottom-right-radius: 0.375rem;
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Alert styling
+.alert {
+  border-radius: 0.5rem;
+  
+  &.alert-info {
+    background-color: #e7f3ff;
+    border-color: #b3d9ff;
+    color: #0c5460;
+    
+    h6 {
+      color: #0c5460;
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+// Text colors
+.text-success {
+  color: #28a745 !important;
+  font-weight: 600;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+  font-weight: 600;
+}
+
+.text-primary {
+  color: #007bff !important;
+}
+
+.text-info {
+  color: #17a2b8 !important;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+// Loading spinner
+.spinner-border {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Input group styling
+.input-group {
+  .input-group-text {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+    color: #6c757d;
+  }
+  
+  .form-control {
+    &:focus + .input-group-text,
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+  }
+}
+
+// Header styling
+h2, h6 {
+  font-weight: 600;
+}
+
+// Responsive design
+@media (max-width: 992px) {
+  .container-fluid {
+    padding: 1rem !important;
+  }
+  
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 1rem;
+    
+    .btn-group {
+      justify-content: center;
+    }
+  }
+  
+  .card-body .row {
+    margin-bottom: 1rem;
+  }
+  
+  .btn-group-vertical {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .col-lg-4,
+  .col-lg-8 {
+    margin-bottom: 1rem;
+  }
+  
+  .card-header h6 {
+    font-size: 0.9rem;
+  }
+  
+  .btn {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+  }
+  
+  .account-table {
+    ::ng-deep {
+      .ng2-smart-table {
+        font-size: 0.8rem;
+        
+        table {
+          th, td {
+            padding: 6px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .btn, .card-header, .pagination, .input-group {
+    display: none !important;
+  }
+  
+  .card {
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .table {
+    font-size: 12px;
+  }
+  
+  .container-fluid {
+    padding: 0 !important;
+  }
+}
+
+// Animation for cards
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+// Custom scrollbar for dropdowns
+.ng-dropdown-panel-items {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+}
+
+// Transaction row highlighting based on balance
+.account-table {
+  ::ng-deep {
+    .ng2-smart-table tbody tr {
+      &[data-balance-positive="true"] {
+        border-left: 3px solid #28a745;
+      }
+      
+      &[data-balance-negative="true"] {
+        border-left: 3px solid #dc3545;
+      }
+      
+      &[data-balance-zero="true"] {
+        border-left: 3px solid #ffc107;
+      }
+    }
+  }
+}
+
+// Enhanced focus states
+.form-control:focus,
+.custom-ng-select .ng-select.ng-select-focused .ng-select-container {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+// Invalid state styling
+.is-invalid {
+  border-color: #dc3545 !important;
+  
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  }
+}

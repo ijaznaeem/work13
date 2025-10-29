@@ -1,0 +1,237 @@
+<div class="payment-report-container">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h2 class="page-title">
+          <i class="fas fa-money-bill-wave me-2"></i>
+          Payment Report
+        </h2>
+        <p class="page-description text-muted">
+          Track and analyze payments made to suppliers and vendors
+        </p>
+      </div>
+      <div class="col-md-6 text-end">
+        <div class="total-amount-display">
+          <h4 class="mb-0">
+            Total Payments: {{ totalPayments | currency:'USD':'symbol':'1.2-2' }}
+          </h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-card">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-filter me-2"></i>
+          Date Range Filter
+        </h5>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="filterForm" class="row g-3">
+          <div class="col-md-4">
+            <label for="fromDate" class="form-label">
+              <i class="fas fa-calendar-alt me-1"></i>
+              From Date
+            </label>
+            <input
+              type="date"
+              id="fromDate"
+              class="form-control"
+              formControlName="fromDate"
+              [class.is-invalid]="isFieldInvalid('fromDate')">
+            <div *ngIf="isFieldInvalid('fromDate')" class="invalid-feedback">
+              {{ getFieldError('fromDate') }}
+            </div>
+          </div>
+          
+          <div class="col-md-4">
+            <label for="toDate" class="form-label">
+              <i class="fas fa-calendar-alt me-1"></i>
+              To Date
+            </label>
+            <input
+              type="date"
+              id="toDate"
+              class="form-control"
+              formControlName="toDate"
+              [class.is-invalid]="isFieldInvalid('toDate')">
+            <div *ngIf="isFieldInvalid('toDate')" class="invalid-feedback">
+              {{ getFieldError('toDate') }}
+            </div>
+          </div>
+          
+          <div class="col-md-4 d-flex align-items-end">
+            <button
+              type="button"
+              class="btn btn-primary me-2"
+              (click)="refreshData()"
+              [disabled]="!filterForm.valid || isLoading">
+              <i class="fas fa-sync-alt me-2"></i>
+              {{ isLoading ? 'Loading...' : 'Refresh Data' }}
+            </button>
+            
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="clearFilters()">
+              <i class="fas fa-times me-2"></i>
+              Clear
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <div class="row">
+      <div class="col-12">
+        <div class="btn-group" role="group">
+          <button
+            type="button"
+            class="btn btn-info"
+            (click)="viewPaymentDetails()"
+            [disabled]="!selectedPaymentEntry">
+            <i class="fas fa-eye me-2"></i>
+            View Details
+          </button>
+          
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="getPaymentSummary()"
+            [disabled]="!filterForm.valid">
+            <i class="fas fa-chart-pie me-2"></i>
+            Summary
+          </button>
+          
+          <button
+            type="button"
+            class="btn btn-warning"
+            (click)="printReport()"
+            [disabled]="!filterForm.valid">
+            <i class="fas fa-print me-2"></i>
+            Print Report
+          </button>
+          
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="exportToCSV()"
+            [disabled]="!filterForm.valid">
+            <i class="fas fa-file-csv me-2"></i>
+            Export CSV
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards" *ngIf="!isLoading && totalPayments > 0">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="card summary-card">
+          <div class="card-body text-center">
+            <i class="fas fa-money-bill-wave text-success fa-2x mb-2"></i>
+            <h5 class="card-title">Total Payments</h5>
+            <h3 class="text-success">{{ totalPayments | currency:'USD':'symbol':'1.2-2' }}</h3>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-3">
+        <div class="card summary-card">
+          <div class="card-body text-center">
+            <i class="fas fa-receipt text-primary fa-2x mb-2"></i>
+            <h5 class="card-title">Total Transactions</h5>
+            <h3 class="text-primary">{{ paymentData.count() || 0 }}</h3>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-3">
+        <div class="card summary-card">
+          <div class="card-body text-center">
+            <i class="fas fa-calculator text-info fa-2x mb-2"></i>
+            <h5 class="card-title">Average Payment</h5>
+            <h3 class="text-info">
+              {{ (paymentData.count() > 0 ? totalPayments / paymentData.count() : 0) | currency:'USD':'symbol':'1.2-2' }}
+            </h3>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-3">
+        <div class="card summary-card">
+          <div class="card-body text-center">
+            <i class="fas fa-calendar-day text-warning fa-2x mb-2"></i>
+            <h5 class="card-title">Date Range</h5>
+            <p class="small mb-1">{{ filterForm.value.fromDate | date:'shortDate' }}</p>
+            <p class="small">to {{ filterForm.value.toDate | date:'shortDate' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Grid Section -->
+  <div class="data-grid-card">
+    <div class="card">
+      <div class="card-header bg-light">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-table me-2"></i>
+              Payment Entries
+            </h5>
+          </div>
+          <div class="col-md-6 text-end">
+            <span class="badge bg-primary">
+              Showing {{ paymentData.count() || 0 }} entries
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <ng2-smart-table
+            [settings]="tableSettings"
+            [source]="paymentData"
+            (rowSelect)="onRowSelect($event)"
+            class="payment-table">
+          </ng2-smart-table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && paymentData.count() === 0" class="empty-state">
+    <div class="text-center py-5">
+      <i class="fas fa-search fa-3x text-muted mb-3"></i>
+      <h4 class="text-muted">No Payment Data Found</h4>
+      <p class="text-muted">
+        No payment entries were found for the selected date range.<br>
+        Try adjusting your date range or check if payments were recorded during this period.
+      </p>
+      <button type="button" class="btn btn-primary" (click)="refreshData()">
+        <i class="fas fa-sync-alt me-2"></i>
+        Refresh Data
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-3 text-center">Loading payment data...</p>
+  </div>
+</div>

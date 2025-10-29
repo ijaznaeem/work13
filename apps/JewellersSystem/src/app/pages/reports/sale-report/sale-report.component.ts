@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import {
   GetDateJSON,
   JSON2Date,
@@ -21,8 +22,8 @@ export class SaleReportComponent implements OnInit {
   public Filter = {
     FromDate: GetDateJSON(),
     ToDate: GetDateJSON(),
-    Balance: '0',
-    RouteID: '',
+
+    CustomerID: '',
   };
   public data: object[];
 
@@ -46,24 +47,84 @@ export class SaleReportComponent implements OnInit {
         fldName: 'Address',
       },
       {
-        label: 'City',
-        fldName: 'City',
+        label: 'Total Weight',
+        fldName: 'TotalWeight',
+        sum: true,
+      },
+      {
+        label: 'Advance Gold',
+        fldName: 'AdvanceGold',
+        sum: true,
+      },
+      {
+        label: 'Balance Weight',
+        fldName: 'BalanceWeight',
+        sum: true,
+      },
+      {
+        label: 'Rate',
+        fldName: 'Rate',
+        sum: true,
       },
       {
         label: 'Amount',
         fldName: 'Amount',
         sum: true,
-        valueFormatter: (d) => {
-          return formatNumber(d['Amount']);
-        },
+      },
+      {
+        label: 'Total Polish',
+        fldName: 'TotalPolish',
+        sum: true,
+      },
+      {
+        label: 'Total Labour',
+        fldName: 'TotalLabour',
+        sum: true,
+      },
+      {
+        label: 'Total Amount',
+        fldName: 'TotalAmount',
+        sum: true,
+      },
+      {
+        label: 'Advance Amount',
+        fldName: 'AdvanceAmount',
+        sum: true,
+      },
+      {
+        label: 'Net Bill Gold',
+        fldName: 'NetBillGold',
+        sum: true,
+      },
+      {
+        label: 'Bill Gold Amount',
+        fldName: 'BillGoldAmount',
+        sum: true,
+      },
+      {
+        label: 'Balance Amount',
+        fldName: 'BalanceAmount',
+        sum: true,
+      },
+      {
+        label: 'Gold Amount Paid',
+        fldName: 'GoldAmountPaid',
+        sum: true,
+      },
+      {
+        label: 'Recieved Amount',
+        fldName: 'RecievedAmount',
+        sum: true,
       },
       {
         label: 'Discount',
         fldName: 'Discount',
         sum: true,
-        valueFormatter: (d) => {
-          return formatNumber(d['Discount']);
-        },
+      },
+      {
+        label: 'Advance Returned',
+        fldName: 'AdvanceReturned',
+        sum: true,
       },
 
       {
@@ -76,13 +137,17 @@ export class SaleReportComponent implements OnInit {
       },
       {
         label: 'Amount Received',
-        fldName: 'AmntRecvd',
+        fldName: 'RecievedAmount',
         sum: true,
       },
       {
-        label: 'Balance',
-        fldName: 'Balance',
+        label: 'Credit Amount',
+        fldName: 'CreditAmount',
         sum: true,
+      },
+      {
+        label: 'DtCr',
+        fldName: 'DtCr',
       },
     ],
     Actions: [
@@ -104,8 +169,12 @@ export class SaleReportComponent implements OnInit {
       table: 'details',
       Columns: [
         {
+          label: 'Product Code',
+          fldName: 'BarCode',
+        },
+        {
           label: 'Product Name',
-          fldName: 'ProductName',
+          fldName: 'Description',
         },
         {
           label: 'Qty',
@@ -113,27 +182,30 @@ export class SaleReportComponent implements OnInit {
           sum: true,
         },
         {
-          label: 'Packing',
-          fldName: 'Packing',
-        },
-        {
-          label: 'KGs',
-          fldName: 'KGs',
+          label: 'Weight',
+          fldName: 'Weight',
           sum: true,
         },
         {
-          label: 'Sale Price',
-          fldName: 'SPrice',
+          label: 'Polish',
+          fldName: 'Polish',
+          sum: true,
         },
         {
-          label: 'Amount',
-          fldName: 'Amount',
+          label: 'Labour',
+          fldName: 'Labour',
+          sum: true,
+        },
+        {
+          label: 'Cutting',
+          fldName: 'Cutting',
           sum: true,
         },
       ],
     },
   };
 
+  public Customers: Observable<any[]> ;
   public toolbarOptions: object[];
   constructor(
     private http: HttpBase,
@@ -144,7 +216,10 @@ export class SaleReportComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.Customers = this.cachedData.accounts$;
+    this.Filter.FromDate.day = 1
     this.FilterData();
+
   }
   PrintReport() {
     this.ps.PrintData.HTMLData = document.getElementById('print-section');
@@ -165,11 +240,11 @@ export class SaleReportComponent implements OnInit {
       "' and '" +
       JSON2Date(this.Filter.ToDate) +
       "'";
-    if (this.Filter.RouteID && this.Filter.RouteID != '')
-      filter += ' and RouteID = ' + this.Filter.RouteID;
-    if (this.Filter.Balance > '0') filter += ' and Balance >= 1000 ';
+    if (this.Filter.CustomerID && this.Filter.CustomerID != '')
+      filter += ' and CustomerID = ' + this.Filter.CustomerID;
 
-    this.http.getData('qryinvoices?filter=' + filter).then((r: any) => {
+
+    this.http.getData('qryInvoices?filter=' + filter).then((r: any) => {
       this.data = r.map((obj: any) => {
         return {
           ...obj,

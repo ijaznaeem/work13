@@ -5,7 +5,6 @@
 
 body {
   margin: 0;
-
 }
 
 h1 {
@@ -20,7 +19,7 @@ h3 {
 
 p {
   font-size: 10pt;
-  font-family: Arial, Helvetica, sans-serif
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 table {
@@ -28,11 +27,14 @@ table {
   font-family: Helvetica, Arial, sans-serif; /* Nicer font */
   font-size: 16pt;
   width: 100%;
-  border-collapse:
-  collapse; border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
-table.table-border td, table.table-border th  { border: 1px solid #101010;  } /* Make cells a bit taller */
+table.table-border td,
+table.table-border th {
+  border: 1px solid #101010;
+} /* Make cells a bit taller */
 
 th {
   background: #692626; /* Light grey background */
@@ -42,7 +44,6 @@ th {
 
 body {
   margin: 0;
-
 }
 
 h1 {
@@ -57,7 +58,7 @@ h3 {
 
 p {
   font-size: 10pt;
-  font-family: Arial, Helvetica, sans-serif
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 table {
@@ -65,24 +66,30 @@ table {
   font-family: Helvetica, Arial, sans-serif; /* Nicer font */
   font-size: 16pt;
   width: 100%;
-  border-collapse:
-  collapse; border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
-table.table-border td, table.table-border th  { border: 1px solid #101010;  } /* Make cells a bit taller */
+table.table-border td,
+table.table-border th {
+  border: 1px solid #101010;
+} /* Make cells a bit taller */
 
 th {
   background: #919191; /* Light grey background */
   font-weight: bold; /* Make sure they're bold */
-  padding: 5px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 td {
-  background: #ffffff; /* Lighter grey background */
-  padding: 5px;
+  background: #531919; /* Lighter grey background */
+  padding: 0px;
 }
 
-table  td.cellborder{
+table td.cellborder {
   border: 2px solid #101010;
 }
 #print-section {
@@ -98,10 +105,9 @@ table  td.cellborder{
   font-size: 16pt;
 }
 
-table>td>.sheet {
+table > td > .sheet {
   color: #000 !important;
   font-weight: 600 !important;
-
 }
 
 /** Paper sizes **/
@@ -190,20 +196,20 @@ body.legal.landscape .sheet {
 
 /** Fix for Chrome issue #273306 **/
 @media print {
-
-
   .no-print {
     display: none;
   }
 }
 
-
 td {
   background: #ffffff; /* Lighter grey background */
-  padding: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
-table  td.cellborder{
+table td.cellborder {
   border: 2px solid #101010;
 }
 .sheet {
@@ -219,10 +225,9 @@ table  td.cellborder{
   font-size: larger;
 }
 
-table>td>.sheet {
+table > td > .sheet {
   color: #000 !important;
   font-weight: 600 !important;
-
 }
 
 /** Paper sizes **/
@@ -355,7 +360,9 @@ body.legal.landscape .sheet {
   size: A4;
 }
 @media print {
-  #spacer {height: 2em;} /* height of footer + a little extra */
+  #spacer {
+    height: 2em;
+  } /* height of footer + a little extra */
   #footer {
     position: fixed;
     bottom: 0;

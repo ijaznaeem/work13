@@ -39,4 +39,9 @@ export class ModalContainerComponent implements OnInit {
     this.Event.emit({ data: this.formdata , res:'save' });
 
   }
+  BeforeSave() {
+
+    this.Event.emit({ data: this.formdata , res:'beforesave' });
+
+  }
 }

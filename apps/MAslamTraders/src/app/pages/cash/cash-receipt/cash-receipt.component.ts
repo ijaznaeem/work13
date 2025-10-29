@@ -15,9 +15,11 @@ import { VoucherModel } from '../voucher.model';
 })
 export class CashReceiptComponent implements OnInit {
   @ViewChild('cmbCustomer') cmbCustomer;
+  AcctTypeID = '';
+  CustomerID = '';
   public Voucher = new VoucherModel();
   Customers = [];
-  AcctTypes = [];
+  AcctTypes: any = [];
   EditID = '';
   public Ino = '';
 
@@ -35,12 +37,19 @@ export class CashReceiptComponent implements OnInit {
 
   async ngOnInit() {
     this.Cancel();
-    this.http.getData('accttypes').then((r: any) => {
-      this.AcctTypes = r;
-    });
+
     await this.LoadBanks();
+    this.LoadCustomer();
+
     this.activatedRoute.params.subscribe((params: Params) => {
-      if (params.EditID) {
+      const customerId = params['CustomerID'];
+      if (customerId) {
+
+        this.Voucher.CustomerID = customerId;
+        this.GetCustomer(customerId);
+      }
+
+      if (params.EditID && params.EditID > 0)  {
         this.EditID = params.EditID;
         this.Ino = this.EditID;
         this.http
@@ -48,7 +57,7 @@ export class CashReceiptComponent implements OnInit {
           .then((r: any) => {
             this.Voucher = r[0];
             this.Voucher.Date = GetDateJSON(new Date(r[0].Date));
-            this.LoadCustomer({ AcctTypeID: r[0].AcctTypeID });
+
             this.GetCustomer(this.Voucher.CustomerID);
           });
       } else {
@@ -63,18 +72,14 @@ export class CashReceiptComponent implements OnInit {
       this.router.navigate(['/cash/cashreceipt/', this.Ino]);
     else this.router.navigate(['/cash/cashpayment/', this.Ino]);
   }
-  LoadCustomer(event) {
-    if (event.AcctTypeID !== '') {
-      this.http
-        .getData(
-          'qrycustomers?flds=CustomerName,Address, Balance, CustomerID&orderby=CustomerName' +
-            '&filter=AcctTypeID=' +
-            event.AcctTypeID
-        )
-        .then((r: any) => {
-          this.Customers = r;
-        });
-    }
+  LoadCustomer() {
+    this.http
+      .getData(
+        'qrycustomers?flds=CustomerName,Address, Balance, CustomerID&orderby=CustomerName'
+      )
+      .then((r: any) => {
+        this.Customers = r;
+      });
   }
   async LoadBanks() {
     this.BankAccount = await this.http.getData(
@@ -98,7 +103,7 @@ export class CashReceiptComponent implements OnInit {
     console.log(this.Voucher);
     this.http
       .postTask('vouchers' + voucherid, this.Voucher)
-      .then((r:any) => {
+      .then((r: any) => {
         this.alert.Sucess('Receipt Saved', 'Save', 1);
         if (this.EditID != '') {
           this.router.navigateByUrl('/cash/cashreceipt/' + this.EditID);
@@ -181,7 +186,5 @@ export class CashReceiptComponent implements OnInit {
     this.modalService.onHide.subscribe((reason: string) => {
       const _reason = reason ? `, dismissed by ${reason}` : '';
     });
-
-
   }
 }

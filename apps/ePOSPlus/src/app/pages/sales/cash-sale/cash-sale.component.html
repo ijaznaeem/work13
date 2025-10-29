@@ -3,7 +3,7 @@
     <tab heading="Cash Sale" id="sale">
       <div widget class="card border-0 box-shadow">
         <div class="card-header transparent border-0 text-muted">
-          <h5 class="mb-3">Cash XX Sale # {{ sale.InvoiceID }}</h5>
+          <h5 class="mb-3">Cash Sale # {{ sale.InvoiceID }}</h5>
         </div>
         <div class="card-block widget-body">
           <form #fromPurchase="ngForm">
@@ -204,18 +204,7 @@
                         </div> -->
                         </td>
                         <td>{{ d.Packing }}</td>
-                        <td><input
-                              type="text"
-                              class="btn btn-primary font-medium px-1 py-1"
-                              name="txtrate"
-                              id="txtrate"
-                              (change)="OnRateChange($event.target.value, d)"
-                              [value]="d.SPrice"
-                              style="width: 40px"
-                            />
-
-
-                        </td>
+                        <td>{{ d.SPrice }}</td>
                         <td class="text-center">
                           <input
                             type="number"
@@ -882,7 +871,7 @@
         </div>
         <div class="col-md-3">
           <div class="form-group">
-
+            
             <button
               type="button"
               class="btn btn-warning form-control"

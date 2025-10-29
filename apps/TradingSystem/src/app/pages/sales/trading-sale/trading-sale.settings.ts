@@ -2,7 +2,6 @@ import { getCurDate } from '../../../factories/utilities';
 
 export class Invoice {
   public TransferID: number | null = null;
-  public CustomerID: number | null = null;
   public Date: Date = getCurDate();
   public TrVoucherNo: string | null = null;
   public SPrNo: string | null = null;

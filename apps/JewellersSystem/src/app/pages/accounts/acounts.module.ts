@@ -8,6 +8,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgxPrintModule } from 'ngx-print';
 import { FutureTechLibModule } from '../../../../../../libs/future-tech-lib/src';
+import { CustomerAcctsComponent } from './accounts-bydate/customer-accts.component';
 import { AccountsDetailComponent } from './accounts-details/accounts-detail.component';
 import { AccountsComponent } from './accounts/accounts.component';
 import { AccttypesComponent } from './acct-type/acct-types.component';
@@ -23,7 +24,7 @@ const routes: any = [
   },
   {
     path: 'accountledger',
-    component: AccountsDetailComponent,
+    component: CustomerAcctsComponent,
     data: { breadcrumb: 'Customer Accounts' },
   },
   {
@@ -54,6 +55,7 @@ const routes: any = [
     AccttypesComponent,
     AccountGroupsComponent,
     AccountsDetailComponent,
+    CustomerAcctsComponent
   ],
   imports: [
     CommonModule,

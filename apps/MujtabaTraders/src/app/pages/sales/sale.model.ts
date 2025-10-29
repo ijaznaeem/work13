@@ -59,6 +59,7 @@ export class StockTransfer {
   public ClosingID = '';
   public Notes = '';
   public Amount = 0;
+  public Weight = 0;
 
 }
 export class TraferDetails {

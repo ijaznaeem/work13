@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DynamicTableComponent } from '../../../../../../../libs/future-tech-lib/src/lib/components/dynamic-table/dynamic-table.component';
+import { generateStickerReelAsync } from '../../../factories/sticker.print.pdf';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
 @Component({
@@ -7,6 +9,7 @@ import { HttpBase } from '../../../services/httpbase.service';
   styleUrls: ['./stock-report.component.scss'],
 })
 export class StockReportComponent implements OnInit {
+@ViewChild('rpt') rpt: DynamicTableComponent;
   public data: object[];
   public Filter = {
     StoreID: '1',
@@ -15,6 +18,7 @@ export class StockReportComponent implements OnInit {
   };
   setting: any = {
     Columns: [],
+    Checkbox: true,
     Actions: [
       {
         action: 'edit',
@@ -34,6 +38,10 @@ export class StockReportComponent implements OnInit {
       fldName: 'ProductName',
     },
     {
+      label: 'Karat',
+      fldName: 'Karat',
+    },
+    {
       label: 'Qty',
       fldName: 'Qty',
     },
@@ -46,8 +54,16 @@ export class StockReportComponent implements OnInit {
       fldName: 'Cutting',
     },
     {
+      label: 'Purity',
+      fldName: 'Purity',
+    },
+    {
       label: 'Polish',
       fldName: 'Polish',
+    },
+    {
+      label: 'Wastage',
+      fldName: 'Wastage',
     },
     {
       label: 'Small Stone',
@@ -59,12 +75,9 @@ export class StockReportComponent implements OnInit {
     },
     {
       label: 'Net Weight',
-      fldName: 'NetWeight',
+      fldName: 'Weight',
     },
-    {
-      label: 'Labour',
-      fldName: 'Labour',
-    },
+
   ];
 
   stockform = {
@@ -145,12 +158,10 @@ export class StockReportComponent implements OnInit {
 
     let filter = ' Weight  >0 ';
     if (this.Filter.Stock) {
-      filter = ' ';
+      filter = '1=1';
     }
-    if (this.Filter.StoreID !== '')
+    if (this.Filter.StoreID != '')
       filter += ' AND StoreID=' + this.Filter.StoreID;
-
-    let flds = '*';
 
     this.http
       .getData('qryStock', {
@@ -159,7 +170,6 @@ export class StockReportComponent implements OnInit {
       })
       .then((r: any) => {
         this.data = r;
-
       });
 
     // this.http
@@ -185,5 +195,9 @@ export class StockReportComponent implements OnInit {
           }
         });
     }
+  }
+  PrintStickers() {
+    const data = this.rpt.GetSelected();
+     generateStickerReelAsync(data);
   }
 }

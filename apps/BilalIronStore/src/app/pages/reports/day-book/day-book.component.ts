@@ -7,8 +7,10 @@ import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
 import { PrintBillService } from '../../../services/print-bill.service';
 import { PrintDataService } from '../../../services/print.data.services';
+import { OrderSettings } from './orders.setting';
 import { PurchaseSetting } from './purchase.settings';
 import { SaleSetting } from './sale.setting';
+import { TransferSettings } from './transfer.settings';
 import { VoucherSetting } from './vouchers.settings';
 
 @Component({
@@ -18,9 +20,9 @@ import { VoucherSetting } from './vouchers.settings';
 })
 export class DayBookComponent implements OnInit {
   public data: object[];
-  Salesman: Observable<any[]>;
-  public Routes: Observable<any[]>;
-  public Customers: Observable<any[]>;
+  Salesman: Observable<any>;
+  public Routes: Observable<unknown>;
+  public Customers: Observable<unknown>;
 
   public Filter = {
     FromDate: GetDateJSON(),
@@ -38,8 +40,6 @@ export class DayBookComponent implements OnInit {
     private router: Router,
     private bill: PrintBillService
   ) {
-    this.Salesman = this.cachedData.Salesman$;
-    this.Routes = this.cachedData.routes$;
     this.Customers = this.cachedData.Accounts$;
   }
 
@@ -56,8 +56,10 @@ export class DayBookComponent implements OnInit {
       JSON2Date(this.Filter.ToDate) +
       "' ";
 
-    if (!(this.Filter.CustomerID === '' || this.Filter.CustomerID === null)) {
-      filter += ' and CustomerID=' + this.Filter.CustomerID;
+    if (this.nWhat !== '4') {
+      if (!(this.Filter.CustomerID === '' || this.Filter.CustomerID === null)) {
+        filter += ' and CustomerID=' + this.Filter.CustomerID;
+      }
     }
 
     if (this.nWhat === '1') {
@@ -69,6 +71,12 @@ export class DayBookComponent implements OnInit {
     } else if (this.nWhat === '3') {
       this.settings = VoucherSetting;
       table = 'qryvouchers?orderby=VoucherID ';
+    } else if (this.nWhat === '4') {
+      this.settings = TransferSettings;
+      table = 'qrystocktransfer?orderby=TransferID ';
+    } else if (this.nWhat === '5') {
+      this.settings = OrderSettings;
+      table = 'qryorders?orderby=OrderID ';
     }
 
     this.http.getData(table + '&filter=' + filter).then((r: any) => {
@@ -92,6 +100,10 @@ export class DayBookComponent implements OnInit {
           table = { ID: e.data.InvoiceID, Table: 'P' };
         } else if (this.nWhat === '1') {
           table = { ID: e.data.InvoiceID, Table: 'S' };
+        } else if (this.nWhat === '4') {
+          table = { ID: e.data.TransferID, Table: 'T' };
+        } else if (this.nWhat === '5') {
+          table = { ID: e.data.OrderID, Table: 'O' };
         }
         swal({
           text: 'Delete this record!',
@@ -122,17 +134,21 @@ export class DayBookComponent implements OnInit {
           this.router.navigateByUrl('/print/printinvoice/' + e.data.InvoiceID);
         else {
           this.http.getData('printbill/' + e.data.InvoiceID).then((d: any) => {
-            d.Business = this.http.GetBData();
-            console.log(d);
-            this.bill.PrintPDFBill_A5(d);
+            this.http.PrintSaleInvoice(e.data.InvoiceID);
+
             // this.bill.printTest();
           });
         }
       } else if (this.nWhat === '2') {
-        this.router.navigateByUrl('/print/printpurchase/' + e.data.InvoiceID);
+         this.http.PrintPurchaseInvoice(e.data.InvoiceID);
       } else if (this.nWhat === '3') {
-        this.router.navigateByUrl('/print/printvoucher/' + e.data.VoucherID);
+        this.http.PrintVoucher(e.data.VoucherID);
+      } else if (this.nWhat === '4') {
+        // this.http.PrintTransfer(e.data.TransferID);
+      } else if (this.nWhat === '5') {
+        this.http.PrintSaleOrder(e.data.OrderID);
       }
+
     } else if (e.action === 'edit') {
       if (e.data.IsPosted === '0') {
         if (this.nWhat === '1') {
@@ -144,12 +160,20 @@ export class DayBookComponent implements OnInit {
           }
         } else if (this.nWhat === '2') {
           this.router.navigateByUrl('/purchase/invoice/' + e.data.InvoiceID);
+        } else if (this.nWhat === '4') {
+          this.router.navigateByUrl('/sale/transfer/' + e.data.TransferID);
+        } else if (this.nWhat === '5') {
+          this.router.navigateByUrl('/sale/order/' + e.data.OrderID);
+
         } else if (this.nWhat === '3') {
-          if (e.data.Credit > 0) {
+          if (e.data.VoucherType == 1) {
             this.router.navigateByUrl('/cash/cashreceipt/' + e.data.VoucherID);
-          } else {
+          } else if (e.data.VoucherType == 2) {
             this.router.navigateByUrl('/cash/cashpayment/' + e.data.VoucherID);
-          }
+
+            } else if (e.data.VoucherType == 3) {
+            this.router.navigateByUrl('/cash/expense/' + e.data.VoucherID);
+            }
         }
       } else {
         swal('Oops!', 'Can not edit posted data', 'error');
@@ -162,12 +186,14 @@ export class DayBookComponent implements OnInit {
           url = 'postpurchases/' + e.data.InvoiceID;
         } else if (this.nWhat === '3') {
           url = 'postvouchers/' + e.data.VoucherID;
-        } else if (this.nWhat === '4') {
-          url = 'postprocssing/' + e.data.ProcessID;
+
+        } else if (this.nWhat === '5') {
+          url = 'postorders/' + e.data.OrderID;
         }
 
         this.http.postTask(url, {}).then((r) => {
           e.data.IsPosted = '1';
+          this.FilterData();
           swal('Post!', 'Your data has been posted!', 'success');
         });
       } else {
@@ -276,7 +302,7 @@ export class DayBookComponent implements OnInit {
       if (close) {
         this.http
           .postTask('CloseAccount/' + this.http.getBusinessID(), {
-            ClosingID: this.http.getClosingID(),
+            ClosingID: 0,
           })
           .then((r) => {
             swal(
@@ -284,7 +310,7 @@ export class DayBookComponent implements OnInit {
               'Account was successfully closed, Login to next date',
               'success'
             );
-            this.router.navigateByUrl('/auth/login');
+            this.FilterData();
           })
           .catch((er) => {
             swal('Oops!', 'Error while clsoing account', 'error');
@@ -294,21 +320,20 @@ export class DayBookComponent implements OnInit {
   }
   PrintReport() {
     this.ps.PrintData.HTMLData = document.getElementById('print-section');
-    this.ps.PrintData.Title = 'Daybook Report' ;
+    this.ps.PrintData.Title = 'Daybook Report';
     this.ps.PrintData.SubTitle =
       'From :' +
       JSON2Date(this.Filter.FromDate) +
       ' To: ' +
       JSON2Date(this.Filter.ToDate);
 
-
-      if (this.nWhat === '1') {
-        this.ps.PrintData.Title += ' - Sale Report';
-      } else if (this.nWhat === '2') {
-        this.ps.PrintData.Title += ' - Purchase Report';
-      } else if (this.nWhat === '3') {
-        this.ps.PrintData.Title += ' - Voucher Report';
-      }
+    if (this.nWhat === '1') {
+      this.ps.PrintData.Title += ' - Sale Report';
+    } else if (this.nWhat === '2') {
+      this.ps.PrintData.Title += ' - Purchase Report';
+    } else if (this.nWhat === '3') {
+      this.ps.PrintData.Title += ' - Voucher Report';
+    }
 
     this.router.navigateByUrl('/print/print-html');
   }

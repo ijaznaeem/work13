@@ -41,7 +41,7 @@
   <div class="card-block widget-body">
     <form (ngSubmit)="SaveData()" #frmInvoice="ngForm">
       <div class="row no-pad">
-        <div class="col-md-2">
+        <div class="col-md-1">
           <label for="dp1">Date:</label>
           <div class="input-group">
             <input
@@ -56,7 +56,7 @@
           </div>
         </div>
 
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-3">
           <label for="customer">Account: </label>
           <ng-select
             #cmbCustomers
@@ -101,19 +101,6 @@
             </ft-input-control>
           </div>
         </div>
-
-        <!-- <div class="col-md-1">
-          <div class="form-group">
-            <ft-input-control
-              [label]="'Phone No'"
-              name="PhoneNo"
-              [placeholder]="'Phone No'"
-              [readonly]="true"
-              [ngModel]="invoice.PhoneNo"
-            >
-            </ft-input-control>
-          </div>
-        </div> -->
         <div class="col-md-2">
           <div class="form-group">
             <ft-input-control
@@ -184,7 +171,7 @@
 
           <div class="col-md-8">
             <div class="row no-gutter">
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <div class="form-group">
                   <label for="qty">Qty:</label>
                   <input
@@ -199,7 +186,7 @@
                   />
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <div class="form-group">
                   <ft-input-control
                     [label]="'Weight'"
@@ -212,7 +199,49 @@
                   </ft-input-control>
                 </div>
               </div>
-              <div class="col-md-3">
+               <div class="col-md-2">
+                <div class="form-group">
+                  <ft-input-control
+                    [label]="'Wght/Smll Stone'"
+                    name="SmallStone"
+                    [placeholder]="'SmallStone'"
+                    [required]="true"
+                    [type]="'number'"
+                    [(ngModel)]="details.SmallStone"
+                  >
+                  </ft-input-control>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <ft-input-control
+                    [label]="'Wastage Ratio'"
+                    name="WastageRatio"
+                    [placeholder]="'Wastage Ratio'"
+                    [required]="true"
+                    [type]="'number'"
+                    [(ngModel)]="details.WastageRatio"
+                    (valueChange)="onWastageRatioChange($event)"
+                  >
+                  </ft-input-control>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <ft-input-control
+                    [label]="'Wastage'"
+                    name="Wastage"
+                    [placeholder]="'Wastage'"
+                    [required]="true"
+                    [type]="'number'"
+                    [readonly]="true"
+                    [(ngModel)]="details.Wastage"
+                  >
+                  </ft-input-control>
+                </div>
+              </div>
+
+              <div class="col-md-2">
                 <div class="form-group">
                   <ft-input-control
                     [label]="'Cut Ratio'"
@@ -226,7 +255,7 @@
                   </ft-input-control>
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <div class="form-group">
                   <ft-input-control
                     [label]="'Cutting'"
@@ -239,33 +268,22 @@
                   </ft-input-control>
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <div class="form-group">
                   <ft-input-control
-                    [label]="'Polish'"
-                    name="Polish"
-                    [placeholder]="'Polish'"
+                    [label]="'Purity'"
+                    name="Purity"
+                    [placeholder]="'Purity'"
                     [required]="true"
                     [type]="'number'"
-                    [(ngModel)]="details.Polish"
+                    [(ngModel)]="details.Purity"
                   >
                   </ft-input-control>
                 </div>
               </div>
-              <div class="col-md-3">
-                <div class="form-group">
-                  <ft-input-control
-                    [label]="'W/Small Stone'"
-                    name="SmallStone"
-                    [placeholder]="'SmallStone'"
-                    [required]="true"
-                    [type]="'number'"
-                    [(ngModel)]="details.SmallStone"
-                  >
-                  </ft-input-control>
-                </div>
-              </div>
-              <div class="col-md-3">
+
+
+              <div class="col-md-2">
                 <div class="form-group">
                   <ft-input-control
                     [label]="'W/Big Stone'"
@@ -278,7 +296,33 @@
                   </ft-input-control>
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
+                <div class="form-group">
+                  <ft-input-control
+                    [label]="'Lacer Charges'"
+                    name="LacerCharges"
+                    [placeholder]="'Lacer Charges'"
+                    [required]="true"
+                    [type]="'number'"
+                    [(ngModel)]="details.LacerCharges"
+                  >
+                  </ft-input-control>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <ft-input-control
+                    [label]="'Moti Charges'"
+                    name="MotiCharges"
+                    [placeholder]="'Moti Charges'"
+                    [required]="true"
+                    [type]="'number'"
+                    [(ngModel)]="details.MotiCharges"
+                  >
+                  </ft-input-control>
+                </div>
+              </div>
+              <div class="col-md-2">
                 <div class="form-group">
                   <ft-input-control
                     [label]="'Net Weight'"
@@ -287,17 +331,16 @@
                     [readonly]="true"
                     [type]="'number'"
                     [value]="
-                      (toNumber(details.Weight) || 0) -
-                      (toNumber(details.Cutting) || 0) +
+                      RoundTo((toNumber(details.Weight) || 0) -
+                      (toNumber(details.Cutting) || 0) -
                       (toNumber(details.SmallStone) || 0) +
-                      (toNumber(details.Polish) || 0)
-
-
+                      (toNumber(details.Wastage) || 0),4)
                     "
                   >
                   </ft-input-control>
                 </div>
               </div>
+
               <div class="col-md-3">
                 <div class="form-group">
                   <label for="cmbStore"> Partener Account</label>
@@ -315,6 +358,18 @@
                     required
                   >
                   </ng-select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <ft-input-control
+                    [label]="'Comments'"
+                    name="Comments"
+                    [placeholder]="'Comments'"
+                    [(ngModel)]="details.Comments"
+                    [type]="'text'"
+                  >
+                  </ft-input-control>
                 </div>
               </div>
               <div class="col-md-2">
@@ -377,11 +432,11 @@
           </div>
           <div class="col-md-2 form-group">
             <ft-input-control
-              [label]="'Polish'"
-              name="TotalPolish"
+              [label]="'Wastage'"
+              name="TotalWastage"
               [readonly]="true"
               [type]="'number'"
-              [(ngModel)]="invoice.TotalPolish"
+              [(ngModel)]="invoice.TotalWastage"
             >
             </ft-input-control>
           </div>
@@ -415,16 +470,33 @@
             >
             </ft-input-control>
           </div>
-          <div class="col-md-2 form-group">
+          <div class="col-md-1 form-group">
             <ft-input-control
               [label]="'Gold Paid'"
               name="GoldPaid"
-              [readonly]="true"
               [type]="'number'"
               [(ngModel)]="invoice.GoldPaid"
             >
             </ft-input-control>
           </div>
+          <div class="col-md-1">
+                <div class="form-group">
+                  <label for="supplier">Gold Type:</label>
+                  <select
+                    #cmbGoldType
+                    name="cmbGoldType"
+                    id="cmbGoldType"
+                    class="form-control"
+                    [(ngModel)]="invoice.GoldType"
+                    required
+                  >
+                    <option value="" selected>Gold Type</option>
+                    <option *ngFor="let type of ($GoldTypes | async)" [value]="type.ID">
+                      {{ type.GoldType }}
+                    </option>
+                  </select>
+                </div>
+              </div>
           <div class="col-md-2 form-group">
             <ft-input-control
               [label]="'Balance Gold'"
@@ -435,7 +507,7 @@
             >
             </ft-input-control>
           </div>
-          <div class="col-md-2 form-group">
+          <div class="col-md-1 form-group">
             <ft-input-control
               [label]="'Rate'"
               name="Rate"
@@ -450,7 +522,23 @@
               name="Amount"
               [type]="'number'"
               [readonly]="true"
-              [value]=" RoundTo(((invoice.NetWeight - invoice.GoldPaid) / 11.664 * invoice.Rate), 2) "
+              [value]="
+                RoundTo(
+                  ((invoice.NetWeight - invoice.GoldPaid) / 11.664) *
+                    invoice.Rate,
+                  2
+                )
+              "
+            >
+            </ft-input-control>
+          </div>
+          <div class="col-md-1 form-group">
+            <ft-input-control
+              [label]="'Labour'"
+              name="Labour"
+              [type]="'number'"
+              [readonly]="true"
+              [value]="invoice.Labour"
             >
             </ft-input-control>
           </div>
@@ -469,8 +557,14 @@
               name="BalanceAmount"
               [type]="'number'"
               [readonly]="true"
-                [value]="
-                RoundTo(((invoice.NetWeight - invoice.GoldPaid) / 11.664 * invoice.Rate - invoice.AmountPaid), 2)
+              [value]="
+                RoundTo(
+                  ((invoice.NetWeight - invoice.GoldPaid) / 11.664) *
+                    invoice.Rate -
+                    invoice.AmountPaid,
+                  2
+                ) +
+                invoice.Labour * 1
               "
             >
             </ft-input-control>

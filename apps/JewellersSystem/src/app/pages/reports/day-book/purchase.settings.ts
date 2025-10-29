@@ -1,71 +1,76 @@
 export const PurchaseSetting = {
   Columns: [
     {
-      label: "Bill No",
-      fldName: "InvoiceID",
+      label: 'Bill No',
+      fldName: 'InvoiceID',
     },
     {
-      label: "Date",
-      fldName: "Date",
+      label: 'Date',
+      fldName: 'Date',
+    },
+    {
+      label: 'Supplier Name',
+      fldName: 'CustomerName',
+    },
 
+    {
+      label: 'Total Weight',
+      fldName: 'TotalWeight',
+      sum: true,
     },
     {
-      label: "Supplier Name",
-      fldName: "CustomerName",
+      label: 'Cutting',
+      fldName: 'Cutting',
+      sum: true,
+    },
+    {
+      label: 'Small Stone',
+      fldName: 'SmallStone',
+      sum: true,
+    },
+    {
+      label: 'Big Stone',
+      fldName: 'BigStone',
+      sum: true,
+    },
+    {
+      label: 'Wastage',
+      fldName: 'TotalWastage',
+      sum: true,
     },
 
     {
-      label: "Total Weight",
-      fldName: "TotalWeight",
+      label: 'Net Weight',
+      fldName: 'NetWeight',
       sum: true,
     },
     {
-      label: "Cutting",
-      fldName: "Cutting",
+      label: 'Gold Paid',
+      fldName: 'GoldPaid',
       sum: true,
     },
     {
-      label: "Small Stone",
-      fldName: "SmallStone",
+      label: 'Gold Balance',
+      fldName: 'GoldBalance',
       sum: true,
     },
     {
-      label: "Big Stone",
-      fldName: "BigStone",
+      label: 'Rate',
+      fldName: 'Rate',
+    },
+    {
+      label: 'Amount',
+      fldName: 'Amount',
       sum: true,
     },
     {
-      label: "Polish",
-      fldName: "TotalPolish",
+      label: 'Labour',
+      fldName: 'Labour',
       sum: true,
     },
     {
-      label: "Net Weight",
-      fldName: "NetWeight",
-      sum: true,
-    },
-    {
-      label: "Gold Paid",
-      fldName: "GoldPaid",
-      sum: true,
-    },
-    {
-      label: "Gold Balance",
-      fldName: "GoldBalance",
-      sum: true,
-    },
-    {
-      label: "Rate",
-      fldName: "Rate",
-    },
-    {
-      label: "Amount",
-      fldName: "Amount",
-      sum: true,
-    },
-    {
-      label: "Amount Paid",
-      fldName: "AmountPaid",
+      label: 'Amount Paid',
+      fldName: 'AmountPaid',
       sum: true,
     },
     {
@@ -75,28 +80,28 @@ export const PurchaseSetting = {
   ],
   Actions: [
     {
-      action: "edit",
-      title: "Edit",
-      icon: "pencil",
-      class: "primary",
+      action: 'edit',
+      title: 'Edit',
+      icon: 'pencil',
+      class: 'primary',
     },
     {
-      action: "post",
-      title: "Post",
-      icon: "check",
-      class: "warning",
+      action: 'post',
+      title: 'Post',
+      icon: 'check',
+      class: 'warning',
     },
     {
-      action: "print",
-      title: "Print",
-      icon: "print",
-      class: "success",
+      action: 'print',
+      title: 'Print',
+      icon: 'print',
+      class: 'success',
     },
     {
-      action: "delete",
-      title: "Delete",
-      icon: "trash",
-      class: "danger",
+      action: 'delete',
+      title: 'Delete',
+      icon: 'trash',
+      class: 'danger',
     },
   ],
   Data: [],

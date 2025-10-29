@@ -59,6 +59,11 @@ const routes: any = [
     data: { breadcrumb: 'Users List' },
   },
   {
+    path: 'stores',
+    component: StoresComponent,
+    data: { breadcrumb: 'Stores List' },
+  },
+  {
     path: 'labourheads',
     component: LabourheadsComponent,
     data: { breadcrumb: 'Labourheads List' },

@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalService } from '../../../../../../../libs/future-tech-lib/src/lib/components/services/modal.service';
 import { GetDate } from '../../../../../../../libs/future-tech-lib/src/lib/utilities/utilities';
 import { GetDateJSON, JSON2Date, getCurDate } from '../../../factories/utilities';
 import { HttpBase } from '../../../services/httpbase.service';
@@ -30,14 +29,12 @@ export class LabourReportComponent implements OnInit {
   constructor(
     private http: HttpBase,
     private ps: PrintDataService,
-    private modalSrvc: ModalService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    this.http.getData('labourheads').then((r) => {
-      this.LabourHaeds = r;
-    });
+    this.Filter.FromDate.day = 1;
+
     this.FilterData();
   }
   PrintReport() {
@@ -53,15 +50,14 @@ export class LabourReportComponent implements OnInit {
   }
   FilterData() {
     // tslint:disable-next-line:quotemark
-    let filter = {
-      FromDate: JSON2Date(this.Filter.FromDate),
-      ToDate: JSON2Date(this.Filter.ToDate),
-      HeadID: '0',
-    };
-    if (this.Filter.HeadID && this.Filter.HeadID != '')
-      filter.HeadID = this.Filter.HeadID;
+    let filter =  "Date between '" +
+      JSON2Date(this.Filter.FromDate) +
+      "' and '" +
+      JSON2Date(this.Filter.ToDate) + "'";
+      filter += " and TotalLabour > 0";
 
-    this.http.postData('labourreport', filter).then((r: any) => {
+
+    this.http.getData('qryInvoices', {filter}).then((r: any) => {
       this.data = r;
     });
   }

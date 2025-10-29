@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { GetDateJSON, JSON2Date, formatNumber } from '../../../factories/utilities';
+import { GetDateJSON, JSON2Date } from '../../../factories/utilities';
 import { CachedDataService } from '../../../services/cacheddata.service';
 import { HttpBase } from '../../../services/httpbase.service';
 import { PrintDataService } from '../../../services/print.data.services';
@@ -39,33 +39,74 @@ export class PurchaseReportComponent implements OnInit {
         fldName: "Address",
       },
       {
-        label: "City",
-        fldName: "City",
+        label: "Total Weight",
+        fldName: "TotalWeight",
+        sum: true,
       },
-
+      {
+        label: "Cutting",
+        fldName: "Cutting",
+        sum: true,
+      },
+      {
+        label: "Net Weight",
+        fldName: "NetWeight",
+        sum: true,
+      },
+      {
+        label: "Gold Paid",
+        fldName: "GoldPaid",
+        sum: true,
+      },
+      {
+        label: "Gold Balance",
+        fldName: "GoldBalance",
+        sum: true,
+      },
+      {
+        label: "Rate",
+        fldName: "Rate",
+        sum: true,
+      },
+      {
+        label: "Amount",
+        fldName: "Amount",
+        sum: true,
+      },
+      {
+        label: "Small Stone",
+        fldName: "SmallStone",
+        sum: true,
+      },
+      {
+        label: "Big Stone",
+        fldName: "BigStone",
+        sum: true,
+      },
+      {
+        label: "Total Wastage",
+        fldName: "TotalWastage",
+        sum: true,
+      },
+      {
+        label: "Labour",
+        fldName: "Labour",
+        sum: true,
+      },
       {
         label: "Net Amount",
         fldName: "NetAmount",
         sum: true,
-        valueFormatter: (d) => {
-          return formatNumber(d["NetAmount"]);
-        },
       },
       {
         label: "Amount Paid",
         fldName: "AmountPaid",
         sum: true,
-        valueFormatter: (d) => {
-          return formatNumber(d["AmountPaid"]);
-        },
       },
       {
-        label: "Balance",
-        fldName: "Balance",
+        label: "Balance Amount",
+        fldName: "BalanceAmount",
         sum: true,
-        valueFormatter: (d) => {
-          return formatNumber(d["Balance"]);
-        },
       },
       {
         label: "Type",
@@ -83,37 +124,65 @@ export class PurchaseReportComponent implements OnInit {
     SubTable: {
       table: 'details',
       Columns: [
+
         {
-          label: 'Store',
-          fldName: 'StoreName',
+          label: "Product Name",
+          fldName: "ProductName",
         },
         {
-          label: 'Product Name',
-          fldName: 'ProductName',
+          label: "Store Name",
+          fldName: "StoreName",
         },
         {
-          label: 'Qty',
-          fldName: 'Qty',
+          label: "Qty",
+          fldName: "Qty",
           sum: true,
         },
         {
-          label: 'Packing',
-          fldName: 'Packing',
-        },
-        {
-          label: 'KGs',
-          fldName: 'KGs',
+          label: "Weight",
+          fldName: "Weight",
           sum: true,
         },
         {
-          label: 'Purchase Price',
-          fldName: 'PPrice',
-        },
-        {
-          label: 'Amount',
-          fldName: 'Amount',
+          label: "Cutting",
+          fldName: "Cutting",
           sum: true,
         },
+        {
+          label: "Small Stone",
+          fldName: "SmallStone",
+          sum: true,
+        },
+        {
+          label: "Big Stone",
+          fldName: "BigStone",
+          sum: true,
+        },
+        {
+          label: "Purity",
+          fldName: "Purity",
+          sum: true,
+        },
+        {
+          label: "Labour",
+          fldName: "Labour",
+          sum: true,
+        },
+        {
+          label: "Wastage",
+          fldName: "Wastage",
+          sum: true,
+        },
+        {
+          label: "Moti Charges",
+          fldName: "MotiCharges",
+          sum: true,
+        },
+        {
+          label: "Lacer Charges",
+          fldName: "LacerCharges",
+          sum: true,
+        }
       ],
     },
   };

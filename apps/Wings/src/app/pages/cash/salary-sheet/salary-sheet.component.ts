@@ -16,9 +16,9 @@ import { JournalVoucher_Form } from '../journal-voucher/journal-voucher.settings
   templateUrl: './salary-sheet.component.html',
   styleUrls: ['./salary-sheet.component.scss'],
 })
-export class SalarySheetomponent implements OnInit {
-  public data: object[];
-  public Users: object[];
+export class SalarySheetComponent implements OnInit {
+  public data: object[] = [];
+  public Users: object[] = [];
 
   public Filter = {
     Date: '',
@@ -235,7 +235,7 @@ export class SalarySheetomponent implements OnInit {
       new Date(this.Filter.Date).getMonth() + 1
     } and year=${new Date(this.Filter.Date).getFullYear()}`;
 
-    this.http.getData('qrysalarysheet?filter=' + filter).then((r: any) => {
+    this.http.getData('qrysalarysheet?orderby=employee_name&filter=' + filter).then((r: any) => {
       this.data = r;
     });
   }
@@ -247,10 +247,10 @@ export class SalarySheetomponent implements OnInit {
     this.router.navigateByUrl('/print/print-html');
   }
 
-  formatDate(d) {
+  formatDate(d:any) {
     return JSON2Date(d);
   }
-  Clicked(e) {
+  Clicked(e:any) {
     console.log(e);
     if (e.action == 'edit') {
       if (e.data.is_posted == 1) {
@@ -360,7 +360,7 @@ export class SalarySheetomponent implements OnInit {
       initialState
     );
 
-    this.bsModalRef.content.Event.subscribe((res) => {
+    this.bsModalRef.content.Event.subscribe((res:any) => {
       console.log(res);
       if (res.res == 'save') {
         this.bsModalRef?.hide();
@@ -376,10 +376,10 @@ export class SalarySheetomponent implements OnInit {
           model.total_amount = model.vat * 1 + res.data.value * 1;
         } else if (res.data.fldName == 'isvat') {
           const comp_name = res.data.form.columns.find(
-            (x) => x.fldName == 'companyname'
+            (x:any) => x.fldName == 'companyname'
           );
           const vat_no = res.data.form.columns.find(
-            (x) => x.fldName == 'trn_no'
+            (x:any) => x.fldName == 'trn_no'
           );
           vat_no.readonly = res.data.value == '0';
           comp_name.readonly = res.data.value == '0';
@@ -387,7 +387,7 @@ export class SalarySheetomponent implements OnInit {
       }
     });
   }
-  SaveVoucher(e) {
+  SaveVoucher(e:any) {
     console.log(e);
     this.http
       .postData('savesalary', {
@@ -447,7 +447,7 @@ export class SalarySheetomponent implements OnInit {
       initialState
     );
 
-    this.bsModalRef.content.Event.subscribe((res) => {
+    this.bsModalRef.content.Event.subscribe((res:any) => {
       console.log(res);
       if (res.res == 'save') {
         this.bsModalRef?.hide();

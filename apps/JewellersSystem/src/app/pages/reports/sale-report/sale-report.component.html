@@ -50,21 +50,21 @@
           </div>
         </div>
 
-
-        <div class="form-group col-md-3">
-          <div class="form-group">
-            <label for="creditonly">Type</label>
-            <select
-              id="creditonly"
-              class="form-control"
-              name="creditonly"
-              [(ngModel)]="Filter.Balance"
-            >
-              <option value="0">All</option>
-              <option value="1">Balance</option>
-            </select>
-          </div>
+        <div class="col-md-3">
+          <label for="customerSelect">Customer:</label>
+          <ng-select
+            [items]="Customers | async"
+            class="custom"
+            bindLabel="CustomerName"
+            bindValue="CustomerID"
+            placeholder="Select Customer"
+            [(ngModel)]="Filter.CustomerID"
+            name="customerSelect"
+            [clearable]="true"
+          >
+          </ng-select>
         </div>
+
         <div class="col-md-1">
           <div class="form-group">
             <label>&nbsp;</label>

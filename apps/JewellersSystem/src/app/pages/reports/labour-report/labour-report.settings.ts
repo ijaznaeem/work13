@@ -27,7 +27,7 @@ export const LabourRptStngs = {
 
     {
       label: 'Labour',
-      fldName: 'Labour',
+      fldName: 'TotalLabour',
       sum: true,
 
     },

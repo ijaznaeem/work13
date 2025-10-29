@@ -1,0 +1,190 @@
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.recall-info {
+  margin-bottom: 20px;
+  padding: 1rem;
+  border-left: 4px solid #007bff;
+}
+
+.required::after {
+  content: " *";
+  color: #dc3545;
+}
+
+.comment-form {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-control-sm {
+  height: calc(1.5em + 0.5rem + 2px);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.is-invalid {
+  border-color: #dc3545;
+}
+
+.invalid-feedback {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #dc3545;
+}
+
+.status-guide {
+  margin-top: 15px;
+  border: 1px solid #dee2e6;
+}
+
+.status-guide h6 {
+  margin-bottom: 10px;
+  color: #495057;
+}
+
+.status-list {
+  margin-bottom: 0;
+  padding-left: 20px;
+}
+
+.status-list li {
+  margin-bottom: 5px;
+  font-size: 0.875rem;
+}
+
+.status-list li strong {
+  color: #007bff;
+}
+
+.previous-comments {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.previous-comments pre {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.alert {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.alert-info {
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+}
+
+.alert-light {
+  color: #818182;
+  background-color: #fefefe;
+  border-color: #fdfdfe;
+}
+
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+  padding: 1rem;
+}
+
+.modal-footer .btn {
+  margin-left: 0.5rem;
+}
+
+.modal-footer .btn:first-child {
+  margin-left: 0;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .modal-body {
+    padding: 1rem 0.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 10px;
+  }
+  
+  .recall-info {
+    padding: 0.75rem;
+    margin-bottom: 15px;
+  }
+  
+  .status-guide {
+    margin-top: 10px;
+  }
+  
+  .previous-comments {
+    max-height: 150px;
+    padding: 0.75rem;
+  }
+}
+
+/* Form validation states */
+.form-control.is-valid {
+  border-color: #28a745;
+}
+
+.form-control.is-valid:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.valid-feedback {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #28a745;
+}
+
+/* Textarea specific styles */
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+textarea.form-control:focus {
+  outline: none;
+}
+
+/* Select dropdown styling */
+select.form-control {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}

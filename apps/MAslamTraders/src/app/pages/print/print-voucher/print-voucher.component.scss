@@ -1,10 +1,12 @@
 @media print {
-  body * {
-    visibility: hidden;
-  }
-  #print-content * {
+  .thermal-voucher {
     visibility: visible;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+  }
+
+  /* Hide everything else when printing */
+  body *:not(.thermal-voucher):not(.thermal-voucher *) {
+    visibility: hidden;
   }
 
   html,
@@ -65,33 +67,6 @@ header {
 
 .receipt {
   font-size: medium;
-}
-
-.items .heading {
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  border-top: 1px solid black;
-  margin-bottom: 4px;
-  border-bottom: 1px solid black;
-  vertical-align: middle;
-}
-
-.items thead tr th:first-child,
-.items tbody tr td:first-child {
-  width: 47%;
-  min-width: 47%;
-  max-width: 47%;
-  word-break: break-all;
-  text-align: left;
-}
-
-table > tr > td {
-  font-size: 12px;
-  color: black;
-  vertical-align: bottom;
-  font-weight: 600;
-  padding: 6px;
 }
 
 .sum-up {

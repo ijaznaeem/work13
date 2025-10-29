@@ -51,6 +51,7 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
   @ViewChild('searchTab') searchTab: TabsetComponent;
   @ViewChild('gatepass') gpTmplt;
   @ViewChild('btnBar') btnBar: ButtonsBarComponent;
+  @ViewChild('tableContainer') tableContainer!: ElementRef;
 
   @Input() EditID = '';
 
@@ -171,8 +172,9 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
   public SelectCust: any = {};
   public LastPrice: any = {};
   public Transporters: any = [];
+  public curCustomerID = '';
+  public GPStoreID = 1;
 
-  public GPStoreID: 1;
   constructor(
     private http: HttpBase,
     private cachedData: CachedDataService,
@@ -192,6 +194,7 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
       icon: 'fa fa-file',
       classes: 'btn-primary',
       action: () => this.NewInvoice(),
+       shortcut: 'n',
     },
     {
       title: 'Edit',
@@ -199,6 +202,7 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
       classes: 'btn-secondary',
       action: () => this.EditInvoice(),
       disabled: true,
+      shortcut: 'z',
     },
     {
       title: 'Print',
@@ -211,6 +215,7 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
       icon: 'fa fa-print',
       classes: 'btn-warning',
       action: () => this.PrintThermal(this.EditID),
+      shortcut: 'p',
     },
     {
       title: 'Gatepass',
@@ -226,12 +231,14 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
       classes: 'btn-success',
       action: () => this.SaveData(1),
       type: 'button',
+      shortcut: 's',
     },
     {
       title: 'Cancel',
       icon: 'fa fa-refresh',
       classes: 'btn-warning',
       action: () => this.CancelInvoice(),
+       shortcut: 'c',
     },
   ];
 
@@ -294,7 +301,6 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
     this.http.getData('invoices/' + InvoiceNo).then((r: any) => {
       if (!r) {
         this.myToaster.Warning('Invalid Invoice No', 'Return', 1);
-
         return;
       }
       this.sale = r;
@@ -318,7 +324,6 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
               Pending,
               SPrice,
               PPrice,
-              WPrice,
               StockID,
               Labour,
               Packing,
@@ -326,6 +331,8 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
               StoreName,
               UnitValue,
               UnitID,
+              WPrice,
+              Weight,
               Remarks,
             } = det;
             // Create new object with selected properties
@@ -337,15 +344,16 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
               Pending,
               SPrice,
               PPrice,
-              WPrice,
               StockID,
               Labour,
               Packing,
               StoreID,
               StoreName,
-              Remarks,
               UnitValue,
               UnitID,
+              WPrice,
+              Weight,
+              Remarks,
             });
           }
           this.calculation();
@@ -375,7 +383,7 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
         }
         this.EditDisabled(false);
         this.sale = r;
-
+        this.curCustomerID = r.CustomerID;
         const customer = this.Accounts.find((c) => {
           return this.sale.CustomerID == c.CustomerID;
         });
@@ -446,7 +454,12 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
   }
   CustomerSelected(event) {
     if (event) {
-      this.sale.PrevBalance = event.Balance;
+      if (event.CustomerName.includes('Cash Sale')) {
+        this.sale.PrevBalance = 0;
+      } else if (this.curCustomerID != event.CustomerID) {
+        this.sale.PrevBalance = event.CBalance;
+      }
+
       this.sale.CustomerName = event.CustomerName;
       this.SelectCust = event;
     }
@@ -512,6 +525,7 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
     this.data.add(obj);
     this.data.refresh();
     this.sdetails.StoreID = '';
+    setTimeout(() => this.scrollToLastRow(), 0);
   }
   public AddOrder() {
     // this.sdetails.DiscRatio = parseFloat('0' +this.sdetails.DiscRatio);
@@ -681,12 +695,12 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
         } else {
           this.router.navigateByUrl('/sale/invoice/' + r.id);
         }
-
+        this.curCustomerID = '';
         this.isSaving = false;
       },
       (err) => {
         this.sale.Date = GetDateJSON(new Date(getCurDate()));
-        this.myToaster.Error('Error saving invoice', 'Error', 2);
+        this.myToaster.Error(err.error.message, 'Save', 2);
         console.log(err);
       }
     );
@@ -942,8 +956,7 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
     console.log('isposted:' + this.isPosted);
     this.btnBar.DisableBtn(1, lock || this.isPosted);
     this.btnLocked = lock;
-    this.settings.actions.edit = true;
-    !this.isPosted && this.btnLocked;
+    this.settings.actions.edit = !this.isPosted && this.btnLocked;
     this.settings.actions.delete = !this.isPosted && this.btnLocked;
     this.settings = { ...this.settings };
   }
@@ -1019,5 +1032,14 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
   }
   GetTWeight() {
     return 2;
+  }
+
+  private scrollToLastRow() {
+    const container: HTMLElement = this.tableContainer.nativeElement;
+    const rows = container.querySelectorAll('tbody tr');
+    if (!rows || rows.length === 0) return;
+    const last = rows[rows.length - 1] as HTMLElement;
+    last.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    // fallback: container.scrollTop = container.scrollHeight;
   }
 }

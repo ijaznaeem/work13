@@ -14,7 +14,7 @@ export class MyToastService {
     this.options = this.toastrService.toastrConfig;
   }
 
-  openToast(message, title, type = 'success', postion= 1) {
+  openToast(message:string, title:string, type = 'success', postion= 1) {
     if (postion === 1) {
       this.options.positionClass = 'toast-top-right';
     } else if (postion === 2) {
@@ -34,18 +34,21 @@ export class MyToastService {
     }
   }
 
-  public Sucess(message, title, postion= 1) {
+  public Sucess(message:string, title:string, postion= 1) {
     this.openToast(message, title, 'success', postion);
   }
-  public Error(message, title, postion= 1) {
+  public Success(message:string, title:string, postion= 1) {
+    this.openToast(message, title, 'success', postion);
+  }
+  public Error(message:string, title:string, postion= 1) {
     this.openToast(message, title, 'error', postion);
   }
 
-  public Info(message, title, postion= 1) {
+  public Info(message:string, title:string, postion= 1) {
     this.openToast(message, title, 'info', postion);
   }
 
-  public Warning(message, title, postion= 1) {
+  public Warning(message:string, title:string, postion= 1) {
     this.openToast(message, title, 'warning', postion);
   }
 

@@ -1,15 +1,32 @@
 <div widget class="card border-0 p-2 box-shadow">
   <div class="card-block pt-0 widget-body">
     <div class="row no-gutter">
-      <div class="col-md-4">
-        <h5 class="mb-3">Sale Invoice # {{ EditID }}</h5>
+      <div class="col-md-3">
+        <h5 class="mb-3">Purchase Invoice # {{ EditID }}</h5>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="cmbType">Invoice Type</label>
+          <select
+            name="cmbType"
+            id="cmbType"
+            class="form-control"
+            [(ngModel)]="purchase.DtCr"
+          >
+            <option value="CR">Purchase</option>
+            <option value="DT">Purchase Return</option>
+          </select>
+        </div>
       </div>
       <div class="col-md-4">
+        <button class="btn btn-primary" type="button" (click)="NewCustomer()">
+          New Account
+        </button>
         <div *ngIf="isPosted" class="text-center btn btn-danger btn-sm">
           POSTED INVOICE
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <form #frmFilter="ngForm">
           <div class="row no-gutter">
             <div class="col-md-6">
@@ -18,6 +35,7 @@
                 name="ino"
                 [(ngModel)]="Ino"
                 placeholder="Invoice No"
+                (focus)="$event.target.select()"
               />
             </div>
 
@@ -42,52 +60,68 @@
     <div class="card-block widget-body">
       <form (ngSubmit)="SaveData()" #fromPurchase="ngForm">
         <div class="row no-gutter">
-          <div class="col-md-2">
-            <label for="dp1">Date:</label>
-            <div class="input-group">
-              <input
-                class="form-control"
-                placeholder="yyyy-mm-dd"
-                name="dp1"
-                [(ngModel)]="sale.Date"
-                ngbDatepicker
-                #d1="ngbDatepicker"
-                required
-                disabled
-              />
-              <div class="input-group-addon">
-                <button
-                  type="button"
-                  class="btn btn-warning"
-                  (click)="d1.toggle()"
-                >
-                  <i class="fa fa-calendar"></i>
-                </button>
+          <div class="col-md-4">
+            <div class="row no-gutter">
+              <div class="col-md-4">
+                <label for="dp1">Date:</label>
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    placeholder="yyyy-mm-dd"
+                    name="dp1"
+                    [(ngModel)]="purchase.Date"
+                    ngbDatepicker
+                    #d1="ngbDatepicker"
+                  />
+                  <div class="input-group-addon">
+                    <button
+                      type="button"
+                      class="btn btn-warning"
+                      (click)="d1.toggle()"
+                    >
+                      <i class="fa fa-calendar"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label for="dp1">Invoice Date:</label>
+                <div class="input-group">
+                  <input
+                    class="form-control"
+                    placeholder="yyyy-mm-dd"
+                    name="dp2"
+                    [(ngModel)]="purchase.InvoiceDate"
+                    ngbDatepicker
+                    #d2="ngbDatepicker"
+                  />
+                  <div class="input-group-addon">
+                    <button
+                      type="button"
+                      class="btn btn-warning"
+                      (click)="d2.toggle()"
+                    >
+                      <i class="fa fa-calendar"> </i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label for="">Invoice No</label>
+                <input
+                  type="text"
+                  name="invoiceNo"
+                  id="invoiceNo"
+                  [(ngModel)]="purchase.InvoiceNo"
+                  class="form-control"
+                  (focus)="$event.target.select()"
+                />
               </div>
             </div>
           </div>
-          <div class="col-md-2">
-            <label for="customer"> Customer Category </label>
-            <select
 
-              name="cmbCustCat"
-              id="cmbCustCat"
-              class="form-control"
-              required
-              (change)="CustomerCat($event)"
-              #cmbCustCat
-            >
-            <option value="">Select Category</option>
-              <option
-                *ngFor="let item of CustCats | async"
-                [value]="item.CustCatID"
-              >
-                {{ item.CustCategory }}
-              </option>
-            </select>
-          </div>
           <div class="form-group col-md-4">
-            <label for="customer">Customer </label>
+            <label for="customer">Supplier </label>
             <ng-select
               #cmbCustomers
               name="ng2select"
@@ -100,8 +134,9 @@
               (change)="CustomerSelected($event)"
               required
               [disabled]="!btnLocked"
-              [(ngModel)]="sale.CustomerID"
+              [(ngModel)]="purchase.CustomerID"
               (keydown.enter)="cmbStores.focus()"
+              selectOnTab="true"
             >
               <ng-template ng-option-tmp let-item="item">
                 <div class="row no-gutter">
@@ -122,14 +157,27 @@
               </ng-template>
             </ng-select>
           </div>
-
-          <div class="col-md-4 form-group">
+          <div class="col-md-1">
+            <div class="form-group">
+              <label for="VehicleNo">Veh No</label>
+              <input
+                class="form-control"
+                [(ngModel)]="purchase.VehicleNo"
+                type="text"
+                name="VehicleNo"
+                id="VehicleNo"
+                required
+                (focus)="$event.target.select()"
+              />
+            </div>
+          </div>
+          <div class="col-md-2 form-group">
             <label for="">Adress</label>
             <p>
               <Strong> {{ SelectCust.Address }}, {{ SelectCust.City }}</Strong>
             </p>
           </div>
-          <div class="col-md-2 form-group">
+          <div class="col-md-1 form-group">
             <label for="">Balance</label>
             <p>
               <Strong> {{ SelectCust.Balance }} </Strong>
@@ -164,21 +212,21 @@
                 name="cmbProduct"
                 id="cmbProduct"
                 class="custom"
-                [items]="Stock"
+                [items]="Products | async"
                 [virtualScroll]="true"
                 bindLabel="ProductName"
-                bindValue="StockID"
+                bindValue="ProductID"
                 placeholder="Select Product"
                 (change)="ProductSelected($event)"
                 required
-                [(ngModel)]="sdetails.StockID"
-
+                [(ngModel)]="sdetails.ProductID"
                 [searchFn]="ProductSearchFn"
+                selectOnTab="true"
               >
                 <ng-template ng-option-tmp let-item="item">
                   <div class="row no-gutter">
                     <div class="col-md-9">
-                      {{ item.ProductName }}
+                      <strong>{{ item.ProductName }}</strong>
                     </div>
 
                     <div class="col-md-3 text-italic font-small-2 mt-1">
@@ -203,16 +251,60 @@
                       name="qty"
                       [(ngModel)]="sdetails.Qty"
                       #qty
-                      (focus)="qty.select()"
+                      (focus)="$event.target.select()"
                     />
                   </div>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                   <div class="form-group">
-                    <label for="RPrice">Rate:</label>
+                    <label for="Packing">Packing</label>
+                    <input
+                      type="number"
+                      class="form-control dation-field"
+                      required="required"
+                      id="Packing"
+                      name="Packing"
+                      min="1"
+                      [(ngModel)]="sdetails.Packing"
+                      (focus)="$event.target.select()"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label for="Units">Units</label>
+                    <input
+                      type="number"
+                      class="form-control dation-field"
+                      readonly
+                      id="Units"
+                      name="Units"
+                      [value]="sdetails.Qty * sdetails.Packing"
+                      (focus)="$event.target.select()"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label for="RPrice">P Rate:</label>
                     <input
                       #txtRate
+                      type="number"
+                      class="form-control"
+                      id="PPrice"
+                      name="PPrice"
+                      [(ngModel)]="sdetails.PPrice"
+                      min="1"
+                      required
+                      (focus)="$event.target.select()"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="form-group">
+                    <label for="RPrice">S Rate:</label>
+                    <input
                       type="number"
                       class="form-control"
                       id="SPrice"
@@ -220,18 +312,9 @@
                       [(ngModel)]="sdetails.SPrice"
                       min="1"
                       required
-                      (keydown.enter)="AddOrder()"
-                      (focus)="txtRate.select()"
+                      (focus)="$event.target.select()"
                     />
                   </div>
-                </div>
-                <div class="col-md-2">
-                  <ft-input-control
-                    [label]="'Bill No'"
-                    [type]="'number'"
-                    (ngModel)="(sdetails.BillNo)"
-                  >
-                  </ft-input-control>
                 </div>
 
                 <div class="col-md-3">
@@ -243,7 +326,8 @@
                       id="pamount"
                       name="pamount"
                       readonly
-                      [value]="sdetails.Qty * sdetails.SPrice"
+                      [value]="sdetails.Qty * sdetails.PPrice * sdetails.Packing"
+                      (focus)="$event.target.select()"
                     />
                   </div>
                 </div>
@@ -252,7 +336,7 @@
                     <label>&nbsp;</label>
                     <button
                       #btnAdd
-                      type="button"
+                      type="submit"
                       class="btn btn-primary form-control"
                       [disabled]="!formqty.form.valid || isPosted"
                       (click)="AddOrder()"
@@ -288,26 +372,30 @@
               <div class="row no-gutter">
                 <div class="col-md-3">
                   <div class="form-group">
-                    <label for="notes">Cash</label>
+                    <label for="notes">Cash Paid</label>
                     <input
                       class="form-control"
-                      [(ngModel)]="sale.Cash"
+                      [(ngModel)]="purchase.Cash"
                       type="number"
                       name="Cash"
                       id="Cash"
+                      (focus)="$event.target.select()"
+                      (change)="purchase.AmountPaid = purchase.Cash* 1 + purchase.Bank * 1"
                     />
                   </div>
                 </div>
 
                 <div class="col-md-3">
                   <div class="form-group">
-                    <label for="notes">Bank</label>
+                    <label for="notes">Bank Paid</label>
                     <input
                       class="form-control"
-                      [(ngModel)]="sale.Bank"
+                      [(ngModel)]="purchase.Bank"
                       type="number"
                       name="Bank"
                       id="Bank"
+                      (focus)="$event.target.select()"
+                      (change)="purchase.AmountPaid = purchase.Cash* 1 + purchase.Bank * 1"
                     />
                   </div>
                 </div>
@@ -319,7 +407,7 @@
                       name="cmbBank"
                       id="cmbBank"
                       class="form-control"
-                      [(ngModel)]="sale.BankID"
+                      [(ngModel)]="purchase.BankID"
                     >
                       <option
                         *ngFor="let item of Banks"
@@ -332,34 +420,21 @@
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
-                    <label for="notes">Total Cash Receieved</label>
+                    <label for="notes">Total Cash Paid</label>
                     <input
                       class="form-control"
-                      [(ngModel)]="sale.AmntRecvd"
+                      [(ngModel)]="purchase.AmountPaid"
                       type="text"
-                      [value]="sale.Cash * 1 + sale.Bank * 1"
+
                       readonly
                       name="AmntRecvd"
                       id="AmntRecvd"
+                      (focus)="$event.target.select()"
                     />
                   </div>
                 </div>
               </div>
-              <div class="row no-gutter">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label for="notes">Notes</label>
-                    <input
-                      class="form-control"
-                      [(ngModel)]="sale.Notes"
-                      type="text"
-                      name="notes"
-                      id="notes"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div class="row no-gutter">
+              <div class="row pt-2">
                 <div class="col-md-3">
                   <div class="form-group">
                     <ft-navigator
@@ -395,7 +470,7 @@
                       class="form-control bold-input"
                       id="gtotal"
                       name="gtotal"
-                      [value]="sale.Amount | number: '1.0-0'"
+                      [value]="purchase.Amount | number: '1.0-0'"
                       readonly
                     />
                   </div>
@@ -409,9 +484,10 @@
                     <input
                       type="number"
                       class="form-control"
-                      id="DeliveryCharges"
-                      name="DeliveryCharges"
-                      [(ngModel)]="sale.DeliveryCharges"
+                      id="FrieghtCharges"
+                      name="FrieghtCharges"
+                      [(ngModel)]="purchase.FrieghtCharges"
+                      (focus)="$event.target.select()"
                     />
                   </div>
                 </div>
@@ -425,7 +501,8 @@
                       class="form-control"
                       id="Labour"
                       name="Labour"
-                      [(ngModel)]="sale.Labour"
+                      [(ngModel)]="purchase.Labour"
+                      (focus)="$event.target.select()"
                     />
                   </div>
                 </div>
@@ -439,11 +516,11 @@
                       class="form-control"
                       id="Discount"
                       name="Discount"
-                      [(ngModel)]="sale.Discount"
+                      [(ngModel)]="purchase.Discount"
+                      (focus)="$event.target.select()"
                     />
                   </div>
                 </div>
-
                 <div class="col-md-6">
                   <label for="netTotal">Balance</label>
                 </div>
@@ -455,12 +532,11 @@
                       id="BalanceAmount"
                       name="BalanceAmount"
                       [value]="
-                        sale.Amount * 1 +
-                          sale.DeliveryCharges * 1 +
-                          sale.Labour * 1 -
-                          sale.Discount -
-                          sale.Cash -
-                          sale.Bank * 1 | number: '1.0-0'
+                        purchase.Amount * 1 +
+                          purchase.FrieghtCharges * 1 +
+                          purchase.Labour * 1 -
+                          purchase.AmountPaid * 1 -
+                          purchase.Discount | number: '1.0-0'
                       "
                       disabled
                     />

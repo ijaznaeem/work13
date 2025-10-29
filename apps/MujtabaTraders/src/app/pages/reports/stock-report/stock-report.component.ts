@@ -118,6 +118,10 @@ export class StockReportComponent implements OnInit {
     console.log(this.Filter);
 
     let filter = ' 1 ';
+    if (this.Filter.Stock) {
+      filter += ' AND Stock > 0 ';
+    }
+
     if (this.Filter.StoreID !== '')
       filter += ' AND StoreID=' + this.Filter.StoreID;
     if (this.Filter.nWhat == '1') {
@@ -127,11 +131,11 @@ export class StockReportComponent implements OnInit {
       });
     } else if (this.Filter.nWhat == '2') {
       let flds =
-        '&flds=CategoryName,sum(Stock) as Stock, Sum(Weight) as Tons &groupby=CategoryName';
+        '&flds=CategoryName,sum(Stock) as Stock, Sum(TotalWeight) as KGs &groupby=CategoryName';
       this.setting.Columns = [
         { label: 'CategoryName', fldName: 'CategoryName' },
         { label: 'Stock', fldName: 'Stock', sum: true },
-        { label: 'Wight', fldName: 'Tons', sum: true },
+        { label: 'Weight(KGs) ', fldName: 'KGs', sum: true },
       ];
       this.http
         .getData('qrystock?filter=' + filter + flds + '')

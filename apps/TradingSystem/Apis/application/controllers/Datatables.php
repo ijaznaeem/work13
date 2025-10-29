@@ -58,12 +58,7 @@ class Datatables extends REST_Controller
     $this->output->set_header('Pragma: no-cache');
     $this->output->set_header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 
-    if ($this->get('bid') != "") {
-      $bid = $this->get('bid');
-    } else {
-      $this->response(array('result' => 'Error', 'message' => 'no businessid given'), REST_Controller::HTTP_BAD_REQUEST);
-      return;
-    }
+
     $this->response(array('result' => 'success', 'message' => 'api success'), REST_Controller::HTTP_OK);
   }
 

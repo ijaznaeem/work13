@@ -22,6 +22,7 @@ const routes:any = [
   { path: 'expense', component: ExpendComponent, data: { breadcrumb: 'Add Expense' } },
   { path: 'expense/:EditID', component: ExpendComponent, data: { breadcrumb: 'Edit Expense' } },
   { path: 'transfer', component: JournalvoucherComponent, data: { breadcrumb: 'Cash Transfer' } },
+  { path: 'internaltransfer', component: CashTransferComponent, data: { breadcrumb: 'Cash Internal Transfer' } },
 
 ];
 
@@ -31,7 +32,7 @@ const routes:any = [
     CashReceiptComponent,
     ExpendComponent,
     CashTransferComponent,
-    JournalvoucherComponent
+    JournalvoucherComponent,
   ],
   imports: [
     CommonModule,

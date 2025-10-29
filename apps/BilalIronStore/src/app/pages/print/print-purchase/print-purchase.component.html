@@ -6,24 +6,7 @@
           <tbody>
             <tr>
               <td colspan="4">
-                <table>
-                  <tr>
-                    <td class="text-left" style="width: 160px">
-                      <img
-                        [src]="IMAGE_URL + 'logo.png'"
-                        alt=""
-                        style="width: 100%"
-                      />
-                    </td>
-                    <td class="text-left">
-                      <div style="font-size: 30px">
-                        {{ Business.BusinessName }}
-                      </div>
-                      <h3>{{ Business.Address }}, {{ Business.City }}</h3>
-                      <p>Tel: {{ Business.Phone }}</p>
-                    </td>
-                  </tr>
-                </table>
+                <app-print-title [Business]="Business"></app-print-title>
               </td>
             </tr>
             <tr>
@@ -31,7 +14,7 @@
                 <strong
                   >{{
                     Invoice.DtCr == 'CR'
-                      ? 'PURCHASE DETAILS '
+                      ? 'PURCHASE INVOICE '
                       : 'PURCHASE RETURN'
                   }}
                 </strong>
@@ -42,7 +25,7 @@
                 <table class="table-bordered">
                   <tr>
                     <td>
-                      Suuplier Name:<strong> {{ Invoice.CustomerName }}</strong>
+                      Supplier Name:<strong> {{ Invoice.CustomerName }}</strong>
                     </td>
                   </tr>
                   <tr>
@@ -68,7 +51,7 @@
                   </tr>
                   <tr>
                     <td>
-                      Invoice Date:<strong>{{ Invoice.Date }}</strong>
+                      Invoice Date:<strong>{{   FormatDate(Invoice.Date) }}</strong>
                     </td>
                   </tr>
                   <tr>
@@ -121,62 +104,115 @@
                 </table>
               </td>
             </tr>
-            <tr>
-              <td colspan="3" style="vertical-align: top;">
-                Notes <br>
-                {{ Invoice.Notes }}</td>
-              <td>
-                <table style="width: 100%">
+           <tr>
+              <td colspan="4" style="width: 100%; vertical-align: top">
+                <table>
                   <tr>
-                    <td>Invoice Amount:</td>
-                    <td class="text-right">
-                      <strong>{{ Invoice.Amount | number: '1.0-2' }}</strong>
+                    <td
+                      style="width: 50%; padding-right: 5%; vertical-align: top"
+                    >
+                      <table
+                        style="width: 100%; vertical-align: top"
+                        class="table table-border"
+                      >
+                        <tr>
+                          <td style="width: 50%">Prev Balance:</td>
+                          <td class="text-right">
+                            <strong>{{
+                              (Invoice.IsPosted == 1
+                                ? Invoice.PrevBalance - Invoice.Balance
+                                : Invoice.PrevBalance
+                              ) | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Total Balance:</td>
+                          <td class="text-right">
+                            <strong>{{
+                              (Invoice.IsPosted == 1
+                                ? Invoice.PrevBalance
+                                : Invoice.PrevBalance * 1 -
+                                  Invoice.NetAmount * 1
+                              ) | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Cash Paid:</td>
+                          <td class="text-right">
+                            <strong>{{
+                              Invoice.Cash | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Bank ({{ Invoice.BankName }}):</td>
+                          <td class="text-right">
+                            <strong>{{
+                              Invoice.Bank | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Total Amount Paid:</td>
+                          <td class="text-right">
+                            <strong>{{
+                              Invoice.AmountPaid | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>New Balance:</td>
+                          <td class="text-right">
+                            <strong>{{
+                              (Invoice.IsPosted == 1
+                                ? Invoice.PrevBalance
+                                : Invoice.PrevBalance * 1 - Invoice.Balance * 1
+                              ) | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                      </table>
                     </td>
-                  </tr>
-                  <tr>
-                    <td> Packing Charges:</td>
-                    <td class="text-right">
-                      <strong>{{ Invoice.PackingCharges | number: '1.0-2' }}</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td> Frieght Charges:</td>
-                    <td class="text-right">
-                      <strong>{{ Invoice.FrieghtCharges | number: '1.0-2' }}</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td> Labour:</td>
-                    <td class="text-right">
-                      <strong>{{ Invoice.Labour | number: '1.0-2' }}</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td> Discount:</td>
-                    <td class="text-right">
-                      <strong>{{ Invoice.Discount | number: '1.0-2' }}</strong>
-                    </td>
-                  </tr>
+                    <td style="width: 50%; padding-left: 5%">
+                      <table
+                        style="width: 100%; vertical-align: top"
+                        class="table table-border"
+                      >
 
-                  <tr>
-                    <td> Net Amount:</td>
-                    <td class="text-right">
-                      <strong>{{ Invoice.NetAmount | number: '1.0-2' }}</strong>
+                        <tr>
+                          <td>Delivery Charges:</td>
+                          <td class="text-right">
+                            {{ Invoice.FrieghtCharges | number: '1.0-0' }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Labour:</td>
+                          <td class="text-right">
+                            {{ Invoice.Labour | number: '1.0-0' }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Discount:</td>
+                          <td class="text-right">
+                            {{ Invoice.Discount | number: '1.0-0' }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><strong>Net Amount:</strong></td>
+                          <td class="text-right">
+                            <strong>{{
+                              (Invoice.NetAmount < 0
+                                ? Invoice.NetAmount * -1
+                                : Invoice.NetAmount
+                              ) | number: '1.0-0'
+                            }}</strong>
+                          </td>
+                        </tr>
+                      </table>
                     </td>
                   </tr>
-                  <tr>
-                    <td> Amount Paid:</td>
-                    <td class="text-right">
-                      <strong>{{ Invoice.AmountPaid | number: '1.0-2' }}</strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td> Balance:</td>
-                    <td class="text-right">
-                      <strong>{{ Invoice.Balance | number: '1.0-2' }}</strong>
-                    </td>
-                  </tr>
-
                 </table>
               </td>
             </tr>

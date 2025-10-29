@@ -49,7 +49,7 @@
             </label>
           </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-1">
           <div class="form-group">
             <label>&nbsp;</label>
             <button
@@ -63,7 +63,7 @@
             </button>
           </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-1">
           <div class="form-group">
             <label>&nbsp;</label>
             <button
@@ -80,11 +80,27 @@
             </button>
           </div>
         </div>
+        <div class="col-md-1">
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button
+              type="button"
+              class="btn btn-primary form-control"
+              accesskey="p"
+
+              (click)="PrintStickers()"
+            >
+              <i class="fa fa-print"></i>
+              Print Barcodes
+            </button>
+          </div>
+        </div>
       </div>
     </form>
     <div class="row no-gutter" id="print-section">
       <div class="col-md-12">
         <ft-dynamic-table
+        #rpt
           [Settings]="setting"
           [Data]="data"
           (ClickAction)="Clicked($event)"

@@ -1,13 +1,13 @@
 import {
   Component,
-  HostListener,
   OnInit,
-  TemplateRef,
   ViewChild,
+  TemplateRef,
+  HostListener,
 } from '@angular/core';
-import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
-import swal from 'sweetalert';
-import { InvoiceTypes } from '../../../factories/constants';
+import { SaleDetails, SaleModel } from '../sale.model';
+import { HttpBase } from '../../../services/httpbase.service';
+import { MyToastService } from '../../../services/toaster.server';
 import {
   GetDateJSON,
   JSON2Date,
@@ -15,19 +15,19 @@ import {
   RoundTo2,
   getYMDDate,
 } from '../../../factories/utilities';
+import swal from 'sweetalert';
 import { CachedDataService } from '../../../services/cacheddata.service';
-import { HttpBase } from '../../../services/httpbase.service';
-import { IndexedDBService } from '../../../services/idexdb.service';
+import { InvoiceTypes } from '../../../factories/constants';
+import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { PrintBillService } from '../../../services/print-bill.service';
-import { MyToastService } from '../../../services/toaster.server';
-import { SaleDetails, SaleModel } from '../sale.model';
-import { SearchGridComponent } from '../search-grid/search-grid.component';
 import { SearchStockComponent } from '../search-stock/search-stock.component';
+import { IndexedDBService } from '../../../services/idexdb.service';
 import {
   DailySaleSetting,
   HoldBillSetting,
   OfflineDataSettings,
 } from './cash-sale.settings';
+import { SearchGridComponent } from '../search-grid/search-grid.component';
 
 @Component({
   selector: 'app-cash-sale',
@@ -48,7 +48,7 @@ export class CashSaleComponent implements OnInit {
   public saledata: any = [];
   specialItem: any = {
     Qty: 0,
-    Price: 0,
+    Price: 0
   };
   public btnsave = false;
   public InvTypes = InvoiceTypes;
@@ -89,7 +89,7 @@ export class CashSaleComponent implements OnInit {
     private modalService: BsModalService,
     private myToaster: MyToastService,
     private idb: IndexedDBService
-  ) {}
+  ) { }
 
   ngOnInit() {
     setTimeout(() => {
@@ -102,7 +102,7 @@ export class CashSaleComponent implements OnInit {
     this.holdData = this.http.getItem(this.HOLD_BILL, []);
     this.saledata = this.http.getItem(this.SALE_DATA, []);
     for (let i = 0; i < this.saledata.length; i++) {
-      this.saledata['InvoiceID'] = this.sale.InvoiceID;
+      this.saledata['InvoiceID'] = this.sale.InvoiceID
     }
     this.calculation();
   }
@@ -112,6 +112,7 @@ export class CashSaleComponent implements OnInit {
     if (event.key == 'F2') {
       event.preventDefault();
       this.Search();
+
     } else if (event.key == 'F3') {
       event.preventDefault();
       this.OpenSpecialItem();
@@ -185,7 +186,7 @@ export class CashSaleComponent implements OnInit {
       console.log(obj);
 
       this.saledata.unshift(obj);
-      this.http.setItem(this.SALE_DATA, this.saledata);
+      this.http.setItem(this.SALE_DATA, this.saledata)
     }
   }
   public AddOrder(qty = 1) {
@@ -329,35 +330,23 @@ export class CashSaleComponent implements OnInit {
     o.Qty = v;
     this.onEdit(0, o);
   }
-
-  public OnRateChange(v, o) {
-    o.SPrice = v;
-    this.onEdit(0, o);
-  }
-
   public onEdit(value, d) {
     console.log(d);
     d.Qty = Number(d.Qty) + Number(value) * 1;
-
-    console.log(d);
-
-    this.calculation();
-  }
-  calculateRow(d) {
-    d.Amount = RoundTo2(d.SPrice * d.Qty);
     d.Discount = RoundTo2((d.SPrice * d.Qty * d.DiscRatio * 1) / 100);
     d.NetAmount = RoundTo2(d.SPrice * d.Qty - d.Discount * 1);
+    console.log(d);
+
     this.calculation();
   }
 
   DiscountPercentageChange(event, i) {
-    if (
-      !this.CheckDisc(
-        this.saledata[i],
-        (this.saledata[i].Qty * this.saledata[i].SPrice * event.target.value) /
-          100
-      )
-    ) {
+
+    if (!this.CheckDisc(this.saledata[i], (this.saledata[i].Qty *
+      this.saledata[i].SPrice *
+      event.target.value) /
+      100)) {
+
       event.target.value = this.saledata[i].DiscRatio;
 
       return;
@@ -378,16 +367,17 @@ export class CashSaleComponent implements OnInit {
 
   DiscountChange(event, i) {
     if (!this.CheckDisc(this.saledata[i], event.target.value * 1)) {
+
       event.target.value = this.saledata[i].Discount;
 
       return;
-    }
+    };
 
     this.saledata[i].Discount = event.target.value * 1;
     this.saledata[i].DiscRatio = RoundTo2(
       (this.saledata[i].Discount /
         (this.saledata[i].SPrice * this.saledata[i].Qty)) *
-        100
+      100
     );
     this.saledata[i].NetAmount =
       this.saledata[i].SPrice * this.saledata[i].Qty -
@@ -463,6 +453,7 @@ export class CashSaleComponent implements OnInit {
     this.Type = 1;
   }
 
+
   Search(term = '') {
     const initialState: ModalOptions = {
       initialState: {
@@ -494,16 +485,17 @@ export class CashSaleComponent implements OnInit {
       this.openModal(this.formPayment);
       return;
     }
-    console.log(code);
+ console.log( code);
     if (code.substring(0, 1) == '/') {
       this.Search(code.substring(1));
       return;
     }
-
+   
     let qty = 1;
     if (code.substring(0, 2) == '98') {
       qty = Number(code.substring(code.length - 4, code.length)) / 1000;
       code = code.substring(2, code.length - 4);
+     
     }
 
     // this.http
@@ -514,13 +506,12 @@ export class CashSaleComponent implements OnInit {
     this.StockCashed$.subscribe((rx) => {
       code = code.trim();
       //      console.log(code.length, rx);
-      const r = rx.filter(
-        (x) => x.PCode.trim() == code || x.PackCode.trim() == code
-      );
+      const r = rx.filter((x) => x.PCode.trim() == code || x.PackCode.trim() == code);
 
       console.log(r);
 
       if (r.length > 0) {
+
         if (r[0].PCode.trim() == code) {
           r[0].Packing = 1;
           this.ProductSelected(r[0], qty);
@@ -695,10 +686,10 @@ export class CashSaleComponent implements OnInit {
   }
   AddSpecialItem() {
     console.log(this.specialItem);
-    const code = '##1010##';
+    const code = "##1010##"
     this.StockCashed$.subscribe((rx) => {
       const r = rx.filter((x) => x.PCode == code || x.PackCode == code);
-
+      
       if (r.length > 0) {
         r[0].SPrice = this.specialItem.Price;
         r[0].PPrice = this.specialItem.Price;
@@ -706,13 +697,14 @@ export class CashSaleComponent implements OnInit {
         r[0].ProductName = this.specialItem.ProductName;
         r[0].Packing = 1;
         this.ProductSelected(r[0], 1);
-        this.bsModalRef?.hide();
+        this.bsModalRef?.hide()
       } else {
-        this.myToaster.Error('Special Item COde not found', 'Error');
+        this.myToaster.Error("Special Item COde not found", "Error");
       }
-    });
+
+    })
   }
   CancelDlg() {
-    this.bsModalRef?.hide();
+    this.bsModalRef?.hide()
   }
 }

@@ -249,6 +249,7 @@ export class CreditSaleComponent implements OnInit, OnChanges {
       this.invoice.details = res1;
       this.invoice.FinYearID = this.http.getFinYearID();
       this.invoice.SessionID = this.http.getClosingID();
+      this.invoice.UserID = this.http.getUserID();
 
       this.http.postTask('sale' + InvoiceID, this.invoice).then(
         (r: any) => {

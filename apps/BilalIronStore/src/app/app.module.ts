@@ -26,6 +26,7 @@ import { TabSelectDirective } from './directives/tabselect.directive';
 import { AuthGuard } from './gaurds/auth.gaurd';
 import { ContentLayoutComponent } from './layouts/content/content-layout.component';
 import { FullLayoutComponent } from './layouts/full/full-layout.component';
+import { PageNotFoundComponent } from './pages/not-found/page-not-found.component';
 import { AuthenticationService } from './services/authentication.service';
 import { CachedDataService } from './services/cacheddata.service';
 import { HttpBase } from './services/httpbase.service';
@@ -57,7 +58,9 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   declarations: [AppComponent,
     TabSelectDirective,
-    FullLayoutComponent, ContentLayoutComponent, ],
+    FullLayoutComponent,
+    ContentLayoutComponent,
+    PageNotFoundComponent],
   imports: [
     BrowserAnimationsModule,
     BrowserModule,

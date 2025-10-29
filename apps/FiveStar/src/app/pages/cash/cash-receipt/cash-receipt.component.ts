@@ -9,12 +9,14 @@ import { VoucherModel } from '../voucher.model';
 @Component({
   selector: 'app-cash-receipt',
   templateUrl: './cash-receipt.component.html',
-  styleUrls: ['./cash-receipt.component.scss']
+  styleUrls: ['./cash-receipt.component.scss'],
 })
 export class CashReceiptComponent implements OnInit {
   @ViewChild('cmbCustomer') cmbCustomer;
   public Voucher = new VoucherModel();
   Customers = [];
+  bList = [];
+  BusinessID = '';
   AcctTypes = AcctTypes;
   EditID = '';
 
@@ -22,29 +24,46 @@ export class CashReceiptComponent implements OnInit {
   constructor(
     private http: HttpBase,
     private alert: MyToastService,
-    private activatedRoute: ActivatedRoute) { }
+    private activatedRoute: ActivatedRoute
+  ) {}
 
   ngOnInit() {
+    this.http.getData('blist').then((r: any) => {
+      this.bList = r;
+    });
+    this.BusinessID = this.http.getBusinessID();
+
     this.activatedRoute.params.subscribe((params: Params) => {
       this.EditID = params.EditID;
       if (this.EditID) {
-        this.http.getData('qryvouchers?filter=VoucherID=' + this.EditID).then((r: any) => {
-          this.LoadCustomer({ AcctTypeID: r[0].AcctTypeID });
-          setTimeout(() => {
-            this.Voucher = GetProps(r[0], Object.getOwnPropertyNames((new VoucherModel)));
-          console.log(this.Voucher);
-          this.Voucher.Date = GetDateJSON(new Date(r[0].Date));
-          }, 1000);
-        })
+        this.http
+          .getData('qryvouchers?filter=VoucherID=' + this.EditID)
+          .then((r: any) => {
+            this.BusinessID = r[0].CBID;
+            this.LoadCustomer(this.BusinessID, r[0].AcctTypeID);
+            setTimeout(() => {
+              this.Voucher = GetProps(
+                r[0],
+                Object.getOwnPropertyNames(new VoucherModel())
+              );
+              console.log(this.Voucher);
+              this.Voucher.Date = GetDateJSON(new Date(r[0].Date));
+            }, 1000);
+          });
       }
     });
   }
-  LoadCustomer(event) {
-    if (event) {
-      this.http.getCustByType(event.AcctTypeID).then((response: any) => {
+  LoadCustomer(bid, AcctTypeID) {
+    this.http
+      .getData('qrycustomers', {
+        flds: 'CustomerName,Address, PhoneNo1,MBalance, Balance,CustomerID',
+        orderby: 'CustomerName',
+        filter: `AcctTypeID=${AcctTypeID}`,
+        bid: bid,
+      })
+      .then((response: any) => {
         this.Customers = response;
       });
-    }
   }
   SaveData() {
     let voucherid = '';
@@ -54,27 +73,31 @@ export class CashReceiptComponent implements OnInit {
     }
 
     console.log(this.Voucher);
-    this.http.postTask('vouchers' + voucherid, this.Voucher).then(() => {
-      this.alert.Sucess('Receipt Saved', 'Save', 1);
+    this.http.postTask('vouchers' + voucherid, this.Voucher).then(
+      () => {
+        this.alert.Sucess('Receipt Saved', 'Save', 1);
 
-      this.Voucher = Object.assign(new VoucherModel(), { AcctTypeID: this.Voucher.AcctTypeID });
-      this.cmbCustomer.focusIn();
-
-    },(err) => {
-      this.alert.Error(err.error.message, "Error", 2);
-      console.log(err);
-      this.Voucher.Date =GetDateJSON();;
-    });
+        this.Voucher = Object.assign(new VoucherModel(), {
+          AcctTypeID: this.Voucher.AcctTypeID,
+        });
+        this.cmbCustomer.focusIn();
+      },
+      (err) => {
+        this.alert.Error(err.error.message, 'Error', 2);
+        console.log(err);
+        this.Voucher.Date = GetDateJSON();
+      }
+    );
   }
   GetCustomer(e) {
     console.log(e);
     if (e.itemData) {
-      this.http.getData('qrycustomers?filter=CustomerID=' + e.itemData.CustomerID).then((r: any) => {
-        this.curCustomer = r[0];
-      });
-
+      this.http
+        .getData('qrycustomers?filter=CustomerID=' + e.itemData.CustomerID)
+        .then((r: any) => {
+          this.curCustomer = r[0];
+        });
     }
-
   }
   Round(amnt) {
     return Math.round(amnt);

@@ -1,15 +1,16 @@
 import {
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild,
+    Component,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewChild,
 } from '@angular/core';
 import { DataTableDirective } from 'angular-datatables';
+import { Api, Config } from 'datatables.net';
 import {
-  BsModalRef,
-  BsModalService,
-  ModalOptions,
+    BsModalRef,
+    BsModalService,
+    ModalOptions,
 } from 'ngx-bootstrap/modal';
 import { Subject } from 'rxjs';
 import Swal from 'sweetalert2';
@@ -42,7 +43,7 @@ export class CrudComponent implements OnInit, OnDestroy {
   private _formData: any;
   files: File | any;
   dtTrigger = new Subject<void>();
-  dtOptions: DataTables.Settings = {};
+  dtOptions: Config = {};
   bsModalRef?: BsModalRef;
 
   constructor(
@@ -178,7 +179,7 @@ export class CrudComponent implements OnInit, OnDestroy {
   public ChangeDataTable(sTableName, bReload = true) {
     this.list.tableName = sTableName;
     if (bReload) {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      this.dtElement.dtInstance.then((dtInstance: Api<any>) => {
         // Destroy the table first
         dtInstance.destroy();
         // Call the dtTrigger to rerender again

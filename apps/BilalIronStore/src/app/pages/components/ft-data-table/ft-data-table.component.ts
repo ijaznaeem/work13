@@ -2,6 +2,7 @@ import { DecimalPipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 
 import { DataTableDirective } from 'angular-datatables';
+import { Api } from 'datatables.net';
 import { Subject } from 'rxjs';
 import { HttpBase } from '../../../services/httpbase.service';
 import { CountryService } from './country.service';
@@ -28,7 +29,7 @@ export class FtDataTableComponent implements OnInit {
     columns: [],
     actions: [],
     crud: false,
-    sort: null || []
+    sort:  []
   };
   @Input() Filter: any = "1=1";
   @Input() CRUD: boolean = false;
@@ -82,7 +83,7 @@ if (this.Settings.sort) {
     this.dtTrigger.unsubscribe();
   }
   realoadTable(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.dtElement.dtInstance.then((dtInstance: Api<any>) => {
       console.log('in reload');
 
       // Destroy the table first
@@ -91,7 +92,7 @@ if (this.Settings.sort) {
     });
   }
   SortByColumn(col, dir = 'asc'): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+    this.dtElement.dtInstance.then((dtInstance: Api<any>) => {
 
 
       // Destroy the table first

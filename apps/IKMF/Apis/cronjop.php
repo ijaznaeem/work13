@@ -5,7 +5,6 @@ $dbname   = 'online_ikmf';
 $username = 'root';
 $password = '123';
 
-// Initialize debug log statement
 $debugLogStmt = null;
 
 try {
@@ -60,7 +59,7 @@ try {
             OR d.NextDueDate <= CURDATE()
           )
     ";
-    $stmt = $pdo->query($sql);
+    $stmt   = $pdo->query($sql);
     $donors = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Prepare update statements
@@ -82,15 +81,16 @@ try {
     foreach ($donors as $d) {
         $status = '';
         $task   = "Send Donation Status Message";
+        echo $task . " for " . $d['DonarName'] . "\n";
 
-        if ($d['SendWhatsApp'] == 1) {
+        if ($d['SendWhatsApp'] == 1 && $d['Balance'] > 0) {
             $mobile = (strpos($d['WhatsAppNo'], '+') === 0)
-                ? ltrim($d['WhatsAppNo'], '+')
-                : '92' . ltrim($d['WhatsAppNo'], '0');
+            ? ltrim($d['WhatsAppNo'], '+')
+            : '92' . ltrim($d['WhatsAppNo'], '0');
 
             $message = "Dear {$d['DonarName']},\n\n"
-                . "This is a reminder from Imtiaz Kausar Memorial Foundation regarding your " . ($d['Type'] == 1? "donation": "membership fee"). " of PKR "
-                . number_format($d['DonationAmount'], 0, '.', ',')
+            . "This is a reminder from Imtiaz Kausar Memorial Foundation regarding your " . ($d['Type'] == 1 ? "donation" : "membership fee") . " of PKR "
+            . number_format($d['DonationAmount'], 0, '.', ',')
                 . ".\n\nThank you for your continued support at *Imtiaz Kausar Memorial Foundation!*";
 
             // Send via cURL
@@ -122,8 +122,8 @@ try {
                     ':message'   => $err,
                 ]);
             } else {
-                $data = json_decode($resp, true);
-                $ok = isset($data['results'][0]['status']) && $data['results'][0]['status'] === 'OK';
+                $data   = json_decode($resp, true);
+                $ok     = isset($data['results'][0]['status']) && $data['results'][0]['status'] === 'OK';
                 $status = $ok ? 'Success' : ('Failed: ' . ($data['results'][0]['status'] ?? 'Unknown'));
             }
 
@@ -137,17 +137,17 @@ try {
         }
 
         // Update balance if success
-        if (strpos($status, 'Success') === 0) {
-            $updBalanceStmt->execute([
-                ':amount'  => $d['DonationAmount'],
-                ':donarID' => $d['DonarID'],
-            ]);
-        }
+        // if (strpos($status, 'Success') === 0) {
+        $updBalanceStmt->execute([
+            ':amount'  => $d['DonationAmount'],
+            ':donarID' => $d['DonarID'],
+        ]);
 
         // Update NextDueDate always
         $updNextDueStmt->execute([
             ':donarID' => $d['DonarID'],
         ]);
+        // }
     }
 
 } catch (PDOException $e) {
@@ -173,4 +173,3 @@ try {
     echo "General error: " . $e->getMessage() . "\n";
     exit(1);
 }
-?>

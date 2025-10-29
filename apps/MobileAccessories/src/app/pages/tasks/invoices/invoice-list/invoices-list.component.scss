@@ -1,0 +1,266 @@
+// Enhanced Invoices List Styles
+
+// Header and content styling
+.content-header {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+// Card enhancements
+.card {
+  border-radius: 12px;
+  border: none;
+
+  &.shadow-sm {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+}
+
+.card-header {
+  border-radius: 12px 12px 0 0 !important;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+
+  &.bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  }
+
+  &.bg-light {
+    background-color: #f8f9fa !important;
+  }
+}
+
+// Statistics cards
+.bg-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+}
+
+.bg-success {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+}
+
+.bg-info {
+  background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%) !important;
+}
+
+.bg-warning {
+  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+}
+
+// Button group styling
+.btn-group {
+  .btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    &.active {
+      background-color: #007bff;
+      border-color: #007bff;
+      color: white;
+      box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+    }
+  }
+}
+
+// Badge styling
+.badge {
+  font-size: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+
+  &.badge-success {
+    background-color: #28a745;
+    color: white;
+  }
+
+  &.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+  }
+}
+
+// Product item cards
+.product-item-card {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .card-body {
+    padding: 0.75rem;
+  }
+
+  .card-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+}
+
+// Invoice status styling
+.invoice-status {
+  &.posted {
+    background-color: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+  }
+
+  &.unposted {
+    background-color: #fff3cd;
+    color: #856404;
+    border-left: 4px solid #ffc107;
+  }
+}
+
+// Action buttons
+.btn-outline-primary,
+.btn-outline-success,
+.btn-outline-warning,
+.btn-outline-danger {
+  border-width: 1px;
+  font-weight: 500;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Text utilities
+.text-primary {
+  color: #007bff !important;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+// Responsive improvements
+@media (max-width: 768px) {
+  .content-header {
+    font-size: 1.5rem;
+  }
+
+  .btn-group {
+    display: flex;
+
+    .btn {
+      flex: 1;
+      font-size: 0.875rem;
+    }
+  }
+
+  .product-item-card {
+    margin-bottom: 1rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+}
+
+// Print styles
+@media print {
+  .btn, .btn-group {
+    display: none !important;
+  }
+
+  .card {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+  }
+
+  .bg-gradient-primary {
+    background: #007bff !important;
+    color: white !important;
+  }
+}
+
+// Animation for cards
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+// Alert styling
+.alert {
+  border-radius: 8px;
+  border: none;
+
+  &.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+  }
+}
+
+// Enhanced spacing
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.p-3 {
+  padding: 1rem !important;
+}
+
+// Form styling
+.form-control {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  transition: all 0.3s ease;
+
+  &:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+  }
+}
+
+// Filter card specific styling
+.card-header h6 {
+  color: #495057;
+  font-weight: 600;
+}
+
+// Enhanced border styling
+.border-bottom {
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+.no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+
+  > .col,
+  > [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}

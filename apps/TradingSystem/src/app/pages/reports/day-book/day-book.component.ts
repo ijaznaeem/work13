@@ -32,7 +32,7 @@ export class DayBookComponent implements OnInit {
     { name: 'RV', id: '11' },
     { name: 'All Vouchers', id: '12' },
     { name: 'Transfers', id: '13' },
-    { name: 'Comdty Vouchers', id: '14' },
+    // { name: 'Comdty Vouchers', id: '14' },
   ];
   public data: any = [];
   public subdata: any = [];

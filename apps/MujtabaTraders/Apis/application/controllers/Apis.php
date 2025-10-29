@@ -543,7 +543,7 @@ class Apis extends REST_Controller
         $acct   = $this->db->query(
             " select Date, 'voucher' as Type, VoucherID as RefID, CustomerName, Description, Debit,  Credit from qryvouchers where $filter  and BusinessID = $bid   UNION ALL " .
             " Select Date, 'Sale' as Type, InvoiceID, CustomerName, Address , 0 as Debit, AmntRecvd as Credit from qryinvoices where  AmntRecvd > 0  AND  $filter and BusinessID = $bid UNION ALL " .
-            " Select Date, 'Expense' as Type, InvoiceID, CustomerName, Address,  FrieghtCharges as Debit, 0 as Credit from qrypinvoices where  FrieghtCharges > 0 AND $filter  and BusinessID = $bid  UNION ALL " .
+            " Select Date, 'Expense' as Type, InvoiceID, 'Frieght Expense', CustomerName,  FrieghtCharges as Debit, 0 as Credit from qrypinvoices where  FrieghtCharges > 0 AND $filter  and BusinessID = $bid  UNION ALL " .
             " Select Date, 'Expense' as Type, ExpendID, HeadName, Description,  Amount as Debit, 0 as Credit from qryexpenses where   $filter  and BusinessID = $bid  UNION ALL " .
             " Select Date, 'Purchase' as Type, InvoiceID, CustomerName, Address,  AmountPaid as Debit, 0 as Credit from qrypinvoices where  AmountPaid > 0 AND $filter  and BusinessID = $bid "
         )->result_array();

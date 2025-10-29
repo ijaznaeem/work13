@@ -17,7 +17,9 @@ import { CashPaidComponent } from './cash-paid/cash-paid.component';
 import { CashReceiptComponent } from './cash-receipt/cash-receipt.component';
 import { ChandiTransactionComponent } from './chandi-transaction/chandi-transaction.component';
 import { GoldConvertComponent } from './gold-convert/gold-convert.component';
+import { GoldPaidReceiptComponent } from './gold-paid-receipt/gold-paid-receipt.component';
 import { GoldTransactionComponent } from './gold-transaction/gold-transaction.component';
+import { PrevBalanceComponent } from './pre-balance/prev-balance.component';
 import { SaleInvoiceComponent } from './sale-invoice/sale-invoice.component';
 import { SaleOrderComponent } from './sale-order/sale-order.component';
 import { SearchStockComponent } from './search-stock/search-stock.component';
@@ -127,6 +129,16 @@ const routes: any = [
     component: AdvanceReceivedComponent,
     data: { breadcrumb: 'Advance Received' },
   },
+  {
+    path: 'gold-paid-receipt',
+    component: GoldPaidReceiptComponent,
+    data: { breadcrumb: 'Gold Paid Receipt' },
+  },
+  {
+    path: 'gold-paid-receipt/:EditID',
+    component: GoldPaidReceiptComponent,
+    data: { breadcrumb: 'Gold Paid Receipt' },
+  },
 
 ];
 
@@ -141,7 +153,9 @@ const routes: any = [
     CashReceiptComponent, CashPaidComponent,
     WagesPaidComponent,
     AdvancePaidComponent,
-    AdvanceReceivedComponent
+    AdvanceReceivedComponent,
+    PrevBalanceComponent,
+    GoldPaidReceiptComponent
 
   ],
   imports: [

@@ -1,22 +1,22 @@
-import {
-  Component,
-  OnInit,
-  Inject,
-  Renderer2,
-  AfterViewInit,
-  OnDestroy,
-  ChangeDetectorRef,
-  HostListener
-} from "@angular/core";
-import { ConfigService } from "../../shared/services/config.service";
 import { DOCUMENT } from "@angular/common";
-import { Subscription } from "rxjs";
-import { CustomizerService } from '../../shared/services/customizer.service';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Renderer2
+} from "@angular/core";
+import { NavigationEnd, Router } from '@angular/router';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { Subscription } from "rxjs";
+import { filter } from 'rxjs/operators';
+import { ConfigService } from "../../shared/services/config.service";
+import { CustomizerService } from '../../shared/services/customizer.service';
 import { LayoutService } from '../../shared/services/layout.service';
 import { WINDOW } from '../../shared/services/window.service';
-import { Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
 
 @Component({
   selector: "app-full-layout",
@@ -53,7 +53,9 @@ export class FullLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
     private deviceService: DeviceDetectorService
   ) {
 
-    this.config = this.configService.templateConf;
+    const storedConfig = localStorage.getItem('appConfig');
+    this.config = storedConfig ? JSON.parse(storedConfig) : this.configService.templateConf;
+    this.configService.applyTemplateConfigChange(this.config);
     this.innerWidth = window.innerWidth;
 
     // On toggle sidebar menu
@@ -71,8 +73,9 @@ export class FullLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.configSub = this.configService.templateConf$.subscribe((templateConf) => {
-      if (templateConf) {
+       if (templateConf) {
         this.config = templateConf;
+        localStorage.setItem('appConfig', JSON.stringify(this.config));
       }
       //load layout
       this.loadLayout();

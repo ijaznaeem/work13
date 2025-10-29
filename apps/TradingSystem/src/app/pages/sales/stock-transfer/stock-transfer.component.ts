@@ -86,12 +86,14 @@ export class StockTransferComponent implements OnInit, OnChanges {
   LoadInvoice() {
     if (this.EditID && this.EditID !== '') {
       this.Ino = this.EditID;
-      this.http.getData('StockTransfer/' + this.EditID).then((r: any) => {
-        if (!r) {
+      this.http.getData(`StockTransfer?filter=TransferID='${this.EditID}'`).then((r: any) => {
+
+        if (r.length === 0) {
           this.myToaster.Warning('Invalid transfer No', 'Edit', 1);
           this.router.navigateByUrl('sale/transfer');
           return;
         }
+        r = r[0];
         if (r.IsPosted == '1') {
           this.myToaster.Warning('transfer is already posted', 'Edit', 1);
           this.isPosted = true;
@@ -103,7 +105,7 @@ export class StockTransferComponent implements OnInit, OnChanges {
         console.log(this.stocktransfer);
 
         this.http
-          .getData('qrytransferdetails?filter=TransferID=' + this.EditID)
+          .getData(`qrytransferdetails?filter=TransferID='${this.EditID}'`)
           .then((rdet: any) => {
             this.data.empty();
 

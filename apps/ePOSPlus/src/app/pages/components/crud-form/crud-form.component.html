@@ -39,7 +39,7 @@
               userForm.submitted && !userForm.controls[col.fldName].invalid
           }" [required]="col.required">
           <option value="" selected>
-            {{ col.placeHolder || "Please X select" }}
+            {{ col.placeHolder || "Please select" }}
           </option>
           <option [value]="d[col.valueFld]" *ngFor="let d of col.listData">
             {{ d[col.displayFld] }}

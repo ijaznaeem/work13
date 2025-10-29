@@ -382,10 +382,11 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
 
     if (
       this.sdetails.Qty * this.sdetails.Packing + this.sdetails.KGs * 1 >
-      this.selectedProduct.Stock
+        this.selectedProduct.Stock &&
+      this.sale.DtCr == 'CR' // Credit Sale
     ) {
-      this.myToaster.Warning('stock not enough!', 'warning');
-      // return;
+      this.myToaster.Error('stock not enough!', 'Error');
+      return;
     }
 
     if (Number('0' + this.sdetails.Qty) == 0) {
@@ -725,7 +726,6 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
             label: 'Qty Pending',
             search: false,
           },
-
         ],
       },
       class: 'modal-lg',
@@ -746,7 +746,7 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
     });
   }
 
-  Find() {
+  FindOrder() {
     let code = this.sale.OrderID;
 
     if (code == '' || code == null) {
@@ -763,7 +763,7 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
         this.sale.OrderID = r.OrderID;
         this.http
           .getData('qryordersreport?filter=orderid=' + code)
-          .then((rdet: any) => {
+          .then(async (rdet: any) => {
             this.data.empty();
             for (const det of rdet) {
               const {
@@ -772,24 +772,40 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
                 PendingQty,
                 SPrice,
                 PPrice,
-                Weight
-              } = det;
-              // Create new object with selected properties
-              this.AddToDetails({
-                ProductID,
-                ProductName,
-                Qty: PendingQty,
-                KGs: 0,
-                Packing: 1,
-                SPrice,
-                PPrice,
-                StockID: 0,
-                Labour: 0,
-                StoreID: 2,
                 Weight,
-                UnitValue:1,
-                StoreName: this.GetStoreName('2'),
-              });
+              } = det;
+              this.Stock = await this.http.getStock('2');
+              console.log('stock', this.Stock);
+
+              const stockItem = this.Stock.find((s) => s.ProductID == ProductID && s.StoreID == '2');
+              let availableQty = stockItem ? stockItem.Stock : 0;
+              let useQty = Math.min(PendingQty, availableQty);
+              let usePPrice = stockItem ? stockItem.PPrice : PPrice;
+
+              if (useQty > 0) {
+                this.AddToDetails({
+                  ProductID,
+                  ProductName,
+                  Qty: useQty,
+                  KGs: 0,
+                  Packing: 1,
+                  SPrice,
+                  PPrice: usePPrice,
+                  StockID: stockItem ? stockItem.StockID : 0,
+                  Labour: 0,
+                  StoreID: 2,
+                  Weight,
+                  UnitValue: 1,
+                  StoreName: this.GetStoreName('2'),
+                });
+              }
+              if (PendingQty * 1 > availableQty * 1) {
+                this.myToaster.Warning(
+                  `Stock not enough for ${ProductName}. Only ${availableQty} added.`,
+                  'Stock Alert'
+                );
+              }
+
             }
             this.calculation();
           });
@@ -803,10 +819,8 @@ export class CashSaleComponent implements OnInit, OnChanges, AfterViewInit {
       storeID = this.cmbStores.selectedItems[0].value;
     }
 
-    let store = this.cmbStores.items?.find(
-      (x) => x.StoreID == storeID
-    );
-console.log(store);
+    let store = this.cmbStores.items?.find((x) => x.StoreID == storeID);
+    console.log(store);
 
     return store.StoreName;
   }

@@ -80,6 +80,8 @@ export const ROUTES: RouteInfo[] = [
       { id:730,path: '/reports/salereport-admin', title: 'Sale Report', icon: 'ft-info submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },
       { id:740,path: '/reports/salreport-byitem', title: 'Sale Report By Item', icon: 'ft-info submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },
       { id:745,path: '/reports/log-report', title: 'Edit Log Report', icon: 'ft-info submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },
+      { id:750,path: '/reports/cash-flow-report', title: 'Cash Flow Report', icon: 'ft-info submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },
+      { id:755,path: '/reports/sale-comparison', title: 'Sale Comparison Report', icon: 'ft-info submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },
     ]
   },
 ];

@@ -103,7 +103,7 @@ export class CrudFormComponent implements OnInit {
         this.DataSaved.emit({ data: r });
       })
       .catch((err) => {
-        this.myToast.Error(err.message, 1);
+        this.myToast.Error(err.message, 'Upload Error');
       });
   }
   onRemove(event) {

@@ -28,6 +28,7 @@ import { FutureTechLibModule } from '../../../../../../libs/future-tech-lib/src'
 import { CreditlistComponent } from './credit-list/credit-list.component';
 import { LabourReportComponent } from './labour-report/labour-report.component';
 import { PackingReportComponent } from './packing-report/packing-report.component';
+import { PolishReportComponent } from './polish-report/polish-report.component';
 import { ProfitByBillComponent } from './profit-bybill/profit-bybill.component';
 import { PurchasesummaryComponent } from './purchse-summary/purchase-summary.component';
 import { SalesummaryComponent } from './sale-summary/sale-summary.component';
@@ -37,8 +38,8 @@ import { StockReportCurrentComponent } from './stock-report-current/stock-report
 const routes:any= [
   { path: '', redirectTo: 'daybook', pathMatch: 'full' },
   { path: 'daybook', component: DayBookComponent, data: { breadcrumb: 'Day Book' } },
-  { path: 'salesummay', component: SalesummaryComponent, data: { breadcrumb: 'Sale Summary' } },
-  { path: 'purchasesummay', component: PurchasesummaryComponent, data: { breadcrumb: 'Purchase Summary' } },
+  { path: 'salesummary', component: SalesummaryComponent, data: { breadcrumb: 'Sale Summary' } },
+  { path: 'purchasesummary', component: PurchasesummaryComponent, data: { breadcrumb: 'Purchase Summary' } },
   { path: 'salereport', component: SaleReportComponent, data: { breadcrumb: 'Sale Report' } },
   { path: 'labourreport', component: LabourReportComponent, data: { breadcrumb: 'Labour Report' } },
   { path: 'packingreport', component: PackingReportComponent, data: { breadcrumb: 'Packing Report' } },
@@ -54,6 +55,7 @@ const routes:any= [
   { path: 'profit', component: ProfitReportComponent, data: { breadcrumb: 'Profit Report' } },
   { path: 'profitbybill', component: ProfitByBillComponent, data: { breadcrumb: 'Profit By Bill' } },
   { path: 'expreport', component: ExpReportComponent, data: { breadcrumb: 'Frenchiser Report' } },
+  { path: 'polishreport', component: PolishReportComponent, data: { breadcrumb: 'Frenchiser Report' } },
 
 
 ];
@@ -77,6 +79,7 @@ const routes:any= [
     CreditlistComponent,
     ProfitByBillComponent,
     LabourReportComponent,
+    PolishReportComponent,
     PackingReportComponent,
     PurchasesummaryComponent,
     StockReportCurrentComponent,

@@ -1,5 +1,7 @@
 import {
-  Directive, HostBinding, Inject, Input, OnInit, OnDestroy, Output, EventEmitter, AfterViewInit
+  Directive, HostBinding, Inject, Input,
+  OnDestroy,
+  OnInit
 } from '@angular/core';
 import { SidebarDirective } from "./sidebar.directive";
 

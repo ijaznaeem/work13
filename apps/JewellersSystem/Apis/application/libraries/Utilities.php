@@ -5,29 +5,64 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 class Utilities
 {
-    public function getBillNo($db, $type)
+    public function getBillNo($db, $tableName, $bNext = false)
     {
-        $table = '';
-        $pkey  = '';
-
-        if ($type == 1) {
+        $table  = '';
+        $pkey   = '';
+        $filter = '';
+        if ($tableName == 'S') {
             $table = 'Invoices';
             $pkey  = 'InvoiceID';
-        } else if ($type == 2) {
+        } else if ($tableName == 'P') {
             $table = 'PInvoices';
             $pkey  = 'InvoiceID';
+        } else if ($tableName == 'G') { // gold convert
+            $table = 'GoldTransfers';
+            $pkey  = 'TransferID';
+        } else if ($tableName == 'RV') { // cash book
+            $table  = 'DailyCash';
+            $pkey   = 'DailyID';
+            $filter = " WHERE Type = '$tableName'";
+        } else if ($tableName == 'PV') { // cash book
+            $table  = 'DailyCash';
+            $pkey   = 'DailyID';
+            $filter = " WHERE Type = '$tableName'";
+        } else if ($tableName == 'SO') { // cash book
+            $table  = 'DailyCash';
+            $pkey   = 'DailyID';
+            $filter = " WHERE Type = '$tableName'";
+        } else if ($tableName == 'TR') { // cash book
+            $table  = 'DailyCash';
+            $pkey   = 'DailyID';
+            $filter = " WHERE Type = '$tableName'";
+        } else if ($tableName == 'GV') { // cash book
+            $table  = 'DailyCash';
+            $pkey   = 'DailyID';
+            $filter = " WHERE Type = '$tableName'";
         }
 
         // Query to get the maximum ID for the current year
-       $query = $db->query("SELECT MAX($pkey) as ID FROM $table ")->result_array();
+        // Build the query with filter if provided
+        if ($filter == '') {
+            $sql = "SELECT MAX($pkey) as ID FROM $table";
+        } else {
+            $sql = "SELECT MAX(RIGHT($pkey,9)) as ID FROM $table" . $filter;
+        }
 
-        // Check if the query returned any results
+        $query = $db->query($sql)->result_array();
+
+        // print_r($query);
         if ($query === null || empty($query) || $query[0]['ID'] == null) {
-            // If no results, set maxInvoiceID to 0
-            $maxInvoiceID = 0;
 
+            $maxInvoiceID = 100000000 + 0;
         } else {
             $maxInvoiceID = $query[0]['ID']; // Retrieve the maximum InvoiceID
+        }
+        if ($bNext) {
+            $maxInvoiceID += 1; // Increment the maxInvoiceID by 1 if bNext is true
+        }
+        if ($filter != '') {
+            $maxInvoiceID = $tableName . '-'. str_pad($maxInvoiceID, 8, '0', STR_PAD_LEFT);
         }
 
         return $maxInvoiceID; // Return the formatted InvoiceID

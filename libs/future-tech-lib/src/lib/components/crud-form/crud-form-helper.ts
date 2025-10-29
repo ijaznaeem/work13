@@ -52,6 +52,33 @@ export function AddLookupFld(
     options
   );
 }
+export function AddNGSelect(
+  fldName,
+  label,
+  listTable,
+  valueFld,
+  displayFld,
+  size,
+  data: any = [],
+  required = true,
+  options: any = {}
+) {
+  return Object.assign(
+    {
+      fldName: fldName,
+      control: 'select',
+      type: 'ngselect',
+      label: label,
+      listTable: listTable,
+      listData: data,
+      valueFld: valueFld,
+      displayFld: displayFld,
+      required: required,
+      size: size,
+    },
+    options
+  );
+}
 export function AddDropDownFld(
   fldName,
   label,
@@ -128,14 +155,15 @@ export function AddInputFld(
     options
   );
 }
-export function AddImage(fldName, label, size, required = false) {
-  return {
+export function AddImage(fldName, label, size, required = false, options={}) {
+  return  Object.assign({
     fldName: fldName,
     control: 'file',
     label: label,
     required: required,
     size: size,
-  };
+
+  }, options);
 }
 export function AddCheckBox(
   fldName,
@@ -217,6 +245,15 @@ export function AddSpace(size) {
 }
 export function FindCtrl(form: any, fldName: string) {
   return form.columns.find((x) => x.fldName == fldName);
+}
+export function FindCtrlIndex(form: any, fldName: string) {
+  return form.columns.findIndex((x) => x.fldName == fldName);
+}
+export function SetDataSrc(form: any, fldName: string, data: any = []) {
+  const ctrl = FindCtrl(form, fldName);
+  if (ctrl) {
+    ctrl.listData = data;
+  }
 }
 export function FindButton(form: any, label: string) {
   return form.columns.find((x) => x.label == label);

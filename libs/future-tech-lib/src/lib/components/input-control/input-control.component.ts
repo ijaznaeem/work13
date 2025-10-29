@@ -1,4 +1,10 @@
-import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  forwardRef,
+  Input,
+  Output,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -6,7 +12,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   template: `
     <div class="form-group">
       <label *ngIf="label">{{ label }}</label>
-      <input [type]="type" class="form-control" [(ngModel)]="value" [readonly]="readonly" (ngModelChange)="onChange($event)">
+      <input [type]="type" class="form-control" [(ngModel)]="value"
+      [readonly]="readonly" (ngModelChange)="onChange($event) "
+      (focus)="$event.target.select()" [style.background-color]="bgcolor">
     </div>
   `,
   styles: [],
@@ -14,15 +22,18 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => InputControlComponent),
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
 export class InputControlComponent implements ControlValueAccessor {
   @Input() label: string;
   @Input() type: string = 'text';
   @Input() placeholder: string = '';
   @Input() readonly: boolean = false;
+  @Input() bgcolor: string = '#fff';
+
+
   @Input() onChange: (value: any) => void = () => {};
   @Output() valueChange: EventEmitter<any> = new EventEmitter<any>();
 

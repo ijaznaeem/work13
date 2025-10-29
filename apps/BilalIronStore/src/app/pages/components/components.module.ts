@@ -3,10 +3,11 @@ import { NgModule } from '@angular/core';
 
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { AutoCompleteAllModule, ComboBoxModule, DropDownListModule } from '@syncfusion/ej2-angular-dropdowns';
 import { DataTablesModule } from 'angular-datatables';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgxDropzoneModule } from 'ngx-dropzone';
 import { QuillModule } from 'ngx-quill';
 import { PipeModule } from '../../shared/pipes/pipe.module';
 import { CrudFormComponent } from './crud-form/crud-form.component';
@@ -29,7 +30,8 @@ import { TestInputComponent } from './test-input/test-input.component';
     MultiColComboboxComponent,
     DynamicTableComponent,
     FtDataTableComponent,
-    TestInputComponent],
+    TestInputComponent
+  ],
   imports: [
     CommonModule,
     DataTablesModule,
@@ -38,9 +40,12 @@ import { TestInputComponent } from './test-input/test-input.component';
     ComboBoxModule,
     PipeModule,
     AutoCompleteAllModule,
-    NgbModule, ReactiveFormsModule,
-    FormsModule, ModalModule.forRoot(),
-    QuillModule.forRoot(),
+    ReactiveFormsModule,
+    FormsModule,
+    NgSelectModule,
+    NgxDropzoneModule,
+    ModalModule.forRoot(),
+    QuillModule.forRoot()
   ],
   exports: [
     DynamicTableComponent,

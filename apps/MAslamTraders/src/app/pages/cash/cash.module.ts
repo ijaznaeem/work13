@@ -8,7 +8,6 @@ import { ComboBoxAllModule } from '@syncfusion/ej2-angular-dropdowns';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { FutureTechLibModule } from '../../../../../../libs/future-tech-lib/src';
-import { ComponentsModule } from '../components/components.module';
 import { AddExpenseComponent } from './add-expense/add-expense.component';
 import { AddRecoveryComponent } from './add-recovery/add-recovery.component';
 import { CashPaymentComponent } from './cash-payment/cash-payment.component';
@@ -20,11 +19,13 @@ const routes:any = [
   { path: '', redirectTo: 'custoemerslist', pathMatch: 'full' },
   { path: 'cashpayment', component: CashPaymentComponent, data: { breadcrumb: 'Cash Payments' } },
   { path: 'cashpayment/:EditID', component: CashPaymentComponent, data: { breadcrumb: 'Cash Payments' } },
+  { path: 'cashpayment/:EditID/:CustomerID', component: CashPaymentComponent, data: { breadcrumb: 'Cash Payments' } },
   { path: 'cashreceipt', component: CashReceiptComponent, data: { breadcrumb: 'Cash Reciepts' } },
   { path: 'cashreceipt/:EditID', component: CashReceiptComponent, data: { breadcrumb: 'Cash Reciepts' } },
+  { path: 'cashreceipt/:EditID/:CustomerID', component: CashReceiptComponent, data: { breadcrumb: 'Cash Reciepts' } },
   { path: 'expense', component: ExpendComponent, data: { breadcrumb: 'Add Expense' } },
   { path: 'recovery', component: AddRecoveryComponent, data: { breadcrumb: 'Add Recovery' } },
-  { path: 'smexpense', component: AddExpenseComponent, data: { breadcrumb: 'Add Expense' } },
+  { path: 'expense-bill', component: AddExpenseComponent, data: { breadcrumb: 'Add Expense' } },
   { path: 'journalvoucher', component: JournalvoucherComponent, data: { breadcrumb: 'Add Expense' } },
 
 ];
@@ -42,7 +43,7 @@ const routes:any = [
     CommonModule,
     Ng2SmartTableModule,
     ComboBoxAllModule,
-    ComponentsModule,
+    // ComponentsModule,
     FutureTechLibModule,
     NgSelectModule,
     NgbModule,

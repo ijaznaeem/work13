@@ -753,7 +753,7 @@ class Tasks extends REST_Controller
                     $data['Date']        = $InvoiceValue['Date'];
                     $data['Credit']      = abs($InvoiceValue['NetAmount']);
                     $data['Debit']       = 0;
-                    $data['Description'] = 'Bill No ' . $InvoiceValue['InvoiceID'];
+                    $data['Description'] = 'Sale Return No ' . $InvoiceValue['InvoiceID'];
                     $data['RefID']       = $InvoiceValue['InvoiceID'];
                     $data['RefType']     = 1;
                     $data['SalesmanID']  = $InvoiceValue['SalesmanID'];

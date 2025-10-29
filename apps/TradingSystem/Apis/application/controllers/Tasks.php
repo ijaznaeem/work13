@@ -77,18 +77,18 @@ class Tasks extends REST_Controller
 
         // pinvoice table data
 
-        $pinvoice['Date']           = $post_data['Date'];
-        $pinvoice['CustomerID']     = $post_data['CustomerID'];
-        $pinvoice['FrieghtCharges'] = $post_data['FrieghtCharges'];
-        $pinvoice['Labour']         = $post_data['Labour'];
-        $pinvoice['Discount']       = $post_data['Discount'];
-        $pinvoice['AmountPaid']     = $post_data['AmountPaid'];
-        $pinvoice['Amount']         = $post_data['Amount'];
-        $pinvoice['IsPosted']       = $post_data['IsPosted'];
-        $pinvoice['Notes']          = $post_data['Notes'];
-        $pinvoice['DtCr']           = $post_data['DtCr'];
-        $pinvoice['FinYearID']      = $post_data['FinYearID'];
-        // $pinvoice['UserID']         = $post_data['UserID'];
+        $pinvoice['Date']             = $post_data['Date'];
+        $pinvoice['CustomerID']       = $post_data['CustomerID'];
+        $pinvoice['FrieghtCharges']   = $post_data['FrieghtCharges'];
+        $pinvoice['Labour']           = $post_data['Labour'];
+        $pinvoice['Discount']         = $post_data['Discount'];
+        $pinvoice['AmountPaid']       = $post_data['AmountPaid'];
+        $pinvoice['Amount']           = $post_data['Amount'];
+        $pinvoice['IsPosted']         = $post_data['IsPosted'];
+        $pinvoice['Notes']            = $post_data['Notes'];
+        $pinvoice['DtCr']             = $post_data['DtCr'];
+        $pinvoice['FinYearID']        = $post_data['FinYearID'];
+        $pinvoice['UserID']           = $post_data['UserID'];
         $pinvoice['OrderNo']          = $post_data['OrderNo'];
         $pinvoice['CompanyInvoiceNo'] = $post_data['CompanyInvoiceNo'];
         $pinvoice['Terms']            = $post_data['Terms'];
@@ -404,7 +404,9 @@ class Tasks extends REST_Controller
 
     public function validateDate($date, $format = 'Y-m-d')
     {
+        $date = explode(' ', $date)[0];
         return DateTime::createFromFormat($format, $date) == true;
+
     }
 
     public function pendinginvoice_post($id = null)
@@ -483,6 +485,7 @@ class Tasks extends REST_Controller
         $invoice['AmntRecvd']     = $post_data['AmntRecvd'];
         $invoice['DtCr']          = $post_data['DtCr'];
         $invoice['SessionID']     = $post_data['SessionID'];
+        $invoice['UserID']        = $post_data['UserID'];
         $invoice['Type']          = $post_data['Type'];
         $invoice['Notes']         = $post_data['Notes'];
         $invoice['IsPosted']      = $post_data['IsPosted'];
@@ -531,6 +534,77 @@ class Tasks extends REST_Controller
                 'OPPrice'   => $value['OPPrice'],
             ];
             $this->db->insert('InvoiceDetails', $dData);
+        }
+
+        $this->db->trans_commit();
+        $this->response(['id' => $invID], REST_Controller::HTTP_OK);
+
+        // $this->PostSales();
+    }
+    public function trsale_post($id = null)
+    {
+        $post_data = $this->post();
+
+        // pinvoice table data
+        $invoice['TransferID']        = $post_data['TransferID'];
+        $invoice['Date']              = $post_data['Date'];
+        $invoice['TrVoucherNo']       = $post_data['TrVoucherNo'];
+        $invoice['SPrNo']             = $post_data['SPrNo'];
+        $invoice['PurchaseAcct']      = $post_data['PurchaseAcct'];
+        $invoice['POrderNo']          = $post_data['POrderNo'];
+        $invoice['PRate']             = $post_data['PRate'];
+        $invoice['PTerm']             = $post_data['PTerm'];
+        $invoice['PFreight']          = $post_data['PFreight'];
+        $invoice['PAmount']           = $post_data['PAmount'];
+        $invoice['SaleAcct']          = $post_data['SaleAcct'];
+        $invoice['SOrderNo']          = $post_data['SOrderNo'];
+        $invoice['SRate']             = $post_data['SRate'];
+        $invoice['STerm']             = $post_data['STerm'];
+        $invoice['SFreight']          = $post_data['SFreight'];
+        $invoice['SAmount']           = $post_data['SAmount'];
+        $invoice['CO']                = $post_data['CO'];
+        $invoice['ProductID']         = $post_data['ProductID'];
+        $invoice['Qty']               = $post_data['Qty'];
+        $invoice['TransporterID']     = $post_data['TransporterID'];
+        $invoice['VehicleNo']         = $post_data['VehicleNo'];
+        $invoice['BiltyNo']           = $post_data['BiltyNo'];
+        $invoice['TransporterAmount'] = $post_data['TransporterAmount'];
+        $invoice['CompanyInvNo']      = $post_data['CompanyInvNo'];
+        $invoice['Note']              = $post_data['Note'];
+        $invoice['PL']                = $post_data['PL'];
+        $invoice['Status']            = $post_data['Status'];
+        $invoice['StockID']           = $post_data['StockID'];
+        $invoice['CompanyOrderNo']    = $post_data['CompanyOrderNo'];
+        $invoice['PStoreID']          = $post_data['PStoreID'];
+        $invoice['CompanyInvDate']    = $post_data['CompanyInvDate'];
+        $invoice['SaleTaxValue']      = $post_data['SaleTaxValue'];
+        $invoice['STPurchValue']      = $post_data['STPurchValue'];
+        $invoice['DMA']               = $post_data['DMA'];
+        $invoice['MobNo']             = $post_data['MobNo'];
+        $invoice['UserID']            = $post_data['UserID'];
+        $invoice['FinYearID']         = $post_data['FinYearID'];
+        $invoice['SessionID']         = $post_data['SessionID'];
+
+        if (! $this->validateDate($invoice['Date'], 'Y-m-d')) {
+            $this->response([
+                'status'  => false,
+                'message' => 'Invalid Date Format'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            return;
+        }
+
+        $this->db->trans_begin();
+        if ($id == null) {
+
+            $maxInvoiceID          = $this->utilities->getBillNo($this->db, 'T', true);
+            $invoice['TransferID'] = $maxInvoiceID;
+            $this->db->insert('TrSale', $invoice);
+            $invID = $maxInvoiceID;
+
+        } else {
+            $this->db->where('TransferID', $id);
+            $this->db->update('TrSale', $invoice);
+            $invID = $id;
+
         }
 
         $this->db->trans_commit();

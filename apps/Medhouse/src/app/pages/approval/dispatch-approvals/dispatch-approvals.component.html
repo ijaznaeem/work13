@@ -1,0 +1,250 @@
+<div class="dispatch-approvals-container">
+  <!-- Header Section -->
+  <div class="card border-0 box-shadow mb-3">
+    <div class="card-header transparent border-0 text-muted">
+      <h4 class="mb-0 text-primary">Dispatch Approvals</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="filterForm" class="row align-items-end">
+        <div class="col-md-3">
+          <label for="fromDate" class="form-label text-success fw-bold">From Date:</label>
+          <input
+            type="date"
+            id="fromDate"
+            class="form-control"
+            formControlName="fromDate"
+            (change)="onFilterChange()"
+          />
+        </div>
+        <div class="col-md-3">
+          <label for="toDate" class="form-label text-success fw-bold">To Date:</label>
+          <input
+            type="date"
+            id="toDate"
+            class="form-control"
+            formControlName="toDate"
+            (change)="onFilterChange()"
+          />
+        </div>
+        <div class="col-md-2">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="loadData()"
+          >
+            <i class="fa fa-search me-1"></i>
+            Show
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="row">
+    <!-- Left Section: Pending Invoices and Details -->
+    <div class="col-md-6">
+      <!-- Pending Invoices Table -->
+      <div class="card mb-3">
+        <div class="card-header bg-primary text-white">
+          <h6 class="mb-0 fw-bold">Pending</h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+            <table class="table table-sm table-hover mb-0">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th>Date</th>
+                  <th>Invoice No</th>
+                  <th>Customer Name</th>
+                  <th>Address</th>
+                  <th>City</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="loadingPending">
+                  <td colspan="5" class="text-center py-3">
+                    <div class="spinner-border spinner-border-sm me-2"></div>
+                    Loading pending invoices...
+                  </td>
+                </tr>
+                <tr *ngIf="!loadingPending && pendingInvoices.length === 0">
+                  <td colspan="5" class="text-center py-3 text-muted">
+                    No pending invoices found
+                  </td>
+                </tr>
+                <tr
+                  *ngFor="let invoice of pendingInvoices"
+                  [class.table-active]="isRowSelected(invoice, 'pending')"
+                  (click)="onPendingInvoiceSelect(invoice)"
+                  style="cursor: pointer;"
+                >
+                  <td>{{ formatDate(invoice.Date) }}</td>
+                  <td>{{ invoice.InvoiceID || invoice.InvoiceNo }}</td>
+                  <td>{{ invoice.CustomerName }}</td>
+                  <td>{{ invoice.Address }}</td>
+                  <td>{{ invoice.City }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details Table (Bottom Left) -->
+      <div class="card">
+        <div class="card-header bg-info text-white">
+          <h6 class="mb-0 fw-bold">Details</h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+            <table class="table table-sm mb-0">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th>Product Name</th>
+                  <th class="text-end">Qty</th>
+                  <th class="text-end">Bonus</th>
+                  <th class="text-end">Total Qty</th>
+                  <th class="text-end">Rate</th>
+                  <th class="text-end">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="loadingDetails">
+                  <td colspan="6" class="text-center py-3">
+                    <div class="spinner-border spinner-border-sm me-2"></div>
+                    Loading details...
+                  </td>
+                </tr>
+                <tr *ngIf="!loadingDetails && detailsData.length === 0">
+                  <td colspan="6" class="text-center py-3 text-muted">
+                    Select an item to view details
+                  </td>
+                </tr>
+                <tr *ngFor="let detail of detailsData">
+                  <td>{{ detail.ProductName }}</td>
+                  <td class="text-end">{{ detail.Qty || 0 }}</td>
+                  <td class="text-end">{{ detail.Bonus || 0 }}</td>
+                  <td class="text-end">{{ (detail.Qty || 0) + (detail.Bonus || 0) }}</td>
+                  <td class="text-end">{{ formatCurrency(detail.Rate) }}</td>
+                  <td class="text-end">{{ formatCurrency(detail.Amount) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section: Completed Dispatch -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <h6 class="mb-0 fw-bold">Completed</h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive" style="max-height: 680px; overflow-y: auto;">
+            <table class="table table-sm table-hover mb-0">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th>Date</th>
+                  <th>Dispatch ID</th>
+                  <th>Invoice No</th>
+                  <th>Customer</th>
+                  <th>Status</th>
+                  <th class="text-end">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="loadingCompleted">
+                  <td colspan="6" class="text-center py-3">
+                    <div class="spinner-border spinner-border-sm me-2"></div>
+                    Loading completed dispatch notes...
+                  </td>
+                </tr>
+                <tr *ngIf="!loadingCompleted && completedDispatch.length === 0">
+                  <td colspan="6" class="text-center py-3 text-muted">
+                    No completed dispatch notes found
+                  </td>
+                </tr>
+                <tr
+                  *ngFor="let dispatch of completedDispatch"
+                  [class.table-active]="isRowSelected(dispatch, 'completed')"
+                  (click)="onCompletedDispatchSelect(dispatch)"
+                  style="cursor: pointer;"
+                >
+                  <td>{{ formatDate(dispatch.Date) }}</td>
+                  <td>{{ dispatch.DespatchID }}</td>
+                  <td>{{ dispatch.InvoiceNo || dispatch.InvoiceID }}</td>
+                  <td>{{ dispatch.CustomerName }}</td>
+                  <td>
+                    <span 
+                      class="badge"
+                      [class.bg-success]="dispatch.Status === 'Completed'"
+                      [class.bg-warning]="dispatch.Status === 'Pending'"
+                      [class.bg-info]="dispatch.Status === 'In Transit'"
+                    >
+                      {{ dispatch.Status || 'N/A' }}
+                    </span>
+                  </td>
+                  <td class="text-end">{{ formatCurrency(dispatch.Amount) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="card border-0 mt-3">
+    <div class="card-body">
+      <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group me-2" role="group">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="generateDispatch()"
+            [disabled]="!selectedPendingInvoice"
+          >
+            <i class="fa fa-plus me-1"></i>
+            Generate
+          </button>
+        </div>
+        
+        <div class="btn-group me-2" role="group">
+          <button
+            type="button"
+            class="btn btn-info"
+            (click)="printReport()"
+          >
+            <i class="fa fa-print me-1"></i>
+            Print Report
+          </button>
+          
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="printDispatch()"
+            [disabled]="!selectedCompletedDispatch"
+          >
+            <i class="fa fa-print me-1"></i>
+            Print Dispatch
+          </button>
+        </div>
+        
+        <div class="btn-group" role="group">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="window.close()"
+          >
+            <i class="fa fa-times me-1"></i>
+            Exit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

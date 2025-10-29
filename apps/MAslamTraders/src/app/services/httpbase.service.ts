@@ -423,7 +423,7 @@ export class HttpBase {
     let filter =  `&filter=AcctType <>'Bank' `;
 
     return this.getData(
-      'qrycustomers?flds=CustomerName,Address,PhoneNo1,City,Balance,CustomerID&orderby=CustomerName'  +
+      'qrycustomers?flds=CustomerName,Address,PhoneNo1,City,Balance,CBalance,CustomerID&orderby=CustomerName'  +
         filter
     );
   }
@@ -433,7 +433,7 @@ export class HttpBase {
       filter = '&filter=AcctTypeID=' + type;
     }
     return this.getData(
-      'customers?flds=CustomerName,Balance,PhoneNo1,Address,CustomerID&orderby=CustomerName' +
+      'qrycustomers?flds=CustomerName,Balance,CBalance,PhoneNo1,Address,CustomerID&orderby=CustomerName' +
         filter
     );
   }

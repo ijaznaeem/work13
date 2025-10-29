@@ -1,64 +1,111 @@
+import { getCurDate, GetDateJSON } from '../../../factories/utilities';
+
+export class PurchaseModel {
+  public InvoiceID = 0;
+  public CustomerID = '';
+  public Date: any = GetDateJSON(new Date(getCurDate()));
+  public InvoiceDate: any = GetDateJSON(new Date(getCurDate()));;
+  public InvoiceNo: String = '';
+  public Discount = 0;
+  public Amount = 0;
+  public FrieghtCharges = 0;
+  public Labour = 0;
+  public AmountPaid = 0;
+  public Cash = 0;
+  public Bank = 0;
+  public BankID: null|string = null;
+  public ClosingID = 0;
+  public DtCr = 'CR';
+  public IsPosted = 0;
+  public UserID = 0;
+  public PrevBalance = 0;
+  public details = [];
+  public NetAmount = 0;
+  public BusinessID = '';
+  public VehicleNo = '';
+  public Notes = '';
+}
+export class PurchaseDetails {
+  public DetailID = '';
+  public ProductID = '';
+  public StoreID = '1';
+  public StockID = '';
+  public Qty: any = '';
+  public KGs: any = '0';
+  public Packing = 0;
+  public PPrice = 0;
+  public SPrice = 0;
+  public ProductName = '';
+
+  public StoreName = '';
+  public BusinessID = '';
+}
+
 export const InvoiceSettings = {
-    selectMode: 'single', // single|multi
-    hideHeader: false,
-    hideSubHeader: true,
-    actions: {
-      columnTitle: 'Actions',
-      add: false,
-      edit: true,
-      delete: true,
-      custom: [],
-      position: 'right', // left|right
+  selectMode: 'single', // single|multi
+  hideHeader: false,
+  hideSubHeader: true,
+  actions: {
+    columnTitle: 'Actions',
+    add: false,
+    edit: true,
+    delete: true,
+    custom: [],
+    position: 'right', // left|right
+  },
+  add: {
+    addButtonContent:
+      '<h4 class="mb-1"><i class="fa fa-plus ml-3 text-success"></i></h4>',
+    createButtonContent: '<i class="fa fa-check mr-3 text-success"></i>',
+    cancelButtonContent: '<i class="fa fa-times text-danger"></i>',
+  },
+  edit: {
+    confirmSave: true,
+    editButtonContent: '<i class="fa fa-pencil mr-3 text-primary"></i>',
+    saveButtonContent: '<i class="fa fa-check mr-3 text-success"></i>',
+    cancelButtonContent: '<i class="fa fa-times text-danger"></i>',
+  },
+  delete: {
+    deleteButtonContent: '<i class="fa fa-trash text-danger"></i>',
+    confirmDelete: true,
+  },
+  noDataMessage: 'No data found',
+  columns: {
+    SNo: {
+      title: 'S. No',
+      type: 'text',
+      valuePrepareFunction: (cell, row, index) => index.row.index + 1, // Adding 1 to start from 1
+      filter: false, // Optional: Disable filtering for serial number
+      sort: false, // Optional: Disable sorting for serial number
+      editable: false,
     },
-    add: {
-      addButtonContent:
-        '<h4 class="mb-1"><i class="fa fa-plus ml-3 text-success"></i></h4>',
-      createButtonContent: '<i class="fa fa-check mr-3 text-success"></i>',
-      cancelButtonContent: '<i class="fa fa-times text-danger"></i>',
-    },
-    edit: {
-      confirmSave: true,
-      editButtonContent: '<i class="fa fa-pencil mr-3 text-primary"></i>',
-      saveButtonContent: '<i class="fa fa-check mr-3 text-success"></i>',
-      cancelButtonContent: '<i class="fa fa-times text-danger"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="fa fa-trash text-danger"></i>',
-      confirmDelete: true,
-    },
-    noDataMessage: 'No data found',
-    columns: {
-      SNo: {
-        title: 'S. No',
-        type: 'text',
-        valuePrepareFunction: (cell, row, index) => index.row.index + 1, // Adding 1 to start from 1
-        filter: false, // Optional: Disable filtering for serial number
-        sort: false, // Optional: Disable sorting for serial number
-        editable: false,
-      },
 
-      ProductName: {
-        editable: false,
-        title: 'Product',
-        width: '250px',
-      },
-
-      Qty: {
-        title: 'Qty',
-        editable: true,
-      },
-
-      SPrice: {
-        title: 'Price',
-        editable: true,
-      },
-      Amount: {
-        editable: false,
-        title: 'Amount',
-      },
+    StoreName: {
+      editable: false,
+      title: 'Store',
     },
-    pager: {
-      display: true,
-      perPage: 50,
+    ProductName: {
+      editable: false,
+      title: 'Product',
+      width: '250px',
     },
-  };
+
+    Qty: {
+      title: 'Qty',
+      editable: true,
+    },
+
+    PPrice: {
+      title: 'Price',
+      editable: true,
+    },
+    Amount: {
+      editable: false,
+      title: 'Amount',
+    },
+  },
+  pager: {
+    display: true,
+    perPage: 50,
+  },
+};
